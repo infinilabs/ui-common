@@ -1,0 +1,8 @@
+/src
+/public
+/tests
+/node_modules
+*.js
+*.json
+*.html
+!README.md
