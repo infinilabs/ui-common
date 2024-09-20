@@ -1,4 +1,5 @@
 import { Empty } from "antd";
+
 import styles from "./Empty.module.less";
 
 export default (props) => {

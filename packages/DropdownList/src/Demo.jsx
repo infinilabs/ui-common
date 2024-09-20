@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { cloneDeep } from "lodash";
 
 // import DropdownList from ".";
-import DropdownList from "../../dist/DropdownList";
-import "../../dist/style.css";
+import DropdownList from "../dist/DropdownList";
 
 const ORDER_DESC = "desc";
 
@@ -19,7 +18,7 @@ const mock_data = ((size) => {
       status: "green",
     };
   });
-})(1000);
+})(100);
 
 const Demo = () => {
   const pageSize = 10;

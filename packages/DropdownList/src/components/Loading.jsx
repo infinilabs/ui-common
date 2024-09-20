@@ -1,4 +1,5 @@
 import Loading from "./loading.svg";
+
 import styles from "./Loading.module.less";
 
 export default (props) => {

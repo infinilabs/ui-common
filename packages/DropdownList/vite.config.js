@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import { readFileSync } from "fs";
 import path from "path";
 import react from "@vitejs/plugin-react";
+import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 
 const packageJson = JSON.parse(
   readFileSync("./package.json", { encoding: "utf-8" })
@@ -15,7 +16,7 @@ function resolve(str) {
 }
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), cssInjectedByJsPlugin()],
   css: {
     modules: {
       localsConvention: "camelCase",

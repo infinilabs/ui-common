@@ -1,5 +1,6 @@
-import styles from "./Error.module.less";
 import { CloseCircleOutlined } from "@ant-design/icons";
+
+import styles from "./Error.module.less";
 
 export default (props) => {
   const { currentLocales, failed = true } = props;

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { cloneDeep } from "lodash";
 
 import DropdownList from "@infinilabs/dropdownlist";
-import "@infinilabs/dropdownlist/dist/style.css";
+// import "@infinilabs/dropdownlist/dist/style.css";
 
 const ORDER_DESC = "desc";
 
