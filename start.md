@@ -15,6 +15,24 @@ pnpm init
 # pnpm-workspace.yaml
 # https://pnpm.io/zh/pnpm-workspace_yaml
 ````
+## 测试
+
+```sh
+npm link
+
+
+```
+
+## 发布
+
+```sh
+# publish
+nrm use npm
+
+npm login
+
+npm publish
+```
 
 ## 打包
 

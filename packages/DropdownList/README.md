@@ -1,29 +1,33 @@
 # DropdownList
 
-## Effect
+English | [简体中文](./README-zh_CN.md) 
 
-![ClusterSelect](./src/assets/ClusterSelect.jpg)
+Customized drop-down list component
 
-![dev-tool](./src/assets/dev-tool.jpg)
+## Screenshot
+
+![ClusterSelect](./dist/ClusterSelect.jpg)
+
+![dev-tool](./dist/dev-tool.jpg)
 
 ## Install
 
-```
-npm i @infinilabs/dropdownlist
+```bash
+npm i @infinilabs/dropdownlist
 
 # or
-cnpm i @infinilabs/dropdownlist
+cnpm i @infinilabs/dropdownlist
 
 # or
-yarn add @infinilabs/dropdownlist
+yarn add @infinilabs/dropdownlist
 
 # or
-pnpm add @infinilabs/dropdownlist
+pnpm add @infinilabs/dropdownlist
 ```
 
 ## Usage
 
-```js
+```jsx
 import DropdownList from "@infinilabs/dropdownlist";
 
 <DropdownList
@@ -59,46 +63,46 @@ import DropdownList from "@infinilabs/dropdownlist";
 
 ## Props
 
-| Property | Description | Type | Default | Version |
-| -------- | ----------- | ---- | ------- | ------- |
-| className | 组件根元素的类名称 | string | - | 1.0.0 |
-| popoverClassName | 弹窗元素的类名称 | string | - | 1.0.0 |
-| popoverPlacement | 弹窗位置，可选 top left right bottom topLeft topRight bottomLeft bottomRight leftTop leftBottom rightTop rightBottom | string | 'bottomLeft' | 1.0.0 |
-| width | 选择框宽度 | number | 300 | 1.0.0 |
-| dropdownWidth | 下拉框宽度，默认与选择框宽度一样 | number | 300 | 1.0.0 |
-| locale | 语言 | string | 'en-US' | 1.0.0 |
-| allowClear | 可以点击清除图标删除内容 | boolean | false | 1.0.0 |
-| mode | 设置模式为多选  | 'multiple' | - | 1.0.0 |
-| value | 已选项 | object | - | 1.0.0 |
-| onChange | 选中变更的回调 | (value: object ) => void | - | 1.0.0 |
-| disabled | 是否禁用 | boolean | false | 1.0.0 |
-| placeholder | 选择框默认文字 | string | - | 1.0.0 |
-| loading | 是否加载中 | boolean | false | 1.0.0 |
-| failed | 是否加载失败 | boolean | false | 1.0.0 |
-| data | 列表数据 | [] | [] | 1.0.0 |
-| rowKey | 列表行key | string | - | 1.0.0 |
-| renderItem | 列表行自定义渲染 | (item: object) => ReactNode | - | 1.0.0 |
-| renderTag | 列表行自定义标签 | (item: object) => ReactNode | - | 1.0.0 |
-| renderLabel | 选择框文本自定义渲染 | (item: object) => ReactNode | - | 1.0.0 |
-| renderEmptyList | 空列表自定义渲染 | () => ReactNode | - | 1.0.0 |
-| pagination | 分页器，设为 false 时不展示和进行分页 | { currentPage: number, pageSize: number, total: number, onChange: (page: number) => void  } | { currentPage: 1, pageSize: 10 } | 1.0.0 |
-| searchKey | 搜索字段，自动分页起效 | string | - | 1.0.0 |
-| onSearchChange | 搜索变更的回调 | (value: string) => void | - | 1.0.0 |
-| sorter | 排序，第一个元素为排序字段，第二个元素为排序方式（desc/asc） | [] | [] | 1.0.0 |
-| onSorterChange | 排序变更的回调 | (sorter: []) => void | - | 1.0.0 |
-| sorterOptions | 排序选项  | [{ label: string, key: string }] | [] | 1.0.0 |
-| filters | 字段过滤  | object | {} | 1.0.0 |
-| onFiltersChange | 字段过滤变更的回调 | (filters: object) => void | - | 1.0.0 |
-| filterOptions | 字段过滤选项 | [] | [] | 1.0.0 |
-| groups | 分组过滤  | [] | [] | 1.0.0 |
-| onGroupsChange | 分组过滤变更的回调 | (groups: []) => void | - | 1.0.0 |
-| groupOptions | 分组过滤选项 | [] | [] | 1.0.0 |
-| onGroupVisibleChange | 分组显隐变更的回调 | (visible: boolean) => void | - | 1.0.0 |
-| autoAdjustOverflow | 浮窗被遮挡时自动调整位置 | boolean \| { adjustX?: 0 \| 1, adjustY?: 0 \| 1 } | { adjustX: 1 } | 1.0.0 |
-| getPopupContainer | 浮层渲染父节点 | (triggerNode) => triggerNode.parentNode | 1.0.0 |
-| extraData | 额外项数据，置顶显示 | object[] | [] | 1.0.0 |
-| searchPlaceholder | 下拉列表搜索框默认文字 | string | - | 1.0.0 |
-| showListIcon | 是否显示左侧图标 | boolean | true | 1.0.0 |
-| onRefresh | 列表数据刷新的回调 | () => void | - | 1.0.0 |
-| actions | 下拉列表底部左侧操作 | ReactNode[] | [] | 1.0.0 |
-| children | 选择框展示 | ReactNode | - | 1.0.0 |
+| Property            | Description                                                 | Type                                                            | Default              | Version |
+|---------------------|-------------------------------------------------------------|-----------------------------------------------------------------|----------------------|---------|
+| className           | CSS class for the root element                              | string                                                          | -                    | 1.0.0   |
+| popoverClassName    | CSS class for the popover element                           | string                                                          | -                    | 1.0.0   |
+| popoverPlacement    | Popover placement options (top, left, right, bottom, etc.)   | string                                                          | 'bottomLeft'          | 1.0.0   |
+| width               | Width of the dropdown selector                              | number                                                          | 300                  | 1.0.0   |
+| dropdownWidth       | Width of the dropdown, defaults to the selector width       | number                                                          | 300                  | 1.0.0   |
+| locale              | Language setting                                            | string                                                          | 'en-US'              | 1.0.0   |
+| allowClear          | Allow clearing the selected value                           | boolean                                                         | false                | 1.0.0   |
+| mode                | Enable multi-selection mode                                 | 'multiple'                                                      | -                    | 1.0.0   |
+| value               | Selected value                                              | object                                                          | -                    | 1.0.0   |
+| onChange            | Callback for value changes                                  | (value: object) => void                                          | -                    | 1.0.0   |
+| disabled            | Disable the dropdown                                        | boolean                                                         | false                | 1.0.0   |
+| placeholder         | Placeholder text in the selector                            | string                                                          | -                    | 1.0.0   |
+| loading             | Show loading state                                          | boolean                                                         | false                | 1.0.0   |
+| failed              | Show failure state                                          | boolean                                                         | false                | 1.0.0   |
+| data                | Data source for the dropdown list                           | []                                                              | []                   | 1.0.0   |
+| rowKey              | Key for each row in the data list                           | string                                                          | -                    | 1.0.0   |
+| renderItem          | Custom render function for each list item                   | (item: object) => ReactNode                                      | -                    | 1.0.0   |
+| renderTag           | Custom tag render function                                  | (item: object) => ReactNode                                      | -                    | 1.0.0   |
+| renderLabel         | Custom render function for the selected label               | (item: object) => ReactNode                                      | -                    | 1.0.0   |
+| renderEmptyList     | Custom render function for an empty list                    | () => ReactNode                                                  | -                    | 1.0.0   |
+| pagination          | Pagination settings or disable pagination                   | { currentPage, pageSize, total, onChange }                       | { currentPage: 1, pageSize: 10 } | 1.0.0 |
+| searchKey           | Key to search items                                         | string                                                          | -                    | 1.0.0   |
+| onSearchChange      | Callback for search value changes                           | (value: string) => void                                          | -                    | 1.0.0   |
+| sorter              | Sorter configuration                                        | [field, direction]                                               | []                   | 1.0.0   |
+| onSorterChange      | Callback for sorting changes                                | (sorter: []) => void                                             | -                    | 1.0.0   |
+| sorterOptions       | Sorting options                                             | [{ label: string, key: string }]                                 | []                   | 1.0.0   |
+| filters             | Filters configuration                                       | object                                                          | {}                   | 1.0.0   |
+| onFiltersChange     | Callback for filter changes                                 | (filters: object) => void                                        | -                    | 1.0.0   |
+| filterOptions       | Filter options                                              | []                                                              | []                   | 1.0.0   |
+| groups              | Group filter configuration                                  | []                                                              | []                   | 1.0.0   |
+| onGroupsChange      | Callback for group filter changes                           | (groups: []) => void                                             | -                    | 1.0.0   |
+| groupOptions        | Group filter options                                        | []                                                              | []                   | 1.0.0   |
+| onGroupVisibleChange| Callback for group visibility changes                       | (visible: boolean) => void                                       | -                    | 1.0.0   |
+| autoAdjustOverflow  | Auto-adjust popover position when overflow occurs           | boolean \| { adjustX?: 0 \| 1, adjustY?: 0 \| 1 }                | { adjustX: 1 }        | 1.0.0   |
+| getPopupContainer   | Define the parent element for the popover container         | (triggerNode) => triggerNode.parentNode                          | 1.0.0   |
+| extraData           | Extra data to be displayed at the top of the list           | object[]                                                        | []                   | 1.0.0   |
+| searchPlaceholder   | Placeholder text in the search input field                  | string                                                          | -                    | 1.0.0   |
+| showListIcon        | Show icons on the left of list items                        | boolean                                                         | true                 | 1.0.0   |
+| onRefresh           | Callback for refreshing the list                            | () => void                                                       | -                    | 1.0.0   |
+| actions             | Actions displayed at the bottom left of the dropdown list   | ReactNode[]                                                     | []                   | 1.0.0   |
+| children            | Content displayed in the dropdown                          | ReactNode                                                       | -                    | 1.0.0   |
