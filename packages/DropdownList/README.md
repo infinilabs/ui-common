@@ -99,7 +99,7 @@ import DropdownList from "@infinilabs/dropdownlist";
 | groupOptions        | Group filter options                                        | []                                                              | []                   | 1.0.0   |
 | onGroupVisibleChange| Callback for group visibility changes                       | (visible: boolean) => void                                       | -                    | 1.0.0   |
 | autoAdjustOverflow  | Auto-adjust popover position when overflow occurs           | boolean \| { adjustX?: 0 \| 1, adjustY?: 0 \| 1 }                | { adjustX: 1 }        | 1.0.0   |
-| getPopupContainer   | Define the parent element for the popover container         | (triggerNode) => triggerNode.parentNode                          | 1.0.0   |
+| getPopupContainer   | Define the parent element for the popover container         | (triggerNode: HTMLElement) => HTMLElement                        | (triggerNode) => triggerNode.parentNode  | 1.0.0   |
 | extraData           | Extra data to be displayed at the top of the list           | object[]                                                        | []                   | 1.0.0   |
 | searchPlaceholder   | Placeholder text in the search input field                  | string                                                          | -                    | 1.0.0   |
 | showListIcon        | Show icons on the left of list items                        | boolean                                                         | true                 | 1.0.0   |

@@ -99,7 +99,7 @@ import DropdownList from "@infinilabs/dropdownlist";
 | groupOptions | 分组过滤选项 | [] | [] | 1.0.0 |
 | onGroupVisibleChange | 分组显隐变更的回调 | (visible: boolean) => void | - | 1.0.0 |
 | autoAdjustOverflow | 浮窗被遮挡时自动调整位置 | boolean \| { adjustX?: 0 \| 1, adjustY?: 0 \| 1 } | { adjustX: 1 } | 1.0.0 |
-| getPopupContainer | 浮层渲染父节点 | (triggerNode) => triggerNode.parentNode | 1.0.0 |
+| getPopupContainer | 浮层渲染父节点 | (triggerNode: HTMLElement) => HTMLElement | (triggerNode) => triggerNode.parentNode | 1.0.0 |
 | extraData | 额外项数据，置顶显示 | object[] | [] | 1.0.0 |
 | searchPlaceholder | 下拉列表搜索框默认文字 | string | - | 1.0.0 |
 | showListIcon | 是否显示左侧图标 | boolean | true | 1.0.0 |
