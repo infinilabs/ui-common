@@ -42,7 +42,7 @@ const StartAndEndTimes = (props) => {
   const [startAsMoment, setStartAsMoment] = useState(() => {
     const value = dateMath.parse(start);
     return value && value.isValid()
-      ? value.tz(timeZone)
+      ? moment(value).tz(timeZone)
       : moment().tz(timeZone);
   });
 
@@ -51,7 +51,7 @@ const StartAndEndTimes = (props) => {
   const [endAsMoment, setEndAsMoment] = useState(() => {
     const value = dateMath.parse(end);
     return value && value.isValid()
-      ? value.tz(timeZone)
+      ? moment(value).tz(timeZone)
       : moment().tz(timeZone);
   });
 

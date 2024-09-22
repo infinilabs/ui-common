@@ -10,9 +10,12 @@ importers:
 
   apps/react-jsx:
     dependencies:
+      '@infinilabs/datepicker':
+        specifier: ^0.0.1
+        version: 0.0.1
       '@infinilabs/dropdownlist':
         specifier: ^0.0.5
-        version: 0.0.5
+        version: 0.0.5(moment@2.30.1)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -500,6 +503,9 @@ packages:
   '@humanwhocodes/retry@0.3.0':
     resolution: {integrity: sha512-d2CGZR2o7fS6sWB7DG/3a95bGKQyHMACZ5aW8qGkkqQpUoZV6C0X7Pc7l4ZNMZkfNBf4VWNe9E1jRsf0G146Ew==}
     engines: {node: '>=18.18'}
+
+  '@infinilabs/datepicker@0.0.1':
+    resolution: {integrity: sha512-yKd1Zq9Nyo8uR0WYLo1ONYAIoMxF5S1iF7OzQZdfnKwo7DK5/fV537w+zdm3AScH0cvr5adbmB/YxPmMq2BJfw==}
 
   '@infinilabs/dropdownlist@0.0.5':
     resolution: {integrity: sha512-ozcsGcAm53Qh1sz42kjG4XWCPlTUiPIoXDd4Ek2VTd2M8j+0yB7dW6M3+p+H8ws609xB46eWwhawgKkLXtWTNg==}
@@ -2246,7 +2252,21 @@ snapshots:
 
   '@humanwhocodes/retry@0.3.0': {}
 
-  '@infinilabs/dropdownlist@0.0.5':
+  '@infinilabs/datepicker@0.0.1':
+    dependencies:
+      '@ant-design/icons': 5.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@elastic/datemath': 5.0.3(moment@2.30.1)
+      antd: 5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      lodash: 4.17.21
+      moment: 2.30.1
+      moment-timezone: 0.5.45
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    transitivePeerDependencies:
+      - date-fns
+      - luxon
+
+  '@infinilabs/dropdownlist@0.0.5(moment@2.30.1)':
     dependencies:
       '@ant-design/icons': 5.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       antd: 5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

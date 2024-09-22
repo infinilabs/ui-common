@@ -18,6 +18,7 @@ const TimeZone = (props) => {
     if (index !== -1) {
       onTimeZoneChange(timeZone);
     }
+    onCancel();
   };
 
   const filterList = useMemo(() => {
