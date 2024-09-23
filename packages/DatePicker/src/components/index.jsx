@@ -219,9 +219,10 @@ const DatePicker = (props) => {
         {!isMinimum && (
           <Button
             className={`${styles.iconBtn} common-ui-datepicker-backward`}
-            icon={<LeftOutlined />}
             onClick={stepBackward}
-          />
+          >
+            <LeftOutlined />
+          </Button>
         )}
         <Range
           {...props}
@@ -250,9 +251,10 @@ const DatePicker = (props) => {
           <Button
             disabled={isNextDisabled}
             className={`${styles.iconBtn} common-ui-datepicker-Forward`}
-            icon={<RightOutlined />}
             onClick={stepForward}
-          />
+          >
+            <RightOutlined />
+          </Button>
         )}
       </Button.Group>
       <Button.Group className={styles.refreshBtn}>

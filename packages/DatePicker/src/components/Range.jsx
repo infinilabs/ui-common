@@ -226,7 +226,7 @@ const Range = (props) => {
         </div>
       </div>
       {selectedItem?.component && (
-        <div className={styles.content} style={{ height: height || "100%" }}>
+        <div className={styles.content} style={{ height: height }}>
           <selectedItem.component
             {...props}
             onRefreshChange={handleRefreshChange}
