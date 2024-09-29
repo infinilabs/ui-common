@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Button, Popover } from "antd";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cloneDeep } from "lodash";
@@ -200,7 +201,7 @@ const DropdownList = (props) => {
         overlayClassName={`${styles.popover} ${popoverClassName}`}
         overlayStyle={{
           width: overlayWidth,
-          height:
+          maxHeight:
             16 + 32 + 8 + 18 + 12 + 40 + (pagination?.pageSize || 10) * 32,
         }}
         autoAdjustOverflow={autoAdjustOverflow}
