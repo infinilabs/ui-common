@@ -1253,7 +1253,7 @@ const ir = 10, tr = "desc", Jr = "data:image/svg+xml,%3c?xml%20version='1.0'%20s
           overlayClassName: `${X.popover} ${g}`,
           overlayStyle: {
             width: o,
-            height: 126 + ((A == null ? void 0 : A.pageSize) || 10) * 32
+            maxHeight: 126 + ((A == null ? void 0 : A.pageSize) || 10) * 32
           },
           autoAdjustOverflow: z,
           getPopupContainer: ae,

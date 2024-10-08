@@ -6,7 +6,7 @@
     "README-zh_CN.md",
     "README.md"
   ],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "type": "module",
   "main": "dist/DropdownList.cjs",
