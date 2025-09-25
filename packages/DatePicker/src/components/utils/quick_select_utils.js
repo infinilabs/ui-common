@@ -1,9 +1,9 @@
 import moment from "moment";
-import dateMath from "@elastic/datemath";
 import _isString from "lodash/isString";
 
 import { relativeUnitsFromLargestToSmallest } from "./relative_options";
 import { DATE_MODES } from "./date_modes";
+import { parseDateMath } from "./datemath-replacement";
 
 const LAST = "last";
 const NEXT = "next";
@@ -39,7 +39,7 @@ export const parseTimeParts = (start, end) => {
     };
   }
 
-  const duration = moment.duration(moment().diff(dateMath.parse(value)));
+  const duration = moment.duration(moment().diff(parseDateMath(value)));
   let unitOp = "";
   for (let i = 0; i < relativeUnitsFromLargestToSmallest.length; i++) {
     const as = duration.as(relativeUnitsFromLargestToSmallest[i]);

@@ -1,4 +1,4 @@
-import dateMath from "@elastic/datemath";
+import { parseDateMath } from './datemath-replacement';
 
 import {
   parseRelativeParts,
@@ -24,7 +24,7 @@ export function getDateMode(value) {
 }
 
 export function toAbsoluteString(value, roundUp = false) {
-  const valueAsMoment = dateMath.parse(value, { roundUp });
+  const valueAsMoment = parseDateMath(value, { roundUp });
   if (!valueAsMoment) {
     return value;
   }

@@ -1,13 +1,13 @@
 {
   "name": "@infinilabs/chatmessage",
   "private": false,
-  "version": "0.0.1",
-  "type": "module",
-  "license": "MIT",
   "files": [
     "dist",
     "README.md"
   ],
+  "version": "0.0.1",
+  "license": "MIT",
+  "type": "module",
   "main": "dist/ChatMessage.cjs",
   "module": "dist/ChatMessage.js",
   "types": "dist/index.d.ts",
@@ -16,16 +16,13 @@
       "import": "./dist/ChatMessage.js",
       "require": "./dist/ChatMessage.cjs",
       "types": "./dist/index.d.ts"
-    },
-    "./style.css": "./dist/style.css"
+    }
   },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:lib": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "prepublishOnly": "npm run build:lib"
+    "preview": "vite preview"
   },
   "peerDependencies": {
     "react": "^18.3.1",
@@ -47,7 +44,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
-    "@types/node": "^22.5.5",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.0.0",

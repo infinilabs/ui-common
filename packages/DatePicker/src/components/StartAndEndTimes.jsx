@@ -1,17 +1,17 @@
 import { DatePicker } from "antd";
 import moment from "moment-timezone";
-import dateMath from "@elastic/datemath";
 import { useState } from "react";
 
 import Apply from "./Apply";
 import RefreshInterval from "./RefreshInterval";
 import { getDateString, getDateStringWithGMT } from "./utils/utils";
+import { parseDateMath } from './utils/datemath-replacement';
 
 import styles from "./StartAndEndTimes.module.less";
 
 function isRangeInvalid(start, end) {
-  const startMoment = dateMath.parse(start);
-  const endMoment = dateMath.parse(end, { roundUp: true });
+  const startMoment = parseDateMath(start);
+  const endMoment = parseDateMath(end, { roundUp: true });
   if (
     !startMoment ||
     !endMoment ||
@@ -40,7 +40,7 @@ const StartAndEndTimes = (props) => {
   } = props;
 
   const [startAsMoment, setStartAsMoment] = useState(() => {
-    const value = dateMath.parse(start);
+    const value = parseDateMath(start);
     return value && value.isValid()
       ? moment(value).tz(timeZone)
       : moment().tz(timeZone);
@@ -49,7 +49,7 @@ const StartAndEndTimes = (props) => {
   const [isInvalid, setIsInvalid] = useState(false);
 
   const [endAsMoment, setEndAsMoment] = useState(() => {
-    const value = dateMath.parse(end);
+    const value = parseDateMath(end);
     return value && value.isValid()
       ? moment(value).tz(timeZone)
       : moment().tz(timeZone);
