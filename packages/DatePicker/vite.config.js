@@ -38,7 +38,6 @@ export default defineConfig({
           lodash: "_",
           "@ant-design/icons": "icons",
           moment: "moment",
-          "@elastic/datemath": "dateMath",
           "moment-timezone": "momentTimezone",
         },
       },

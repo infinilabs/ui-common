@@ -1,9 +1,9 @@
-import dateMath from "@elastic/datemath";
 import moment from "moment";
 
 import { timeUnits } from "./time_units";
 import { getDateMode, DATE_MODES } from "./date_modes";
 import { parseRelativeParts } from "./relative_utils";
+import { parseDateMath } from "./datemath-replacement";
 
 const ISO_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSSZ";
 
@@ -51,7 +51,7 @@ export function formatTimeString(
     return "now";
   }
 
-  const tryParse = dateMath.parse(timeString, { roundUp: roundUp });
+  const tryParse = parseDateMath(timeString, { roundUp: roundUp });
   if (moment.isMoment(tryParse)) {
     return `~ ${tryParse.locale(locale).fromNow()}`;
   }

@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Button } from "antd";
 import moment from "moment";
-import dateMath from "@elastic/datemath";
 import {
   CaretRightOutlined,
   PauseOutlined,
@@ -15,6 +14,7 @@ import Range from "./Range";
 import locales from "./locales";
 import isRelativeToNow from "./utils/pretty_duration";
 import { toMilliseconds, fromMilliseconds } from "./utils/utils";
+import { parseDateMath } from './utils/datemath-replacement';
 
 import styles from "./index.module.less";
 
@@ -136,8 +136,8 @@ const DatePicker = (props) => {
   };
 
   const getBounds = () => {
-    const startMoment = dateMath.parse(start);
-    const endMoment = dateMath.parse(end, { roundUp: true });
+    const startMoment = parseDateMath(start);
+    const endMoment = parseDateMath(end, { roundUp: true });
     return {
       min:
         startMoment && startMoment.isValid()
