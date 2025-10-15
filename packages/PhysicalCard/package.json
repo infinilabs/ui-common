@@ -1,0 +1,50 @@
+{
+  "name": "@infinilabs/physical-card",
+  "version": "0.0.1",
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": false,
+  "type": "module",
+  "files": [
+    "dist",
+    "README.md",
+    "README-zh_CN.md"
+  ],
+  "main": "dist/PhysicalCard.cjs",
+  "module": "dist/PhysicalCard.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/PhysicalCard.js",
+      "require": "./dist/PhysicalCard.cjs",
+      "default": "./dist/PhysicalCard.umd.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepublishOnly": "vite build"
+  },
+  "peerDependencies": {
+    "antd": ">=5",
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
+  "dependencies": {
+    "lucide-react": "^0.461.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "antd": "^5.20.6",
+    "vite": "^5.4.1",
+    "vite-plugin-css-injected-by-js": "^3.5.1",
+    "vite-plugin-dts": "^3.9.0"
+  }
+}

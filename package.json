@@ -4,7 +4,12 @@
   "description": "ui-common",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:datepicker": "pnpm --filter @infinilabs/datepicker dev",
+    "build:datepicker": "pnpm --filter @infinilabs/datepicker build",
+    "build:all": "pnpm -r build",
+    "dev:all": "pnpm -r dev",
+    "install:all": "pnpm install --registry https://registry.npmjs.org/"
   },
   "keywords": [],
   "author": "",

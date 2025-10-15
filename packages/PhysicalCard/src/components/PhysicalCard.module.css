@@ -1,0 +1,199 @@
+.physical-card-modal-body {
+  border-radius: 12px;
+}
+
+.physical-card-modal-content {
+  padding: 0 !important;
+}
+
+.physicalCard {
+  width: 400px;
+  padding: 16px;
+  overflow: auto;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 1);
+  color: rgba(16, 16, 16, 1);
+  font-size: 14px;
+  text-align: center;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+  font-family: -regular;
+}
+
+/* Cover */
+.pcCover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 3px;
+  background-color: rgba(187, 187, 187, 0.69);
+}
+.pcCover img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Section */
+.pcSection {
+  width: 100%;
+  padding-top: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.pcBreadcrumbSep {
+  font-size: 12px;
+  color: #999;
+}
+
+.pcBasic {
+  display: flex;
+  gap: 8px;
+  padding-top: 25px;
+  flex-wrap: wrap;
+}
+
+.pcBasicRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pcBasicRowLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pcLinkIconRight {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 20px;
+  text-decoration: none;
+  background-color: #fafafa;
+  border-radius: 4px;
+}
+
+.pcColorSwatch {
+  width: 7px;
+  height: 16px;
+}
+
+.pcIconDot {
+  width: 18px;
+  height: 18px;
+}
+
+.pcTitleLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 8px;
+  border: 2px solid #027ffe;
+  border-radius: 4px;
+  color: #027ffe;
+  font-weight: 500;
+  text-decoration: none;
+  line-height: 1.6;
+}
+
+.pcTitleLink:hover {
+  background: rgba(22, 119, 255, 0.06);
+}
+
+.pcTitleText {
+  display: inline-flex;
+  align-items: center;
+  color: #027ffe;
+  font-size: 16px;
+}
+
+.pcSubTitleText {
+  display: inline-flex;
+  align-items: center;
+  color: #999;
+  font-size: 16px;
+}
+
+.pcExternalIcon {
+  font-size: 12px;
+  color: #027ffe;
+  margin-left: 2px;
+}
+
+.pcProperties {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 8px;
+  row-gap: 12px;
+  align-items: start;
+}
+.pcProperty {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 24px;
+  min-width: 0;
+  box-sizing: border-box;
+  font-size: 12px;
+  color: #999;
+}
+
+.pcTagsRow {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.pcTag {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #f2f3f5;
+  color: #555;
+  font-size: 12px;
+}
+
+.pcDetails {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pcRow {
+  display: grid;
+  column-gap: 8px;
+  row-gap: 12px;
+  width: 100%;
+}
+.pcCol {
+  width: 100%;
+  padding: 10px 8px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  text-align: left;
+  border-radius: 5px;
+  background-color: rgba(250, 250, 250, 1);
+  color: rgba(16, 16, 16, 1);
+  font-size: 14px;
+  font-family: -regular;
+  border: 1px solid rgba(245, 245, 245, 1);
+}
+.pcColLabel {
+  color: #999;
+  font-size: 12px;
+}
+.pcColValue {
+  font-size: 16px;
+  color: #027ffe;
+}
+
+.pcProgressText {
+  font-size: 10px;
+  color: #027FFE;
+}

@@ -1,11 +1,10 @@
-import Demo from "./Demo";
-import Demo2 from "./Demo2";
+
+import DemoPhysicalCard from "./DemoPhysicalCard";
 
 function App() {
   return (
     <>
-      <Demo />
-      <Demo2 />
+      <DemoPhysicalCard />
     </>
   );
 }
