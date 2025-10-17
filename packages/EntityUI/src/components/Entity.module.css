@@ -1,12 +1,4 @@
-.physical-card-modal-body {
-  border-radius: 12px;
-}
-
-.physical-card-modal-content {
-  padding: 0 !important;
-}
-
-.physicalCard {
+.entityCard {
   width: 400px;
   padding: 16px;
   overflow: auto;
@@ -24,6 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 25px;
   overflow: hidden;
   border-radius: 3px;
   background-color: rgba(187, 187, 187, 0.69);
@@ -37,7 +30,7 @@
 /* Section */
 .pcSection {
   width: 100%;
-  padding-top: 16px;
+  padding-bottom: 16px;
   display: flex;
   align-items: center;
 }
@@ -50,7 +43,7 @@
 .pcBasic {
   display: flex;
   gap: 8px;
-  padding-top: 25px;
+  padding-bottom: 25px;
   flex-wrap: wrap;
 }
 
@@ -196,4 +189,10 @@
 .pcProgressText {
   font-size: 10px;
   color: #027FFE;
+}
+
+
+.entityLabel {
+  width: 100%;
+  overflow: hidden;
 }

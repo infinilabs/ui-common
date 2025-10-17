@@ -1,5 +1,5 @@
 {
-  "name": "@infinilabs/physical-card",
+  "name": "@infinilabs/entity-ui",
   "version": "0.0.1",
   "publishConfig": {
     "access": "public"
@@ -11,15 +11,15 @@
     "README.md",
     "README-zh_CN.md"
   ],
-  "main": "dist/PhysicalCard.cjs",
-  "module": "dist/PhysicalCard.js",
+  "main": "dist/EntityUI.cjs",
+  "module": "dist/EntityUI.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/PhysicalCard.js",
-      "require": "./dist/PhysicalCard.cjs",
-      "default": "./dist/PhysicalCard.umd.js"
+      "import": "./dist/EntityUI.js",
+      "require": "./dist/EntityUI.cjs",
+      "default": "./dist/EntityUI.umd.js"
     }
   },
   "scripts": {

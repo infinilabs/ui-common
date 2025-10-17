@@ -3,9 +3,9 @@ import { Breadcrumb, Tag, Progress } from "antd";
 import * as LucideIcons from "lucide-react";
 import { ExternalLink, Tags } from "lucide-react";
 
-import type { PhysicalCardData } from "./types";
+import type { EntityCardData } from "./types";
 
-import styles from "./PhysicalCard.module.css";
+import styles from "./Entity.module.css";
 
 const getLucideIcon = (name?: string) => {
   if (!name) return null;
@@ -90,19 +90,11 @@ const renderColumnValue = (col: {
   return <div className={styles.pcColValue}>{String(value ?? "")}</div>;
 };
 
-export const PhysicalCardContent: React.FC<{ data?: PhysicalCardData }> = ({
+export const EntityContent: React.FC<{ data?: EntityCardData }> = ({
   data: card,
 }) => {
   return (
-    <div
-      className={styles.physicalCard}
-      style={{
-        width: card?.style?.width,
-        height: card?.style?.height,
-        maxWidth: card?.style?.max_width,
-        maxHeight: card?.style?.max_height,
-      }}
-    >
+    <>
       {card?.cover && (
         <div
           className={styles.pcCover}
@@ -283,6 +275,6 @@ export const PhysicalCardContent: React.FC<{ data?: PhysicalCardData }> = ({
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 };

@@ -2,11 +2,11 @@ export const data = {
   "type": "user",
   "id": "user-zouwenan",
   "style": {
-    // "width": "376px",
-    // "height": "xxpx",
-    // "max_width": "376px",
-    // "max_height": "500px",
-    // "cover_max_height": "172px"
+    "width": "376px",
+    "height": "",
+    "max_width": "376px",
+    "max_height": "500px",
+    "cover_max_height": "172px"
   },
   "color": "#0f0f0f",
   "icon": "user",
@@ -83,4 +83,14 @@ export const data = {
       ]
     }
   }
+}
+
+export const labelData = {  
+  "type":"user",
+  "id":"uuid1",
+  "icon": "user",
+  "title": "邹稳安",
+  "color": "#0f0f0f",
+  "subtitle": "设计总监@产品创意部",
+  "url": "mailto:xxx@infinilabs.com",
 }

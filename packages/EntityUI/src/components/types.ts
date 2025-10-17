@@ -1,4 +1,4 @@
-export interface PhysicalCardData {
+export interface EntityCardData {
   type?: string;
   id?: string;
   style?: {

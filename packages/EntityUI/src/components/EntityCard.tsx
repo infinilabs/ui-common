@@ -1,20 +1,22 @@
 import React, { useRef, useState } from "react";
 import { Popover, Button } from "antd";
 
-import {PhysicalCardContent} from "./PhysicalCardContent";
-import type { PhysicalCardData } from "./types";
+import { EntityContent } from "./EntityContent";
+import type { EntityCardData } from "./types";
 
-export interface PhysicalCardAction {
+import styles from "./Entity.module.css";
+
+export interface EntityCardAction {
   label: string;
   onClick?: () => void;
 }
 
-export interface PhysicalCardProps {
+export interface EntityCardProps {
   title: string;
   subtitle?: string;
   description?: string;
   imageUrl?: string;
-  actions?: PhysicalCardAction[];
+  actions?: EntityCardAction[];
   footer?: string;
 
   triggerType?: "click" | "hover";
@@ -30,10 +32,10 @@ export interface PhysicalCardProps {
   autoPlacement?: boolean;
   hoverAutoClose?: boolean;
   hoverAutoCloseDelay?: number;
-  data?: PhysicalCardData;
+  data?: EntityCardData;
 }
 
-const PhysicalCard = ({
+const EntityCard = ({
   title,
   subtitle,
   description,
@@ -54,7 +56,7 @@ const PhysicalCard = ({
   autoPlacement = false,
   hoverAutoClose = false,
   hoverAutoCloseDelay = 2000,
-}: PhysicalCardProps) => {
+}: EntityCardProps) => {
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = typeof open === "boolean";
   const actualOpen = isControlled ? (open as boolean) : internalOpen;
@@ -115,7 +117,19 @@ const PhysicalCard = ({
 
   const popup = (
     <Popover
-      content={<PhysicalCardContent data={card} />}
+      content={
+        <div
+          className={styles.entityCard}
+          style={{
+            width: card?.style?.width,
+            height: card?.style?.height,
+            maxWidth: card?.style?.max_width,
+            maxHeight: card?.style?.max_height,
+          }}
+        >
+          <EntityContent data={card} />
+        </div>
+      }
       open={actualOpen}
       onOpenChange={(next) => {
         if (next && autoPlacement) computeAutoPlacement();
@@ -136,4 +150,4 @@ const PhysicalCard = ({
   return <>{popup}</>;
 };
 
-export default PhysicalCard;
+export default EntityCard;
