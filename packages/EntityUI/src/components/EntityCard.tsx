@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Popover, Button } from "antd";
+import { Popover, Button, Skeleton } from "antd";
 
 import { EntityContent } from "./EntityContent";
 import type { EntityCardData } from "./types";
@@ -127,7 +127,16 @@ const EntityCard = ({
             maxHeight: card?.style?.max_height,
           }}
         >
-          <EntityContent data={card} />
+          {card?.id ? (
+            <EntityContent data={card} />
+          ) : (
+            <Skeleton
+              active
+              title={false}
+              avatar={{ shape: "circle", size: 24 }}
+              paragraph={{ rows: 3 }}
+            />
+          )}
         </div>
       }
       open={actualOpen}

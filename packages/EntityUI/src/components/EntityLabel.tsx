@@ -1,5 +1,3 @@
-import React from "react";
-
 import { EntityContent } from "./EntityContent";
 import { EntityCardData } from "./types";
 
@@ -9,7 +7,7 @@ export interface EntityLabelProps {
   data?: EntityCardData;
 }
 
-const EntityLabel: React.FC<EntityLabelProps> = ({ data }) => {
+function EntityLabel({ data }: EntityLabelProps) {
   return (
     <div
       className={styles.entityLabel}
@@ -20,9 +18,40 @@ const EntityLabel: React.FC<EntityLabelProps> = ({ data }) => {
         maxHeight: data?.style?.max_height,
       }}
     >
-      <EntityContent data={data} />
+      {data?.id ? (
+        <EntityContent data={data} />
+      ) : (
+        <span
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 10,
+            verticalAlign: "middle",
+          }}
+          aria-label="entity label skeleton"
+        >
+          <span
+            style={{
+              width: 20,
+              height: 20,
+              borderRadius: "50%",
+              backgroundColor: "#e9e9e9",
+              flex: "0 0 auto",
+            }}
+          />
+          <span
+            style={{
+              width: 160,
+              height: 20,
+              borderRadius: 6,
+              backgroundColor: "#e9e9e9",
+              flex: "0 0 auto",
+            }}
+          />
+        </span>
+      )}
     </div>
   );
-};
+}
 
 export default EntityLabel;
