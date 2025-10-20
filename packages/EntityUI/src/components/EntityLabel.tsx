@@ -1,4 +1,5 @@
 import { EntityContent } from "./EntityContent";
+import { EntityUser } from "./EntityUser";
 import { EntityCardData } from "./types";
 
 import styles from "./Entity.module.css";
@@ -8,6 +9,9 @@ export interface EntityLabelProps {
 }
 
 function EntityLabel({ data }: EntityLabelProps) {
+
+  const isUser = (data?.type ?? "").toLowerCase() === "user";
+
   return (
     <div
       className={styles.entityLabel}
@@ -18,9 +22,11 @@ function EntityLabel({ data }: EntityLabelProps) {
         maxHeight: data?.style?.max_height,
       }}
     >
-      {data?.id ? (
-        <EntityContent data={data} />
-      ) : (
+      {data?.id ? isUser ? (
+            <EntityUser data={data as any} />
+        ) : (
+            <EntityContent data={data} />
+        ) : (
         <span
           style={{
             display: "inline-flex",

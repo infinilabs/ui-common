@@ -94,3 +94,47 @@ export const labelData = {
   "subtitle": "设计总监@产品创意部",
   "url": "mailto:xxx@infinilabs.com",
 }
+
+export const labelData2 = {  
+  "type":"user",
+  "id":"uuid1",
+  "icon": "https://avatars.githubusercontent.com/u/20129035?v=4",
+  "title": "邹稳安",
+  "url": "mailto:xxx@infinilabs.com",
+}
+
+export const user_icon_title = {
+  type: "user",
+  id: "u_icon_title",
+  icon: "https://picsum.photos/40?random=11",
+  title: "邹稳安",
+};
+
+export const user_only_icon = {
+  type: "user",
+  id: "u_only_icon",
+  icon: "https://picsum.photos/40?random=12",
+};
+
+export const user_only_title = {
+  type: "user",
+  id: "u_only_title",
+  title: "邹稳安",
+};
+
+export const user_icon_title_url = {
+  type: "user",
+  id: "u_icon_title_url",
+  icon: "https://picsum.photos/40?random=13",
+  title: "邹稳安",
+  url: "mailto:zouwenan@infinilabs.com",
+};
+
+export const user_icon_title_color_subtitle = {
+  type: "user",
+  id: "u_icon_title_color_subtitle",
+  icon: "https://picsum.photos/40?random=14",
+  title: "邹稳安",
+  color: "#34c759", // 绿色圆点
+  subtitle: "在线",
+};

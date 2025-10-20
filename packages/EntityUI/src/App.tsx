@@ -1,7 +1,15 @@
 import { useState } from "react";
 
 import { EntityCard, EntityCardProps, EntityLabel } from "./components/index";
-import { data, labelData } from "./data";
+import { data, labelData, labelData2 } from "./data";
+import { EntityUser } from "./components";
+import {
+  user_icon_title,
+  user_only_icon,
+  user_only_title,
+  user_icon_title_url,
+  user_icon_title_color_subtitle,
+} from "./data";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -23,6 +31,7 @@ function App() {
     <div style={{ position: "relative", height: "80vh", padding: 24 }}>
       <EntityLabel data={data} />
       <EntityLabel data={labelData} />
+      <EntityLabel data={labelData2} />
       <div style={{ position: "absolute", top: 12, left: 12 }}>
         <EntityCard
           title=""
@@ -118,6 +127,28 @@ function App() {
           data={data}
           trigger={<button className="entity-card__btn">右下角</button>}
         />
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 24 }}>
+        <div>
+          <div style={{ color: "#999", marginBottom: 8 }}>icon+标题</div>
+          <EntityUser data={user_icon_title} />
+        </div>
+        <div>
+          <div style={{ color: "#999", marginBottom: 8 }}>icon</div>
+          <EntityUser data={user_only_icon} />
+        </div>
+        <div>
+          <div style={{ color: "#999", marginBottom: 8 }}>标题</div>
+          <EntityUser data={user_only_title} />
+        </div>
+        <div>
+          <div style={{ color: "#999", marginBottom: 8 }}>icon+标题+url</div>
+          <EntityUser data={user_icon_title_url} />
+        </div>
+        <div>
+          <div style={{ color: "#999", marginBottom: 8 }}>颜色+icon+标题</div>
+          <EntityUser data={user_icon_title_color_subtitle} />
+        </div>
       </div>
     </div>
   );

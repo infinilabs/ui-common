@@ -69,10 +69,31 @@ export declare interface EntityCardProps {
     data?: EntityCardData;
 }
 
-export declare const EntityLabel: default_2.FC<EntityLabelProps>;
+export declare function EntityLabel({ data }: EntityLabelProps): JSX_2.Element;
 
 declare interface EntityLabelProps {
     data?: EntityCardData;
+}
+
+export declare const EntityUser: default_2.FC<EntityUserProps>;
+
+declare interface EntityUserData {
+    type?: string;
+    id?: string;
+    icon?: string;
+    title?: string;
+    color?: string;
+    subtitle?: string;
+    url?: string;
+    properties?: Array<{
+        icon?: string;
+        label?: string;
+        value?: any;
+    }>;
+}
+
+declare interface EntityUserProps {
+    data?: EntityUserData;
 }
 
 export { }

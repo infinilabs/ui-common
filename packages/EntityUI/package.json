@@ -26,7 +26,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "prepublishOnly": "vite build"
+    "prepublishOnly": "vite build",
+    "publish": "npm publish"
   },
   "peerDependencies": {
     "antd": ">=5",
