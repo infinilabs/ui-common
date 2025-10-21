@@ -13,6 +13,7 @@
     "@ant-design/icons": "^5.5.0",
     "@infinilabs/datepicker": "^0.0.5",
     "@infinilabs/dropdownlist": "^1.0.3",
+    "@infinilabs/entity-ui": "^0.0.2",
     "antd": "^5.20.6",
     "lodash": "^4.17.21",
     "lucide-react": "^0.461.0",

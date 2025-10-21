@@ -19,6 +19,9 @@ importers:
       '@infinilabs/dropdownlist':
         specifier: ^1.0.3
         version: 1.0.3(moment@2.30.1)
+      '@infinilabs/entity-ui':
+        specifier: ^0.0.2
+        version: 0.0.2(antd@5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       antd:
         specifier: ^5.20.6
         version: 5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -269,6 +272,40 @@ importers:
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.1
         version: 3.5.1(vite@5.4.5(@types/node@22.5.5)(less@4.2.0))
+
+  packages/EntityUI:
+    dependencies:
+      lucide-react:
+        specifier: ^0.461.0
+        version: 0.461.0(react@18.3.1)
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@types/react':
+        specifier: ^18.3.3
+        version: 18.3.5
+      '@types/react-dom':
+        specifier: ^18.3.0
+        version: 18.3.0
+      '@vitejs/plugin-react':
+        specifier: ^4.3.1
+        version: 4.3.1(vite@5.4.5(@types/node@22.5.5)(less@4.2.0))
+      antd:
+        specifier: ^5.20.6
+        version: 5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      vite:
+        specifier: ^5.4.1
+        version: 5.4.5(@types/node@22.5.5)(less@4.2.0)
+      vite-plugin-css-injected-by-js:
+        specifier: ^3.5.1
+        version: 3.5.1(vite@5.4.5(@types/node@22.5.5)(less@4.2.0))
+      vite-plugin-dts:
+        specifier: ^3.9.0
+        version: 3.9.1(@types/node@22.5.5)(rollup@4.52.4)(typescript@5.8.3)(vite@5.4.5(@types/node@22.5.5)(less@4.2.0))
 
   packages/PhysicalCard:
     dependencies:
@@ -951,6 +988,13 @@ packages:
   '@infinilabs/dropdownlist@1.0.3':
     resolution: {integrity: sha512-polNuGHQWTbzuB3nDQZOi+8oElb5yyMRfWCnQWWnQjyV4mVUeptWt7IzoLvn65h9VHUNegViKY37FFJhNT2ogQ==}
 
+  '@infinilabs/entity-ui@0.0.2':
+    resolution: {integrity: sha512-C70C/2OHpamwSjRmvQ/Nc72tynyvtRL/s9aYYGL94VTdG3dc/wLbGYoCOdag/VmYOX06e2NW4v7dBBZS/gcmNA==}
+    peerDependencies:
+      antd: '>=5'
+      react: '>=17'
+      react-dom: '>=17'
+
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
 
@@ -968,9 +1012,6 @@ packages:
   '@jridgewell/set-array@1.2.1':
     resolution: {integrity: sha512-R8gLRTZeyp03ymzP/6Lil/28tGeGEzhx1q2k703KGWRAI1VdvPIXdG70VJc2pAMw3NA6JKL5hhFu1sJX0Mnn/A==}
     engines: {node: '>=6.0.0'}
-
-  '@jridgewell/sourcemap-codec@1.5.0':
-    resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
 
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
@@ -4158,7 +4199,7 @@ snapshots:
       '@babel/parser': 7.28.4
       '@babel/template': 7.27.2
       '@babel/types': 7.28.4
-      debug: 4.3.7
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -4487,15 +4528,22 @@ snapshots:
       - luxon
       - moment
 
+  '@infinilabs/entity-ui@0.0.2(antd@5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      antd: 5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      lucide-react: 0.461.0(react@18.3.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.5
       '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/gen-mapping@0.3.5':
     dependencies:
       '@jridgewell/set-array': 1.2.1
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.5
       '@jridgewell/trace-mapping': 0.3.25
 
   '@jridgewell/remapping@2.3.5':
@@ -4507,19 +4555,17 @@ snapshots:
 
   '@jridgewell/set-array@1.2.1': {}
 
-  '@jridgewell/sourcemap-codec@1.5.0': {}
-
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
   '@jridgewell/trace-mapping@0.3.25':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.5
 
   '@jridgewell/trace-mapping@0.3.31':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.5
 
   '@mermaid-js/parser@0.6.3':
     dependencies:
@@ -4645,7 +4691,7 @@ snapshots:
 
   '@rollup/pluginutils@5.3.0(rollup@4.52.4)':
     dependencies:
-      '@types/estree': 1.0.5
+      '@types/estree': 1.0.8
       estree-walker: 2.0.2
       picomatch: 4.0.3
     optionalDependencies:
@@ -4943,7 +4989,7 @@ snapshots:
 
   '@types/estree-jsx@1.0.5':
     dependencies:
-      '@types/estree': 1.0.5
+      '@types/estree': 1.0.8
 
   '@types/estree@1.0.5': {}
 
@@ -5028,7 +5074,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.46.0(typescript@5.8.3)
       '@typescript-eslint/types': 8.46.0
-      debug: 4.3.7
+      debug: 4.4.3
       typescript: 5.8.3
     transitivePeerDependencies:
       - supports-color
@@ -5047,7 +5093,7 @@ snapshots:
       '@typescript-eslint/types': 8.46.0
       '@typescript-eslint/typescript-estree': 8.46.0(typescript@5.8.3)
       '@typescript-eslint/utils': 8.46.0(eslint@9.37.0)(typescript@5.8.3)
-      debug: 4.3.7
+      debug: 4.4.3
       eslint: 9.37.0
       ts-api-utils: 2.1.0(typescript@5.8.3)
       typescript: 5.8.3
@@ -6946,7 +6992,7 @@ snapshots:
   micromark@4.0.2:
     dependencies:
       '@types/debug': 4.1.12
-      debug: 4.3.7
+      debug: 4.4.3
       decode-named-character-reference: 1.2.0
       devlop: 1.1.0
       micromark-core-commonmark: 2.0.3
@@ -7620,7 +7666,7 @@ snapshots:
 
   resolve@1.19.0:
     dependencies:
-      is-core-module: 2.15.1
+      is-core-module: 2.16.1
       path-parse: 1.0.7
 
   resolve@1.22.10:
@@ -8046,7 +8092,7 @@ snapshots:
       '@microsoft/api-extractor': 7.43.0(@types/node@22.5.5)
       '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
       '@vue/language-core': 1.8.27(typescript@5.8.3)
-      debug: 4.3.7
+      debug: 4.4.3
       kolorist: 1.8.0
       magic-string: 0.30.19
       typescript: 5.8.3

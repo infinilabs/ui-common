@@ -1,6 +1,6 @@
 {
   "name": "@infinilabs/entity-ui",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publishConfig": {
     "access": "public"
   },
@@ -11,15 +11,14 @@
     "README.md",
     "README-zh_CN.md"
   ],
-  "main": "dist/EntityUI.cjs",
-  "module": "dist/EntityUI.js",
+  "main": "dist/entity-ui.cjs",
+  "module": "dist/entity-ui.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/EntityUI.js",
-      "require": "./dist/EntityUI.cjs",
-      "default": "./dist/EntityUI.umd.js"
+      "import": "./dist/entity-ui.js",
+      "require": "./dist/entity-ui.cjs"
     }
   },
   "scripts": {
