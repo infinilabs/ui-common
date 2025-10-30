@@ -43,7 +43,6 @@
 .pcBasic {
   display: flex;
   gap: 8px;
-  padding-bottom: 25px;
   flex-wrap: wrap;
 }
 
