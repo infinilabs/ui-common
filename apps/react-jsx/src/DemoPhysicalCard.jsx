@@ -27,13 +27,11 @@ const data = {
   details: [
     {
       label: "简介",
-      value:
-        "在 Infinilabs 负责产品创意与设计工作，专注交互与用户体验。",
+      value: "在 Infinilabs 负责产品创意与设计工作，专注交互与用户体验。",
     },
     {
       label: "职责",
-      value:
-        "推进设计系统与组件库建设，提升多产品协同效率与一致性。",
+      value: "推进设计系统与组件库建设，提升多产品协同效率与一致性。",
     },
   ],
 };
@@ -62,6 +60,21 @@ export default function DemoEntityUI() {
         triggerType="hover"
         autoPlacement
         hoverOpenDelay={300}
+      />
+
+      <EntityCard
+        title=""
+        triggerType="hover"
+        hoverOpenDelay={500}
+        autoPlacement
+        data={{
+          type: "user",
+          id: "sdsddsd",
+          icon: "mail",
+          title: "eewqew",
+          subtitle: "wewewew@infinilabs.com",
+        }}
+        trigger={<button className="entity-card__btn">用户1</button>}
       />
     </div>
   );

@@ -185,7 +185,7 @@ export const EntityContent: React.FC<{ data?: EntityCardData }> = ({
       )}
 
       {Array.isArray(card?.properties) && card.properties.length > 0 && (
-        <div className={styles.pcSection}>
+        <div className={styles.pcSection} style={{ paddingTop: 25 }}>
           <div className={styles.pcProperties}>
             {card.properties.map((p, idx) => {
               const IconComp = getLucideIcon(p.icon);

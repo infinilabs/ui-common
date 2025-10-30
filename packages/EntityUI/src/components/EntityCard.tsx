@@ -12,7 +12,7 @@ export interface EntityCardAction {
 }
 
 export interface EntityCardProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   description?: string;
   imageUrl?: string;

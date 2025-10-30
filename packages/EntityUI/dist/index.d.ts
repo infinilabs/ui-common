@@ -47,7 +47,7 @@ export declare interface EntityCardData {
 }
 
 export declare interface EntityCardProps {
-    title: string;
+    title?: string;
     subtitle?: string;
     description?: string;
     imageUrl?: string;

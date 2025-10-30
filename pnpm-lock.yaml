@@ -20,8 +20,8 @@ importers:
         specifier: ^1.0.3
         version: 1.0.3(moment@2.30.1)
       '@infinilabs/entity-ui':
-        specifier: ^0.0.2
-        version: 0.0.2(antd@5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.4
+        version: 0.0.4(antd@5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       antd:
         specifier: ^5.20.6
         version: 5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -988,8 +988,8 @@ packages:
   '@infinilabs/dropdownlist@1.0.3':
     resolution: {integrity: sha512-polNuGHQWTbzuB3nDQZOi+8oElb5yyMRfWCnQWWnQjyV4mVUeptWt7IzoLvn65h9VHUNegViKY37FFJhNT2ogQ==}
 
-  '@infinilabs/entity-ui@0.0.2':
-    resolution: {integrity: sha512-C70C/2OHpamwSjRmvQ/Nc72tynyvtRL/s9aYYGL94VTdG3dc/wLbGYoCOdag/VmYOX06e2NW4v7dBBZS/gcmNA==}
+  '@infinilabs/entity-ui@0.0.4':
+    resolution: {integrity: sha512-SZaGMwOJ7GCYYU/KCkwR2+ucmNjI2aWkcNpvU3n7tglAeIt42JjesyXczlLXmeCAvg/4oKUbqpxrMI8LT0vwdA==}
     peerDependencies:
       antd: '>=5'
       react: '>=17'
@@ -4528,7 +4528,7 @@ snapshots:
       - luxon
       - moment
 
-  '@infinilabs/entity-ui@0.0.2(antd@5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@infinilabs/entity-ui@0.0.4(antd@5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       antd: 5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       lucide-react: 0.461.0(react@18.3.1)
