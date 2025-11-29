@@ -1,0 +1,39 @@
+{
+  "name": "@infinilabs/custom-icons",
+  "version": "0.0.1",
+  "private": false,
+  "description": "Configurable icon components and picker for lucide-react",
+  "type": "module",
+  "main": "./dist/custom-icons.cjs",
+  "module": "./dist/custom-icons.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/custom-icons.js",
+      "require": "./dist/custom-icons.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org/" },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepublishOnly": "pnpm build"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
+    "lucide-react": ">=0.454.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite-plugin-dts": "^3.6.0",
+    "typescript": "^5.3.3",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "lucide-react": "^0.454.0"
+  }
+}
