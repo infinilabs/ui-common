@@ -1,0 +1,14 @@
+# exclude development and app files from published package
+index.html
+public/
+vite.config.*
+eslint.config.*
+.vscode/
+coverage/
+*.log
+.DS_Store
+node_modules/
+
+# keep src and dist for consumers/builds
+# src/
+# dist/
