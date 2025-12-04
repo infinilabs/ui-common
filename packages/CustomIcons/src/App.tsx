@@ -47,6 +47,7 @@ export default function App() {
               initial={config}
               theme="auto"
               locale="en-US"
+              showLibraryLink={false}
               i18n={{
                 typeLabel: "Type",
                 nameLabel: "Choose lucide icon",

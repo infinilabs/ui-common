@@ -91,3 +91,26 @@ type IconPickerControls = {
   controls={{ type: true, upload: true, size: true, color: true, name: false }}
 /> 
 ```
+
+## 类型导入用法
+
+在 TypeScript 中，组件按值导入，类型使用 `import type` 进行类型仅导入：
+
+```ts
+import { IconPicker, ConfigurableIcon } from "@infinilabs/custom-icons";
+import type { IconConfig, IconPickerControls, IconPickerI18n } from "@infinilabs/custom-icons";
+
+const initial: IconConfig = {
+  type: "lucide",
+  name: "Bot",
+  size: 28,
+  color: "#1e90ff",
+};
+```
+
+如果是纯 JavaScript 项目，也可以通过 JSDoc 获取类型提示：
+
+```js
+/** @type {import('@infinilabs/custom-icons').IconConfig} */
+const initial = { type: 'lucide', name: 'Bot', size: 28, color: '#1e90ff' };
+```

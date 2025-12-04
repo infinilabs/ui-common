@@ -1,17 +1,17 @@
 {
   "name": "@infinilabs/custom-icons",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "private": false,
   "description": "Configurable icon components and picker for lucide-react",
   "type": "module",
-  "main": "./dist/custom-icons.cjs",
-  "module": "./dist/custom-icons.js",
+  "main": "./dist/custom-icons.cjs.js",
+  "module": "./dist/custom-icons.es.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/custom-icons.js",
-      "require": "./dist/custom-icons.cjs"
+      "import": "./dist/custom-icons.es.js",
+      "require": "./dist/custom-icons.cjs.js"
     }
   },
   "files": ["dist", "README.md"],
