@@ -10,6 +10,7 @@ export interface IconPickerProps {
   initial?: Partial<IconConfig>;
   onChange?: (config: IconConfig) => void;
   showList?: boolean;
+  showLibraryLink?: boolean;
   configurable?: boolean;
   controls?: Partial<IconPickerControls>;
   theme?: IconPickerTheme;
@@ -30,6 +31,7 @@ const IconPicker = ({
   initial,
   onChange,
   showList = true,
+  showLibraryLink = true,
   configurable = true,
   controls,
   theme = "auto",
@@ -108,12 +110,12 @@ const IconPicker = ({
     flex: "0 0 auto",
   };
   const inputStyle: React.CSSProperties = {
-    height: 36,
+    height: 32,
     borderRadius: 8,
     border: `1px solid ${tokens.border}`,
     background: tokens.inputBg,
     color: tokens.text,
-    padding: "0 10px",
+    padding: "0 8px",
   };
 
   useEffect(() => {
@@ -144,7 +146,7 @@ const IconPicker = ({
               display: "flex",
               alignItems: "center",
               gap: 12,
-              padding: "8px",
+              padding: "4px",
               border: `1px solid ${tokens.border}`,
               borderRadius: 12,
               background: tokens.surface,
@@ -182,14 +184,16 @@ const IconPicker = ({
             <div style={controlBoxStyle}>
               <label style={{ fontSize: 12, color: tokens.muted }}>
                 {text.nameLabel}
-                <a
-                  href="https://lucide.dev/icons/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ marginLeft: 8, color: tokens.muted, textDecoration: "underline" }}
-                >
-                  lucide.dev/icons
-                </a>
+                {showLibraryLink && (
+                  <a
+                    href="https://lucide.dev/icons/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ marginLeft: 8, color: tokens.muted, textDecoration: "underline" }}
+                  >
+                    lucide.dev/icons
+                  </a>
+                )}
               </label>
               <input
                 list={showList ? "lucide-icons" : undefined}
@@ -206,9 +210,6 @@ const IconPicker = ({
                     <option key={n} value={n} />
                   ))}
                 </datalist>
-              )}
-              {!Comp && (
-                <p style={{ fontSize: 12, color: tokens.muted }}>{text.notFound}</p>
               )}
             </div>
           )}
@@ -254,7 +255,7 @@ const IconPicker = ({
                 onChange={(e) =>
                   setConfig((c: IconConfig) => ({ ...c, color: e.target.value }))
                 }
-                style={{ ...inputStyle, padding: 4, width: 52 }}
+                style={{ ...inputStyle, padding: 4, width: 48 }}
               />
             </div>
           )}
@@ -264,8 +265,8 @@ const IconPicker = ({
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 12,
-            padding: 12,
+            gap: 8,
+            padding: 4,
             border: `1px solid ${tokens.border}`,
             borderRadius: 12,
             background: tokens.surface,

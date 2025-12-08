@@ -9,3 +9,4 @@ UI-COMMON 项目收集并维护了 Infinilabs 前端团队使用的各种业务�
 - [DropdownList](./packages/DropdownList/README-zh_CN.md) - 定制化的下拉列表组件
 - [DatePicker](./packages/DatePicker/README-zh_CN.md) - 定制化的日期选择器组件
 - [EntityUI](./packages/EntityUI/README-zh_CN.md) - 定制化的实体UI组件
+- [CustomIcons](./packages/CustomIcons/README-zh_CN.md) - 定制化的图标组件

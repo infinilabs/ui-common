@@ -91,3 +91,26 @@ type IconPickerControls = {
   controls={{ type: true, upload: true, size: true, color: true, name: false }}
 /> 
 ```
+
+## Type Imports
+
+When using TypeScript, import component values normally and import types with `import type` to keep type-only semantics.
+
+```ts
+import { IconPicker, ConfigurableIcon } from "@infinilabs/custom-icons";
+import type { IconConfig, IconPickerControls, IconPickerI18n } from "@infinilabs/custom-icons";
+
+const initial: IconConfig = {
+  type: "lucide",
+  name: "Bot",
+  size: 28,
+  color: "#1e90ff",
+};
+```
+
+If you are in plain JavaScript and still want type hints, use JSDoc:
+
+```js
+/** @type {import('@infinilabs/custom-icons').IconConfig} */
+const initial = { type: 'lucide', name: 'Bot', size: 28, color: '#1e90ff' };
+```
