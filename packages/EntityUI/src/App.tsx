@@ -73,6 +73,23 @@ function App() {
             trigger={<button className="entity-card__btn">右下角</button>}
           />
         </div>
+        <div
+          style={{
+            position: "absolute",
+            bottom: 12,
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        >
+          <EntityCard
+            title=""
+            triggerType="hover"
+            hoverOpenDelay={500}
+            autoPlacement
+            data={data}
+            trigger={<button className="entity-card__btn">底部中间</button>}
+          />
+        </div>
       </div>
 
       <div
@@ -134,6 +151,7 @@ function App() {
         <EntityLabel data={labelData} />
         <EntityLabel data={labelData2} />
       </div>
+
     </div>
   );
 }

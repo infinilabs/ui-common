@@ -1,7 +1,7 @@
 import { default as default_2 } from 'react';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 
-export declare const EntityCard: ({ title, subtitle, description, imageUrl, actions, footer, triggerType, popupMode, trigger, open, onOpenChange, modalTitle, width, placement, data, hoverOpenDelay, closeDelay, autoPlacement, hoverAutoClose, hoverAutoCloseDelay, }: EntityCardProps) => JSX_2.Element;
+export declare const EntityCard: ({ title, subtitle, description, imageUrl, actions, footer, triggerType, popupMode, trigger, open, onOpenChange, modalTitle, width, placement, data, hoverOpenDelay, closeDelay, autoPlacement, hoverAutoClose, hoverAutoCloseDelay, getPopupContainer, viewportPadding, zIndex, }: EntityCardProps) => JSX_2.Element;
 
 declare interface EntityCardAction {
     label: string;
@@ -67,6 +67,9 @@ export declare interface EntityCardProps {
     hoverAutoClose?: boolean;
     hoverAutoCloseDelay?: number;
     data?: EntityCardData;
+    getPopupContainer?: (triggerNode: HTMLElement) => HTMLElement;
+    viewportPadding?: number;
+    zIndex?: number;
 }
 
 export declare function EntityLabel({ data }: EntityLabelProps): JSX_2.Element;
