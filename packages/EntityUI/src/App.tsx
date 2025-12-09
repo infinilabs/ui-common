@@ -15,7 +15,7 @@ import {
 function App() {
   return (
     <div>
-      <div style={{ position: "relative", height: "100vh", padding: 24 }}>
+      <div style={{ position: "relative", height: "60vh", padding: 24 }}>
         <div style={{ position: "absolute", top: 12, left: 12 }}>
           <EntityCard
             title=""
@@ -92,7 +92,7 @@ function App() {
         </div>
       </div>
 
-      {/* <div
+      <div
         style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 24 }}
       >
         <EntityCard
@@ -150,10 +150,8 @@ function App() {
         <EntityLabel data={data} />
         <EntityLabel data={labelData} />
         <EntityLabel data={labelData2} />
-      </div> */}
+      </div>
 
-
-      
     </div>
   );
 }

@@ -78,8 +78,6 @@ const EntityCard = ({
 
   const triggerRef = useRef<HTMLSpanElement | null>(null);
 
-  // 不再进行自定义的自动定位计算，交由 antd 的 autoAdjustOverflow 处理
-
   const defaultTrigger = (
     <Button type="default">{`打开：${card?.title ?? title ?? "详情"}`}</Button>
   );
