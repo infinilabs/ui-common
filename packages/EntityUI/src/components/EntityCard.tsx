@@ -18,7 +18,6 @@ export interface EntityCardProps {
   imageUrl?: string;
   actions?: EntityCardAction[];
   footer?: string;
-
   triggerType?: "click" | "hover";
   popupMode?: "modal";
   trigger?: React.ReactNode;
@@ -33,6 +32,9 @@ export interface EntityCardProps {
   hoverAutoClose?: boolean;
   hoverAutoCloseDelay?: number;
   data?: EntityCardData;
+  getPopupContainer?: (triggerNode: HTMLElement) => HTMLElement;
+  viewportPadding?: number;
+  zIndex?: number;
 }
 
 const EntityCard = ({
@@ -56,6 +58,9 @@ const EntityCard = ({
   autoPlacement = false,
   hoverAutoClose = false,
   hoverAutoCloseDelay = 2000,
+  getPopupContainer,
+  viewportPadding = 16,
+  zIndex,
 }: EntityCardProps) => {
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = typeof open === "boolean";
@@ -73,37 +78,7 @@ const EntityCard = ({
 
   const triggerRef = useRef<HTMLSpanElement | null>(null);
 
-  const [internalPlacement, setInternalPlacement] = useState<
-    "left" | "right" | "top" | "bottom"
-  >(placement);
-
-  const computeAutoPlacement = () => {
-    if (!triggerRef.current) return;
-    const rect = triggerRef.current.getBoundingClientRect();
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    const desiredWidthPx = (() => {
-      const w =
-        (typeof width === "number" ? width : undefined) ?? card?.style?.width;
-      if (!w) return 376;
-      return typeof w === "string" ? parseInt(w, 10) || 376 : w;
-    })();
-    const desiredHeightPx = 300;
-
-    const rightSpace = vw - rect.right;
-    const leftSpace = rect.left;
-    const bottomSpace = vh - rect.bottom;
-    const topSpace = rect.top;
-
-    let next: "left" | "right" | "top" | "bottom" = placement;
-    if (rightSpace >= desiredWidthPx) next = "right";
-    else if (leftSpace >= desiredWidthPx) next = "left";
-    else if (bottomSpace >= desiredHeightPx) next = "bottom";
-    else next = "top";
-
-    setInternalPlacement(next);
-  };
+  // 不再进行自定义的自动定位计算，交由 antd 的 autoAdjustOverflow 处理
 
   const defaultTrigger = (
     <Button type="default">{`打开：${card?.title ?? title ?? "详情"}`}</Button>
@@ -141,15 +116,36 @@ const EntityCard = ({
       }
       open={actualOpen}
       onOpenChange={(next) => {
-        if (next && autoPlacement) computeAutoPlacement();
         setOpen(!!next);
       }}
       trigger={triggerType}
-      placement={autoPlacement ? internalPlacement : placement}
+      placement={placement}
+      align={(function () {
+        const actual = placement;
+        const pad = viewportPadding;
+        switch (actual) {
+          case "top":
+            return { offset: [0, pad] } as any;
+          case "bottom":
+            return { offset: [0, -pad] } as any;
+          case "left":
+            return { offset: [pad, 0] } as any;
+          case "right":
+            return { offset: [-pad, 0] } as any;
+          default:
+            return undefined as any;
+        }
+      })()}
       mouseEnterDelay={triggerType === "hover" ? hoverOpenDelay / 1000 : 0}
       mouseLeaveDelay={triggerType === "hover" ? closeDelay / 1000 : 0}
       autoAdjustOverflow
-      getPopupContainer={() => triggerRef.current || document.body}
+      zIndex={zIndex}
+      getPopupContainer={getPopupContainer ?? (() => document.body)}
+      overlayStyle={{
+        maxHeight: `calc(100vh - 24px - ${viewportPadding * 2}px)`,
+        overflowY: "auto",
+        margin: viewportPadding,
+      }}
       overlayInnerStyle={{ padding: 0 }}
     >
       {triggerNode}
