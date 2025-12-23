@@ -1,0 +1,6 @@
+/* 引入 Tailwind（插件会仅编译组件中用到的类） */
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* 组件内部必要的基础覆盖，控制在最小范围 */
+:root { --radius: 0.625rem; }
