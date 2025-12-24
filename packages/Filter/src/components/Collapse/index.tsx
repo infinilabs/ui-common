@@ -10,7 +10,7 @@ import { BrushCleaning, SquareMinus, SquarePlus } from "lucide-react";
 export interface CollapseProps extends PropsWithChildren {
   defaultExpand?: boolean;
   title: string;
-  onClear?: () => void;
+  onClear?: (event: MouseEvent) => void;
 }
 
 const Collapse: FC<CollapseProps> = (props) => {
@@ -24,13 +24,13 @@ const Collapse: FC<CollapseProps> = (props) => {
   const handleClear = (event: MouseEvent) => {
     event.stopPropagation();
 
-    onClear?.();
+    onClear?.(event);
   };
 
   return (
     <div className="text-sm">
       <div
-        className="flex items-center justify-between  cursor-pointer"
+        className="flex items-center justify-between cursor-pointer"
         onClick={toggleExpand}
       >
         <div className="flex items-center gap-2">

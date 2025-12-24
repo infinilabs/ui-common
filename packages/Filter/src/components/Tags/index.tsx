@@ -1,5 +1,4 @@
 import type { FC } from "react";
-import { theme } from "antd";
 import Collapse, { type CollapseProps } from "../Collapse";
 import { cn } from "../../utils/cn";
 
@@ -18,16 +17,8 @@ export interface TagsProps extends CollapseProps {
 const Tags: FC<TagsProps> = (props) => {
   const { value: propsValue, options, onChange, ...rest } = props;
 
-  const { token } = theme.useToken();
-
-  console.log("token", token);
-
   const nameOptions = options.filter((item) => !item.icon);
   const iconOptions = options.filter((item) => item.icon);
-
-  const handleClear = () => {
-    onChange?.([]);
-  };
 
   const handleChange = (value: string | number) => {
     if (propsValue.includes(value)) {
@@ -38,7 +29,7 @@ const Tags: FC<TagsProps> = (props) => {
   };
 
   return (
-    <Collapse {...rest} onClear={handleClear}>
+    <Collapse {...rest}>
       <div className="flex flex-wrap gap-2">
         {nameOptions.map((item) => {
           const { label, value } = item;
@@ -70,7 +61,7 @@ const Tags: FC<TagsProps> = (props) => {
             <div
               key={value}
               className={cn(
-                "size-12 rounded-full overflow-hidden cursor-pointer b-default b-2 border-transparent hover:border-primary transition",
+                "size-12 rounded-full overflow-hidden cursor-pointer b-default b-2 border-transparent hover:border-primary transition-colors",
                 {
                   "border-primary": propsValue.includes(value),
                 }

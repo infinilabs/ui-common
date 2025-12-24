@@ -20,12 +20,8 @@ export interface CheckboxGroupProps extends CollapseProps {
 const CheckboxGroup: FC<CheckboxGroupProps> = (props) => {
   const { options, value: propsValue, onChange, ...rest } = props;
 
-  const handleClear = () => {
-    onChange?.([]);
-  };
-
   return (
-    <Collapse {...rest} onClear={handleClear}>
+    <Collapse {...rest}>
       <div className="flex flex-col gap-4">
         {options.map((item) => {
           const { label, value, icon, count } = item;

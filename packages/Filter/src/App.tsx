@@ -1,12 +1,14 @@
 import { useState } from "react";
 import CheckboxGroup from "./components/CheckboxGroup";
 import Tags from "./components/Tags";
+import Slider from "./components/Slider";
 
 const App = () => {
   const [checkboxGroupValue, setCheckboxGroupValue] = useState<
     Array<string | number>
   >([]);
   const [tagsValue, setTagsValue] = useState<Array<string | number>>([]);
+  const [sliderValue, setSliderValue] = useState<number>(0);
 
   return (
     <div className="flex flex-col gap-4 w-80 m-auto">
@@ -34,10 +36,13 @@ const App = () => {
           },
         ]}
         onChange={setCheckboxGroupValue}
+        onClear={() => {
+          setCheckboxGroupValue([]);
+        }}
       />
 
       <Tags
-        title="人员"
+        title="标签"
         value={tagsValue}
         options={[
           {
@@ -110,6 +115,18 @@ const App = () => {
           },
         ]}
         onChange={setTagsValue}
+        onClear={() => {
+          setTagsValue([]);
+        }}
+      />
+
+      <Slider
+        title="滑块"
+        value={sliderValue}
+        onChange={setSliderValue}
+        onClear={() => {
+          setSliderValue(0);
+        }}
       />
     </div>
   );
