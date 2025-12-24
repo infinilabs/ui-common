@@ -3,6 +3,7 @@ import CheckboxGroup from "./components/CheckboxGroup";
 import Tags from "./components/Tags";
 import Slider from "./components/Slider";
 import Input from "./components/Input";
+import ColorPicker from "./components/ColorPicker";
 
 const App = () => {
   const [checkboxGroupValue, setCheckboxGroupValue] = useState<
@@ -11,6 +12,7 @@ const App = () => {
   const [tagsValue, setTagsValue] = useState<Array<string | number>>([]);
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [inputValue, setInputValue] = useState<string>("");
+  const [colorPickerValue, setColorPickerValue] = useState<string>();
 
   return (
     <div className="flex flex-col gap-4 w-80 m-auto">
@@ -140,6 +142,19 @@ const App = () => {
         }}
         onClear={() => {
           setInputValue("");
+        }}
+      />
+
+      <ColorPicker
+        title="颜色选择器"
+        allowClear
+        showText
+        value={colorPickerValue}
+        onChange={(value) => {
+          setColorPickerValue(value.toRgbString());
+        }}
+        onClear={() => {
+          setColorPickerValue(void 0);
         }}
       />
     </div>
