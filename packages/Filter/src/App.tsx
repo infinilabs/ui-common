@@ -2,6 +2,7 @@ import { useState } from "react";
 import CheckboxGroup from "./components/CheckboxGroup";
 import Tags from "./components/Tags";
 import Slider from "./components/Slider";
+import Input from "./components/Input";
 
 const App = () => {
   const [checkboxGroupValue, setCheckboxGroupValue] = useState<
@@ -9,6 +10,7 @@ const App = () => {
   >([]);
   const [tagsValue, setTagsValue] = useState<Array<string | number>>([]);
   const [sliderValue, setSliderValue] = useState<number>(0);
+  const [inputValue, setInputValue] = useState<string>("");
 
   return (
     <div className="flex flex-col gap-4 w-80 m-auto">
@@ -126,6 +128,18 @@ const App = () => {
         onChange={setSliderValue}
         onClear={() => {
           setSliderValue(0);
+        }}
+      />
+
+      <Input
+        title="输入框"
+        value={inputValue}
+        placeholder="输入框"
+        onChange={(event) => {
+          setInputValue(event.target.value);
+        }}
+        onClear={() => {
+          setInputValue("");
         }}
       />
     </div>
