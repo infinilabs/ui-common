@@ -57,9 +57,13 @@ const Collapse: FC<CollapseProps> = (props) => {
       </div>
 
       <motion.div
-        initial={{ height: 0 }}
+        initial={{
+          height: 0,
+          opacity: 0,
+        }}
         animate={{
           height: expand ? "auto" : 0,
+          opacity: expand ? 1 : 0,
         }}
         className="overflow-hidden"
       >
