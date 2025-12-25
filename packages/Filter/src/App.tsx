@@ -4,6 +4,7 @@ import Tags from "./components/Tags";
 import Slider from "./components/Slider";
 import Input from "./components/Input";
 import ColorPicker from "./components/ColorPicker";
+import Select from "./components/Select";
 
 let iconIndex = 100;
 
@@ -15,6 +16,7 @@ const App = () => {
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [inputValue, setInputValue] = useState<string>("");
   const [colorPickerValue, setColorPickerValue] = useState<string>();
+  const [selectValue, setSelectValue] = useState<string>();
 
   const getIcon = () => {
     iconIndex++;
@@ -149,6 +151,19 @@ const App = () => {
         }}
         onClear={() => {
           setColorPickerValue(void 0);
+        }}
+      />
+
+      <Select
+        title="下拉选择框"
+        value={selectValue}
+        options={Array.from({ length: 10 }).map((_, index) => ({
+          label: `选项${index + 1}`,
+          value: `option${index + 1}`,
+        }))}
+        onChange={setSelectValue}
+        onClear={() => {
+          setSelectValue(void 0);
         }}
       />
     </div>
