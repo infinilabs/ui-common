@@ -2,7 +2,7 @@ import { ColorPickerProps as ColorPickerProps_2 } from 'antd';
 import { ComponentProps } from 'react';
 import { FC } from 'react';
 import { InputProps as InputProps_2 } from 'antd';
-import { JSX } from 'react/jsx-runtime';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { MouseEvent as MouseEvent_2 } from 'react';
 import { PropsWithChildren } from 'react';
 import { SelectProps as SelectProps_2 } from 'antd';
@@ -35,7 +35,7 @@ export declare const FilterCollapse: FC<CollapseProps>;
 
 export declare const FilterColorPicker: FC<ColorPickerProps>;
 
-export declare const FilterInput: (props: InputProps) => JSX.Element;
+export declare const FilterInput: (props: InputProps) => JSX_2.Element;
 
 export declare const FilterSelect: FC<SelectProps>;
 

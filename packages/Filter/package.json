@@ -1,6 +1,8 @@
 {
   "name": "@infinilabs/filter",
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.0.0",
   "type": "module",
   "main": "dist/filter.cjs",
