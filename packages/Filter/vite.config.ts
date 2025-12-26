@@ -20,7 +20,14 @@ export default defineConfig({
       formats: ["es", "cjs"],
     },
     rollupOptions: {
-      external: ["react", "react-dom", "antd", "lucide-react"],
+      external: [
+        "react",
+        "react-dom",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+        "antd",
+        "lucide-react",
+      ],
       output: {
         globals: {
           react: "React",
