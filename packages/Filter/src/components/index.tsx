@@ -1,10 +1,10 @@
-import FilterCollapse from "./Collapse";
-import FilterTags from "./Tags";
-import FilterCheckboxGroup from "./CheckboxGroup";
-import FilterSelect from "./Select";
-import FilterColorPicker from "./ColorPicker";
-import FilterSlider from "./Slider";
-import FilterInput from "./Input";
+import FilterCollapse from "./FilterCollapse";
+import FilterTags from "./FilterTags";
+import FilterCheckboxGroup from "./FilterCheckboxGroup";
+import FilterSelect from "./FilterSelect";
+import FilterColorPicker from "./FilterColorPicker";
+import FilterSlider from "./FilterSlider";
+import FilterInput from "./FilterInput";
 
 export {
   FilterCollapse,

@@ -20,14 +20,13 @@ export default defineConfig({
       formats: ["es", "cjs"],
     },
     rollupOptions: {
-      external: [
-        "react",
-        "react-dom",
-        "antd",
-        "lucide-react",
-        "clsx",
-        "tailwind-merge",
-      ],
+      external: ["react", "react-dom", "antd", "lucide-react"],
+      output: {
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
+      },
     },
   },
 });

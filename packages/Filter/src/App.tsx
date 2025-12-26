@@ -1,10 +1,10 @@
 import { useState } from "react";
-import CheckboxGroup from "./components/CheckboxGroup";
-import Tags from "./components/Tags";
-import Slider from "./components/Slider";
-import Input from "./components/Input";
-import ColorPicker from "./components/ColorPicker";
-import Select from "./components/Select";
+import FilterCheckboxGroup from "./components/FilterCheckboxGroup";
+import FilterTags from "./components/FilterTags";
+import FilterSlider from "./components/FilterSlider";
+import FilterInput from "./components/FilterInput";
+import FilterColorPicker from "./components/FilterColorPicker";
+import FilterSelect from "./components/FilterSelect";
 
 let iconIndex = 100;
 
@@ -26,7 +26,7 @@ const App = () => {
 
   return (
     <div className="flex flex-col gap-4 w-80 m-auto">
-      <CheckboxGroup
+      <FilterCheckboxGroup
         title="多选框"
         value={checkboxGroupValue}
         options={Array.from({ length: 15 }).map((_, index) => ({
@@ -41,7 +41,7 @@ const App = () => {
         }}
       />
 
-      <Tags
+      <FilterTags
         title="标签"
         value={tagsValue}
         options={[
@@ -120,7 +120,7 @@ const App = () => {
         }}
       />
 
-      <Slider
+      <FilterSlider
         title="滑块"
         value={sliderValue}
         onChange={setSliderValue}
@@ -129,7 +129,7 @@ const App = () => {
         }}
       />
 
-      <Input
+      <FilterInput
         title="输入框"
         value={inputValue}
         placeholder="输入框"
@@ -141,7 +141,7 @@ const App = () => {
         }}
       />
 
-      <ColorPicker
+      <FilterColorPicker
         title="颜色选择器"
         allowClear
         showText
@@ -154,7 +154,7 @@ const App = () => {
         }}
       />
 
-      <Select
+      <FilterSelect
         title="下拉选择框"
         value={selectValue}
         options={Array.from({ length: 10 }).map((_, index) => ({
