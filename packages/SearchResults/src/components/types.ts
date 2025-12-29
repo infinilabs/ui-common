@@ -170,10 +170,7 @@ export type SearchResultsSection =
     };
 
 export type SearchResultsProps = {
-  sections?: SearchResultsSection[];
-  items?: SearchResultsItem[];
-  records?: SearchResultsRecord[];
-  imageGridColumns?: 2 | 3 | 4;
+  section: SearchResultsSection;
   className?: string;
   onItemClick?: (item: SearchResultsItem) => void;
 };

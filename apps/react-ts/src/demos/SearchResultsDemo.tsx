@@ -1,4 +1,4 @@
-import SearchResults, { type SearchResultsItem } from "@infinilabs/search-results";
+import SearchResults, { itemsToSections, type SearchResultsItem } from "@infinilabs/search-results";
 
 const searchResultItems: SearchResultsItem[] = [
   {
@@ -122,6 +122,16 @@ const searchResultItems: SearchResultsItem[] = [
 ];
 
 export default function SearchResultsDemo() {
-  return <SearchResults items={searchResultItems} />;
-}
+  const sections = itemsToSections(searchResultItems);
 
+  return (
+    <div className="space-y-10">
+      {sections.map((section, index) => (
+        <SearchResults
+          key={`${section.layout}-${section.title ?? "section"}-${index}`}
+          section={section}
+        />
+      ))}
+    </div>
+  );
+}
