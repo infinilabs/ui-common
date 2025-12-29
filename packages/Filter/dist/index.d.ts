@@ -1,63 +1,63 @@
-import { ColorPickerProps as ColorPickerProps_2 } from 'antd';
+import { ColorPickerProps } from 'antd';
 import { ComponentProps } from 'react';
 import { FC } from 'react';
-import { InputProps as InputProps_2 } from 'antd';
-import { JSX as JSX_2 } from 'react/jsx-runtime';
+import { InputProps } from 'antd';
+import { JSX } from 'react/jsx-runtime';
 import { MouseEvent as MouseEvent_2 } from 'react';
 import { PropsWithChildren } from 'react';
-import { SelectProps as SelectProps_2 } from 'antd';
+import { SelectProps } from 'antd';
 import { Slider } from 'antd';
 
-declare interface CheckboxGroupOption {
+export declare const FilterCheckboxGroup: FC<FilterCheckboxGroupProps>;
+
+declare interface FilterCheckboxGroupOption {
     label: string;
     value: string | number;
     icon: string;
     count: number;
 }
 
-declare interface CheckboxGroupProps extends CollapseProps {
+declare interface FilterCheckboxGroupProps extends FilterCollapseProps {
     value: Array<string | number>;
-    options: CheckboxGroupOption[];
+    options: FilterCheckboxGroupOption[];
     onChange?: (value: Array<string | number>) => void;
 }
 
-declare interface CollapseProps extends PropsWithChildren {
+export declare const FilterCollapse: FC<FilterCollapseProps>;
+
+declare interface FilterCollapseProps extends PropsWithChildren {
     defaultExpand?: boolean;
     title: string;
     onClear?: (event: MouseEvent_2) => void;
 }
 
-declare type ColorPickerProps = CollapseProps & ColorPickerProps_2;
+export declare const FilterColorPicker: FC<FilterColorPickerProps>;
 
-export declare const FilterCheckboxGroup: FC<CheckboxGroupProps>;
+declare type FilterColorPickerProps = FilterCollapseProps & ColorPickerProps;
 
-export declare const FilterCollapse: FC<CollapseProps>;
+export declare const FilterInput: (props: FilterInputProps) => JSX.Element;
 
-export declare const FilterColorPicker: FC<ColorPickerProps>;
+declare type FilterInputProps = FilterCollapseProps & InputProps;
 
-export declare const FilterInput: (props: InputProps) => JSX_2.Element;
+export declare const FilterSelect: FC<FilterSelectProps>;
 
-export declare const FilterSelect: FC<SelectProps>;
+declare type FilterSelectProps = FilterCollapseProps & SelectProps;
 
-export declare const FilterSlider: FC<SliderProps>;
+export declare const FilterSlider: FC<FilterSliderProps>;
 
-export declare const FilterTags: FC<TagsProps>;
+declare type FilterSliderProps = FilterCollapseProps & ComponentProps<typeof Slider>;
 
-declare type InputProps = CollapseProps & InputProps_2;
-
-declare type SelectProps = CollapseProps & SelectProps_2;
-
-declare type SliderProps = CollapseProps & ComponentProps<typeof Slider>;
-
-declare interface TagOption {
+declare interface FilterTagOption {
     label: string;
     value: string | number;
     icon?: string;
 }
 
-declare interface TagsProps extends CollapseProps {
+export declare const FilterTags: FC<FilterTagsProps>;
+
+declare interface FilterTagsProps extends FilterCollapseProps {
     value: Array<string | number>;
-    options: TagOption[];
+    options: FilterTagOption[];
     onChange?: (value: Array<string | number>) => void;
 }
 

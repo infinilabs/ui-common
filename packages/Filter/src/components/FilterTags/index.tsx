@@ -1,20 +1,20 @@
 import type { FC } from "react";
-import Collapse, { type CollapseProps } from "../Collapse";
+import FilterCollapse, { type FilterCollapseProps } from "../FilterCollapse";
 import { cn } from "../../utils/cn";
 
-export interface TagOption {
+export interface FilterTagOption {
   label: string;
   value: string | number;
   icon?: string;
 }
 
-export interface TagsProps extends CollapseProps {
+export interface FilterTagsProps extends FilterCollapseProps {
   value: Array<string | number>;
-  options: TagOption[];
+  options: FilterTagOption[];
   onChange?: (value: Array<string | number>) => void;
 }
 
-const Tags: FC<TagsProps> = (props) => {
+const FilterTags: FC<FilterTagsProps> = (props) => {
   const { value: propsValue, options, onChange, ...rest } = props;
 
   const nameOptions = options.filter((item) => !item.icon);
@@ -29,7 +29,7 @@ const Tags: FC<TagsProps> = (props) => {
   };
 
   return (
-    <Collapse {...rest}>
+    <FilterCollapse {...rest}>
       <div className="flex flex-wrap gap-2">
         {nameOptions.map((item) => {
           const { label, value } = item;
@@ -75,8 +75,8 @@ const Tags: FC<TagsProps> = (props) => {
           );
         })}
       </div>
-    </Collapse>
+    </FilterCollapse>
   );
 };
 
-export default Tags;
+export default FilterTags;

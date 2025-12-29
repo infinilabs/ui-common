@@ -7,13 +7,13 @@ import {
 import { motion } from "motion/react";
 import { BrushCleaning, SquareMinus, SquarePlus } from "lucide-react";
 
-export interface CollapseProps extends PropsWithChildren {
+export interface FilterCollapseProps extends PropsWithChildren {
   defaultExpand?: boolean;
   title: string;
   onClear?: (event: MouseEvent) => void;
 }
 
-const Collapse: FC<CollapseProps> = (props) => {
+const FilterCollapse: FC<FilterCollapseProps> = (props) => {
   const { defaultExpand, title, children, onClear } = props;
   const [expand, setExpand] = useState(defaultExpand ?? false);
 
@@ -73,4 +73,4 @@ const Collapse: FC<CollapseProps> = (props) => {
   );
 };
 
-export default Collapse;
+export default FilterCollapse;
