@@ -2,7 +2,8 @@
 /*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();import * as React from "react";
 import { Children, Component, Fragment, createContext, createElement, forwardRef, isValidElement, useCallback, useContext, useEffect, useId, useInsertionEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Fragment as Fragment$1, jsx, jsxs } from "react/jsx-runtime";
-import { BrushCleaning, ChevronDown, SquareMinus, SquarePlus } from "lucide-react";
+import * as LucideIcons from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { Checkbox, ColorPicker, Input, Select, Slider } from "antd";
 var __defProp = Object.defineProperty, __getOwnPropDesc = Object.getOwnPropertyDescriptor, __getOwnPropNames = Object.getOwnPropertyNames, __hasOwnProp = Object.prototype.hasOwnProperty, __esmMin = (t, o) => () => (t && (o = t(t = 0)), o), __export = (t) => {
 	let o = {};
@@ -4365,7 +4366,7 @@ var gestureAnimations = {
 	...drag,
 	...layout
 }, createDomVisualElement), FilterCollapse_default = (t) => {
-	let { defaultExpand: o, title: s, children: c, onClear: l } = t, [u, d] = useState(o ?? !1);
+	let { defaultExpand: o, title: s, children: c, onClear: l } = t, [u, d] = useState(o ?? !1), f = LucideIcons.SquarePlus, p = LucideIcons.SquareMinus, m = LucideIcons.BrushCleaning ?? LucideIcons.Eraser ?? LucideIcons.Trash2 ?? LucideIcons.X;
 	return /* @__PURE__ */ jsxs("div", {
 		className: "text-sm",
 		children: [/* @__PURE__ */ jsxs("div", {
@@ -4380,19 +4381,19 @@ var gestureAnimations = {
 					children: [/* @__PURE__ */ jsx(motion.div, {
 						initial: { opacity: 1 },
 						animate: { opacity: u ? 0 : 1 },
-						children: /* @__PURE__ */ jsx(SquarePlus, { className: "size-4" })
+						children: f ? /* @__PURE__ */ jsx(f, { className: "size-4" }) : null
 					}), /* @__PURE__ */ jsx(motion.div, {
 						initial: { opacity: 0 },
 						animate: { opacity: u ? 1 : 0 },
-						children: /* @__PURE__ */ jsx(SquareMinus, { className: "size-4" })
+						children: p ? /* @__PURE__ */ jsx(p, { className: "size-4" }) : null
 					})]
 				}), /* @__PURE__ */ jsx("span", { children: s })]
-			}), /* @__PURE__ */ jsx(BrushCleaning, {
+			}), m ? /* @__PURE__ */ jsx(m, {
 				className: "size-4",
 				onClick: (t) => {
 					t.stopPropagation(), l?.(t);
 				}
-			})]
+			}) : null]
 		}), /* @__PURE__ */ jsx(motion.div, {
 			initial: {
 				height: 0,

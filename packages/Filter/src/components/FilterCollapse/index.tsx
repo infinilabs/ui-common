@@ -5,7 +5,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import { motion } from "motion/react";
-import { BrushCleaning, SquareMinus, SquarePlus } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 
 export interface FilterCollapseProps extends PropsWithChildren {
   defaultExpand?: boolean;
@@ -16,6 +16,13 @@ export interface FilterCollapseProps extends PropsWithChildren {
 const FilterCollapse: FC<FilterCollapseProps> = (props) => {
   const { defaultExpand, title, children, onClear } = props;
   const [expand, setExpand] = useState(defaultExpand ?? false);
+  const ExpandIcon = (LucideIcons as any).SquarePlus;
+  const CollapseIcon = (LucideIcons as any).SquareMinus;
+  const ClearIcon =
+    (LucideIcons as any).BrushCleaning ??
+    (LucideIcons as any).Eraser ??
+    (LucideIcons as any).Trash2 ??
+    (LucideIcons as any).X;
 
   const toggleExpand = () => {
     setExpand((prev) => !prev);
@@ -39,21 +46,21 @@ const FilterCollapse: FC<FilterCollapseProps> = (props) => {
               initial={{ opacity: 1 }}
               animate={{ opacity: expand ? 0 : 1 }}
             >
-              <SquarePlus className="size-4" />
+              {ExpandIcon ? <ExpandIcon className="size-4" /> : null}
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: expand ? 1 : 0 }}
             >
-              <SquareMinus className="size-4" />
+              {CollapseIcon ? <CollapseIcon className="size-4" /> : null}
             </motion.div>
           </div>
 
           <span>{title}</span>
         </div>
 
-        <BrushCleaning className="size-4" onClick={handleClear} />
+        {ClearIcon ? <ClearIcon className="size-4" onClick={handleClear} /> : null}
       </div>
 
       <motion.div
