@@ -33,6 +33,7 @@ const FilterCheckboxGroup: FC<FilterCheckboxGroupProps> = (props) => {
           return (
             <div key={value} className="flex items-center justify-between">
               <Checkbox
+                className="inline-flex items-center"
                 checked={propsValue.includes(value)}
                 onChange={(event) => {
                   const checked = event.target.checked;
