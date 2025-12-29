@@ -14,6 +14,7 @@ export default defineConfig({
           include: [
             /apps\/react-ts\/src\/.*\.[jt]sx?$/,
             /packages\/Filter\/(src|dist)\/.*\.[jt]sx?$/,
+            /packages\/SearchResults\/(src|dist)\/.*\.[jt]sx?$/,
           ],
         },
       },

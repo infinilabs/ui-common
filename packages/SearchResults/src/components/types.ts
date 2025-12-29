@@ -5,6 +5,7 @@ export type SearchResultFileType =
   | "doc"
   | "ppt"
   | "xls"
+  | "link"
   | "word"
   | "text"
   | "unknown";
