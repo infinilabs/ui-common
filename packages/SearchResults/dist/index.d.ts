@@ -1,6 +1,10 @@
 import { default as default_2 } from 'react';
 import { JSX } from 'react/jsx-runtime';
 
+export declare function itemsToSections(items: SearchResultsItem[], imageGridColumns?: 2 | 3 | 4): SearchResultsSection[];
+
+export declare function recordsToItems(records: SearchResultsRecord[]): SearchResultsItem[];
+
 declare type SearchResultCommon = {
     id: string;
     title: string;
@@ -57,7 +61,7 @@ export declare type SearchResultMediaItem = SearchResultCommon & {
     onClick?: () => void;
 };
 
-declare function SearchResults({ sections, items, records, imageGridColumns, className, onItemClick }: SearchResultsProps): JSX.Element;
+declare function SearchResults({ section, className, onItemClick }: SearchResultsProps): JSX.Element;
 export default SearchResults;
 
 declare type SearchResultsAction = {
@@ -71,10 +75,7 @@ declare type SearchResultsAction = {
 export declare type SearchResultsItem = SearchResultListItem | SearchResultImageItem | SearchResultMediaItem | SearchResultImageGroupItem | SearchResultVideoGroupItem;
 
 export declare type SearchResultsProps = {
-    sections?: SearchResultsSection[];
-    items?: SearchResultsItem[];
-    records?: SearchResultsRecord[];
-    imageGridColumns?: 2 | 3 | 4;
+    section: SearchResultsSection;
     className?: string;
     onItemClick?: (item: SearchResultsItem) => void;
 };

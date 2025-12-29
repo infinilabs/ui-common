@@ -1,4 +1,4 @@
-import SearchResults, { type SearchResultsItem } from "./components";
+import SearchResults, { itemsToSections, type SearchResultsItem } from "./components";
 
 const items: SearchResultsItem[] = [
   {
@@ -122,10 +122,14 @@ const items: SearchResultsItem[] = [
 ];
 
 export default function App() {
+  const sections = itemsToSections(items);
+
   return (
     <div className="min-h-screen bg-slate-50 p-6">
-      <div className="mx-auto max-w-3xl">
-        <SearchResults items={items} />
+      <div className="mx-auto max-w-3xl space-y-10">
+        {sections.map((section, index) => (
+          <SearchResults key={`${section.layout}-${section.title ?? "section"}-${index}`} section={section} />
+        ))}
       </div>
     </div>
   );
