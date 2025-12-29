@@ -1,19 +1,21 @@
 import { useState } from "react";
-import FilterCheckboxGroup from "./components/FilterCheckboxGroup";
-import FilterTags from "./components/FilterTags";
-import FilterSlider from "./components/FilterSlider";
-import FilterInput from "./components/FilterInput";
-import FilterColorPicker from "./components/FilterColorPicker";
-import FilterSelect from "./components/FilterSelect";
+import {
+  FilterCheckboxGroup,
+  FilterColorPicker,
+  FilterInput,
+  FilterSelect,
+  FilterSlider,
+  FilterTags,
+} from "@infinilabs/filter";
 
 let iconIndex = 100;
 
-const App = () => {
+function App() {
+  const [tagsValue, setTagsValue] = useState<Array<string | number>>([]);
   const [checkboxGroupValue, setCheckboxGroupValue] = useState<
     Array<string | number>
   >([]);
-  const [tagsValue, setTagsValue] = useState<Array<string | number>>([]);
-  const [sliderValue, setSliderValue] = useState<number>(0);
+  const [sliderValue, setSliderValue] = useState<number>(30);
   const [inputValue, setInputValue] = useState<string>("");
   const [colorPickerValue, setColorPickerValue] = useState<string>();
   const [selectValue, setSelectValue] = useState<string>();
@@ -168,6 +170,6 @@ const App = () => {
       />
     </div>
   );
-};
+}
 
 export default App;

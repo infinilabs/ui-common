@@ -2,29 +2,29 @@ import { useState, type FC } from "react";
 import { Checkbox } from "antd";
 import { motion, AnimatePresence } from "motion/react";
 
-import type { CollapseProps } from "../Collapse";
-import Collapse from "../Collapse";
+import type { FilterCollapseProps } from "../FilterCollapse";
+import FilterCollapse from "../FilterCollapse";
 import { ChevronDown } from "lucide-react";
 import { cn } from "../../utils/cn";
 
-export interface CheckboxGroupOption {
+export interface FilterCheckboxGroupOption {
   label: string;
   value: string | number;
   icon: string;
   count: number;
 }
 
-export interface CheckboxGroupProps extends CollapseProps {
+export interface FilterCheckboxGroupProps extends FilterCollapseProps {
   value: Array<string | number>;
-  options: CheckboxGroupOption[];
+  options: FilterCheckboxGroupOption[];
   onChange?: (value: Array<string | number>) => void;
 }
 
-const CheckboxGroup: FC<CheckboxGroupProps> = (props) => {
+const FilterCheckboxGroup: FC<FilterCheckboxGroupProps> = (props) => {
   const { options, value: propsValue, onChange, ...rest } = props;
   const [expandMore, setExpandMore] = useState(false);
 
-  const renderOptions = (options: CheckboxGroupOption[]) => {
+  const renderOptions = (options: FilterCheckboxGroupOption[]) => {
     return (
       <div className="flex flex-col gap-4">
         {options.map((item) => {
@@ -64,7 +64,7 @@ const CheckboxGroup: FC<CheckboxGroupProps> = (props) => {
   };
 
   return (
-    <Collapse {...rest}>
+    <FilterCollapse {...rest}>
       {renderOptions(options.slice(0, 5))}
 
       <AnimatePresence>
@@ -94,8 +94,8 @@ const CheckboxGroup: FC<CheckboxGroupProps> = (props) => {
           />
         </div>
       )}
-    </Collapse>
+    </FilterCollapse>
   );
 };
 
-export default CheckboxGroup;
+export default FilterCheckboxGroup;

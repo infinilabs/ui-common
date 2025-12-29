@@ -24,8 +24,6 @@ pnpm add @infinilabs/filter
 
 **导入方式**
 
-- 推荐从根入口命名导入：
-
 ```tsx
 import { FilterCollapse } from "@infinilabs/filter";
 ```
