@@ -453,6 +453,9 @@ importers:
       vite:
         specifier: npm:rolldown-vite@7.2.5
         version: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)
+      vite-plugin-css-injected-by-js:
+        specifier: ^3.4.1
+        version: 3.5.1(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0))
       vite-plugin-dts:
         specifier: ^4.5.4
         version: 4.5.4(@types/node@24.10.4)(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0))(rollup@4.52.4)(typescript@5.9.3)
@@ -10878,6 +10881,10 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
+
+  vite-plugin-css-injected-by-js@3.5.1(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)):
+    dependencies:
+      vite: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)
 
   vite-plugin-css-injected-by-js@3.5.1(vite@5.4.5(@types/node@22.5.5)(less@4.2.0)(lightningcss@1.30.2)):
     dependencies:

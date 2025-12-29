@@ -1,3 +1,4 @@
+import "virtual:uno.css";
 import FilterCollapse from "./FilterCollapse";
 import FilterTags from "./FilterTags";
 import FilterCheckboxGroup from "./FilterCheckboxGroup";

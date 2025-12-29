@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
   FilterCheckboxGroup,
   FilterColorPicker,
@@ -6,29 +6,28 @@ import {
   FilterSelect,
   FilterSlider,
   FilterTags,
-} from '@infinilabs/filter'
-import './App.css'
+} from "@infinilabs/filter";
 
 let iconIndex = 100;
 
 function App() {
-  const [tagsValue, setTagsValue] = useState<Array<string | number>>([])
+  const [tagsValue, setTagsValue] = useState<Array<string | number>>([]);
   const [checkboxGroupValue, setCheckboxGroupValue] = useState<
     Array<string | number>
-  >([])
-  const [sliderValue, setSliderValue] = useState<number>(30)
-  const [inputValue, setInputValue] = useState<string>('')
-  const [colorPickerValue, setColorPickerValue] = useState<string>()
-  const [selectValue, setSelectValue] = useState<string>()
+  >([]);
+  const [sliderValue, setSliderValue] = useState<number>(30);
+  const [inputValue, setInputValue] = useState<string>("");
+  const [colorPickerValue, setColorPickerValue] = useState<string>();
+  const [selectValue, setSelectValue] = useState<string>();
 
-   const getIcon = () => {
+  const getIcon = () => {
     iconIndex++;
 
     return `https://picsum.photos/${iconIndex}`;
   };
 
   return (
-   <div className="flex flex-col gap-4 w-80 m-auto text-left">
+    <div className="flex flex-col gap-4 w-80 m-auto">
       <FilterCheckboxGroup
         title="多选框"
         value={checkboxGroupValue}
@@ -170,7 +169,7 @@ function App() {
         }}
       />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
