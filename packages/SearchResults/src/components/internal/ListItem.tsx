@@ -2,10 +2,9 @@ import { ExternalLink } from "lucide-react";
 
 import { AuthorDate } from "./AuthorDate";
 import { BreadcrumbsLine } from "./BreadcrumbsLine";
-import { joinRel } from "./joinRel";
+import { ItemInteractive } from "./ItemInteractive";
 import { MetaLine } from "./MetaLine";
 import { SectionHeader } from "./SectionHeader";
-import { TitleInteractive } from "./TitleInteractive";
 import { TypeBadge } from "./TypeBadge";
 
 import type { SearchResultListItem, SearchResultsProps } from "../types";
@@ -23,26 +22,26 @@ export function ListItem({
     <TypeBadge fileType={item.fileType} />
   ) : null;
 
-  return (
+  const handleClick =
+    item.onClick || onItemClick
+      ? () => {
+          item.onClick?.();
+          onItemClick?.(item);
+        }
+      : undefined;
+
+  const interactiveHref = item.onClick ? undefined : item.href;
+
+  const content = (
     <div className="w-full py-2">
       <div className="flex min-w-0 items-center gap-2">
-        <TitleInteractive
-          href={item.href}
-          target={item.target}
-          rel={item.rel}
-          onClick={() => {
-            item.onClick?.();
-            onItemClick?.(item);
-          }}
-        >
-          <SectionHeader
-            className="mb-0 w-full"
-            title={item.title}
-            titleIcon={titleIcon}
-            source={item.source}
-            titleClassName="truncate text-[#1A0CAB]"
-          />
-        </TitleInteractive>
+        <SectionHeader
+          className="mb-0 w-full"
+          title={item.title}
+          titleIcon={titleIcon}
+          source={item.source}
+          titleClassName="truncate text-[#1A0CAB]"
+        />
       </div>
 
       <div className="mt-2 flex gap-3">
@@ -59,9 +58,7 @@ export function ListItem({
 
         <div className="min-w-0 flex-1 flex flex-col justify-between">
           {item.description ? (
-            <div className="line-clamp-2 text-sm text-[#666]">
-              {item.description}
-            </div>
+            <div className="line-clamp-2 text-sm text-[#666]">{item.description}</div>
           ) : null}
 
           {item.breadcrumbs?.length || item.author || item.date ? (
@@ -71,14 +68,9 @@ export function ListItem({
               <div className="flex flex-none items-center gap-2">
                 <AuthorDate author={item.author} date={item.date} />
                 {item.href ? (
-                  <a
-                    href={item.href}
-                    target={item.target}
-                    rel={joinRel(item.rel, item.target)}
-                    className="flex-none text-[#007EFF] hover:text-[#007EFF]"
-                  >
+                  <span className="flex-none text-[#007EFF]">
                     <ExternalLink className="h-3 w-3" />
-                  </a>
+                  </span>
                 ) : null}
               </div>
             </div>
@@ -88,5 +80,19 @@ export function ListItem({
         </div>
       </div>
     </div>
+  );
+
+  if (!interactiveHref && !handleClick) return content;
+
+  return (
+    <ItemInteractive
+      href={interactiveHref}
+      target={item.target}
+      rel={item.rel}
+      onClick={handleClick}
+      className="group block w-full rounded-xl px-3 text-left no-underline transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
+    >
+      {content}
+    </ItemInteractive>
   );
 }

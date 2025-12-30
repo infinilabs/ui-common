@@ -1,9 +1,13 @@
 import "../index.css";
 
 export { SearchResults as default } from "./SearchResults";
+export { SearchResultsImageGroup, SearchResultsVideoGroup } from "./SearchResults";
 export { itemsToSections } from "./internal/itemsToSections";
 export { recordsToItems } from "./internal/recordsToItems";
 export type {
+  SearchResultsAction,
+  SearchResultsImageGroupProps,
+  SearchResultsVideoGroupProps,
   SearchResultsProps,
   SearchResultsSection,
   SearchResultsItem,

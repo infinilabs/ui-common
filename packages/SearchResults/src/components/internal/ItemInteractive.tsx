@@ -17,13 +17,15 @@ export function ItemInteractive({
   className?: string;
   children: React.ReactNode;
 }) {
+  const interactiveClassName = className ? `${className} cursor-pointer` : "cursor-pointer";
+
   if (href) {
     return (
       <a
         href={href}
         target={target}
         rel={joinRel(rel, target)}
-        className={className}
+        className={interactiveClassName}
         onClick={() => onClick?.()}
       >
         {children}
@@ -32,9 +34,8 @@ export function ItemInteractive({
   }
 
   return (
-    <button type="button" className={className} onClick={onClick}>
+    <button type="button" className={interactiveClassName} onClick={onClick}>
       {children}
     </button>
   );
 }
-

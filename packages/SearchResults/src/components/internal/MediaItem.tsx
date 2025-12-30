@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import { Play } from "lucide-react";
 
+import { BreadcrumbsLine } from "./BreadcrumbsLine";
 import { ItemInteractive } from "./ItemInteractive";
-import { TagPill } from "./TagPill";
 
 import type { SearchResultMediaItem, SearchResultsProps } from "../types";
 
@@ -13,10 +13,12 @@ export function MediaItem({
   item: SearchResultMediaItem;
   onItemClick?: SearchResultsProps["onItemClick"];
 }) {
-  const metaTags = [item.sourceLabel, item.categoryLabel].filter(Boolean) as string[];
+  const breadcrumbs =
+    item.breadcrumbs ?? ([item.sourceLabel, item.categoryLabel].filter(Boolean) as string[]);
+  const interactiveHref = item.onClick ? undefined : item.href;
   return (
     <ItemInteractive
-      href={item.href}
+      href={interactiveHref}
       target={item.target}
       rel={item.rel}
       onClick={() => {
@@ -24,7 +26,7 @@ export function MediaItem({
         onItemClick?.(item);
       }}
       className={clsx(
-        "group w-full rounded-xl bg-white text-left transition",
+        "group w-full rounded-xl text-left transition",
         "hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
       )}
     >
@@ -55,15 +57,12 @@ export function MediaItem({
           <div className="mt-1 truncate text-xs text-[#666]">{item.matchCountText}</div>
         ) : null}
 
-        {metaTags.length ? (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {metaTags.map((text) => (
-              <TagPill key={text} text={text} />
-            ))}
+        {breadcrumbs.length ? (
+          <div className="mt-2 text-[#666]">
+            <BreadcrumbsLine breadcrumbs={breadcrumbs} />
           </div>
         ) : null}
       </div>
     </ItemInteractive>
   );
 }
-
