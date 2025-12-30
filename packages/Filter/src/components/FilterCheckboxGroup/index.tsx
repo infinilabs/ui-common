@@ -17,11 +17,16 @@ export interface FilterCheckboxGroupOption {
 export interface FilterCheckboxGroupProps extends FilterCollapseProps {
   value: Array<string | number>;
   options: FilterCheckboxGroupOption[];
+  i18n?: {
+    labels?: {
+      more?: string;
+    };
+  };
   onChange?: (value: Array<string | number>) => void;
 }
 
 const FilterCheckboxGroup: FC<FilterCheckboxGroupProps> = (props) => {
-  const { options, value: propsValue, onChange, ...rest } = props;
+  const { options, value: propsValue, i18n, onChange, ...rest } = props;
   const [expandMore, setExpandMore] = useState(false);
 
   const renderOptions = (options: FilterCheckboxGroupOption[]) => {
@@ -86,7 +91,7 @@ const FilterCheckboxGroup: FC<FilterCheckboxGroupProps> = (props) => {
           className="inline-flex items-center mt-4 text-primary cursor-pointer"
           onClick={handleExpandMore}
         >
-          <span>更多</span>
+          <span>{i18n?.labels?.more ?? "更多"}</span>
 
           <ChevronDown
             className={cn("size-4 transition", {
