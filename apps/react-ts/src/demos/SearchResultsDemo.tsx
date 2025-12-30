@@ -7,6 +7,8 @@ import SearchResults, {
   type SearchResultsItem,
   type SearchResultsRecord
 } from "@infinilabs/search-results";
+import clsx from "clsx";
+import { useState } from "react";
 
 const searchResultItems: SearchResultsItem[] = [
   {
@@ -131,6 +133,9 @@ const searchResultItems: SearchResultsItem[] = [
 ];
 
 export default function SearchResultsDemo() {
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const isDark = theme === "dark";
+
   const listResults = searchResultItems.filter((item): item is SearchResultListItem => item.type === "result");
   const imageGroup = searchResultItems.find((item): item is SearchResultImageGroupItem => item.type === "imageGroup");
   const videoGroup = searchResultItems.find((item): item is SearchResultVideoGroupItem => item.type === "videoGroup");
@@ -182,15 +187,39 @@ export default function SearchResultsDemo() {
   ];
 
   return (
-    <div className="space-y-10">
+    <div
+      className={clsx(
+        "space-y-10 rounded-xl border p-6 transition-colors",
+        isDark ? "border-slate-800 bg-slate-950 text-slate-100" : "border-slate-200 bg-white text-slate-900"
+      )}
+    >
+      <div className="flex items-center justify-end">
+        <button
+          type="button"
+          aria-pressed={isDark}
+          onClick={() => setTheme(isDark ? "light" : "dark")}
+          className={clsx(
+            "inline-flex items-center rounded-full border px-3 py-1.5 text-sm font-medium transition",
+            isDark
+              ? "border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800 focus-visible:ring-slate-600"
+              : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-300",
+            "focus:outline-none focus-visible:ring-2"
+          )}
+        >
+          切换到{isDark ? "浅色" : "深色"}
+        </button>
+      </div>
+
       <SearchResults
         section={listResults}
+        theme={theme}
         onItemClick={(item) => window.alert(`onItemClick: ${item.type} / ${item.id}`)}
       />
 
       {imageGroup ? (
         <SearchResultsImageGroup
           section={imageGroup}
+          theme={theme}
           footerAction={{ label: "所有图片 >", onClick: () => window.alert("所有图片") }}
           onItemClick={(item) => window.alert(`onItemClick: ${item.type} / ${item.id}`)}
         />
@@ -199,6 +228,7 @@ export default function SearchResultsDemo() {
       {videoGroup ? (
         <SearchResultsVideoGroup
           section={videoGroup}
+          theme={theme}
           footerAction={{ label: "所有视频 >", onClick: () => window.alert("所有视频") }}
           onItemClick={(item) => window.alert(`onItemClick: ${item.type} / ${item.id}`)}
         />
@@ -206,12 +236,14 @@ export default function SearchResultsDemo() {
 
       <SearchResultsImageGroup
         section={recordImageItems}
+        theme={theme}
         footerAction={{ label: "记录图片 >", onClick: () => window.alert("记录图片 footer") }}
         onRecordClick={(record, index) => window.alert(`onRecordClick: image / ${record.title} / ${index}`)}
       />
 
       <SearchResultsVideoGroup
         section={recordVideoItems}
+        theme={theme}
         footerAction={{ label: "记录视频 >", onClick: () => window.alert("记录视频 footer") }}
         onRecordClick={(record, index) => window.alert(`onRecordClick: video / ${record.title} / ${index}`)}
       />

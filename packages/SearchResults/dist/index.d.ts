@@ -30,6 +30,7 @@ export declare type SearchResultImageItem = SearchResultCommon & {
     imageUrl: string;
     imageAlt?: string;
     subtitle?: string;
+    breadcrumbs?: string[];
     onClick?: () => void;
 };
 
@@ -62,7 +63,7 @@ export declare type SearchResultMediaItem = SearchResultCommon & {
     onClick?: () => void;
 };
 
-declare function SearchResults({ section, className, footerAction, onRecordClick, onItemClick }: SearchResultsProps): JSX_2.Element;
+declare function SearchResults({ section, className, theme, footerAction, onRecordClick, onItemClick }: SearchResultsProps): JSX_2.Element;
 export default SearchResults;
 
 export declare type SearchResultsAction = {
@@ -84,6 +85,7 @@ export declare type SearchResultsItem = SearchResultListItem | SearchResultImage
 export declare type SearchResultsProps = {
     section: SearchResultsSection | SearchResultsItem | SearchResultsRecord | Array<SearchResultsItem | SearchResultsRecord>;
     className?: string;
+    theme?: SearchResultsTheme;
     footerAction?: SearchResultsAction;
     onRecordClick?: (record: SearchResultsRecord, index: number) => void;
     onItemClick?: (item: SearchResultsItem) => void;
@@ -172,6 +174,8 @@ export declare type SearchResultsSection = {
     footerAction?: SearchResultsAction;
     className?: string;
 };
+
+export declare type SearchResultsTheme = "light" | "dark" | "auto";
 
 export declare function SearchResultsVideoGroup(props: SearchResultsVideoGroupProps): JSX_2.Element;
 

@@ -9,6 +9,7 @@ export type {
   SearchResultsImageGroupProps,
   SearchResultsVideoGroupProps,
   SearchResultsProps,
+  SearchResultsTheme,
   SearchResultsSection,
   SearchResultsItem,
   SearchResultFileType,

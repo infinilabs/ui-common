@@ -10,6 +10,7 @@ import type {
   SearchResultsAction,
   SearchResultsProps,
   SearchResultsImageGroupProps,
+  SearchResultsTheme,
   SearchResultsItem,
   SearchResultsRecord,
   SearchResultsSection,
@@ -19,12 +20,32 @@ import type {
 export function SearchResults({
   section,
   className,
+  theme,
   footerAction,
   onRecordClick,
   onItemClick
 }: SearchResultsProps) {
   const resolvedSection = applyFooterAction(resolveSection(section, onRecordClick), footerAction);
-  return <div className={clsx(className)}>{renderSection(resolvedSection, onItemClick)}</div>;
+  const resolvedTheme = resolveTheme(theme);
+  return (
+    <div className={clsx(resolvedTheme === "dark" && "dark", className)}>
+      {renderSection(resolvedSection, onItemClick)}
+    </div>
+  );
+}
+
+function resolveTheme(theme: SearchResultsTheme | undefined): "light" | "dark" | undefined {
+  if (!theme) return undefined;
+  if (theme === "light") return "light";
+  if (theme === "dark") return "dark";
+  if (
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  ) {
+    return "dark";
+  }
+  return "light";
 }
 
 function applyFooterAction(

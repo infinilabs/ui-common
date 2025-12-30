@@ -2,10 +2,13 @@ import SearchResults, {
   SearchResultsImageGroup,
   SearchResultsVideoGroup
 } from "./components";
+import clsx from "clsx";
+import { useState } from "react";
 import type {
   SearchResultImageGroupItem,
   SearchResultVideoGroupItem
 } from "./components";
+import { dataDemo } from "./data";
 
 const viewAllImagesAction = {
   label: "所有图片 >",
@@ -286,11 +289,57 @@ const item5: SearchResultVideoGroupItem = {
 };
 
 export default function App() {
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof document !== "undefined" && document.documentElement.classList.contains("dark")) {
+      return "dark";
+    }
+    if (
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      return "dark";
+    }
+    return "light";
+  });
+
+  const isDark = theme === "dark";
   return (
-    <div className="min-h-screen bg-slate-50 p-6">
+    <div
+      className={clsx(
+        "min-h-screen p-6",
+        isDark ? "bg-slate-950 text-slate-100" : "bg-slate-50 text-slate-900"
+      )}
+    >
       <div className="mx-auto max-w-3xl space-y-10">
+        <div className="flex items-center justify-end">
+          <button
+            type="button"
+            aria-pressed={isDark}
+            onClick={() => setTheme(isDark ? "light" : "dark")}
+            className={clsx(
+              "inline-flex items-center rounded-full border px-3 py-1.5 text-sm font-medium transition",
+              isDark
+                ? "border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800 focus-visible:ring-slate-600"
+                : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-300",
+              "focus:outline-none focus-visible:ring-2"
+            )}
+          >
+            切换到{isDark ? "浅色" : "深色"}
+          </button>
+        </div>
+
         <SearchResults
           section={item1}
+          theme={theme}
+          onRecordClick={(record) => {
+            if (typeof record.url === "string") window.open(record.url);
+          }}
+        />
+
+        <SearchResults
+          section={dataDemo.map((hit) => hit._source)}
+          theme={theme}
           onRecordClick={(record) => {
             if (typeof record.url === "string") window.open(record.url);
           }}
@@ -298,6 +347,7 @@ export default function App() {
 
         <SearchResultsImageGroup
           section={item2}
+          theme={theme}
           footerAction={viewAllImagesAction}
           onRecordClick={(record) => {
             if (typeof record.url === "string") window.open(record.url);
@@ -306,6 +356,7 @@ export default function App() {
 
         <SearchResultsVideoGroup
           section={item3}
+          theme={theme}
           footerAction={viewAllVideosAction}
           onRecordClick={(record) => {
             if (typeof record.url === "string") window.open(record.url);
@@ -314,6 +365,7 @@ export default function App() {
 
         <SearchResultsImageGroup
           section={item4}
+          theme={theme}
           onItemClick={(item) => {
             const href = "href" in item ? item.href : undefined;
             if (typeof href === "string") window.open(href);
@@ -322,6 +374,7 @@ export default function App() {
 
         <SearchResultsVideoGroup
           section={item5}
+          theme={theme}
           onItemClick={(item) => {
             const href = "href" in item ? item.href : undefined;
             if (typeof href === "string") window.open(href);

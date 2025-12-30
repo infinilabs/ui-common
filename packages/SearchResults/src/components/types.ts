@@ -18,6 +18,8 @@ export type SearchResultsAction = {
   onClick?: () => void;
 };
 
+export type SearchResultsTheme = "light" | "dark" | "auto";
+
 export type SearchResultCommon = {
   id: string;
   title: string;
@@ -48,6 +50,7 @@ export type SearchResultImageItem = SearchResultCommon & {
   imageUrl: string;
   imageAlt?: string;
   subtitle?: string;
+  breadcrumbs?: string[];
   onClick?: () => void;
 };
 
@@ -177,6 +180,7 @@ export type SearchResultsProps = {
     | SearchResultsRecord
     | Array<SearchResultsItem | SearchResultsRecord>;
   className?: string;
+  theme?: SearchResultsTheme;
   footerAction?: SearchResultsAction;
   onRecordClick?: (record: SearchResultsRecord, index: number) => void;
   onItemClick?: (item: SearchResultsItem) => void;
