@@ -6074,6 +6074,7 @@ var FilterTags_default = (t) => {
 			return /* @__PURE__ */ jsxs("div", {
 				className: "flex items-center justify-between",
 				children: [/* @__PURE__ */ jsx(Checkbox, {
+					className: "inline-flex items-center",
 					checked: s.includes(l),
 					onChange: (t) => {
 						t.target.checked ? c?.([...s, l]) : c?.(s.filter((t) => t !== l));
