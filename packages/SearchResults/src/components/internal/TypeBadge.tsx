@@ -17,7 +17,7 @@ function getFileTypeBgClassName(fileType: SearchResultFileType) {
     case "pdf":
       return "bg-[#E02E2E] text-white";
     default:
-      return "bg-slate-100 text-slate-700";
+      return "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200";
   }
 }
 

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ExternalLink } from "lucide-react";
 
 import { AuthorDate } from "./AuthorDate";
@@ -40,7 +41,7 @@ export function ListItem({
           title={item.title}
           titleIcon={titleIcon}
           source={item.source}
-          titleClassName="truncate text-[#1A0CAB]"
+          titleClassName="truncate text-[#1A0CAB] dark:text-[#8AB4F8]"
         />
       </div>
 
@@ -49,26 +50,26 @@ export function ListItem({
           <img
             src={item.thumbnailUrl}
             alt={item.thumbnailAlt ?? item.title}
-            className="h-[90px] w-[160px] flex-none rounded-lg object-cover ring-1 ring-slate-200"
+            className="h-[90px] w-[160px] flex-none rounded-lg object-cover ring-1 ring-slate-200 dark:ring-slate-700"
             loading="lazy"
           />
-        ) : (
-          <div className="h-[90px] w-[160px] flex-none rounded-lg bg-slate-100 ring-1 ring-slate-200" />
-        )}
+        ) : null}
 
         <div className="min-w-0 flex-1 flex flex-col justify-between">
           {item.description ? (
-            <div className="line-clamp-2 text-sm text-[#666]">{item.description}</div>
+            <div className="line-clamp-2 text-sm text-slate-600 dark:text-slate-400">
+              {item.description}
+            </div>
           ) : null}
 
           {item.breadcrumbs?.length || item.author || item.date ? (
-            <div className="mt-2 flex min-w-0 items-center gap-3 text-[#666]">
+            <div className="mt-2 flex min-w-0 items-center gap-3 text-[#666] dark:text-slate-400">
               <BreadcrumbsLine breadcrumbs={item.breadcrumbs} />
-              <span className="h-3 w-px flex-none bg-[#666]" aria-hidden="true" />
+              <span className="h-3 w-px flex-none bg-slate-300 dark:bg-slate-700" aria-hidden="true" />
               <div className="flex flex-none items-center gap-2">
                 <AuthorDate author={item.author} date={item.date} />
                 {item.href ? (
-                  <span className="flex-none text-[#007EFF]">
+                  <span className="flex-none text-sky-600 dark:text-sky-400">
                     <ExternalLink className="h-3 w-3" />
                   </span>
                 ) : null}
@@ -90,7 +91,11 @@ export function ListItem({
       target={item.target}
       rel={item.rel}
       onClick={handleClick}
-      className="group block w-full rounded-xl px-3 text-left no-underline transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
+      className={clsx(
+        "group block w-full rounded-xl border border-transparent px-3 py-2 text-left no-underline transition-colors",
+        "hover:border-slate-200 hover:bg-slate-100/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300",
+        "dark:hover:border-slate-700 dark:hover:bg-slate-800/60 dark:focus-visible:ring-slate-600"
+      )}
     >
       {content}
     </ItemInteractive>

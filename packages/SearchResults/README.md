@@ -198,7 +198,7 @@ import SearchResults, {
   type SearchResultsProps
 } from "@infinilabs/search-results";
 
-export default function Demo({ data }: { data: Array<SearchResultsProps[\"section\"]> }) {
+export default function Demo({ data }: { data: Array<SearchResultsProps["section"]> }) {
   return (
     <div className="space-y-10">
       {data.map((section, index) => {
@@ -255,10 +255,42 @@ import type { SearchResultsProps } from "@infinilabs/search-results";
 | 参数 | 类型 | 说明 |
 |---|---|---|
 | `section` | `SearchResultsProps["section"]` | 输入数据（section / item / record / 数组） |
-| `className` | `string` | 根容器 class |
+| `className` | `string` | 根容器 `className` |
+| `theme` | `"light" \| "dark" \| "auto"` | 组件主题（可选） |
 | `footerAction` | `SearchResultsAction` | 底部“查看全部”动作（可选） |
 | `onRecordClick` | `(record: SearchResultsRecord, index: number) => void` | record 输入时的点击回调 |
 | `onItemClick` | `(item: SearchResultsItem) => void` | 统一点击回调 |
+
+## 主题适配（light / dark）
+
+组件随包产出样式（业务侧无需安装 Tailwind）。暗色样式基于 `.dark` class 驱动（语义等同于 Tailwind `dark:` 变体）。
+
+你有两种接入方式：
+
+### 方式 1：跟随业务侧主题（推荐）
+
+业务侧在外层容器挂载/移除 `dark` class（例如放在页面根节点或局部容器），组件会自动跟随：
+
+```tsx
+<div className={isDark ? "dark" : ""}>
+  <SearchResults section={data} />
+</div>
+```
+
+### 方式 2：组件级主题开关
+
+通过 `theme` 让组件在自身根节点挂载 `dark` class（不依赖外层）：
+
+```tsx
+<SearchResults section={data} theme="light" />
+<SearchResults section={data} theme="dark" />
+<SearchResults section={data} theme="auto" />
+```
+
+说明：
+
+- `theme="auto"` 会根据 `prefers-color-scheme` 自动选择 light/dark
+- 如果业务侧把 `dark` 挂在 `html` 上，组件无法在局部“强制 light”；想局部控制请把 `dark` 放到局部容器
 
 ## 工具函数
 
@@ -271,6 +303,7 @@ import { itemsToSections, recordsToItems } from "@infinilabs/search-results";
 ```ts
 import type {
   SearchResultsAction,
+  SearchResultsTheme,
   SearchResultsItem,
   SearchResultsSection,
   SearchResultsRecord,

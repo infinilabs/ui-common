@@ -8,13 +8,14 @@ import type { SearchResultMediaItem, SearchResultsProps } from "../types";
 
 export function MediaItem({
   item,
-  onItemClick
+  onItemClick,
 }: {
   item: SearchResultMediaItem;
   onItemClick?: SearchResultsProps["onItemClick"];
 }) {
   const breadcrumbs =
-    item.breadcrumbs ?? ([item.sourceLabel, item.categoryLabel].filter(Boolean) as string[]);
+    item.breadcrumbs ??
+    ([item.sourceLabel, item.categoryLabel].filter(Boolean) as string[]);
   const interactiveHref = item.onClick ? undefined : item.href;
   return (
     <ItemInteractive
@@ -26,12 +27,13 @@ export function MediaItem({
         onItemClick?.(item);
       }}
       className={clsx(
-        "group w-full rounded-xl text-left transition",
-        "hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
+        "group block w-full rounded-xl border border-transparent p-2 text-left no-underline transition-colors",
+        "hover:border-slate-200 hover:bg-slate-100/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300",
+        "dark:hover:border-slate-700 dark:hover:bg-slate-800/60 dark:focus-visible:ring-slate-600"
       )}
     >
-      <div className="overflow-hidden rounded-lg ring-1 ring-slate-200">
-        <div className="relative aspect-4/3 bg-slate-100">
+      <div className="overflow-hidden rounded-lg ring-1 ring-slate-200 dark:ring-slate-700">
+        <div className="relative aspect-4/3 bg-slate-100 dark:bg-slate-800">
           <img
             src={item.thumbnailUrl}
             alt={item.thumbnailAlt ?? item.title}
@@ -49,17 +51,19 @@ export function MediaItem({
       </div>
 
       <div className="mt-2">
-        <div className="truncate text-sm font-medium">
+        <div className="mb-1 truncate text-sm font-medium text-[#333] dark:text-slate-100">
           {item.title}
         </div>
 
         {item.matchCountText ? (
-          <div className="mt-1 truncate text-xs text-[#666]">{item.matchCountText}</div>
+          <div className="mb-1 truncate text-xs text-[#666] dark:text-slate-400">
+            {item.matchCountText}
+          </div>
         ) : null}
 
         {breadcrumbs.length ? (
-          <div className="mt-2 text-[#666]">
-            <BreadcrumbsLine breadcrumbs={breadcrumbs} />
+          <div className="text-[#666] dark:text-slate-400">
+            <BreadcrumbsLine breadcrumbs={breadcrumbs} />{" "}
           </div>
         ) : null}
       </div>

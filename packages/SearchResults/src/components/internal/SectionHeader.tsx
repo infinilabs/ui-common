@@ -29,22 +29,21 @@ export function SectionHeader({
   return (
     <div className={clsx("mb-2 flex min-w-0 items-center gap-2", className)}>
       {titleIcon ? (
-        titleIconBgColor ? (
-          <span
-            className="inline-flex h-6 w-6 flex-none items-center justify-center rounded-md text-white"
-            style={{ backgroundColor: titleIconBgColor }}
-          >
-            {titleIcon}
-          </span>
-        ) : (
-          <span className="flex-none">{titleIcon}</span>
-        )
+        <span
+          className={clsx(
+            "inline-flex h-6 w-6 flex-none items-center justify-center",
+            titleIconBgColor && "rounded-md text-white"
+          )}
+          style={titleIconBgColor ? { backgroundColor: titleIconBgColor } : undefined}
+        >
+          {titleIcon}
+        </span>
       ) : null}
 
       {title ? (
         <div
           className={clsx(
-            "min-w-0 text-xl font-semibold cursor-pointer hover:underline hover:underline-offset-2 group-hover:underline group-hover:underline-offset-2",
+            "min-w-0 cursor-pointer text-xl font-semibold leading-6 hover:underline hover:underline-offset-2 group-hover:underline group-hover:underline-offset-2",
             titleClassName
           )}
         >
@@ -54,7 +53,7 @@ export function SectionHeader({
 
       {source ? (
         <span
-          className="inline-flex h-6 w-6 flex-none items-center justify-center rounded-md"
+          className="inline-flex h-6 w-6 flex-none items-center justify-center rounded-md bg-slate-100 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200"
           title={source}
         >
           {getSourceBadgeText(source)}
