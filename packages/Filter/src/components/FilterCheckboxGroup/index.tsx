@@ -91,7 +91,7 @@ const FilterCheckboxGroup: FC<FilterCheckboxGroupProps> = (props) => {
           className="inline-flex items-center mt-4 text-primary cursor-pointer"
           onClick={handleExpandMore}
         >
-          <span>{i18n?.labels?.more ?? "更多"}</span>
+          <span>{i18n?.labels?.more ?? "More"}</span>
 
           <ChevronDown
             className={cn("size-4 transition", {
