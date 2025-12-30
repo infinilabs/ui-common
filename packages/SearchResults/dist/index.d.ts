@@ -1,5 +1,5 @@
 import { default as default_2 } from 'react';
-import { JSX } from 'react/jsx-runtime';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 
 export declare function itemsToSections(items: SearchResultsItem[], imageGridColumns?: 2 | 3 | 4): SearchResultsSection[];
 
@@ -62,7 +62,7 @@ export declare type SearchResultMediaItem = SearchResultCommon & {
     onClick?: () => void;
 };
 
-declare function SearchResults({ section, className, footerAction, onRecordClick, onItemClick }: SearchResultsProps): JSX.Element;
+declare function SearchResults({ section, className, footerAction, onRecordClick, onItemClick }: SearchResultsProps): JSX_2.Element;
 export default SearchResults;
 
 export declare type SearchResultsAction = {
@@ -73,7 +73,7 @@ export declare type SearchResultsAction = {
     onClick?: () => void;
 };
 
-export declare function SearchResultsImageGroup(props: SearchResultsImageGroupProps): JSX.Element;
+export declare function SearchResultsImageGroup(props: SearchResultsImageGroupProps): JSX_2.Element;
 
 export declare type SearchResultsImageGroupProps = Omit<SearchResultsProps, "section"> & {
     section: SearchResultImageGroupItem | SearchResultsRecord[] | SearchResultsSection;
@@ -173,7 +173,7 @@ export declare type SearchResultsSection = {
     className?: string;
 };
 
-export declare function SearchResultsVideoGroup(props: SearchResultsVideoGroupProps): JSX.Element;
+export declare function SearchResultsVideoGroup(props: SearchResultsVideoGroupProps): JSX_2.Element;
 
 export declare type SearchResultsVideoGroupProps = Omit<SearchResultsProps, "section"> & {
     section: SearchResultVideoGroupItem | SearchResultsRecord[] | SearchResultsSection;

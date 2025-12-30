@@ -13,7 +13,14 @@ export default defineConfig({
       fileName: "search-results"
     },
     rollupOptions: {
-      external: ["react", "react-dom", "clsx", "lucide-react"],
+      external: [
+        "react",
+        "react-dom",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+        "clsx",
+        "lucide-react"
+      ],
       output: {
         exports: "named",
         globals: {

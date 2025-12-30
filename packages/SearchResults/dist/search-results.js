@@ -1,312 +1,52 @@
 (function(){"use strict";try{if(typeof document<"u"){var e=document.createElement("style");e.appendChild(document.createTextNode('@layer properties{@supports ((-webkit-hyphens:none) and (not (margin-trim:inline))) or ((-moz-orient:inline) and (not (color:rgb(from red r g b)))){*,:before,:after,::backdrop{--tw-translate-x:0;--tw-translate-y:0;--tw-translate-z:0;--tw-space-y-reverse:0;--tw-border-style:solid;--tw-font-weight:initial;--tw-shadow:0 0 #0000;--tw-shadow-color:initial;--tw-shadow-alpha:100%;--tw-inset-shadow:0 0 #0000;--tw-inset-shadow-color:initial;--tw-inset-shadow-alpha:100%;--tw-ring-color:initial;--tw-ring-shadow:0 0 #0000;--tw-inset-ring-color:initial;--tw-inset-ring-shadow:0 0 #0000;--tw-ring-inset:initial;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-offset-shadow:0 0 #0000}}}@layer theme{:root,:host{--font-sans:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";--font-mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;--color-slate-50:oklch(98.4% .003 247.858);--color-slate-100:oklch(96.8% .007 247.896);--color-slate-200:oklch(92.9% .013 255.508);--color-slate-300:oklch(86.9% .022 252.894);--color-slate-700:oklch(37.2% .044 257.287);--color-black:#000;--color-white:#fff;--spacing:.25rem;--container-3xl:48rem;--text-xs:.75rem;--text-xs--line-height:calc(1/.75);--text-sm:.875rem;--text-sm--line-height:calc(1.25/.875);--text-xl:1.25rem;--text-xl--line-height:calc(1.75/1.25);--font-weight-medium:500;--font-weight-semibold:600;--radius-sm:.25rem;--radius-md:.375rem;--radius-lg:.5rem;--radius-xl:.75rem;--aspect-video:16/9;--default-transition-duration:.15s;--default-transition-timing-function:cubic-bezier(.4,0,.2,1);--default-font-family:var(--font-sans);--default-mono-font-family:var(--font-mono)}}@layer base{*,:after,:before,::backdrop{box-sizing:border-box;border:0 solid;margin:0;padding:0}::file-selector-button{box-sizing:border-box;border:0 solid;margin:0;padding:0}html,:host{-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;line-height:1.5;font-family:var(--default-font-family,ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji");font-feature-settings:var(--default-font-feature-settings,normal);font-variation-settings:var(--default-font-variation-settings,normal);-webkit-tap-highlight-color:transparent}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;-webkit-text-decoration:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:var(--default-mono-font-family,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace);font-feature-settings:var(--default-mono-font-feature-settings,normal);font-variation-settings:var(--default-mono-font-variation-settings,normal);font-size:1em}small{font-size:80%}sub,sup{vertical-align:baseline;font-size:75%;line-height:0;position:relative}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}:-moz-focusring{outline:auto}progress{vertical-align:baseline}summary{display:list-item}ol,ul,menu{list-style:none}img,svg,video,canvas,audio,iframe,embed,object{vertical-align:middle;display:block}img,video{max-width:100%;height:auto}button,input,select,optgroup,textarea{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}::file-selector-button{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}:where(select:is([multiple],[size])) optgroup{font-weight:bolder}:where(select:is([multiple],[size])) optgroup option{padding-inline-start:20px}::file-selector-button{margin-inline-end:4px}::-moz-placeholder{opacity:1}::placeholder{opacity:1}@supports (not (-webkit-appearance:-apple-pay-button)) or (contain-intrinsic-size:1px){::-moz-placeholder{color:currentColor}::placeholder{color:currentColor}@supports (color:color-mix(in lab,red,red)){::-moz-placeholder{color:color-mix(in oklab,currentcolor 50%,transparent)}::placeholder{color:color-mix(in oklab,currentcolor 50%,transparent)}}}textarea{resize:vertical}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-date-and-time-value{min-height:1lh;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-datetime-edit{padding-block:0}::-webkit-datetime-edit-year-field{padding-block:0}::-webkit-datetime-edit-month-field{padding-block:0}::-webkit-datetime-edit-day-field{padding-block:0}::-webkit-datetime-edit-hour-field{padding-block:0}::-webkit-datetime-edit-minute-field{padding-block:0}::-webkit-datetime-edit-second-field{padding-block:0}::-webkit-datetime-edit-millisecond-field{padding-block:0}::-webkit-datetime-edit-meridiem-field{padding-block:0}::-webkit-calendar-picker-indicator{line-height:1}:-moz-ui-invalid{box-shadow:none}button,input:where([type=button],[type=reset],[type=submit]){-webkit-appearance:button;-moz-appearance:button;appearance:button}::file-selector-button{-webkit-appearance:button;-moz-appearance:button;appearance:button}::-webkit-inner-spin-button{height:auto}::-webkit-outer-spin-button{height:auto}[hidden]:where(:not([hidden=until-found])){display:none!important}}@layer components;@layer utilities{.absolute{position:absolute}.relative{position:relative}.inset-0{inset:calc(var(--spacing)*0)}.mx-1{margin-inline:calc(var(--spacing)*1)}.mx-auto{margin-inline:auto}.mt-1{margin-top:calc(var(--spacing)*1)}.mt-2{margin-top:calc(var(--spacing)*2)}.mt-3{margin-top:calc(var(--spacing)*3)}.mb-0{margin-bottom:calc(var(--spacing)*0)}.mb-2{margin-bottom:calc(var(--spacing)*2)}.line-clamp-2{-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden}.block{display:block}.flex{display:flex}.grid{display:grid}.inline-flex{display:inline-flex}.aspect-4\\/3{aspect-ratio:4/3}.aspect-video{aspect-ratio:var(--aspect-video)}.h-3{height:calc(var(--spacing)*3)}.h-4{height:calc(var(--spacing)*4)}.h-5{height:calc(var(--spacing)*5)}.h-6{height:calc(var(--spacing)*6)}.h-9{height:calc(var(--spacing)*9)}.h-10{height:calc(var(--spacing)*10)}.h-\\[90px\\]{height:90px}.h-full{height:100%}.h-px{height:1px}.min-h-screen{min-height:100vh}.w-3{width:calc(var(--spacing)*3)}.w-4{width:calc(var(--spacing)*4)}.w-5{width:calc(var(--spacing)*5)}.w-6{width:calc(var(--spacing)*6)}.w-10{width:calc(var(--spacing)*10)}.w-\\[160px\\]{width:160px}.w-full{width:100%}.w-px{width:1px}.max-w-3xl{max-width:var(--container-3xl)}.min-w-0{min-width:calc(var(--spacing)*0)}.flex-1{flex:1}.flex-none{flex:none}.translate-x-px{--tw-translate-x:1px;translate:var(--tw-translate-x)var(--tw-translate-y)}.cursor-pointer{cursor:pointer}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.gap-2{gap:calc(var(--spacing)*2)}.gap-3{gap:calc(var(--spacing)*3)}:where(.space-y-6>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing)*6)*var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing)*6)*calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-10>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing)*10)*var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing)*10)*calc(1 - var(--tw-space-y-reverse)))}.truncate{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.overflow-hidden{overflow:hidden}.rounded{border-radius:.25rem}.rounded-full{border-radius:3.40282e38px}.rounded-lg{border-radius:var(--radius-lg)}.rounded-md{border-radius:var(--radius-md)}.rounded-sm{border-radius:var(--radius-sm)}.rounded-xl{border-radius:var(--radius-xl)}.border{border-style:var(--tw-border-style);border-width:1px}.border-\\[\\#E8E8E8\\]{border-color:#e8e8e8}.border-slate-200{border-color:var(--color-slate-200)}.bg-\\[\\#027FFE\\]{background-color:#027ffe}.bg-\\[\\#666\\]{background-color:#666}.bg-\\[\\#E02E2E\\]{background-color:#e02e2e}.bg-\\[\\#E8E8E8\\]{background-color:#e8e8e8}.bg-black\\/55{background-color:#0000008c}@supports (color:color-mix(in lab,red,red)){.bg-black\\/55{background-color:color-mix(in oklab,var(--color-black)55%,transparent)}}.bg-slate-50{background-color:var(--color-slate-50)}.bg-slate-100{background-color:var(--color-slate-100)}.bg-white{background-color:var(--color-white)}.object-contain{-o-object-fit:contain;object-fit:contain}.object-cover{-o-object-fit:cover;object-fit:cover}.p-6{padding:calc(var(--spacing)*6)}.px-2{padding-inline:calc(var(--spacing)*2)}.px-3{padding-inline:calc(var(--spacing)*3)}.px-4{padding-inline:calc(var(--spacing)*4)}.px-12{padding-inline:calc(var(--spacing)*12)}.py-1{padding-block:calc(var(--spacing)*1)}.py-2{padding-block:calc(var(--spacing)*2)}.text-left{text-align:left}.text-sm{font-size:var(--text-sm);line-height:var(--tw-leading,var(--text-sm--line-height))}.text-xl{font-size:var(--text-xl);line-height:var(--tw-leading,var(--text-xl--line-height))}.text-xs{font-size:var(--text-xs);line-height:var(--tw-leading,var(--text-xs--line-height))}.font-medium{--tw-font-weight:var(--font-weight-medium);font-weight:var(--font-weight-medium)}.font-semibold{--tw-font-weight:var(--font-weight-semibold);font-weight:var(--font-weight-semibold)}.text-\\[\\#1A0CAB\\]{color:#1a0cab}.text-\\[\\#007EFF\\]{color:#007eff}.text-\\[\\#333\\]{color:#333}.text-\\[\\#666\\]{color:#666}.text-slate-700{color:var(--color-slate-700)}.text-white{color:var(--color-white)}.no-underline{text-decoration-line:none}.ring-1{--tw-ring-shadow:var(--tw-ring-inset,)0 0 0 calc(1px + var(--tw-ring-offset-width))var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.ring-slate-200{--tw-ring-color:var(--color-slate-200)}.ring-white\\/30{--tw-ring-color:#ffffff4d}@supports (color:color-mix(in lab,red,red)){.ring-white\\/30{--tw-ring-color:color-mix(in oklab,var(--color-white)30%,transparent)}}.transition{transition-property:color,background-color,border-color,outline-color,text-decoration-color,fill,stroke,--tw-gradient-from,--tw-gradient-via,--tw-gradient-to,opacity,box-shadow,transform,translate,scale,rotate,filter,backdrop-filter,display,content-visibility,overlay,pointer-events;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}@media(hover:hover){.group-hover\\:underline:is(:where(.group):hover *){text-decoration-line:underline}.group-hover\\:underline-offset-2:is(:where(.group):hover *){text-underline-offset:2px}.hover\\:border-\\[\\#E8E8E8\\]:hover{border-color:#e8e8e8}.hover\\:border-slate-300:hover{border-color:var(--color-slate-300)}.hover\\:bg-\\[\\#F5F5F5\\]:hover{background-color:#f5f5f5}.hover\\:bg-slate-50:hover{background-color:var(--color-slate-50)}.hover\\:no-underline:hover{text-decoration-line:none}.hover\\:underline:hover{text-decoration-line:underline}.hover\\:underline-offset-2:hover{text-underline-offset:2px}}.focus\\:outline-none:focus{--tw-outline-style:none;outline-style:none}.focus-visible\\:ring-2:focus-visible{--tw-ring-shadow:var(--tw-ring-inset,)0 0 0 calc(2px + var(--tw-ring-offset-width))var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.focus-visible\\:ring-slate-300:focus-visible{--tw-ring-color:var(--color-slate-300)}}@property --tw-translate-x{syntax:"*";inherits:false;initial-value:0}@property --tw-translate-y{syntax:"*";inherits:false;initial-value:0}@property --tw-translate-z{syntax:"*";inherits:false;initial-value:0}@property --tw-space-y-reverse{syntax:"*";inherits:false;initial-value:0}@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}@property --tw-font-weight{syntax:"*";inherits:false}@property --tw-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-shadow-color{syntax:"*";inherits:false}@property --tw-shadow-alpha{syntax:"<percentage>";inherits:false;initial-value:100%}@property --tw-inset-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-inset-shadow-color{syntax:"*";inherits:false}@property --tw-inset-shadow-alpha{syntax:"<percentage>";inherits:false;initial-value:100%}@property --tw-ring-color{syntax:"*";inherits:false}@property --tw-ring-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-inset-ring-color{syntax:"*";inherits:false}@property --tw-inset-ring-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-ring-inset{syntax:"*";inherits:false}@property --tw-ring-offset-width{syntax:"<length>";inherits:false;initial-value:0}@property --tw-ring-offset-color{syntax:"*";inherits:false;initial-value:#fff}@property --tw-ring-offset-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}')),document.head.appendChild(e)}}catch(t){console.error("vite-plugin-css-injected-by-js",t)}})();
-import me from "react";
-import p from "clsx";
-import { File as pe, FileText as xe, Presentation as ye, FileSpreadsheet as ge, ExternalLink as he, Play as ve, Image as M, Video as be } from "lucide-react";
-var _ = { exports: {} }, j = {};
-var z;
-function je() {
-  if (z) return j;
-  z = 1;
-  var e = /* @__PURE__ */ Symbol.for("react.transitional.element"), t = /* @__PURE__ */ Symbol.for("react.fragment");
-  function n(s, l, i) {
-    var o = null;
-    if (i !== void 0 && (o = "" + i), l.key !== void 0 && (o = "" + l.key), "key" in l) {
-      i = {};
-      for (var m in l)
-        m !== "key" && (i[m] = l[m]);
-    } else i = l;
-    return l = i.ref, {
-      $$typeof: e,
-      type: s,
-      key: o,
-      ref: l !== void 0 ? l : null,
-      props: i
-    };
-  }
-  return j.Fragment = t, j.jsx = n, j.jsxs = n, j;
+import { jsx as n, jsxs as o } from "react/jsx-runtime";
+import c from "clsx";
+import { File as F, FileText as k, Presentation as B, FileSpreadsheet as T, ExternalLink as E, Play as L, Image as x, Video as S } from "lucide-react";
+function A(e, t) {
+  const i = t === "_blank" ? "noreferrer noopener" : "";
+  return e ? i ? [...new Set([...e.split(" "), ...i.split(" ")].filter(Boolean))].join(" ") : e : i || void 0;
 }
-var N = {};
-var V;
-function Ne() {
-  return V || (V = 1, process.env.NODE_ENV !== "production" && (function() {
-    function e(r) {
-      if (r == null) return null;
-      if (typeof r == "function")
-        return r.$$typeof === ue ? null : r.displayName || r.name || null;
-      if (typeof r == "string") return r;
-      switch (r) {
-        case T:
-          return "Fragment";
-        case re:
-          return "Profiler";
-        case te:
-          return "StrictMode";
-        case le:
-          return "Suspense";
-        case ie:
-          return "SuspenseList";
-        case ce:
-          return "Activity";
-      }
-      if (typeof r == "object")
-        switch (typeof r.tag == "number" && console.error(
-          "Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue."
-        ), r.$$typeof) {
-          case ee:
-            return "Portal";
-          case se:
-            return r.displayName || "Context";
-          case ne:
-            return (r._context.displayName || "Context") + ".Consumer";
-          case ae:
-            var c = r.render;
-            return r = r.displayName, r || (r = c.displayName || c.name || "", r = r !== "" ? "ForwardRef(" + r + ")" : "ForwardRef"), r;
-          case oe:
-            return c = r.displayName || null, c !== null ? c : e(r.type) || "Memo";
-          case k:
-            c = r._payload, r = r._init;
-            try {
-              return e(r(c));
-            } catch {
-            }
-        }
-      return null;
-    }
-    function t(r) {
-      return "" + r;
-    }
-    function n(r) {
-      try {
-        t(r);
-        var c = !1;
-      } catch {
-        c = !0;
-      }
-      if (c) {
-        c = console;
-        var u = c.error, f = typeof Symbol == "function" && Symbol.toStringTag && r[Symbol.toStringTag] || r.constructor.name || "Object";
-        return u.call(
-          c,
-          "The provided key is an unsupported type %s. This value must be coerced to a string before using it here.",
-          f
-        ), t(r);
-      }
-    }
-    function s(r) {
-      if (r === T) return "<>";
-      if (typeof r == "object" && r !== null && r.$$typeof === k)
-        return "<...>";
-      try {
-        var c = e(r);
-        return c ? "<" + c + ">" : "<...>";
-      } catch {
-        return "<...>";
-      }
-    }
-    function l() {
-      var r = R.A;
-      return r === null ? null : r.getOwner();
-    }
-    function i() {
-      return Error("react-stack-top-frame");
-    }
-    function o(r) {
-      if (L.call(r, "key")) {
-        var c = Object.getOwnPropertyDescriptor(r, "key").get;
-        if (c && c.isReactWarning) return !1;
-      }
-      return r.key !== void 0;
-    }
-    function m(r, c) {
-      function u() {
-        $ || ($ = !0, console.error(
-          "%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://react.dev/link/special-props)",
-          c
-        ));
-      }
-      u.isReactWarning = !0, Object.defineProperty(r, "key", {
-        get: u,
-        configurable: !0
-      });
-    }
-    function x() {
-      var r = e(this.type);
-      return U[r] || (U[r] = !0, console.error(
-        "Accessing element.ref was removed in React 19. ref is now a regular prop. It will be removed from the JSX Element type in a future release."
-      )), r = this.props.ref, r !== void 0 ? r : null;
-    }
-    function g(r, c, u, f, E, S) {
-      var d = u.ref;
-      return r = {
-        $$typeof: G,
-        type: r,
-        key: c,
-        props: u,
-        _owner: f
-      }, (d !== void 0 ? d : null) !== null ? Object.defineProperty(r, "ref", {
-        enumerable: !1,
-        get: x
-      }) : Object.defineProperty(r, "ref", { enumerable: !1, value: null }), r._store = {}, Object.defineProperty(r._store, "validated", {
-        configurable: !1,
-        enumerable: !1,
-        writable: !0,
-        value: 0
-      }), Object.defineProperty(r, "_debugInfo", {
-        configurable: !1,
-        enumerable: !1,
-        writable: !0,
-        value: null
-      }), Object.defineProperty(r, "_debugStack", {
-        configurable: !1,
-        enumerable: !1,
-        writable: !0,
-        value: E
-      }), Object.defineProperty(r, "_debugTask", {
-        configurable: !1,
-        enumerable: !1,
-        writable: !0,
-        value: S
-      }), Object.freeze && (Object.freeze(r.props), Object.freeze(r)), r;
-    }
-    function h(r, c, u, f, E, S) {
-      var d = c.children;
-      if (d !== void 0)
-        if (f)
-          if (fe(d)) {
-            for (f = 0; f < d.length; f++)
-              y(d[f]);
-            Object.freeze && Object.freeze(d);
-          } else
-            console.error(
-              "React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead."
-            );
-        else y(d);
-      if (L.call(c, "key")) {
-        d = e(r);
-        var b = Object.keys(c).filter(function(de) {
-          return de !== "key";
-        });
-        f = 0 < b.length ? "{key: someKey, " + b.join(": ..., ") + ": ...}" : "{key: someKey}", D[d + f] || (b = 0 < b.length ? "{" + b.join(": ..., ") + ": ...}" : "{}", console.error(
-          `A props object containing a "key" prop is being spread into JSX:
-  let props = %s;
-  <%s {...props} />
-React keys must be passed directly to JSX without using spread:
-  let props = %s;
-  <%s key={someKey} {...props} />`,
-          f,
-          d,
-          b,
-          d
-        ), D[d + f] = !0);
-      }
-      if (d = null, u !== void 0 && (n(u), d = "" + u), o(c) && (n(c.key), d = "" + c.key), "key" in c) {
-        u = {};
-        for (var I in c)
-          I !== "key" && (u[I] = c[I]);
-      } else u = c;
-      return d && m(
-        u,
-        typeof r == "function" ? r.displayName || r.name || "Unknown" : r
-      ), g(
-        r,
-        d,
-        u,
-        l(),
-        E,
-        S
-      );
-    }
-    function y(r) {
-      v(r) ? r._store && (r._store.validated = 1) : typeof r == "object" && r !== null && r.$$typeof === k && (r._payload.status === "fulfilled" ? v(r._payload.value) && r._payload.value._store && (r._payload.value._store.validated = 1) : r._store && (r._store.validated = 1));
-    }
-    function v(r) {
-      return typeof r == "object" && r !== null && r.$$typeof === G;
-    }
-    var w = me, G = /* @__PURE__ */ Symbol.for("react.transitional.element"), ee = /* @__PURE__ */ Symbol.for("react.portal"), T = /* @__PURE__ */ Symbol.for("react.fragment"), te = /* @__PURE__ */ Symbol.for("react.strict_mode"), re = /* @__PURE__ */ Symbol.for("react.profiler"), ne = /* @__PURE__ */ Symbol.for("react.consumer"), se = /* @__PURE__ */ Symbol.for("react.context"), ae = /* @__PURE__ */ Symbol.for("react.forward_ref"), le = /* @__PURE__ */ Symbol.for("react.suspense"), ie = /* @__PURE__ */ Symbol.for("react.suspense_list"), oe = /* @__PURE__ */ Symbol.for("react.memo"), k = /* @__PURE__ */ Symbol.for("react.lazy"), ce = /* @__PURE__ */ Symbol.for("react.activity"), ue = /* @__PURE__ */ Symbol.for("react.client.reference"), R = w.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, L = Object.prototype.hasOwnProperty, fe = Array.isArray, C = console.createTask ? console.createTask : function() {
-      return null;
-    };
-    w = {
-      react_stack_bottom_frame: function(r) {
-        return r();
-      }
-    };
-    var $, U = {}, B = w.react_stack_bottom_frame.bind(
-      w,
-      i
-    )(), Y = C(s(i)), D = {};
-    N.Fragment = T, N.jsx = function(r, c, u) {
-      var f = 1e4 > R.recentlyCreatedOwnerStacks++;
-      return h(
-        r,
-        c,
-        u,
-        !1,
-        f ? Error("react-stack-top-frame") : B,
-        f ? C(s(r)) : Y
-      );
-    }, N.jsxs = function(r, c, u) {
-      var f = 1e4 > R.recentlyCreatedOwnerStacks++;
-      return h(
-        r,
-        c,
-        u,
-        !0,
-        f ? Error("react-stack-top-frame") : B,
-        f ? C(s(r)) : Y
-      );
-    };
-  })()), N;
-}
-var W;
-function we() {
-  return W || (W = 1, process.env.NODE_ENV === "production" ? _.exports = je() : _.exports = Ne()), _.exports;
-}
-var a = we();
-function H(e, t) {
-  const n = t === "_blank" ? "noreferrer noopener" : "";
-  return e ? n ? [...new Set([...e.split(" "), ...n.split(" ")].filter(Boolean))].join(" ") : e : n || void 0;
-}
-function P({
+function v({
   href: e,
   target: t,
-  rel: n,
-  onClick: s,
+  rel: i,
+  onClick: r,
   className: l,
-  children: i
+  children: s
 }) {
-  const o = l ? `${l} cursor-pointer` : "cursor-pointer";
-  return e ? /* @__PURE__ */ a.jsx(
+  const a = l ? `${l} cursor-pointer` : "cursor-pointer";
+  return e ? /* @__PURE__ */ n(
     "a",
     {
       href: e,
       target: t,
-      rel: H(n, t),
-      className: o,
-      onClick: () => s?.(),
-      children: i
+      rel: A(i, t),
+      className: a,
+      onClick: () => r?.(),
+      children: s
     }
-  ) : /* @__PURE__ */ a.jsx("button", { type: "button", className: o, onClick: s, children: i });
+  ) : /* @__PURE__ */ n("button", { type: "button", className: a, onClick: r, children: s });
 }
-function Ee({
+function U({
   item: e,
   onItemClick: t
 }) {
-  const n = e.onClick ? void 0 : e.href;
-  return /* @__PURE__ */ a.jsxs(
-    P,
+  const i = e.onClick ? void 0 : e.href;
+  return /* @__PURE__ */ o(
+    v,
     {
-      href: n,
+      href: i,
       target: e.target,
       rel: e.rel,
       onClick: () => {
         e.onClick?.(), t?.(e);
       },
-      className: p(
+      className: c(
         "group w-full rounded-xl text-left transition",
         "hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
       ),
       children: [
-        /* @__PURE__ */ a.jsx("div", { className: "overflow-hidden rounded-lg ring-1 ring-slate-200", children: /* @__PURE__ */ a.jsx("div", { className: "relative aspect-video bg-slate-100", children: /* @__PURE__ */ a.jsx(
+        /* @__PURE__ */ n("div", { className: "overflow-hidden rounded-lg ring-1 ring-slate-200", children: /* @__PURE__ */ n("div", { className: "relative aspect-video bg-slate-100", children: /* @__PURE__ */ n(
           "img",
           {
             src: e.imageUrl,
@@ -315,79 +55,79 @@ function Ee({
             loading: "lazy"
           }
         ) }) }),
-        /* @__PURE__ */ a.jsxs("div", { className: "mt-2", children: [
-          /* @__PURE__ */ a.jsx("div", { className: "truncate text-sm font-semibold text-[#333]", children: e.title }),
-          e.subtitle ? /* @__PURE__ */ a.jsx("div", { className: "mt-1 truncate text-sm text-[#666]", children: e.subtitle }) : null
+        /* @__PURE__ */ o("div", { className: "mt-2", children: [
+          /* @__PURE__ */ n("div", { className: "truncate text-sm font-semibold text-[#333]", children: e.title }),
+          e.subtitle ? /* @__PURE__ */ n("div", { className: "mt-1 truncate text-sm text-[#666]", children: e.subtitle }) : null
         ] })
       ]
     }
   );
 }
-function _e({ author: e, date: t }) {
-  return !e && !t ? null : /* @__PURE__ */ a.jsxs("div", { className: "flex-none truncate text-xs", children: [
-    e ? /* @__PURE__ */ a.jsx("span", { className: "", children: e }) : null,
-    e && t ? /* @__PURE__ */ a.jsx("span", { className: "mx-1", children: "·" }) : null,
-    t ? /* @__PURE__ */ a.jsx("span", { className: "", children: t }) : null
+function _({ author: e, date: t }) {
+  return !e && !t ? null : /* @__PURE__ */ o("div", { className: "flex-none truncate text-xs", children: [
+    e ? /* @__PURE__ */ n("span", { className: "", children: e }) : null,
+    e && t ? /* @__PURE__ */ n("span", { className: "mx-1", children: "·" }) : null,
+    t ? /* @__PURE__ */ n("span", { className: "", children: t }) : null
   ] });
 }
-function X({ breadcrumbs: e }) {
-  return e?.length ? /* @__PURE__ */ a.jsx("div", { className: "min-w-0 truncate text-xs", children: e.map((t, n) => /* @__PURE__ */ a.jsxs("span", { children: [
-    n > 0 ? /* @__PURE__ */ a.jsx("span", { className: "mx-1", children: ">" }) : null,
-    /* @__PURE__ */ a.jsx("span", { className: "", children: t })
-  ] }, `${t}-${n}`)) }) : null;
+function C({ breadcrumbs: e }) {
+  return e?.length ? /* @__PURE__ */ n("div", { className: "min-w-0 truncate text-xs", children: e.map((t, i) => /* @__PURE__ */ o("span", { children: [
+    i > 0 ? /* @__PURE__ */ n("span", { className: "mx-1", children: ">" }) : null,
+    /* @__PURE__ */ n("span", { className: "", children: t })
+  ] }, `${t}-${i}`)) }) : null;
 }
-function Ae({ meta: e }) {
-  return e?.length ? /* @__PURE__ */ a.jsx("div", { className: "mt-2 flex flex-wrap gap-2 text-xs text-[#333]", children: e.map((t, n) => /* @__PURE__ */ a.jsx(
+function $({ meta: e }) {
+  return e?.length ? /* @__PURE__ */ n("div", { className: "mt-2 flex flex-wrap gap-2 text-xs text-[#333]", children: e.map((t, i) => /* @__PURE__ */ n(
     "span",
     {
       className: "inline-flex items-center rounded border border-slate-200 bg-white px-3 py-1",
       children: t
     },
-    `${t}-${n}`
+    `${t}-${i}`
   )) }) : null;
 }
-function Te(e) {
+function z(e) {
   const t = e.trim().toLowerCase();
   return t ? t === "google" ? "G" : e.trim().slice(0, 1).toUpperCase() : "";
 }
-function A({
+function y({
   title: e,
   titleIcon: t,
-  titleIconBgColor: n,
-  source: s,
+  titleIconBgColor: i,
+  source: r,
   className: l,
-  titleClassName: i
+  titleClassName: s
 }) {
-  return !e && !t && !s ? null : /* @__PURE__ */ a.jsxs("div", { className: p("mb-2 flex min-w-0 items-center gap-2", l), children: [
-    t ? n ? /* @__PURE__ */ a.jsx(
+  return !e && !t && !r ? null : /* @__PURE__ */ o("div", { className: c("mb-2 flex min-w-0 items-center gap-2", l), children: [
+    t ? i ? /* @__PURE__ */ n(
       "span",
       {
         className: "inline-flex h-6 w-6 flex-none items-center justify-center rounded-md text-white",
-        style: { backgroundColor: n },
+        style: { backgroundColor: i },
         children: t
       }
-    ) : /* @__PURE__ */ a.jsx("span", { className: "flex-none", children: t }) : null,
-    e ? /* @__PURE__ */ a.jsx(
+    ) : /* @__PURE__ */ n("span", { className: "flex-none", children: t }) : null,
+    e ? /* @__PURE__ */ n(
       "div",
       {
-        className: p(
+        className: c(
           "min-w-0 text-xl font-semibold cursor-pointer hover:underline hover:underline-offset-2 group-hover:underline group-hover:underline-offset-2",
-          i
+          s
         ),
         children: e
       }
     ) : null,
-    s ? /* @__PURE__ */ a.jsx(
+    r ? /* @__PURE__ */ n(
       "span",
       {
         className: "inline-flex h-6 w-6 flex-none items-center justify-center rounded-md",
-        title: s,
-        children: Te(s)
+        title: r,
+        children: z(r)
       }
     ) : null
   ] });
 }
-function ke(e) {
+function H(e) {
   switch (e) {
     case "doc":
     case "word":
@@ -398,55 +138,55 @@ function ke(e) {
       return "bg-slate-100 text-slate-700";
   }
 }
-function Re(e) {
+function D(e) {
   switch (e) {
     case "xls":
-      return /* @__PURE__ */ a.jsx(ge, { className: "h-5 w-5" });
+      return /* @__PURE__ */ n(T, { className: "h-5 w-5" });
     case "ppt":
-      return /* @__PURE__ */ a.jsx(ye, { className: "h-5 w-5" });
+      return /* @__PURE__ */ n(B, { className: "h-5 w-5" });
     case "pdf":
     case "doc":
     case "word":
     case "text":
-      return /* @__PURE__ */ a.jsx(xe, { className: "h-5 w-5" });
+      return /* @__PURE__ */ n(k, { className: "h-5 w-5" });
     default:
-      return /* @__PURE__ */ a.jsx(pe, { className: "h-5 w-5" });
+      return /* @__PURE__ */ n(F, { className: "h-5 w-5" });
   }
 }
-function q({
+function N({
   fileType: e,
   typeIcon: t
 }) {
-  return t ? /* @__PURE__ */ a.jsx("span", { className: "inline-flex h-6 w-6 items-center justify-center", children: t }) : e ? /* @__PURE__ */ a.jsx(
+  return t ? /* @__PURE__ */ n("span", { className: "inline-flex h-6 w-6 items-center justify-center", children: t }) : e ? /* @__PURE__ */ n(
     "span",
     {
-      className: p(
+      className: c(
         "inline-flex h-6 w-6 items-center justify-center rounded-md",
-        ke(e)
+        H(e)
       ),
-      children: Re(e)
+      children: D(e)
     }
   ) : null;
 }
-function Ce({
+function M({
   item: e,
   onItemClick: t
 }) {
-  const n = e.typeIcon ? /* @__PURE__ */ a.jsx(q, { typeIcon: e.typeIcon }) : e.fileType ? /* @__PURE__ */ a.jsx(q, { fileType: e.fileType }) : null, s = e.onClick || t ? () => {
+  const i = e.typeIcon ? /* @__PURE__ */ n(N, { typeIcon: e.typeIcon }) : e.fileType ? /* @__PURE__ */ n(N, { fileType: e.fileType }) : null, r = e.onClick || t ? () => {
     e.onClick?.(), t?.(e);
-  } : void 0, l = e.onClick ? void 0 : e.href, i = /* @__PURE__ */ a.jsxs("div", { className: "w-full py-2", children: [
-    /* @__PURE__ */ a.jsx("div", { className: "flex min-w-0 items-center gap-2", children: /* @__PURE__ */ a.jsx(
-      A,
+  } : void 0, l = e.onClick ? void 0 : e.href, s = /* @__PURE__ */ o("div", { className: "w-full py-2", children: [
+    /* @__PURE__ */ n("div", { className: "flex min-w-0 items-center gap-2", children: /* @__PURE__ */ n(
+      y,
       {
         className: "mb-0 w-full",
         title: e.title,
-        titleIcon: n,
+        titleIcon: i,
         source: e.source,
         titleClassName: "truncate text-[#1A0CAB]"
       }
     ) }),
-    /* @__PURE__ */ a.jsxs("div", { className: "mt-2 flex gap-3", children: [
-      e.thumbnailUrl ? /* @__PURE__ */ a.jsx(
+    /* @__PURE__ */ o("div", { className: "mt-2 flex gap-3", children: [
+      e.thumbnailUrl ? /* @__PURE__ */ n(
         "img",
         {
           src: e.thumbnailUrl,
@@ -454,53 +194,53 @@ function Ce({
           className: "h-[90px] w-[160px] flex-none rounded-lg object-cover ring-1 ring-slate-200",
           loading: "lazy"
         }
-      ) : /* @__PURE__ */ a.jsx("div", { className: "h-[90px] w-[160px] flex-none rounded-lg bg-slate-100 ring-1 ring-slate-200" }),
-      /* @__PURE__ */ a.jsxs("div", { className: "min-w-0 flex-1 flex flex-col justify-between", children: [
-        e.description ? /* @__PURE__ */ a.jsx("div", { className: "line-clamp-2 text-sm text-[#666]", children: e.description }) : null,
-        e.breadcrumbs?.length || e.author || e.date ? /* @__PURE__ */ a.jsxs("div", { className: "mt-2 flex min-w-0 items-center gap-3 text-[#666]", children: [
-          /* @__PURE__ */ a.jsx(X, { breadcrumbs: e.breadcrumbs }),
-          /* @__PURE__ */ a.jsx("span", { className: "h-3 w-px flex-none bg-[#666]", "aria-hidden": "true" }),
-          /* @__PURE__ */ a.jsxs("div", { className: "flex flex-none items-center gap-2", children: [
-            /* @__PURE__ */ a.jsx(_e, { author: e.author, date: e.date }),
-            e.href ? /* @__PURE__ */ a.jsx("span", { className: "flex-none text-[#007EFF]", children: /* @__PURE__ */ a.jsx(he, { className: "h-3 w-3" }) }) : null
+      ) : /* @__PURE__ */ n("div", { className: "h-[90px] w-[160px] flex-none rounded-lg bg-slate-100 ring-1 ring-slate-200" }),
+      /* @__PURE__ */ o("div", { className: "min-w-0 flex-1 flex flex-col justify-between", children: [
+        e.description ? /* @__PURE__ */ n("div", { className: "line-clamp-2 text-sm text-[#666]", children: e.description }) : null,
+        e.breadcrumbs?.length || e.author || e.date ? /* @__PURE__ */ o("div", { className: "mt-2 flex min-w-0 items-center gap-3 text-[#666]", children: [
+          /* @__PURE__ */ n(C, { breadcrumbs: e.breadcrumbs }),
+          /* @__PURE__ */ n("span", { className: "h-3 w-px flex-none bg-[#666]", "aria-hidden": "true" }),
+          /* @__PURE__ */ o("div", { className: "flex flex-none items-center gap-2", children: [
+            /* @__PURE__ */ n(_, { author: e.author, date: e.date }),
+            e.href ? /* @__PURE__ */ n("span", { className: "flex-none text-[#007EFF]", children: /* @__PURE__ */ n(E, { className: "h-3 w-3" }) }) : null
           ] })
-        ] }) : /* @__PURE__ */ a.jsx(Ae, { meta: e.meta })
+        ] }) : /* @__PURE__ */ n($, { meta: e.meta })
       ] })
     ] })
   ] });
-  return !l && !s ? i : /* @__PURE__ */ a.jsx(
-    P,
+  return !l && !r ? s : /* @__PURE__ */ n(
+    v,
     {
       href: l,
       target: e.target,
       rel: e.rel,
-      onClick: s,
+      onClick: r,
       className: "group block w-full rounded-xl px-3 text-left no-underline transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300",
-      children: i
+      children: s
     }
   );
 }
-function Se({
+function V({
   item: e,
   onItemClick: t
 }) {
-  const n = e.breadcrumbs ?? [e.sourceLabel, e.categoryLabel].filter(Boolean), s = e.onClick ? void 0 : e.href;
-  return /* @__PURE__ */ a.jsxs(
-    P,
+  const i = e.breadcrumbs ?? [e.sourceLabel, e.categoryLabel].filter(Boolean), r = e.onClick ? void 0 : e.href;
+  return /* @__PURE__ */ o(
+    v,
     {
-      href: s,
+      href: r,
       target: e.target,
       rel: e.rel,
       onClick: () => {
         e.onClick?.(), t?.(e);
       },
-      className: p(
+      className: c(
         "group w-full rounded-xl text-left transition",
         "hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
       ),
       children: [
-        /* @__PURE__ */ a.jsx("div", { className: "overflow-hidden rounded-lg ring-1 ring-slate-200", children: /* @__PURE__ */ a.jsxs("div", { className: "relative aspect-4/3 bg-slate-100", children: [
-          /* @__PURE__ */ a.jsx(
+        /* @__PURE__ */ n("div", { className: "overflow-hidden rounded-lg ring-1 ring-slate-200", children: /* @__PURE__ */ o("div", { className: "relative aspect-4/3 bg-slate-100", children: [
+          /* @__PURE__ */ n(
             "img",
             {
               src: e.thumbnailUrl,
@@ -509,61 +249,61 @@ function Se({
               loading: "lazy"
             }
           ),
-          e.mediaType === "video" ? /* @__PURE__ */ a.jsx("div", { className: "absolute inset-0 flex items-center justify-center", children: /* @__PURE__ */ a.jsx("span", { className: "inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/55 text-white ring-1 ring-white/30", children: /* @__PURE__ */ a.jsx(ve, { className: "h-5 w-5 translate-x-px" }) }) }) : null
+          e.mediaType === "video" ? /* @__PURE__ */ n("div", { className: "absolute inset-0 flex items-center justify-center", children: /* @__PURE__ */ n("span", { className: "inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/55 text-white ring-1 ring-white/30", children: /* @__PURE__ */ n(L, { className: "h-5 w-5 translate-x-px" }) }) }) : null
         ] }) }),
-        /* @__PURE__ */ a.jsxs("div", { className: "mt-2", children: [
-          /* @__PURE__ */ a.jsx("div", { className: "truncate text-sm font-medium", children: e.title }),
-          e.matchCountText ? /* @__PURE__ */ a.jsx("div", { className: "mt-1 truncate text-xs text-[#666]", children: e.matchCountText }) : null,
-          n.length ? /* @__PURE__ */ a.jsx("div", { className: "mt-2 text-[#666]", children: /* @__PURE__ */ a.jsx(X, { breadcrumbs: n }) }) : null
+        /* @__PURE__ */ o("div", { className: "mt-2", children: [
+          /* @__PURE__ */ n("div", { className: "truncate text-sm font-medium", children: e.title }),
+          e.matchCountText ? /* @__PURE__ */ n("div", { className: "mt-1 truncate text-xs text-[#666]", children: e.matchCountText }) : null,
+          i.length ? /* @__PURE__ */ n("div", { className: "mt-2 text-[#666]", children: /* @__PURE__ */ n(C, { breadcrumbs: i }) }) : null
         ] })
       ]
     }
   );
 }
-function Ie({
+function P({
   action: e,
   className: t
 }) {
-  const n = p(
+  const i = c(
     "flex-none inline-flex items-center justify-center rounded-full border border-slate-200 bg-white",
     "h-9 px-12 text-sm font-medium text-slate-700 no-underline transition",
     "cursor-pointer hover:border-slate-300 hover:bg-slate-50 hover:no-underline",
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300",
     t
   );
-  return e.href ? /* @__PURE__ */ a.jsx(
+  return e.href ? /* @__PURE__ */ n(
     "a",
     {
-      className: n,
+      className: i,
       href: e.href,
       target: e.target,
-      rel: H(e.rel, e.target),
+      rel: A(e.rel, e.target),
       onClick: () => e.onClick?.(),
       children: e.label
     }
-  ) : /* @__PURE__ */ a.jsx("button", { className: n, type: "button", onClick: e.onClick, children: e.label });
+  ) : /* @__PURE__ */ n("button", { className: i, type: "button", onClick: e.onClick, children: e.label });
 }
-function O({ action: e }) {
-  return e ? /* @__PURE__ */ a.jsxs("div", { className: "mt-3 flex w-full items-center", children: [
-    /* @__PURE__ */ a.jsx("span", { className: "h-px flex-1 bg-[#E8E8E8]", "aria-hidden": "true" }),
-    /* @__PURE__ */ a.jsx(
-      Ie,
+function h({ action: e }) {
+  return e ? /* @__PURE__ */ o("div", { className: "mt-3 flex w-full items-center", children: [
+    /* @__PURE__ */ n("span", { className: "h-px flex-1 bg-[#E8E8E8]", "aria-hidden": "true" }),
+    /* @__PURE__ */ n(
+      P,
       {
         action: e,
-        className: p(
+        className: c(
           "rounded-full border border-[#E8E8E8] bg-white px-4 py-2 text-sm font-medium text-[#333] transition",
           "hover:border-[#E8E8E8] hover:bg-[#F5F5F5]"
         )
       }
     ),
-    /* @__PURE__ */ a.jsx("span", { className: "h-px flex-1 bg-[#E8E8E8]", "aria-hidden": "true" })
+    /* @__PURE__ */ n("span", { className: "h-px flex-1 bg-[#E8E8E8]", "aria-hidden": "true" })
   ] }) : null;
 }
-function Oe(e, t) {
+function O(e, t) {
   if (e.layout === "list")
-    return /* @__PURE__ */ a.jsxs("div", { className: p("space-y-6", e.className), children: [
-      /* @__PURE__ */ a.jsx(
-        A,
+    return /* @__PURE__ */ o("div", { className: c("space-y-6", e.className), children: [
+      /* @__PURE__ */ n(
+        y,
         {
           title: e.title,
           titleIcon: e.titleIcon,
@@ -571,14 +311,14 @@ function Oe(e, t) {
           titleClassName: e.titleClassName
         }
       ),
-      e.items.map((l) => /* @__PURE__ */ a.jsx(Ce, { item: l, onItemClick: t }, l.id)),
-      /* @__PURE__ */ a.jsx(O, { action: e.footerAction })
+      e.items.map((l) => /* @__PURE__ */ n(M, { item: l, onItemClick: t }, l.id)),
+      /* @__PURE__ */ n(h, { action: e.footerAction })
     ] });
   if (e.layout === "mediaGrid") {
-    const l = e.columns ?? 3, i = l === 2 ? "grid-cols-2" : l === 4 ? "grid-cols-4" : "grid-cols-3";
-    return /* @__PURE__ */ a.jsxs("div", { className: p(e.className), children: [
-      /* @__PURE__ */ a.jsx(
-        A,
+    const l = e.columns ?? 3, s = l === 2 ? "grid-cols-2" : l === 4 ? "grid-cols-4" : "grid-cols-3";
+    return /* @__PURE__ */ o("div", { className: c(e.className), children: [
+      /* @__PURE__ */ n(
+        y,
         {
           title: e.title,
           titleIcon: e.titleIcon,
@@ -586,14 +326,14 @@ function Oe(e, t) {
           titleClassName: e.titleClassName
         }
       ),
-      /* @__PURE__ */ a.jsx("div", { className: p("grid gap-3", i), children: e.items.map((o) => /* @__PURE__ */ a.jsx(Se, { item: o, onItemClick: t }, o.id)) }),
-      /* @__PURE__ */ a.jsx(O, { action: e.footerAction })
+      /* @__PURE__ */ n("div", { className: c("grid gap-3", s), children: e.items.map((a) => /* @__PURE__ */ n(V, { item: a, onItemClick: t }, a.id)) }),
+      /* @__PURE__ */ n(h, { action: e.footerAction })
     ] });
   }
-  const n = e.columns ?? 3, s = n === 2 ? "grid-cols-2" : n === 4 ? "grid-cols-4" : "grid-cols-3";
-  return /* @__PURE__ */ a.jsxs("div", { className: p(e.className), children: [
-    /* @__PURE__ */ a.jsx(
-      A,
+  const i = e.columns ?? 3, r = i === 2 ? "grid-cols-2" : i === 4 ? "grid-cols-4" : "grid-cols-3";
+  return /* @__PURE__ */ o("div", { className: c(e.className), children: [
+    /* @__PURE__ */ n(
+      y,
       {
         title: e.title,
         titleIcon: e.titleIcon,
@@ -601,68 +341,68 @@ function Oe(e, t) {
         titleClassName: e.titleClassName
       }
     ),
-    /* @__PURE__ */ a.jsx("div", { className: p("grid gap-3", s), children: e.items.map((l) => /* @__PURE__ */ a.jsx(Ee, { item: l, onItemClick: t }, l.id)) }),
-    /* @__PURE__ */ a.jsx(O, { action: e.footerAction })
+    /* @__PURE__ */ n("div", { className: c("grid gap-3", r), children: e.items.map((l) => /* @__PURE__ */ n(U, { item: l, onItemClick: t }, l.id)) }),
+    /* @__PURE__ */ n(h, { action: e.footerAction })
   ] });
 }
-function Pe(e) {
+function q(e) {
   if (!e) return;
   const t = new Date(e);
   return Number.isNaN(t.getTime()) ? e : t.toISOString().slice(0, 10);
 }
-function Fe(e) {
+function J(e) {
   const t = e?.trim().toLowerCase();
   if (t)
     return t === "pdf" ? "pdf" : t === "doc" || t === "docx" || t === "word" ? "doc" : t === "ppt" || t === "pptx" ? "ppt" : t === "xls" || t === "xlsx" || t === "excel" ? "xls" : t === "link" || t === "url" || t === "html" ? "link" : t === "txt" || t === "text" ? "text" : "unknown";
 }
-function F(e, t, n) {
-  const s = e.thumbnail ?? e.cover ?? e.metadata?.thumbnail_link, l = e.summary ?? e.content, i = Fe(e.metadata?.file_extension ?? e.type), o = e.source?.name, m = e.category ?? e.categories?.join(" / ") ?? "Categories", x = [o, m].filter(Boolean), g = e.last_updated_by?.user?.username ?? e.owner?.username, h = Pe(e.last_updated_by?.timestamp ?? e.metadata?.last_reviewed), y = e.metadata?.icon_link ?? e.icon, v = y ? /* @__PURE__ */ a.jsx("img", { src: y, alt: "", className: "h-5 w-5 rounded-sm object-contain" }) : void 0;
+function b(e, t, i) {
+  const r = e.thumbnail ?? e.cover ?? e.metadata?.thumbnail_link, l = e.summary ?? e.content, s = J(e.metadata?.file_extension ?? e.type), a = e.source?.name, u = e.category ?? e.categories?.join(" / ") ?? "Categories", d = [a, u].filter(Boolean), m = e.last_updated_by?.user?.username ?? e.owner?.username, p = q(e.last_updated_by?.timestamp ?? e.metadata?.last_reviewed), f = e.metadata?.icon_link ?? e.icon, g = f ? /* @__PURE__ */ n("img", { src: f, alt: "", className: "h-5 w-5 rounded-sm object-contain" }) : void 0;
   return {
     type: "result",
     id: `${e.source?.id ?? e.url ?? e.title}-${t}`,
     title: e.title,
     href: e.url,
     description: l,
-    thumbnailUrl: s,
-    fileType: i,
-    typeIcon: v,
-    breadcrumbs: x.length ? x : void 0,
-    author: g,
-    date: h,
-    onClick: n
+    thumbnailUrl: r,
+    fileType: s,
+    typeIcon: g,
+    breadcrumbs: d.length ? d : void 0,
+    author: m,
+    date: p,
+    onClick: i
   };
 }
-function Z({
+function I({
   section: e,
   className: t,
-  footerAction: n,
-  onRecordClick: s,
+  footerAction: i,
+  onRecordClick: r,
   onItemClick: l
 }) {
-  const i = Ge(Q(e, s), n);
-  return /* @__PURE__ */ a.jsx("div", { className: p(t), children: Oe(i, l) });
+  const s = K(j(e, r), i);
+  return /* @__PURE__ */ n("div", { className: c(t), children: O(s, l) });
 }
-function Ge(e, t) {
+function K(e, t) {
   return !t || e.footerAction ? e : e.layout === "list" ? { ...e, footerAction: t } : e.layout === "mediaGrid" ? { ...e, footerAction: t } : { ...e, footerAction: t };
 }
-function Me(e) {
-  return /* @__PURE__ */ a.jsx(Z, { ...e });
+function ee(e) {
+  return /* @__PURE__ */ n(I, { ...e });
 }
-function ze(e) {
-  return /* @__PURE__ */ a.jsx(Z, { ...e });
+function te(e) {
+  return /* @__PURE__ */ n(I, { ...e });
 }
-function Q(e, t) {
-  if (Array.isArray(e)) return Le(e, t);
-  if (Ue(e)) return e;
-  const n = e;
-  if (n.type === "imageGroup" && Array.isArray(n.items)) {
-    const l = n;
+function j(e, t) {
+  if (Array.isArray(e)) return Q(e, t);
+  if (X(e)) return e;
+  const i = e;
+  if (i.type === "imageGroup" && Array.isArray(i.items)) {
+    const l = i;
     return l.items[0]?.type === "media" ? {
       type: "section",
       title: l.title,
       layout: "mediaGrid",
       items: l.items.filter(
-        (o) => typeof o == "object" && !!o && o.type === "media"
+        (a) => typeof a == "object" && !!a && a.type === "media"
       ),
       columns: l.columns,
       footerAction: l.footerAction,
@@ -672,15 +412,15 @@ function Q(e, t) {
       title: l.title,
       layout: "imageGrid",
       items: l.items.filter(
-        (o) => typeof o == "object" && !!o && o.type === "image"
+        (a) => typeof a == "object" && !!a && a.type === "image"
       ),
       columns: l.columns,
       footerAction: l.footerAction,
       className: l.className
     };
   }
-  if (n.type === "videoGroup" && Array.isArray(n.items)) {
-    const l = n;
+  if (i.type === "videoGroup" && Array.isArray(i.items)) {
+    const l = i;
     return {
       type: "section",
       title: l.title,
@@ -691,42 +431,42 @@ function Q(e, t) {
       className: l.className
     };
   }
-  if (n.type === "result")
+  if (i.type === "result")
     return {
       type: "section",
       layout: "list",
       items: [e]
     };
-  if (n.type === "media")
+  if (i.type === "media")
     return {
       type: "section",
       layout: "mediaGrid",
       items: [e]
     };
-  if (n.type === "image" && typeof n.imageUrl == "string")
+  if (i.type === "image" && typeof i.imageUrl == "string")
     return {
       type: "section",
       layout: "imageGrid",
       items: [e]
     };
-  const s = typeof n.type == "string" ? n.type.trim().toLowerCase() : void 0;
-  if (s === "image" || s === "video") {
-    const l = typeof n.id == "string" ? n.id : void 0, i = typeof n.thumbnail == "string" ? n.thumbnail : typeof n.cover == "string" ? n.cover : typeof n.metadata == "object" && n.metadata && typeof n.metadata.thumbnail_link == "string" ? n.metadata.thumbnail_link : void 0;
-    if (i) {
-      const o = typeof n.category == "string" ? n.category : Array.isArray(n.categories) ? n.categories.filter((y) => typeof y == "string").join(" / ") : void 0, m = typeof n.title == "string" ? n.title : "Untitled", x = typeof n.url == "string" ? n.url : void 0, g = typeof n.source == "object" && n.source && typeof n.source.name == "string" ? n.source.name : void 0;
+  const r = typeof i.type == "string" ? i.type.trim().toLowerCase() : void 0;
+  if (r === "image" || r === "video") {
+    const l = typeof i.id == "string" ? i.id : void 0, s = typeof i.thumbnail == "string" ? i.thumbnail : typeof i.cover == "string" ? i.cover : typeof i.metadata == "object" && i.metadata && typeof i.metadata.thumbnail_link == "string" ? i.metadata.thumbnail_link : void 0;
+    if (s) {
+      const a = typeof i.category == "string" ? i.category : Array.isArray(i.categories) ? i.categories.filter((f) => typeof f == "string").join(" / ") : void 0, u = typeof i.title == "string" ? i.title : "Untitled", d = typeof i.url == "string" ? i.url : void 0, m = typeof i.source == "object" && i.source && typeof i.source.name == "string" ? i.source.name : void 0;
       return {
         type: "section",
         layout: "mediaGrid",
         items: [{
           type: "media",
-          id: l ?? `${x ?? m}-0`,
-          mediaType: s === "video" ? "video" : "image",
-          title: m,
-          href: t ? void 0 : x,
-          thumbnailUrl: i,
-          sourceLabel: g,
-          categoryLabel: o,
-          breadcrumbs: [g, o].filter(Boolean),
+          id: l ?? `${d ?? u}-0`,
+          mediaType: r === "video" ? "video" : "image",
+          title: u,
+          href: t ? void 0 : d,
+          thumbnailUrl: s,
+          sourceLabel: m,
+          categoryLabel: a,
+          breadcrumbs: [m, a].filter(Boolean),
           ...t ? { onClick: () => t(e, 0) } : {}
         }]
       };
@@ -736,7 +476,7 @@ function Q(e, t) {
     type: "section",
     layout: "list",
     items: [
-      F(
+      b(
         e,
         0,
         t ? () => t(e, 0) : void 0
@@ -744,158 +484,158 @@ function Q(e, t) {
     ]
   };
 }
-function Le(e, t) {
+function Q(e, t) {
   if (!e.length)
     return { type: "section", layout: "list", items: [] };
-  if (e.every(K)) {
-    if (e.every((i) => i.type === "result"))
+  if (e.every(G)) {
+    if (e.every((s) => s.type === "result"))
       return { type: "section", layout: "list", items: e };
-    if (e.every((i) => i.type === "media"))
+    if (e.every((s) => s.type === "media"))
       return { type: "section", layout: "mediaGrid", items: e };
-    if (e.every((i) => i.type === "image" && "imageUrl" in i))
+    if (e.every((s) => s.type === "image" && "imageUrl" in s))
       return { type: "section", layout: "imageGrid", items: e };
-    if (e.length === 1) return Q(e[0], t);
+    if (e.length === 1) return j(e[0], t);
   }
-  const n = [], s = [];
-  for (const [i, o] of e.entries()) {
-    const m = $e(o, i, t);
-    m ? n.push(m) : s.push(
-      F(
-        o,
-        i,
-        t ? () => t(o, i) : void 0
+  const i = [], r = [];
+  for (const [s, a] of e.entries()) {
+    const u = W(a, s, t);
+    u ? i.push(u) : r.push(
+      b(
+        a,
+        s,
+        t ? () => t(a, s) : void 0
       )
     );
   }
-  return n.length && !s.length ? { type: "section", title: J(e, (o) => o.category ?? o.source?.name), layout: "mediaGrid", items: n } : { type: "section", title: J(e, (i) => i.category ?? i.source?.name), layout: "list", items: s };
+  return i.length && !r.length ? { type: "section", title: w(e, (a) => a.category ?? a.source?.name), layout: "mediaGrid", items: i } : { type: "section", title: w(e, (s) => s.category ?? s.source?.name), layout: "list", items: r };
 }
-function K(e) {
+function G(e) {
   if (!e || typeof e != "object") return !1;
   const t = e;
   return t.type === "result" || t.type === "media" || t.type === "imageGroup" || t.type === "videoGroup" || t.type === "image" && typeof e.imageUrl == "string";
 }
-function $e(e, t, n) {
-  const s = e, l = typeof s.type == "string" ? s.type.trim().toLowerCase() : void 0;
+function W(e, t, i) {
+  const r = e, l = typeof r.type == "string" ? r.type.trim().toLowerCase() : void 0;
   if (l !== "image" && l !== "video") return;
-  const i = typeof s.id == "string" ? s.id : void 0, o = typeof s.thumbnail == "string" ? s.thumbnail : typeof s.cover == "string" ? s.cover : typeof s.metadata == "object" && s.metadata && typeof s.metadata.thumbnail_link == "string" ? s.metadata.thumbnail_link : void 0;
-  if (!o) return;
-  const m = typeof s.category == "string" ? s.category : Array.isArray(s.categories) ? s.categories.filter((v) => typeof v == "string").join(" / ") : void 0, x = typeof s.title == "string" ? s.title : "Untitled", g = typeof s.url == "string" ? s.url : void 0, h = typeof s.source == "object" && s.source && typeof s.source.name == "string" ? s.source.name : void 0, y = !!n && !K(e);
+  const s = typeof r.id == "string" ? r.id : void 0, a = typeof r.thumbnail == "string" ? r.thumbnail : typeof r.cover == "string" ? r.cover : typeof r.metadata == "object" && r.metadata && typeof r.metadata.thumbnail_link == "string" ? r.metadata.thumbnail_link : void 0;
+  if (!a) return;
+  const u = typeof r.category == "string" ? r.category : Array.isArray(r.categories) ? r.categories.filter((g) => typeof g == "string").join(" / ") : void 0, d = typeof r.title == "string" ? r.title : "Untitled", m = typeof r.url == "string" ? r.url : void 0, p = typeof r.source == "object" && r.source && typeof r.source.name == "string" ? r.source.name : void 0, f = !!i && !G(e);
   return {
     type: "media",
-    id: i ?? `${g ?? x}-0`,
+    id: s ?? `${m ?? d}-0`,
     mediaType: l === "video" ? "video" : "image",
-    title: x,
-    href: y ? void 0 : g,
-    thumbnailUrl: o,
-    sourceLabel: h,
-    categoryLabel: m,
-    breadcrumbs: [h, m].filter(Boolean),
-    ...y ? { onClick: () => n(e, t) } : {}
+    title: d,
+    href: f ? void 0 : m,
+    thumbnailUrl: a,
+    sourceLabel: p,
+    categoryLabel: u,
+    breadcrumbs: [p, u].filter(Boolean),
+    ...f ? { onClick: () => i(e, t) } : {}
   };
 }
-function J(e, t) {
-  const n = e[0], s = t(n);
-  if (s) {
+function w(e, t) {
+  const i = e[0], r = t(i);
+  if (r) {
     for (const l of e)
-      if (t(l) !== s) return;
-    return s;
+      if (t(l) !== r) return;
+    return r;
   }
 }
-function Ue(e) {
+function X(e) {
   if (!e || typeof e != "object") return !1;
   const t = e;
   return t.type === "section" && (t.layout === "list" || t.layout === "imageGrid" || t.layout === "mediaGrid") && Array.isArray(t.items);
 }
-function Ve(e, t) {
-  const n = [];
-  for (const s of e) {
-    const l = n.length ? n[n.length - 1] : void 0;
-    if (s.type === "imageGroup") {
-      s.items[0]?.type === "media" ? n.push({
+function ie(e, t) {
+  const i = [];
+  for (const r of e) {
+    const l = i.length ? i[i.length - 1] : void 0;
+    if (r.type === "imageGroup") {
+      r.items[0]?.type === "media" ? i.push({
         type: "section",
-        title: s.title,
-        titleIcon: /* @__PURE__ */ a.jsx(M, { className: "h-4 w-4" }),
+        title: r.title,
+        titleIcon: /* @__PURE__ */ n(x, { className: "h-4 w-4" }),
         titleIconBgColor: "#FFAF36",
         titleClassName: "text-[#1A0CAB]",
         layout: "mediaGrid",
-        items: s.items.filter((o) => o.type === "media"),
-        columns: s.columns ?? t,
-        footerAction: s.footerAction,
-        className: s.className
-      }) : n.push({
+        items: r.items.filter((a) => a.type === "media"),
+        columns: r.columns ?? t,
+        footerAction: r.footerAction,
+        className: r.className
+      }) : i.push({
         type: "section",
-        title: s.title,
-        titleIcon: /* @__PURE__ */ a.jsx(M, { className: "h-4 w-4" }),
+        title: r.title,
+        titleIcon: /* @__PURE__ */ n(x, { className: "h-4 w-4" }),
         titleIconBgColor: "#FFAF36",
         titleClassName: "text-[#1A0CAB]",
         layout: "imageGrid",
-        items: s.items.filter((o) => o.type === "image"),
-        columns: s.columns ?? t,
-        footerAction: s.footerAction,
-        className: s.className
+        items: r.items.filter((a) => a.type === "image"),
+        columns: r.columns ?? t,
+        footerAction: r.footerAction,
+        className: r.className
       });
       continue;
     }
-    if (s.type === "videoGroup") {
-      n.push({
+    if (r.type === "videoGroup") {
+      i.push({
         type: "section",
-        title: s.title,
-        titleIcon: /* @__PURE__ */ a.jsx(be, { className: "h-4 w-4" }),
+        title: r.title,
+        titleIcon: /* @__PURE__ */ n(S, { className: "h-4 w-4" }),
         titleIconBgColor: "#1784FC",
         titleClassName: "text-[#1A0CAB]",
         layout: "mediaGrid",
-        items: s.items,
-        columns: s.columns ?? t,
-        footerAction: s.footerAction,
-        className: s.className
+        items: r.items,
+        columns: r.columns ?? t,
+        footerAction: r.footerAction,
+        className: r.className
       });
       continue;
     }
-    if (s.type === "result") {
+    if (r.type === "result") {
       if (l?.layout === "list") {
-        l.items.push(s);
+        l.items.push(r);
         continue;
       }
-      n.push({
+      i.push({
         type: "section",
         layout: "list",
-        items: [s]
+        items: [r]
       });
       continue;
     }
-    if (s.type === "media") {
+    if (r.type === "media") {
       if (l?.layout === "mediaGrid") {
-        l.items.push(s);
+        l.items.push(r);
         continue;
       }
-      n.push({
+      i.push({
         type: "section",
         layout: "mediaGrid",
         ...t ? { columns: t } : {},
-        items: [s]
+        items: [r]
       });
       continue;
     }
     if (l?.layout === "imageGrid") {
-      l.items.push(s);
+      l.items.push(r);
       continue;
     }
-    n.push({
+    i.push({
       type: "section",
       layout: "imageGrid",
       ...t ? { columns: t } : {},
-      items: [s]
+      items: [r]
     });
   }
-  return n;
+  return i;
 }
-function We(e) {
-  return e.map((t, n) => F(t, n));
+function re(e) {
+  return e.map((t, i) => b(t, i));
 }
 export {
-  Me as SearchResultsImageGroup,
-  ze as SearchResultsVideoGroup,
-  Z as default,
-  Ve as itemsToSections,
-  We as recordsToItems
+  ee as SearchResultsImageGroup,
+  te as SearchResultsVideoGroup,
+  I as default,
+  ie as itemsToSections,
+  re as recordsToItems
 };

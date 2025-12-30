@@ -1,4 +1,12 @@
-import SearchResults, { itemsToSections, type SearchResultsItem } from "@infinilabs/search-results";
+import SearchResults, {
+  SearchResultsImageGroup,
+  SearchResultsVideoGroup,
+  type SearchResultImageGroupItem,
+  type SearchResultListItem,
+  type SearchResultVideoGroupItem,
+  type SearchResultsItem,
+  type SearchResultsRecord
+} from "@infinilabs/search-results";
 
 const searchResultItems: SearchResultsItem[] = [
   {
@@ -12,6 +20,7 @@ const searchResultItems: SearchResultsItem[] = [
     source: "Google",
     description:
       "AI 摘要：本文档介绍如何配置数据源、设置分类与权限，并通过语义检索与过滤器快速定位知识内容；同时支持摘要生成与高亮片段匹配。",
+    onClick: () => window.alert("点击：result-0（有 onClick 时不走 href）")
   },
   {
     type: "result",
@@ -43,7 +52,6 @@ const searchResultItems: SearchResultsItem[] = [
     id: "image-group-1",
     title: "图片",
     columns: 3,
-    footerAction: { label: "所有图片 >", href: "#" },
     items: [
       {
         type: "media",
@@ -54,6 +62,7 @@ const searchResultItems: SearchResultsItem[] = [
         thumbnailUrl: "https://picsum.photos/seed/image-group-1/800/600",
         sourceLabel: "Google Drive",
         categoryLabel: "素材",
+        onClick: () => window.alert("点击：img-1（有 onClick 时不走 href）")
       },
       {
         type: "media",
@@ -82,7 +91,6 @@ const searchResultItems: SearchResultsItem[] = [
     id: "video-group-1",
     title: "视频",
     columns: 3,
-    footerAction: { label: "所有视频 >", href: "#" },
     items: [
       {
         type: "media",
@@ -94,6 +102,7 @@ const searchResultItems: SearchResultsItem[] = [
         matchCountText: "匹配片段数量 12",
         sourceLabel: "视频库",
         categoryLabel: "教程",
+        onClick: () => window.alert("点击：vid-1（有 onClick 时不走 href）")
       },
       {
         type: "media",
@@ -122,16 +131,90 @@ const searchResultItems: SearchResultsItem[] = [
 ];
 
 export default function SearchResultsDemo() {
-  const sections = itemsToSections(searchResultItems);
+  const listResults = searchResultItems.filter((item): item is SearchResultListItem => item.type === "result");
+  const imageGroup = searchResultItems.find((item): item is SearchResultImageGroupItem => item.type === "imageGroup");
+  const videoGroup = searchResultItems.find((item): item is SearchResultVideoGroupItem => item.type === "videoGroup");
+
+  const recordImageItems: SearchResultsRecord[] = [
+    {
+      id: "record-image-0",
+      type: "image",
+      title: "记录图片：示例 0",
+      cover: "https://picsum.photos/seed/record-image-0/800/600",
+      url: "https://example.com/record-image-0",
+      source: { name: "Records" },
+      category: "图片",
+      metadata: { has_thumbnail: true }
+    },
+    {
+      id: "record-image-1",
+      type: "image",
+      title: "记录图片：示例 1",
+      cover: "https://picsum.photos/seed/record-image-1/800/600",
+      url: "https://example.com/record-image-1",
+      source: { name: "Records" },
+      category: "图片",
+      metadata: { has_thumbnail: true }
+    }
+  ];
+
+  const recordVideoItems: SearchResultsRecord[] = [
+    {
+      id: "record-video-0",
+      type: "video",
+      title: "记录视频：示例 0",
+      cover: "https://picsum.photos/seed/record-video-0/800/600",
+      url: "https://example.com/record-video-0",
+      source: { name: "Records" },
+      category: "视频",
+      metadata: { has_thumbnail: true }
+    },
+    {
+      id: "record-video-1",
+      type: "video",
+      title: "记录视频：示例 1",
+      cover: "https://picsum.photos/seed/record-video-1/800/600",
+      url: "https://example.com/record-video-1",
+      source: { name: "Records" },
+      category: "视频",
+      metadata: { has_thumbnail: true }
+    }
+  ];
 
   return (
     <div className="space-y-10">
-      {sections.map((section, index) => (
-        <SearchResults
-          key={`${section.layout}-${section.title ?? "section"}-${index}`}
-          section={section}
+      <SearchResults
+        section={listResults}
+        onItemClick={(item) => window.alert(`onItemClick: ${item.type} / ${item.id}`)}
+      />
+
+      {imageGroup ? (
+        <SearchResultsImageGroup
+          section={imageGroup}
+          footerAction={{ label: "所有图片 >", onClick: () => window.alert("所有图片") }}
+          onItemClick={(item) => window.alert(`onItemClick: ${item.type} / ${item.id}`)}
         />
-      ))}
+      ) : null}
+
+      {videoGroup ? (
+        <SearchResultsVideoGroup
+          section={videoGroup}
+          footerAction={{ label: "所有视频 >", onClick: () => window.alert("所有视频") }}
+          onItemClick={(item) => window.alert(`onItemClick: ${item.type} / ${item.id}`)}
+        />
+      ) : null}
+
+      <SearchResultsImageGroup
+        section={recordImageItems}
+        footerAction={{ label: "记录图片 >", onClick: () => window.alert("记录图片 footer") }}
+        onRecordClick={(record, index) => window.alert(`onRecordClick: image / ${record.title} / ${index}`)}
+      />
+
+      <SearchResultsVideoGroup
+        section={recordVideoItems}
+        footerAction={{ label: "记录视频 >", onClick: () => window.alert("记录视频 footer") }}
+        onRecordClick={(record, index) => window.alert(`onRecordClick: video / ${record.title} / ${index}`)}
+      />
     </div>
   );
 }
