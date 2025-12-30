@@ -3,7 +3,11 @@ import { normalizeFileType } from "./normalizeFileType";
 
 import type { SearchResultListItem, SearchResultsRecord } from "../types";
 
-export function recordToListItem(record: SearchResultsRecord, index: number): SearchResultListItem {
+export function recordToListItem(
+  record: SearchResultsRecord,
+  index: number,
+  onClick?: () => void
+): SearchResultListItem {
   const thumbnailUrl = record.thumbnail ?? record.cover ?? record.metadata?.thumbnail_link;
   const description = record.summary ?? record.content;
   const fileType = normalizeFileType(record.metadata?.file_extension ?? record.type);
@@ -31,7 +35,7 @@ export function recordToListItem(record: SearchResultsRecord, index: number): Se
     typeIcon,
     breadcrumbs: breadcrumbs.length ? breadcrumbs : undefined,
     author,
-    date
+    date,
+    onClick
   };
 }
-

@@ -11,9 +11,10 @@ export function ImageItem({
   item: SearchResultImageItem;
   onItemClick?: SearchResultsProps["onItemClick"];
 }) {
+  const interactiveHref = item.onClick ? undefined : item.href;
   return (
     <ItemInteractive
-      href={item.href}
+      href={interactiveHref}
       target={item.target}
       rel={item.rel}
       onClick={() => {
@@ -21,7 +22,7 @@ export function ImageItem({
         onItemClick?.(item);
       }}
       className={clsx(
-        "group w-full rounded-xl bg-white text-left transition",
+        "group w-full rounded-xl text-left transition",
         "hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
       )}
     >
@@ -46,4 +47,3 @@ export function ImageItem({
     </ItemInteractive>
   );
 }
-

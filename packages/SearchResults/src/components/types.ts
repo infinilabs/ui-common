@@ -59,6 +59,7 @@ export type SearchResultMediaItem = SearchResultCommon & {
   matchCountText?: string;
   sourceLabel?: string;
   categoryLabel?: string;
+  breadcrumbs?: string[];
   onClick?: () => void;
 };
 
@@ -170,7 +171,21 @@ export type SearchResultsSection =
     };
 
 export type SearchResultsProps = {
-  section: SearchResultsSection;
+  section:
+    | SearchResultsSection
+    | SearchResultsItem
+    | SearchResultsRecord
+    | Array<SearchResultsItem | SearchResultsRecord>;
   className?: string;
+  footerAction?: SearchResultsAction;
+  onRecordClick?: (record: SearchResultsRecord, index: number) => void;
   onItemClick?: (item: SearchResultsItem) => void;
+};
+
+export type SearchResultsImageGroupProps = Omit<SearchResultsProps, "section"> & {
+  section: SearchResultImageGroupItem | SearchResultsRecord[] | SearchResultsSection;
+};
+
+export type SearchResultsVideoGroupProps = Omit<SearchResultsProps, "section"> & {
+  section: SearchResultVideoGroupItem | SearchResultsRecord[] | SearchResultsSection;
 };

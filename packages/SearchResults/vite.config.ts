@@ -15,6 +15,7 @@ export default defineConfig({
     rollupOptions: {
       external: ["react", "react-dom", "clsx", "lucide-react"],
       output: {
+        exports: "named",
         globals: {
           react: "React",
           "react-dom": "ReactDOM"
@@ -23,4 +24,3 @@ export default defineConfig({
     }
   }
 });
-

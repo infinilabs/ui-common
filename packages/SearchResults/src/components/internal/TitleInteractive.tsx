@@ -22,7 +22,7 @@ export function TitleInteractive({
         target={target}
         rel={joinRel(rel, target)}
         onClick={() => onClick?.()}
-        className="group flex w-full min-w-0 items-center gap-2"
+        className="group flex w-full min-w-0 items-center gap-2 cursor-pointer"
       >
         {children}
       </a>
@@ -34,7 +34,7 @@ export function TitleInteractive({
       <button
         type="button"
         onClick={onClick}
-        className="group flex w-full min-w-0 items-center gap-2 text-left"
+        className="group flex w-full min-w-0 items-center gap-2 text-left cursor-pointer"
       >
         {children}
       </button>

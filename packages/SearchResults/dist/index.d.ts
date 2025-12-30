@@ -58,13 +58,14 @@ export declare type SearchResultMediaItem = SearchResultCommon & {
     matchCountText?: string;
     sourceLabel?: string;
     categoryLabel?: string;
+    breadcrumbs?: string[];
     onClick?: () => void;
 };
 
-declare function SearchResults({ section, className, onItemClick }: SearchResultsProps): JSX.Element;
+declare function SearchResults({ section, className, footerAction, onRecordClick, onItemClick }: SearchResultsProps): JSX.Element;
 export default SearchResults;
 
-declare type SearchResultsAction = {
+export declare type SearchResultsAction = {
     label: string;
     href?: string;
     target?: string;
@@ -72,11 +73,19 @@ declare type SearchResultsAction = {
     onClick?: () => void;
 };
 
+export declare function SearchResultsImageGroup(props: SearchResultsImageGroupProps): JSX.Element;
+
+export declare type SearchResultsImageGroupProps = Omit<SearchResultsProps, "section"> & {
+    section: SearchResultImageGroupItem | SearchResultsRecord[] | SearchResultsSection;
+};
+
 export declare type SearchResultsItem = SearchResultListItem | SearchResultImageItem | SearchResultMediaItem | SearchResultImageGroupItem | SearchResultVideoGroupItem;
 
 export declare type SearchResultsProps = {
-    section: SearchResultsSection;
+    section: SearchResultsSection | SearchResultsItem | SearchResultsRecord | Array<SearchResultsItem | SearchResultsRecord>;
     className?: string;
+    footerAction?: SearchResultsAction;
+    onRecordClick?: (record: SearchResultsRecord, index: number) => void;
     onItemClick?: (item: SearchResultsItem) => void;
 };
 
@@ -162,6 +171,12 @@ export declare type SearchResultsSection = {
     columns?: 2 | 3 | 4;
     footerAction?: SearchResultsAction;
     className?: string;
+};
+
+export declare function SearchResultsVideoGroup(props: SearchResultsVideoGroupProps): JSX.Element;
+
+export declare type SearchResultsVideoGroupProps = Omit<SearchResultsProps, "section"> & {
+    section: SearchResultVideoGroupItem | SearchResultsRecord[] | SearchResultsSection;
 };
 
 export declare type SearchResultVideoGroupItem = {
