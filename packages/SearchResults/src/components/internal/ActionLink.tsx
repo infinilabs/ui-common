@@ -16,7 +16,7 @@ export function ActionLink({
     "h-7 px-12 text-sm text-[#666] no-underline transition",
     "cursor-pointer hover:border-slate-300 hover:bg-slate-50 hover:no-underline",
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300",
-    "dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800 dark:focus-visible:ring-slate-600",
+    "dark:border-slate-700 dark:bg-transparent dark:text-slate-300 dark:hover:border-slate-500 dark:hover:bg-slate-800 dark:focus-visible:ring-slate-600",
     className
   );
 
