@@ -11,11 +11,16 @@ export interface FilterTagOption {
 export interface FilterTagsProps extends FilterCollapseProps {
   value: Array<string | number>;
   options: FilterTagOption[];
+  classNames?: {
+    title?: string;
+    tag?: string;
+    icon?: string;
+  };
   onChange?: (value: Array<string | number>) => void;
 }
 
 const FilterTags: FC<FilterTagsProps> = (props) => {
-  const { value: propsValue, options, onChange, ...rest } = props;
+  const { value: propsValue, options, classNames, onChange } = props;
 
   const nameOptions = options.filter((item) => !item.icon);
   const iconOptions = options.filter((item) => item.icon);
@@ -29,7 +34,7 @@ const FilterTags: FC<FilterTagsProps> = (props) => {
   };
 
   return (
-    <FilterCollapse {...rest}>
+    <FilterCollapse {...props}>
       <div className="flex flex-wrap gap-2">
         {nameOptions.map((item) => {
           const { label, value } = item;
@@ -38,10 +43,11 @@ const FilterTags: FC<FilterTagsProps> = (props) => {
             <div
               key={value}
               className={cn(
-                "inline-flex items-center h-6 px-3 cursor-pointer b-default rounded-full hover:border-primary transition-colors",
+                "inline-flex items-center h-6 px-3 cursor-pointer b-default rounded-full hover:border-primary transition-colors dark:text-white",
                 {
                   "border-primary bg-primary-bg": propsValue.includes(value),
-                }
+                },
+                classNames?.tag
               )}
               onClick={() => {
                 handleChange(value);
@@ -64,7 +70,8 @@ const FilterTags: FC<FilterTagsProps> = (props) => {
                 "size-12 rounded-full overflow-hidden cursor-pointer b-default b-2 border-transparent hover:border-primary transition-colors",
                 {
                   "border-primary": propsValue.includes(value),
-                }
+                },
+                classNames?.icon
               )}
               onClick={() => {
                 handleChange(value);

@@ -10,7 +10,7 @@ import { cn } from "../../utils/cn";
 export interface FilterCheckboxGroupOption {
   label: string;
   value: string | number;
-  icon: string;
+  icon?: string;
   count: number;
 }
 
@@ -22,11 +22,18 @@ export interface FilterCheckboxGroupProps extends FilterCollapseProps {
       more?: string;
     };
   };
+  classNames?: {
+    title?: string;
+    icon?: string;
+    label?: string;
+    count?: string;
+    more?: string;
+  };
   onChange?: (value: Array<string | number>) => void;
 }
 
 const FilterCheckboxGroup: FC<FilterCheckboxGroupProps> = (props) => {
-  const { options, value: propsValue, i18n, onChange, ...rest } = props;
+  const { options, value: propsValue, i18n, classNames, onChange } = props;
   const [expandMore, setExpandMore] = useState(false);
 
   const renderOptions = (options: FilterCheckboxGroupOption[]) => {
@@ -51,13 +58,33 @@ const FilterCheckboxGroup: FC<FilterCheckboxGroupProps> = (props) => {
                 }}
               >
                 <div className="flex items-center gap-1">
-                  <img src={icon} alt={label} className="size-4" />
+                  {icon && (
+                    <img
+                      src={icon}
+                      alt={label}
+                      className={cn("size-4", classNames?.icon)}
+                    />
+                  )}
 
-                  <span>{label}</span>
+                  <span
+                    className={cn(
+                      "text-[#666] dark:text-white/80",
+                      classNames?.label
+                    )}
+                  >
+                    {label}
+                  </span>
                 </div>
               </Checkbox>
 
-              <span>{count}</span>
+              <span
+                className={cn(
+                  "text-[#666] dark:text-white/80",
+                  classNames?.count
+                )}
+              >
+                {count}
+              </span>
             </div>
           );
         })}
@@ -70,7 +97,7 @@ const FilterCheckboxGroup: FC<FilterCheckboxGroupProps> = (props) => {
   };
 
   return (
-    <FilterCollapse {...rest}>
+    <FilterCollapse {...props}>
       {renderOptions(options.slice(0, 5))}
 
       <AnimatePresence>
@@ -88,16 +115,19 @@ const FilterCheckboxGroup: FC<FilterCheckboxGroupProps> = (props) => {
 
       {options.length > 5 && (
         <div
-          className="inline-flex items-center mt-4 text-primary cursor-pointer"
+          className={cn(
+            "inline-flex items-center gap-2 mt-4 text-primary cursor-pointer",
+            classNames?.more
+          )}
           onClick={handleExpandMore}
         >
-          <span>{i18n?.labels?.more ?? "More"}</span>
-
           <ChevronDown
             className={cn("size-4 transition", {
               "-scale-y-100": expandMore,
             })}
           />
+
+          <span>{i18n?.labels?.more ?? "More"}</span>
         </div>
       )}
     </FilterCollapse>
