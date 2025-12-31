@@ -27,9 +27,7 @@ export function MediaItem({
         onItemClick?.(item);
       }}
       className={clsx(
-        "group block w-full rounded-xl border border-transparent p-2 text-left no-underline transition-colors",
-        "hover:border-slate-200 hover:bg-slate-100/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300",
-        "dark:hover:border-slate-700 dark:hover:bg-slate-800/60 dark:focus-visible:ring-slate-600"
+        "group block w-full rounded-xl border border-transparent text-left no-underline transition-colors",
       )}
     >
       <div className="overflow-hidden rounded-lg ring-1 ring-slate-200 dark:ring-slate-700">
@@ -37,7 +35,7 @@ export function MediaItem({
           <img
             src={item.thumbnailUrl}
             alt={item.thumbnailAlt ?? item.title}
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover transform-gpu transition-transform duration-300 ease-out group-hover:scale-[1.1]"
             loading="lazy"
           />
           {item.mediaType === "video" ? (
@@ -51,18 +49,18 @@ export function MediaItem({
       </div>
 
       <div className="mt-2">
-        <div className="mb-1 truncate text-sm font-medium text-[#333] dark:text-slate-100">
+        <div className="mb-1 truncate text-sm text-[#1A0CAB] dark:text-[#8AB4F8]">
           {item.title}
         </div>
 
         {item.matchCountText ? (
-          <div className="mb-1 truncate text-xs text-[#666] dark:text-slate-400">
+          <div className="mb-1 truncate text-xs text-[#666]">
             {item.matchCountText}
           </div>
         ) : null}
 
         {breadcrumbs.length ? (
-          <div className="text-[#666] dark:text-slate-400">
+          <div className="text-[#666]">
             <BreadcrumbsLine breadcrumbs={breadcrumbs} />{" "}
           </div>
         ) : null}

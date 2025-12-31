@@ -45,7 +45,7 @@ export function ListItem({
         />
       </div>
 
-      <div className="mt-2 flex gap-3">
+      <div className="flex gap-3">
         {item.thumbnailUrl ? (
           <img
             src={item.thumbnailUrl}
@@ -57,19 +57,19 @@ export function ListItem({
 
         <div className="min-w-0 flex-1 flex flex-col justify-between">
           {item.description ? (
-            <div className="line-clamp-2 text-sm text-slate-600 dark:text-slate-400">
+            <div className="line-clamp-2 text-sm text-[#666]">
               {item.description}
             </div>
           ) : null}
 
           {item.breadcrumbs?.length || item.author || item.date ? (
-            <div className="mt-2 flex min-w-0 items-center gap-3 text-[#666] dark:text-slate-400">
+            <div className="mt-2 flex min-w-0 items-center gap-3 text-[#666]">
               <BreadcrumbsLine breadcrumbs={item.breadcrumbs} />
-              <span className="h-3 w-px flex-none bg-slate-300 dark:bg-slate-700" aria-hidden="true" />
+              <span className="h-3 w-px flex-none bg-[#666]" aria-hidden="true" />
               <div className="flex flex-none items-center gap-2">
                 <AuthorDate author={item.author} date={item.date} />
                 {item.href ? (
-                  <span className="flex-none text-sky-600 dark:text-sky-400">
+                  <span className="flex-none text-[#007EFF]">
                     <ExternalLink className="h-3 w-3" />
                   </span>
                 ) : null}
@@ -92,7 +92,7 @@ export function ListItem({
       rel={item.rel}
       onClick={handleClick}
       className={clsx(
-        "group block w-full rounded-xl border border-transparent px-3 py-2 text-left no-underline transition-colors",
+        "group block w-full rounded-xl border border-transparent px-6 py-3 text-left no-underline transition-colors",
         "hover:border-slate-200 hover:bg-slate-100/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300",
         "dark:hover:border-slate-700 dark:hover:bg-slate-800/60 dark:focus-visible:ring-slate-600"
       )}
