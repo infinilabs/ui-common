@@ -5,24 +5,21 @@ import {
   type PropsWithChildren,
 } from "react";
 import { motion } from "motion/react";
-import * as LucideIcons from "lucide-react";
+import { BrushCleaning, SquareMinus, SquarePlus } from "lucide-react";
+import { cn } from "../../utils/cn";
 
 export interface FilterCollapseProps extends PropsWithChildren {
   defaultExpand?: boolean;
   title: string;
+  classNames?: {
+    title?: string;
+  };
   onClear?: (event: MouseEvent) => void;
 }
 
 const FilterCollapse: FC<FilterCollapseProps> = (props) => {
-  const { defaultExpand, title, children, onClear } = props;
+  const { defaultExpand, title, children, classNames, onClear } = props;
   const [expand, setExpand] = useState(defaultExpand ?? false);
-  const ExpandIcon = (LucideIcons as any).SquarePlus;
-  const CollapseIcon = (LucideIcons as any).SquareMinus;
-  const ClearIcon =
-    (LucideIcons as any).BrushCleaning ??
-    (LucideIcons as any).Eraser ??
-    (LucideIcons as any).Trash2 ??
-    (LucideIcons as any).X;
 
   const toggleExpand = () => {
     setExpand((prev) => !prev);
@@ -37,7 +34,10 @@ const FilterCollapse: FC<FilterCollapseProps> = (props) => {
   return (
     <div className="text-sm">
       <div
-        className="flex items-center justify-between cursor-pointer"
+        className={cn(
+          "flex items-center justify-between cursor-pointer text-[#999]",
+          classNames?.title
+        )}
         onClick={toggleExpand}
       >
         <div className="flex items-center gap-2">
@@ -46,21 +46,21 @@ const FilterCollapse: FC<FilterCollapseProps> = (props) => {
               initial={{ opacity: 1 }}
               animate={{ opacity: expand ? 0 : 1 }}
             >
-              {ExpandIcon ? <ExpandIcon className="size-4" /> : null}
+              <SquarePlus className="size-4" />
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: expand ? 1 : 0 }}
             >
-              {CollapseIcon ? <CollapseIcon className="size-4" /> : null}
+              <SquareMinus className="size-4" />
             </motion.div>
           </div>
 
           <span>{title}</span>
         </div>
 
-        {ClearIcon ? <ClearIcon className="size-4" onClick={handleClear} /> : null}
+        <BrushCleaning className="size-4" onClick={handleClear} />
       </div>
 
       <motion.div
