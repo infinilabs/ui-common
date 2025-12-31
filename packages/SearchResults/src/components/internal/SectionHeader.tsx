@@ -43,7 +43,7 @@ export function SectionHeader({
       {title ? (
         <div
           className={clsx(
-            "min-w-0 cursor-pointer text-xl font-semibold leading-6 hover:underline hover:underline-offset-2 group-hover:underline group-hover:underline-offset-2",
+            "min-w-0 cursor-pointer text-xl hover:underline hover:underline-offset-2 group-hover:underline group-hover:underline-offset-2",
             titleClassName
           )}
         >

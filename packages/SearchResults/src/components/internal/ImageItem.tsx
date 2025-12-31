@@ -24,9 +24,7 @@ export function ImageItem({
         onItemClick?.(item);
       }}
       className={clsx(
-        "group block w-full rounded-xl border border-transparent p-2 text-left no-underline transition-colors",
-        "hover:border-slate-200 hover:bg-slate-100/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300",
-        "dark:hover:border-slate-700 dark:hover:bg-slate-800/60 dark:focus-visible:ring-slate-600"
+        "group block w-full rounded-xl border border-transparent text-left no-underline transition-colors"
       )}
     >
       <div className="overflow-hidden rounded-lg ring-1 ring-slate-200 dark:ring-slate-700">
@@ -34,23 +32,23 @@ export function ImageItem({
           <img
             src={item.imageUrl}
             alt={item.imageAlt ?? item.title}
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover transform-gpu transition-transform duration-300 ease-out group-hover:scale-[1.03]"
             loading="lazy"
           />
         </div>
       </div>
       <div className="mt-2">
-        <div className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
+        <div className="mb-1 truncate text-sm text-[#1A0CAB] dark:text-[#8AB4F8]">
           {item.title}
         </div>
         {item.subtitle ? (
-          <div className="mt-1 truncate text-sm text-slate-600 dark:text-slate-300">
+          <div className="mb-1 truncate text-sm text-[#666]">
             {item.subtitle}
           </div>
         ) : null}
 
         {breadcrumbs.length ? (
-          <div className="mt-2 text-slate-600 dark:text-slate-300">
+          <div className="text-[#666]">
             <BreadcrumbsLine breadcrumbs={breadcrumbs} />
           </div>
         ) : null}

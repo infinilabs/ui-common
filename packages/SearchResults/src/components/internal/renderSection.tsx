@@ -35,7 +35,7 @@ export function renderSection(
       columns === 2 ? "grid-cols-2" : columns === 4 ? "grid-cols-4" : "grid-cols-3";
 
     return (
-      <div className={clsx(section.className)}>
+      <div className={clsx("px-6 py-3", section.className)}>
         <SectionHeader
           title={section.title}
           titleIcon={section.titleIcon}
@@ -57,7 +57,7 @@ export function renderSection(
     columns === 2 ? "grid-cols-2" : columns === 4 ? "grid-cols-4" : "grid-cols-3";
 
   return (
-    <div className={clsx(section.className)}>
+    <div className={clsx("px-6 py-3",section.className)}>
       <SectionHeader
         title={section.title}
         titleIcon={section.titleIcon}
