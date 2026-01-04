@@ -1,12 +1,13 @@
 import { Button, Card, Typography } from "antd";
 import { SquareArrowOutUpRight } from "lucide-react";
-import type { FC } from "react";
+import type { FC, HTMLAttributes } from "react";
 import Preview from "./components/Preview";
 import AIInterpretation from "./components/AIInterpretation";
+import { cn } from "@/utils/cn";
 
 const { Text } = Typography;
 
-export interface DocDetailProps {
+export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
   data: {
     source: {
       type: string;
@@ -81,7 +82,7 @@ export interface DocDetailProps {
 }
 
 const DocDetail: FC<DocDetailProps> = (props) => {
-  const { data, i18n } = props;
+  const { data, i18n, className, ...rest } = props;
 
   const extraInfo = [
     {
@@ -107,7 +108,7 @@ const DocDetail: FC<DocDetailProps> = (props) => {
   ];
 
   return (
-    <div className="flex flex-col h-full">
+    <div className={cn("flex flex-col h-full", className)} {...rest}>
       <div className="flex flex-col flex-1 mb-6 overflow-hidden">
         <div>
           <img src={data?.icon} className="size-6 mr-3 float-left" />
@@ -147,9 +148,9 @@ const DocDetail: FC<DocDetailProps> = (props) => {
       </div>
 
       <Card
-        size="small"
         classNames={{
-          body: "flex flex-wrap gap-row-2",
+          root: "border-border",
+          body: "flex flex-wrap gap-row-2 py-4!",
         }}
       >
         {extraInfo.map((item) => {

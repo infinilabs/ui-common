@@ -11,6 +11,10 @@ export default defineConfig({
   theme: {
     colors: {
       primary: `var(--color-primary)`,
+      border: `var(--color-border)`,
+      "primary-bg": `var(--color-primary-bg)`,
+      "text-secondary": `var(--color-text-secondary)`,
+      "bg-layout": `var(--color-bg-layout)`,
     },
   },
   preflights: [
@@ -19,10 +23,18 @@ export default defineConfig({
       getCSS: () => `
       :root {
         --color-primary: ${lightToken.colorPrimary};
+        --color-border: ${lightToken.colorBorder};
+        --color-primary-bg: ${lightToken.colorPrimaryBg};
+        --color-text-secondary: ${lightToken.colorTextSecondary};
+        --color-bg-layout: ${lightToken.colorBgLayout};
       }
 
       .dark {
         --color-primary: ${darkToken.colorPrimary};
+        --color-border: ${darkToken.colorBorder};
+        --color-primary-bg: ${darkToken.colorPrimaryBg};
+        --color-text-secondary: ${darkToken.colorTextSecondary};
+        --color-bg-layout: ${darkToken.colorBgLayout};
       }`,
     },
   ],

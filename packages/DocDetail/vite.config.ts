@@ -3,8 +3,14 @@ import react from "@vitejs/plugin-react";
 import UnoCSS from "unocss/vite";
 import dts from "vite-plugin-dts";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
+import path from "path";
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   plugins: [
     react(),
     UnoCSS(),
