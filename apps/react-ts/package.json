@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@infinilabs/ai-answer": "workspace:*",
     "@infinilabs/filter": "workspace:*",
     "@infinilabs/search-results": "workspace:*",
     "antd": "^5.20.6",
