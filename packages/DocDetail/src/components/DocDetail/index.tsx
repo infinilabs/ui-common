@@ -7,6 +7,10 @@ import { cn } from "@/utils/cn";
 
 const { Text } = Typography;
 
+export type LiteralUnion<LiteralType> =
+  | LiteralType
+  | (string & Record<never, never>);
+
 export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
   data: {
     source: {
@@ -55,6 +59,15 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
         width: number;
         height: number;
       };
+      mime_type: LiteralUnion<
+        | "text/markdown"
+        | "application/pdf"
+        | "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        | "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        | "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      >;
+      preview_url: string;
+      ai_insights: string;
     };
     last_updated_by: {
       user: {

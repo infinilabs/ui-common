@@ -1,11 +1,13 @@
 import { Document, Page, pdfjs } from "react-pdf";
-import pdfFile from "./test.pdf";
-import { useState } from "react";
+import { useState, type FC } from "react";
 import { cn } from "@/utils/cn";
+import type { DocDetailProps } from "@/components/DocDetail";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-const Pdf = () => {
+const Pdf: FC<DocDetailProps> = (props) => {
+  const { data } = props;
+
   const [numPages, setNumPages] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
 
@@ -40,7 +42,7 @@ const Pdf = () => {
 
       <div className="border border-solid border-border rounded-lg overflow-hidden">
         <Document
-          file={pdfFile}
+          file={data?.metadata?.preview_url}
           onLoadSuccess={(pdf) => {
             setNumPages(pdf.numPages);
           }}
