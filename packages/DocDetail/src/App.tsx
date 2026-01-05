@@ -57,13 +57,15 @@ const App = () => {
             // content_type: "pdf",
             // preview_url: "http://192.168.3.181:9101/coco-server/test.pdf",
 
-            content_type: "docx",
-            preview_url: "http://192.168.3.181:9101/coco-server/代码片段.docx",
+            // content_type: "docx",
+            // preview_url:
+            //   "http://192.168.3.181:9101/coco-server/OPHTHA_Listofacceptablefiletypes.docx",
 
-            // content_type: "pptx",
-            // preview_url: "http://192.168.3.181:9101/coco-server/Processes-file-tables.pptx",
+            content_type: "pptx",
+            preview_url:
+              "http://192.168.3.181:9101/coco-server/Processes-file-tables.pptx",
 
-            // content_type: "excel",
+            // content_type: "xlsx",
             // preview_url:
             //   "http://192.168.3.181:9101/coco-server/SaezZucman2020JEPData.xlsx",
 
