@@ -1,7 +1,8 @@
 import type { FC } from "react";
-import type { DocDetailProps } from "../..";
+import type { DocDetailProps } from "@/components/DocDetail";
 import { Collapse } from "antd";
 import Pdf from "./components/Pdf";
+import Markdown from "./components/Markdown";
 
 const Preview: FC<DocDetailProps> = (props) => {
   const { data, i18n } = props;
@@ -24,7 +25,13 @@ const Preview: FC<DocDetailProps> = (props) => {
           {
             key: "preview",
             label: i18n?.labels?.preview ?? "Preview",
-            children: <Pdf />,
+            children: (
+              <>
+                {type === "pdf" && <Pdf />}
+
+                <Markdown />
+              </>
+            ),
           },
         ]}
       />
