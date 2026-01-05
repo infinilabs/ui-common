@@ -49,29 +49,28 @@ const App = () => {
               height: 1080,
             },
             image_media_metadata: { width: 1024, height: 768 },
-            mime_type: "text/markdown",
-            preview_url: "http://192.168.3.181:9101/coco-server/README.md",
+            mime_type: "",
 
-            // mime_type:'application/pdf',
-            // preview_url: "http://192.168.3.181:9101/coco-server/test.pdf",
+            // content_type: "markdown",
+            // preview_url: "http://192.168.3.181:9101/coco-server/README.md",
 
-            // mime_type:
-            //   "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // docx
+            content_type: "pdf",
+            preview_url: "http://192.168.3.181:9101/coco-server/test.pdf",
+
+            // content_type: "docx",
             // preview_url: "http://192.168.3.181:9101/coco-server/代码片段.docx",
 
-            // mime_type:
-            //   "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            // content_type: "pptx",
             // preview_url: "http://192.168.3.181:9101/coco-server/Processes-file-tables.pptx",
 
-            // mime_type:
-            //   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            // content_type: "excel",
             // preview_url:
             //   "http://192.168.3.181:9101/coco-server/SaezZucman2020JEPData.xlsx",
 
-            // mime_type: "image/jpg",
+            // content_type: "image",
             // preview_url: "http://192.168.3.181:9101/coco-server/a.jpg",
 
-            // mime_type: "video/mov",
+            // content_type: "video",
             // preview_url:
             //   "http://192.168.3.181:9101/coco-server/Screen Recording 2026-01-05 at 12.06.10 PM.mov",
 
