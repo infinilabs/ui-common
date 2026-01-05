@@ -1,25 +1,49 @@
 import { type FC } from "react";
-import type { DocDetailProps } from "@/components/DocDetail";
+import type {
+  DocDetailProps,
+  MetadataContentType,
+} from "@/components/DocDetail";
 import { Collapse } from "antd";
 import Pdf from "./components/Pdf";
 import Markdown from "./components/Markdown";
 import Docx from "./components/Docx";
+import Pptx from "./components/Pptx";
 
 const Preview: FC<DocDetailProps> = (props) => {
   const { data, i18n } = props;
 
-  const renderContent = () => {
-    const contentType = data?.metadata?.content_type;
-    const previewUrl = data?.metadata?.preview_url;
-
-    if (!contentType || !previewUrl) return;
-
-    if (contentType === "image") {
-      return <img src={previewUrl} className="w-full" />;
+  const renderFile = (type: MetadataContentType, url: string) => {
+    if (type === "markdown") {
+      return <Markdown url={url} />;
     }
 
-    if (contentType === "video") {
-      return <video src={previewUrl} className="w-full" controls />;
+    if (type === "pdf") {
+      return <Pdf url={url} {...props} />;
+    }
+
+    if (type === "docx") {
+      return <Docx url={url} {...props} />;
+    }
+
+    if (type === "pptx") {
+      return <Pptx url={url} {...props} />;
+    }
+
+    return null;
+  };
+
+  const renderContent = () => {
+    const type = data?.metadata?.content_type;
+    const url = data?.metadata?.preview_url;
+
+    if (!type || !url) return;
+
+    if (type === "image") {
+      return <img src={url} className="w-full" />;
+    }
+
+    if (type === "video") {
+      return <video src={url} className="w-full" controls />;
     }
 
     return (
@@ -34,15 +58,7 @@ const Preview: FC<DocDetailProps> = (props) => {
           {
             key: "preview",
             label: i18n?.labels?.preview ?? "Preview",
-            children: (
-              <>
-                {contentType === "pdf" && <Pdf {...props} />}
-
-                {contentType === "markdown" && <Markdown url={previewUrl} />}
-
-                {contentType === "docx" && <Docx {...props} />}
-              </>
-            ),
+            children: renderFile(type, url),
           },
         ]}
       />

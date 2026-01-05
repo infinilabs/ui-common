@@ -2,12 +2,16 @@ import type { DocDetailProps } from "@/components/DocDetail";
 import { useEffect, useRef, type FC } from "react";
 import { renderAsync } from "docx-preview";
 
-const Docx: FC<DocDetailProps> = (props) => {
-  const { data } = props;
+interface DocxProps extends DocDetailProps {
+  url: string;
+}
+
+const Docx: FC<DocxProps> = (props) => {
+  const { url } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const renderDocx = async (url: string) => {
+  const renderDocx = async () => {
     if (!containerRef.current) return;
 
     const response = await fetch(url);
@@ -24,12 +28,8 @@ const Docx: FC<DocDetailProps> = (props) => {
   };
 
   useEffect(() => {
-    const url = data?.metadata?.preview_url;
-
-    if (!url) return;
-
-    renderDocx(url);
-  }, [data?.metadata?.preview_url]);
+    renderDocx();
+  }, [url]);
 
   return <div ref={containerRef} className="[&>.docx]:p-0!" />;
 };

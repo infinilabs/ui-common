@@ -5,8 +5,12 @@ import { Pagination } from "antd";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-const Pdf: FC<DocDetailProps> = (props) => {
-  const { data } = props;
+interface PdfProps extends DocDetailProps {
+  url: string;
+}
+
+const Pdf: FC<PdfProps> = (props) => {
+  const { url } = props;
 
   const [numPages, setNumPages] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
@@ -25,7 +29,7 @@ const Pdf: FC<DocDetailProps> = (props) => {
 
       <div className="border border-solid border-border rounded-lg overflow-hidden">
         <Document
-          file={data?.metadata?.preview_url}
+          file={url}
           onLoadSuccess={(pdf) => {
             setNumPages(pdf.numPages);
           }}
