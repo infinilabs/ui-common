@@ -1,20 +1,30 @@
 import { XMarkdown, type XMarkdownProps } from "@ant-design/x-markdown";
-import type { FC } from "react";
+import { useEffect, useState, type FC } from "react";
 
-const defaultContent = `
-# Hello World
+interface MarkdownProps extends XMarkdownProps {
+  url?: string;
+}
 
-### 欢迎使用 XMarkdown！
+const Markdown: FC<MarkdownProps> = (props) => {
+  const { url, ...rest } = props;
 
-- 项目1
-- 项目2
-- 项目3
-`;
+  const [content, setContent] = useState(rest.content);
 
-const Markdown: FC<XMarkdownProps> = (props) => {
-  const { content = defaultContent, ...rest } = props;
+  const fetchContent = async (url: string) => {
+    const response = await fetch(url);
 
-  return <XMarkdown content={content} {...rest} />;
+    const text = await response.text();
+
+    setContent(text);
+  };
+
+  useEffect(() => {
+    if (!url) return;
+
+    fetchContent(url);
+  }, [url]);
+
+  return <XMarkdown {...rest} content={content} />;
 };
 
 export default Markdown;

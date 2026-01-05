@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import { type FC } from "react";
 import type { DocDetailProps } from "@/components/DocDetail";
 import { Collapse } from "antd";
 import Pdf from "./components/Pdf";
@@ -8,10 +8,17 @@ const Preview: FC<DocDetailProps> = (props) => {
   const { data, i18n } = props;
 
   const renderContent = () => {
-    const { type } = data;
+    const contentType = data?.metadata?.content_type;
+    const previewUrl = data?.metadata?.preview_url;
 
-    if (type === "image") {
-      return <img src={data.url} className="w-full" />;
+    if (!contentType || !previewUrl) return;
+
+    if (contentType === "image") {
+      return <img src={previewUrl} className="w-full" />;
+    }
+
+    if (contentType === "video") {
+      return <video src={previewUrl} className="w-full" controls />;
     }
 
     return (
@@ -27,9 +34,9 @@ const Preview: FC<DocDetailProps> = (props) => {
             label: i18n?.labels?.preview ?? "Preview",
             children: (
               <>
-                {type === "pdf" && <Pdf />}
+                {contentType === "pdf" && <Pdf {...props} />}
 
-                <Markdown />
+                {contentType === "markdown" && <Markdown url={previewUrl} />}
               </>
             ),
           },

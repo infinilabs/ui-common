@@ -55,6 +55,10 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
         width: number;
         height: number;
       };
+      content_type: "image" | "video" | "markdown" | "pdf" | "docx" | "pptx";
+      mime_type: string;
+      preview_url: string;
+      ai_insights: string;
     };
     last_updated_by: {
       user: {
