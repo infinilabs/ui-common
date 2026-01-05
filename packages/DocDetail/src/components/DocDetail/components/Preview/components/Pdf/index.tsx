@@ -1,7 +1,7 @@
 import { Document, Page, pdfjs } from "react-pdf";
 import { useState, type FC } from "react";
-import { cn } from "@/utils/cn";
 import type { DocDetailProps } from "@/components/DocDetail";
+import { Pagination } from "antd";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -13,32 +13,15 @@ const Pdf: FC<DocDetailProps> = (props) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="text-text-secondary">搜索匹配结果</div>
-
-      {numPages > 0 && (
-        <div className="flex gap-1">
-          {Array.from({ length: numPages }, (_, index) => {
-            const page = index + 1;
-
-            return (
-              <div
-                key={page}
-                className={cn(
-                  "inline-flex items-center h-6 px-3 rounded-lg cursor-pointer bg-bg-layout text-text-secondary",
-                  {
-                    "text-primary bg-primary-bg": pageNumber === page,
-                  }
-                )}
-                onClick={() => {
-                  setPageNumber(page);
-                }}
-              >
-                第{page}页
-              </div>
-            );
-          })}
-        </div>
-      )}
+      <div className="flex justify-end">
+        <Pagination
+          size="small"
+          pageSize={1}
+          total={numPages}
+          current={pageNumber}
+          onChange={(page) => setPageNumber(page)}
+        />
+      </div>
 
       <div className="border border-solid border-border rounded-lg overflow-hidden">
         <Document
