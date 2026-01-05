@@ -3,6 +3,7 @@ import type { DocDetailProps } from "@/components/DocDetail";
 import { Collapse } from "antd";
 import Pdf from "./components/Pdf";
 import Markdown from "./components/Markdown";
+import Docx from "./components/Docx";
 
 const Preview: FC<DocDetailProps> = (props) => {
   const { data, i18n } = props;
@@ -27,6 +28,7 @@ const Preview: FC<DocDetailProps> = (props) => {
         defaultActiveKey={["preview"]}
         classNames={{
           root: "bg-transparent",
+          body: "p-4!",
         }}
         items={[
           {
@@ -37,6 +39,8 @@ const Preview: FC<DocDetailProps> = (props) => {
                 {contentType === "pdf" && <Pdf {...props} />}
 
                 {contentType === "markdown" && <Markdown url={previewUrl} />}
+
+                {contentType === "docx" && <Docx {...props} />}
               </>
             ),
           },

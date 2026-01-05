@@ -12,6 +12,7 @@ const AIInterpretation: FC<DocDetailProps> = (props) => {
       size="small"
       classNames={{
         root: "bg-transparent",
+        body: "p-4!",
       }}
       items={[
         {
