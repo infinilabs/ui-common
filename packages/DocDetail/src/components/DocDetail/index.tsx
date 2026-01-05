@@ -7,6 +7,15 @@ import { cn } from "@/utils/cn";
 
 const { Text } = Typography;
 
+export type MetadataContentType =
+  | "image"
+  | "video"
+  | "markdown"
+  | "pdf"
+  | "docx"
+  | "pptx"
+  | "xlsx";
+
 export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
   data: {
     source: {
@@ -55,6 +64,10 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
         width: number;
         height: number;
       };
+      content_type: MetadataContentType;
+      mime_type: string;
+      preview_url: string;
+      ai_insights: string;
     };
     last_updated_by: {
       user: {

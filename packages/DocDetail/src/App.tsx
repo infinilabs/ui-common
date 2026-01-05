@@ -49,6 +49,34 @@ const App = () => {
               height: 1080,
             },
             image_media_metadata: { width: 1024, height: 768 },
+            mime_type: "",
+
+            // content_type: "markdown",
+            // preview_url: "http://192.168.3.181:9101/coco-server/README.md",
+
+            // content_type: "pdf",
+            // preview_url: "http://192.168.3.181:9101/coco-server/test.pdf",
+
+            // content_type: "docx",
+            // preview_url:
+            //   "http://192.168.3.181:9101/coco-server/OPHTHA_Listofacceptablefiletypes.docx",
+
+            content_type: "pptx",
+            preview_url:
+              "http://192.168.3.181:9101/coco-server/Processes-file-tables.pptx",
+
+            // content_type: "xlsx",
+            // preview_url:
+            //   "http://192.168.3.181:9101/coco-server/SaezZucman2020JEPData.xlsx",
+
+            // content_type: "image",
+            // preview_url: "http://192.168.3.181:9101/coco-server/a.jpg",
+
+            // content_type: "video",
+            // preview_url:
+            //   "http://192.168.3.181:9101/coco-server/Screen Recording 2026-01-05 at 12.06.10 PM.mov",
+
+            ai_insights: `# AI Interpretation\n### Welcome to XMarkdown！\n- Project 1 \n- Project 2\n- Project 3`,
           },
           last_updated_by: {
             user: {
