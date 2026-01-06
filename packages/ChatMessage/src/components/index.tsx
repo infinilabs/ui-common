@@ -11,7 +11,7 @@ import { PickSource } from "./PickSource";
 import { DeepRead } from "./DeepRead";
 import { Think } from "./Think";
 import { MessageActions } from "./MessageActions";
-import Markdown from "./Markdown";
+import { XMarkdown } from "@ant-design/x-markdown";
 import { SuggestionList } from "./SuggestionList";
 import { UserMessage } from "./UserMessage";
 import { useConnectStore } from "@/stores/connectStore";
@@ -143,11 +143,7 @@ export const ChatMessage = memo(function ChatMessage({
           ChunkData={think}
           loading={loadingStep?.think}
         />
-        <Markdown
-          content={messageContent || response?.message_chunk || ""}
-          loading={isTyping}
-          onDoubleClickCapture={() => {}}
-        />
+        <XMarkdown content={messageContent || response?.message_chunk || ""} />
         {isTyping && (
           <div className="inline-block w-1.5 h-5 ml-0.5 -mb-0.5 bg-[#666666] dark:bg-[#A3A3A3] rounded-sm animate-typing" />
         )}

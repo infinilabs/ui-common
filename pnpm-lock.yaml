@@ -205,27 +205,30 @@ importers:
 
   packages/ChatMessage:
     dependencies:
+      '@ant-design/x-markdown':
+        specifier: ^2.1.3
+        version: 2.1.3(@types/react@19.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
       lucide-react:
         specifier: ^0.461.0
-        version: 0.461.0(react@18.3.1)
+        version: 0.461.0(react@19.2.3)
       mermaid:
         specifier: ^11.6.0
         version: 11.12.0
       react:
         specifier: ^18.3.1
-        version: 18.3.1
+        version: 19.2.3
       react-dom:
         specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
+        version: 19.2.3(react@19.2.3)
       react-i18next:
         specifier: '>=11.0.0'
         version: 16.0.0(i18next@25.6.0(typescript@5.8.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)
       react-markdown:
         specifier: ^9.1.0
-        version: 9.1.0(@types/react@19.2.2)(react@18.3.1)
+        version: 9.1.0(@types/react@19.2.2)(react@19.2.3)
       rehype-highlight:
         specifier: ^7.0.2
         version: 7.0.2
@@ -243,10 +246,10 @@ importers:
         version: 6.0.0
       use-debounce:
         specifier: ^10.0.4
-        version: 10.0.6(react@18.3.1)
+        version: 10.0.6(react@19.2.3)
       zustand:
         specifier: ^5.0.4
-        version: 5.0.8(@types/react@19.2.2)(react@18.3.1)
+        version: 5.0.8(@types/react@19.2.2)(react@19.2.3)
     devDependencies:
       '@eslint/js':
         specifier: ^9.33.0
@@ -6079,6 +6082,18 @@ snapshots:
       react-dom: 19.2.3(react@19.2.3)
       throttle-debounce: 5.0.2
 
+  '@ant-design/x-markdown@2.1.3(@types/react@19.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+    dependencies:
+      clsx: 2.1.1
+      dompurify: 3.2.7
+      html-react-parser: 5.2.11(@types/react@19.2.2)(react@19.2.3)
+      katex: 0.16.23
+      marked: 15.0.12
+      react: 19.2.3
+      react-dom: 19.2.3(react@19.2.3)
+    transitivePeerDependencies:
+      - '@types/react'
+
   '@ant-design/x-markdown@2.1.3(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
       clsx: 2.1.1
@@ -10115,6 +10130,16 @@ snapshots:
     dependencies:
       void-elements: 3.1.0
 
+  html-react-parser@5.2.11(@types/react@19.2.2)(react@19.2.3):
+    dependencies:
+      domhandler: 5.0.3
+      html-dom-parser: 5.1.2
+      react: 19.2.3
+      react-property: 2.0.2
+      style-to-js: 1.1.21
+    optionalDependencies:
+      '@types/react': 19.2.2
+
   html-react-parser@5.2.11(@types/react@19.2.7)(react@19.2.3):
     dependencies:
       domhandler: 5.0.3
@@ -11866,7 +11891,7 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-markdown@9.1.0(@types/react@19.2.2)(react@18.3.1):
+  react-markdown@9.1.0(@types/react@19.2.2)(react@19.2.3):
     dependencies:
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
@@ -11875,7 +11900,7 @@ snapshots:
       hast-util-to-jsx-runtime: 2.3.6
       html-url-attributes: 3.0.1
       mdast-util-to-hast: 13.2.0
-      react: 18.3.1
+      react: 19.2.3
       remark-parse: 11.0.0
       remark-rehype: 11.1.2
       unified: 11.0.5
@@ -12593,9 +12618,9 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  use-debounce@10.0.6(react@18.3.1):
+  use-debounce@10.0.6(react@19.2.3):
     dependencies:
-      react: 18.3.1
+      react: 19.2.3
 
   util-deprecate@1.0.2: {}
 
@@ -12899,9 +12924,9 @@ snapshots:
     dependencies:
       tslib: 2.3.0
 
-  zustand@5.0.8(@types/react@19.2.2)(react@18.3.1):
+  zustand@5.0.8(@types/react@19.2.2)(react@19.2.3):
     optionalDependencies:
       '@types/react': 19.2.2
-      react: 18.3.1
+      react: 19.2.3
 
   zwitch@2.0.4: {}
