@@ -1,4 +1,5 @@
 // import FilterDemo from "./demos/FilterDemo";
+import AIAnswerDemo from "./demos/AIAnswerDemo";
 import SearchResultsDemo from "./demos/SearchResultsDemo";
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
 
         <div className="min-w-0 flex-1">
           <div className="mx-auto max-w-3xl">
+            <AIAnswerDemo />
             <SearchResultsDemo />
           </div>
         </div>
