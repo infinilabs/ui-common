@@ -1,6 +1,14 @@
-import { Card, Typography } from "antd";
-import { SquareArrowOutUpRight } from "lucide-react";
-import type { FC, HTMLAttributes, ReactNode } from "react";
+import { Typography } from "antd";
+import {
+  ChevronRight,
+  Dot,
+  Ellipsis,
+  Minus,
+  SquareArrowOutUpRight,
+} from "lucide-react";
+import { motion } from "motion/react";
+
+import { useState, type FC, type HTMLAttributes, type ReactNode } from "react";
 import Preview from "./components/Preview";
 import AIInterpretation from "./components/AIInterpretation";
 import { cn } from "@/utils/cn";
@@ -99,7 +107,9 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
 const DocDetail: FC<DocDetailProps> = (props) => {
   const { data, i18n, extraButtons, className, ...rest } = props;
 
-  const extraInfo = [
+  const [visibleMore, setVisibleMore] = useState(false);
+
+  const moreInfo = [
     {
       label: i18n?.labels?.updatedAt ?? "Updated At",
       value: data?.last_updated_by?.timestamp,
@@ -123,25 +133,38 @@ const DocDetail: FC<DocDetailProps> = (props) => {
   ];
 
   return (
-    <div className={cn("flex flex-col h-full", className)} {...rest}>
-      <div className="flex flex-col flex-1 mb-6 overflow-hidden">
-        <div>
-          <img src={data?.icon} className="size-6 mr-3 float-left" />
+    <div
+      className={cn("flex flex-col h-full overflow-hidden", className)}
+      {...rest}
+    >
+      <div>
+        <img src={data?.icon} className="size-6 mr-3 float-left" />
 
-          <div className="text-4.5/6 text-primary">{data?.title}</div>
-        </div>
+        <div className="text-4.5/6 text-primary">{data?.title}</div>
+      </div>
 
-        <Text type="secondary" className="block my-3 text-3">
+      <div className="flex items-center justify-between my-2">
+        <Text
+          type="secondary"
+          className="inline-flex items-center gap-0.5 text-3"
+        >
           <span>{data?.source?.name}</span>
-          <span> &gt; </span>
+          <ChevronRight className="size-3" />
           <span>{data?.category}</span>
-          <span> | </span>
+          <Minus className="size-3 rotate-90" />
           <span>{data?.owner?.username}</span>
-          <span> · </span>
+          <Dot className="size-3" />
           <span>{data?.last_updated_by?.timestamp}</span>
+
+          <Ellipsis
+            className="pl-2 size-3 hover:text-primary transition cursor-pointer"
+            onClick={() => {
+              setVisibleMore((prev) => !prev);
+            }}
+          />
         </Text>
 
-        <div className="flex gap-2 mb-6">
+        <div className="inline-flex gap-2">
           {extraButtons}
 
           <ActionButton
@@ -153,37 +176,42 @@ const DocDetail: FC<DocDetailProps> = (props) => {
             {i18n?.buttons?.openSource ?? "Open Source"}
           </ActionButton>
         </div>
-
-        <div className="flex flex-col gap-6 flex-1 overflow-auto">
-          <Preview {...props} />
-
-          <AIInterpretation {...props} />
-        </div>
       </div>
 
-      <Card
-        classNames={{
-          root: "border-border",
-          body: "flex flex-wrap gap-row-2 py-4!",
+      <motion.div
+        className="bg-black/3 dark:bg-white/4 rounded-lg overflow-hidden"
+        initial={false}
+        animate={{
+          height: visibleMore ? "auto" : 0,
+          opacity: visibleMore ? 1 : 0,
+          marginBottom: visibleMore ? "1rem" : 0,
         }}
       >
-        {extraInfo.map((item) => {
-          const { label, value } = item;
+        <div className="flex flex-wrap gap-row-2 p-4">
+          {moreInfo.map((item) => {
+            const { label, value } = item;
 
-          return (
-            <div
-              key={label}
-              className="w-1/2 inline-flex items-center <sm:w-full"
-            >
-              <Text type="secondary" className="w-24">
-                {label}
-              </Text>
+            return (
+              <div
+                key={label}
+                className="w-1/2 inline-flex items-center <sm:w-full"
+              >
+                <Text type="secondary" className="w-24">
+                  {label}
+                </Text>
 
-              <span>{value ?? "-"}</span>
-            </div>
-          );
-        })}
-      </Card>
+                <span className="text-3.5">{value ?? "-"}</span>
+              </div>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      <div className="flex flex-col gap-4 flex-1 overflow-auto">
+        <Preview {...props} />
+
+        <AIInterpretation {...props} />
+      </div>
     </div>
   );
 };
