@@ -81,6 +81,7 @@ export default function AIAnswerDemo() {
         expandText="展开更多"
         collapseText="收起"
         continueLabel="继续追问"
+        maxHeight={80}
         theme={theme}
         onContinue={() => window.alert("继续追问")}
       />

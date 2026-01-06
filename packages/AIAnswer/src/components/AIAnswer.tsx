@@ -27,9 +27,26 @@ export function AIAnswer({
   theme = "auto",
   onContinue
 }: AIAnswerProps) {
+  function resolveTheme(input: AIAnswerProps["theme"] | undefined): "light" | "dark" | undefined {
+    if (!input) return undefined;
+    if (input === "light") return "light";
+    if (input === "dark") return "dark";
+    if (
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      return "dark";
+    }
+    return "light";
+  }
+
   const bodyRef = useRef<HTMLDivElement>(null);
-  const [collapsed, setCollapsed] = useState(() => (content?.trim().length ?? 0) > 280);
-  const showToggle = (content?.trim().length ?? 0) > 280;
+  const contentLen = useMemo(() => content?.trim().length ?? 0, [content]);
+  const showToggle = contentLen > 280;
+  const [collapsedState, setCollapsedState] = useState(() => showToggle);
+  const [userInteracted, setUserInteracted] = useState(false);
+  const collapsed = userInteracted ? collapsedState : showToggle;
 
   useEffect(() => {
     const el = bodyRef.current;
@@ -40,8 +57,9 @@ export function AIAnswer({
     return collapsed ? expandText : collapseText;
   }, [collapsed, expandText, collapseText]);
 
-  const isDark = theme === "dark";
-  const isLight = theme === "light";
+  const resolvedTheme = resolveTheme(theme);
+  const isDark = resolvedTheme === "dark";
+  const isLight = resolvedTheme === "light";
   const containerClass = isDark
     ? "p-6 rounded-xl border border-slate-700 bg-[#0b1220] text-slate-200"
     : isLight
@@ -58,10 +76,10 @@ export function AIAnswer({
     ? "font-semibold text-base text-[#19191A]"
     : "font-semibold text-base text-[#19191A] dark:text-white";
   return (
-    <div>
+    <div className={resolvedTheme === "dark" ? "dark" : undefined}>
       <div className={containerClass}>
       <div className="mb-4 flex items-center gap-2">
-        <Sparkles className="flex-none text-2xl text-[#1784FC]" />
+        <Sparkles className="flex-none text-2xl text-[#1784FC]" fill="currentColor" />
         <span className={titleClass}>{title}</span>
       </div>
       <div
@@ -79,7 +97,10 @@ export function AIAnswer({
           collapsed={collapsed}
           expandText={expandText}
           collapseText={collapseText}
-          onToggle={() => setCollapsed(!collapsed)}
+          onToggle={() => {
+            setUserInteracted(true);
+            setCollapsedState(!collapsed);
+          }}
         />
       ) : null}
       <div className="mt-3 flex items-center justify-between">
@@ -89,7 +110,7 @@ export function AIAnswer({
           onLike={() => {}}
           onDislike={() => {}}
           onSpeak={() => {}}
-          theme={theme}
+          theme={resolvedTheme ?? "auto"}
         />
         <AIContinueButton label={continueLabel} onClick={onContinue} />
       </div>
