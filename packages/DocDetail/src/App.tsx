@@ -1,4 +1,5 @@
-import { DocDetail } from "./components";
+import { Bot } from "lucide-react";
+import { ActionButton, DocDetail } from "./components";
 
 const App = () => {
   return (
@@ -87,6 +88,9 @@ const App = () => {
             timestamp: "2024-11-01T15:30:00Z",
           },
         }}
+        extraButtons={[
+          <ActionButton icon={<Bot />}>Continue Chat</ActionButton>,
+        ]}
       />
     </div>
   );
