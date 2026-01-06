@@ -2,7 +2,14 @@ import type { FC } from "react";
 import { ColorPicker, type ColorPickerProps } from "antd";
 import FilterCollapse, { type FilterCollapseProps } from "../FilterCollapse";
 
-export type FilterColorPickerProps = FilterCollapseProps & ColorPickerProps;
+export type FilterColorPickerProps = FilterCollapseProps &
+  ColorPickerProps & {
+    i18n?: {
+      labels?: {
+        presetColors?: string;
+      };
+    };
+  };
 
 const PRESET_COLORS = [
   "#FF0000",
@@ -20,14 +27,14 @@ const PRESET_COLORS = [
 ];
 
 const FilterColorPicker: FC<FilterColorPickerProps> = (props) => {
-  const { presets, ...rest } = props;
+  const { presets, i18n, ...rest } = props;
 
   return (
     <FilterCollapse {...props}>
       <ColorPicker
         presets={[
           {
-            label: "预设颜色",
+            label: i18n?.labels?.presetColors ?? "Preset Colors",
             colors: PRESET_COLORS,
           },
           ...(presets ?? []),
