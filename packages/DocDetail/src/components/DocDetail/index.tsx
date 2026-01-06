@@ -1,9 +1,10 @@
-import { Button, Card, Typography } from "antd";
+import { Card, Typography } from "antd";
 import { SquareArrowOutUpRight } from "lucide-react";
-import type { FC, HTMLAttributes } from "react";
+import type { FC, HTMLAttributes, ReactNode } from "react";
 import Preview from "./components/Preview";
 import AIInterpretation from "./components/AIInterpretation";
 import { cn } from "@/utils/cn";
+import ActionButton from "../ActionButton";
 
 const { Text } = Typography;
 
@@ -92,10 +93,11 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
       size?: string;
     };
   };
+  extraButtons?: ReactNode[];
 }
 
 const DocDetail: FC<DocDetailProps> = (props) => {
-  const { data, i18n, className, ...rest } = props;
+  const { data, i18n, extraButtons, className, ...rest } = props;
 
   const extraInfo = [
     {
@@ -140,17 +142,16 @@ const DocDetail: FC<DocDetailProps> = (props) => {
         </Text>
 
         <div className="flex gap-2 mb-6">
-          <Button
-            color="primary"
-            variant="filled"
-            shape="round"
-            icon={<SquareArrowOutUpRight className="size-4" />}
+          {extraButtons}
+
+          <ActionButton
+            icon={<SquareArrowOutUpRight />}
             onClick={() => {
               window.open(data.url);
             }}
           >
             {i18n?.buttons?.openSource ?? "Open Source"}
-          </Button>
+          </ActionButton>
         </div>
 
         <div className="flex flex-col gap-6 flex-1 overflow-auto">
