@@ -35,12 +35,13 @@ export default function AIAnswerDemo() {
 
 
   return (
-    <div
-      className={clsx(
-        "space-y-6 rounded-xl border p-6 transition-colors",
-        isDark ? "border-slate-800 bg-slate-950 text-slate-100" : "border-slate-200 bg-white text-slate-900"
-      )}
-    >
+    <div className={clsx(isDark && "dark")}>
+      <div
+        className={clsx(
+          "space-y-6 rounded-xl border p-6 transition-colors",
+          isDark ? "border-slate-800 bg-slate-950 text-slate-100" : "border-slate-200 bg-white text-slate-900"
+        )}
+      >
       <div className="flex items-center justify-end gap-4">
         <button
           type="button"
@@ -81,10 +82,10 @@ export default function AIAnswerDemo() {
         expandText="展开更多"
         collapseText="收起"
         continueLabel="继续追问"
-        maxHeight={80}
         theme={theme}
         onContinue={() => window.alert("继续追问")}
       />
+      </div>
     </div>
   );
 }

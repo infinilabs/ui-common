@@ -24,12 +24,10 @@ export function AIAnswerActions({
   const [dislikePulse, setDislikePulse] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const baseBtnClass = "inline-flex p-1 items-center justify-center rounded bg-transparent cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300";
-  const defaultBtnClass = theme === "dark"
-    ? "text-slate-300 hover:bg-slate-800 focus-visible:ring-slate-600"
-    : theme === "light"
-    ? "text-[#666] hover:bg-slate-50"
-    : "text-[#666] hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800 dark:focus-visible:ring-slate-600";
+  const baseBtnClass =
+    "inline-flex p-1 items-center justify-center rounded bg-transparent cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:focus-visible:ring-slate-600";
+  const defaultBtnClass =
+    "text-[#666] hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800";
   
   const activeBtnClass = "text-[#1677ff]";
 
@@ -54,7 +52,8 @@ export function AIAnswerActions({
   }, [copied]);
 
   return (
-    <div className="flex gap-2">
+    <div className={theme === "dark" ? "dark" : undefined}>
+      <div className="flex gap-2">
       <button
         type="button"
         className={`${baseBtnClass} ${defaultBtnClass}`}
@@ -129,6 +128,7 @@ export function AIAnswerActions({
       >
         <Volume2 className="h-4 w-4" />
       </button>
+      </div>
     </div>
   );
 }

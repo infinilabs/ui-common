@@ -58,23 +58,29 @@ export function AIAnswer({
   }, [collapsed, expandText, collapseText]);
 
   const resolvedTheme = resolveTheme(theme);
-  const isDark = resolvedTheme === "dark";
-  const isLight = resolvedTheme === "light";
-  const containerClass = isDark
-    ? "p-6 rounded-xl border border-slate-700 bg-[#0b1220] text-slate-200"
-    : isLight
-    ? "p-6 rounded-xl border border-[#EBEBEB] bg-white text-[#333]"
-    : "p-6 rounded-xl border border-[#EBEBEB] bg-white text-[#333] dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200";
-  const overlayClass = isDark
-    ? "absolute inset-x-0 bottom-0 h-16 bg-linear-to-b from-transparent to-[#0b1220]"
-    : isLight
-    ? "absolute inset-x-0 bottom-0 h-16 bg-linear-to-b from-transparent to-white"
-    : "absolute inset-x-0 bottom-0 h-16 bg-linear-to-b from-transparent to-white dark:to-[#0b1220]";
-  const titleClass = isDark
-    ? "font-semibold text-base text-white"
-    : isLight
-    ? "font-semibold text-base text-[#19191A]"
-    : "font-semibold text-base text-[#19191A] dark:text-white";
+  const containerClass = [
+    "p-6 rounded-xl border",
+    "border-[#EBEBEB] bg-white text-[#333]",
+    "dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200",
+    resolvedTheme === "dark" ? "border-slate-700 bg-[#0b1220] text-slate-200" : "",
+    resolvedTheme === "light" ? "border-[#EBEBEB] bg-white text-[#333]" : ""
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const overlayClass = [
+    "absolute inset-x-0 bottom-0 h-16 bg-linear-to-b from-transparent to-white",
+    "dark:to-[#0b1220]",
+    resolvedTheme === "dark" ? "to-[#0b1220]" : ""
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const titleClass = [
+    "font-semibold text-base",
+    "text-[#19191A] dark:text-white",
+    resolvedTheme === "dark" ? "text-white" : ""
+  ]
+    .filter(Boolean)
+    .join(" ");
   return (
     <div className={resolvedTheme === "dark" ? "dark" : undefined}>
       <div className={containerClass}>
