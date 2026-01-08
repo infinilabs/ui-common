@@ -15,6 +15,7 @@ export default defineConfig({
           include: [
             /apps\/react-ts\/src\/.*\.[jt]sx?$/,
             /packages\/SearchResults\/(src|dist)\/.*\.[jt]sx?$/,
+            /packages\/AIAnswer\/(src|dist)\/.*\.[jt]sx?$/,
           ],
         },
       },

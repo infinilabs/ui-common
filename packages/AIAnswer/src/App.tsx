@@ -1,6 +1,9 @@
+import { useState } from 'react'
+import './components/index.css'
 import { AIAnswer } from './components/AIAnswer'
 
 function App() {
+  const [isDark, setIsDark] = useState(false)
   const content = `
 **云创计划——云原生联合孵化**
 
@@ -21,7 +24,25 @@ function App() {
 
   return (
     <>
-      <div style={{ padding: 24, maxWidth: 800, margin: "0 auto" }}>
+      <div style={{ padding: 24, maxWidth: 800, margin: "0 auto" }} className={isDark ? "dark" : undefined}>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+          <button
+            type="button"
+            onClick={() => setIsDark(!isDark)}
+            style={{
+              border: "1px solid",
+              borderColor: isDark ? "#334155" : "#e2e8f0",
+              background: isDark ? "#0b1220" : "#fff",
+              color: isDark ? "#e2e8f0" : "#0f172a",
+              borderRadius: 999,
+              padding: "6px 10px",
+              fontSize: 12,
+              cursor: "pointer"
+            }}
+          >
+            切换到{isDark ? "浅色" : "深色"}
+          </button>
+        </div>
         <AIAnswer
           title="智能解读"
           content={content}
