@@ -27,20 +27,6 @@ export function AIAnswer({
   theme = "auto",
   onContinue
 }: AIAnswerProps) {
-  function resolveTheme(input: AIAnswerProps["theme"] | undefined): "light" | "dark" | undefined {
-    if (!input) return undefined;
-    if (input === "light") return "light";
-    if (input === "dark") return "dark";
-    if (
-      typeof window !== "undefined" &&
-      typeof window.matchMedia === "function" &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    ) {
-      return "dark";
-    }
-    return "light";
-  }
-
   const bodyRef = useRef<HTMLDivElement>(null);
   const contentLen = useMemo(() => content?.trim().length ?? 0, [content]);
   const showToggle = contentLen > 280;
@@ -57,32 +43,27 @@ export function AIAnswer({
     return collapsed ? expandText : collapseText;
   }, [collapsed, expandText, collapseText]);
 
-  const resolvedTheme = resolveTheme(theme);
   const containerClass = [
     "p-6 rounded-xl border",
     "border-[#EBEBEB] bg-white text-[#333]",
     "dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200",
-    resolvedTheme === "dark" ? "border-slate-700 bg-[#0b1220] text-slate-200" : "",
-    resolvedTheme === "light" ? "border-[#EBEBEB] bg-white text-[#333]" : ""
   ]
     .filter(Boolean)
     .join(" ");
   const overlayClass = [
     "absolute inset-x-0 bottom-0 h-16 bg-linear-to-b from-transparent to-white",
     "dark:to-[#0b1220]",
-    resolvedTheme === "dark" ? "to-[#0b1220]" : ""
   ]
     .filter(Boolean)
     .join(" ");
   const titleClass = [
     "font-semibold text-base",
     "text-[#19191A] dark:text-white",
-    resolvedTheme === "dark" ? "text-white" : ""
   ]
     .filter(Boolean)
     .join(" ");
   return (
-    <div className={resolvedTheme === "dark" ? "dark" : undefined}>
+    <div className={theme === "dark" ? "dark" : undefined}>
       <div className={containerClass}>
       <div className="mb-4 flex items-center gap-2">
         <Sparkles className="flex-none text-2xl text-[#1784FC]" fill="currentColor" />
@@ -116,7 +97,7 @@ export function AIAnswer({
           onLike={() => {}}
           onDislike={() => {}}
           onSpeak={() => {}}
-          theme={resolvedTheme ?? "auto"}
+          theme={theme}
         />
         <AIContinueButton label={continueLabel} onClick={onContinue} />
       </div>
