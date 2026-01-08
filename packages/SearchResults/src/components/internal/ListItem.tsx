@@ -46,9 +46,9 @@ export function ListItem({
       </div>
 
       <div className="flex gap-3">
-        {item.thumbnailUrl ? (
+        {item.cover ? (
           <img
-            src={item.thumbnailUrl}
+            src={item.cover}
             alt={item.thumbnailAlt ?? item.title}
             className="h-[90px] w-[160px] flex-none rounded-lg object-cover ring-1 ring-slate-200 dark:ring-slate-700"
             loading="lazy"
@@ -56,9 +56,9 @@ export function ListItem({
         ) : null}
 
         <div className="min-w-0 flex-1 flex flex-col justify-between">
-          {item.description ? (
+          {item.summary ? (
             <div className="line-clamp-2 text-sm text-[#666]">
-              {item.description}
+              {item.summary}
             </div>
           ) : null}
 
