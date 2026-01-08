@@ -1,5 +1,6 @@
 import { MoveRight } from "lucide-react";
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { FC } from "react";
 
 import { useConnectStore } from "@/stores/connectStore";
 
@@ -13,6 +14,7 @@ const PrevSuggestion: FC<PrevSuggestionProps> = (props) => {
   const currentAssistant = useConnectStore((state) => state.currentAssistant);
 
   const [list, setList] = useState<string[]>([]);
+  const currentAssistantStr = JSON.stringify(currentAssistant);
 
   useEffect(() => {
     const suggested = currentAssistant?._source?.chat_settings?.suggested || {};
@@ -21,7 +23,7 @@ const PrevSuggestion: FC<PrevSuggestionProps> = (props) => {
     } else {
       setList([]);
     }
-  }, [JSON.stringify(currentAssistant)]);
+  }, [currentAssistantStr, currentAssistant]);
 
   return (
     <ul className="absolute left-2 bottom-2 flex flex-col gap-2 p-0">

@@ -38,7 +38,7 @@ export const QueryIntent = ({
     if (Detail?.payload?.suggestion && getSuggestion) {
       getSuggestion(Detail?.payload?.suggestion);
     }
-  }, [Detail?.payload]);
+  }, [Detail?.payload, getSuggestion]);
 
   useEffect(() => {
     if (!ChunkData?.message_chunk) return;
@@ -60,15 +60,7 @@ export const QueryIntent = ({
         console.error("Failed to process message chunk in QueryIntent:", error);
       }
     }
-  }, [ChunkData?.message_chunk, loading]);
-
-  useEffect(() => {
-    if (!ChunkData?.message_chunk) return;
-    try {
-    } catch (e) {
-      console.error("Failed to parse query data:", e);
-    }
-  }, [ChunkData?.message_chunk]);
+  }, [ChunkData?.message_chunk, loading, getSuggestion]);
 
   // Must be after hooks !!!
   if (!ChunkData && !Detail) return null;

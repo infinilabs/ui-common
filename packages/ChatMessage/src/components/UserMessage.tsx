@@ -1,11 +1,12 @@
-import { FC, useState } from "react";
+import { useState } from "react";
+import type { FC } from "react";
 import clsx from "clsx";
 
 import { CopyButton } from "@/components/Common/CopyButton";
 import { useAsyncEffect } from "ahooks";
 import platformAdapter from "@/utils/platformAdapter";
 import { useConnectStore } from "@/stores/connectStore";
-import { AttachmentItem } from "../Assistant/AttachmentList";
+import { AttachmentItem } from "./Assistant/AttachmentList";
 import { useAppStore } from "@/stores/appStore";
 
 interface UserMessageProps {

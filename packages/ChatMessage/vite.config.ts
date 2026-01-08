@@ -11,13 +11,20 @@ const globals = {
   ...(packageJson?.dependencies || {}),
 };
 
-function resolve(str) {
+function resolve(str: string) {
   return path.resolve(__dirname, str);
 }
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), cssInjectedByJsPlugin()],
+  resolve: {
+    alias: {
+      "@": resolve("src"),
+      "react": resolve("./node_modules/react"),
+      "react-dom": resolve("./node_modules/react-dom"),
+    },
+  },
   css: {
     modules: {
       localsConvention: "camelCase",

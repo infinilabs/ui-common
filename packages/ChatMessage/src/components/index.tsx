@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 
 import logoImg from "@/assets/icon.svg";
-import type { Message, IChunkData } from "@/types/chat";
+import type { IChatMessage, IChunkData } from "@/types/chat";
 import { QueryIntent } from "./QueryIntent";
 import { CallTools } from "./CallTools";
 import { FetchSource } from "./FetchSource";
@@ -18,7 +18,7 @@ import { useConnectStore } from "@/stores/connectStore";
 import FontIcon from "@/components/Common/Icons/FontIcon";
 
 interface ChatMessageProps {
-  message: Message;
+  message: IChatMessage;
   isTyping?: boolean;
   query_intent?: IChunkData;
   tools?: IChunkData;
@@ -34,7 +34,22 @@ interface ChatMessageProps {
   actionClassName?: string;
   actionIconSize?: number;
   copyButtonId?: string;
-  formatUrl?: (data: any) => string;
+  formatUrl?: (data: IChunkData) => string;
+  theme?: "light" | "dark" | "system";
+}
+
+function resolveTheme(theme: "light" | "dark" | "system" | undefined): "light" | "dark" | undefined {
+  if (!theme) return undefined;
+  if (theme === "light") return "light";
+  if (theme === "dark") return "dark";
+  if (
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  ) {
+    return "dark";
+  }
+  return "light";
 }
 
 export const ChatMessage = memo(function ChatMessage({
@@ -55,8 +70,10 @@ export const ChatMessage = memo(function ChatMessage({
   actionIconSize,
   copyButtonId,
   formatUrl,
+  theme,
 }: ChatMessageProps) {
   const { t } = useTranslation();
+  const resolvedTheme = resolveTheme(theme);
 
   const currentAssistant = useConnectStore((state) => state.currentAssistant);
   const assistantList = useConnectStore((state) => state.assistantList);
@@ -149,14 +166,16 @@ export const ChatMessage = memo(function ChatMessage({
         )}
         {showActions && (
           <MessageActions
-            id={message._id}
+            id={message._id ?? ""}
             content={messageContent || response?.message_chunk || ""}
             question={question}
             actionClassName={actionClassName}
             actionIconSize={actionIconSize}
             copyButtonId={copyButtonId}
             onResend={() => {
-              onResend && onResend(question);
+              if (onResend) {
+                onResend(question);
+              }
             }}
           />
         )}
@@ -175,6 +194,7 @@ export const ChatMessage = memo(function ChatMessage({
       className={clsx(
         "w-full py-8 flex",
         [isAssistant ? "justify-start" : "justify-end"],
+        resolvedTheme === "dark" && "dark",
         rootClassName
       )}
     >
