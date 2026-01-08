@@ -55,16 +55,16 @@ const App = () => {
             // content_type: "markdown",
             // preview_url: "http://192.168.3.181:9101/coco-server/README.md",
 
-            // content_type: "pdf",
-            // preview_url: "http://192.168.3.181:9101/coco-server/test.pdf",
+            content_type: "pdf",
+            preview_url: "http://192.168.3.181:9101/coco-server/test.pdf",
 
             // content_type: "docx",
             // preview_url:
             //   "http://192.168.3.181:9101/coco-server/OPHTHA_Listofacceptablefiletypes.docx",
 
-            content_type: "pptx",
-            preview_url:
-              "http://192.168.3.181:9101/coco-server/Processes-file-tables.pptx",
+            // content_type: "pptx",
+            // preview_url:
+            //   "http://192.168.3.181:9101/coco-server/Processes-file-tables.pptx",
 
             // content_type: "xlsx",
             // preview_url:
@@ -89,7 +89,9 @@ const App = () => {
           },
         }}
         extraButtons={[
-          <ActionButton icon={<Bot />}>Continue Chat</ActionButton>,
+          <ActionButton key="bot" icon={<Bot />}>
+            Continue Chat
+          </ActionButton>,
         ]}
       />
     </div>

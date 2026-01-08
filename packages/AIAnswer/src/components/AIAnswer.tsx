@@ -28,8 +28,11 @@ export function AIAnswer({
   onContinue
 }: AIAnswerProps) {
   const bodyRef = useRef<HTMLDivElement>(null);
-  const [collapsed, setCollapsed] = useState(() => (content?.trim().length ?? 0) > 280);
-  const showToggle = (content?.trim().length ?? 0) > 280;
+  const contentLen = useMemo(() => content?.trim().length ?? 0, [content]);
+  const showToggle = contentLen > 280;
+  const [collapsedState, setCollapsedState] = useState(() => showToggle);
+  const [userInteracted, setUserInteracted] = useState(false);
+  const collapsed = userInteracted ? collapsedState : showToggle;
 
   useEffect(() => {
     const el = bodyRef.current;
@@ -40,28 +43,30 @@ export function AIAnswer({
     return collapsed ? expandText : collapseText;
   }, [collapsed, expandText, collapseText]);
 
-  const isDark = theme === "dark";
-  const isLight = theme === "light";
-  const containerClass = isDark
-    ? "p-6 rounded-xl border border-slate-700 bg-[#0b1220] text-slate-200"
-    : isLight
-    ? "p-6 rounded-xl border border-[#EBEBEB] bg-white text-[#333]"
-    : "p-6 rounded-xl border border-[#EBEBEB] bg-white text-[#333] dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200";
-  const overlayClass = isDark
-    ? "absolute inset-x-0 bottom-0 h-16 bg-linear-to-b from-transparent to-[#0b1220]"
-    : isLight
-    ? "absolute inset-x-0 bottom-0 h-16 bg-linear-to-b from-transparent to-white"
-    : "absolute inset-x-0 bottom-0 h-16 bg-linear-to-b from-transparent to-white dark:to-[#0b1220]";
-  const titleClass = isDark
-    ? "font-semibold text-base text-white"
-    : isLight
-    ? "font-semibold text-base text-[#19191A]"
-    : "font-semibold text-base text-[#19191A] dark:text-white";
+  const containerClass = [
+    "p-6 rounded-xl border",
+    "border-[#EBEBEB] bg-white text-[#333]",
+    "dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200",
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const overlayClass = [
+    "absolute inset-x-0 bottom-0 h-16 bg-linear-to-b from-transparent to-white",
+    "dark:to-[#0b1220]",
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const titleClass = [
+    "font-semibold text-base",
+    "text-[#19191A] dark:text-white",
+  ]
+    .filter(Boolean)
+    .join(" ");
   return (
-    <div>
+    <div className={theme === "dark" ? "dark" : undefined}>
       <div className={containerClass}>
       <div className="mb-4 flex items-center gap-2">
-        <Sparkles className="flex-none text-2xl text-[#1784FC]" />
+        <Sparkles className="flex-none text-2xl text-[#1784FC]" fill="currentColor" />
         <span className={titleClass}>{title}</span>
       </div>
       <div
@@ -79,7 +84,10 @@ export function AIAnswer({
           collapsed={collapsed}
           expandText={expandText}
           collapseText={collapseText}
-          onToggle={() => setCollapsed(!collapsed)}
+          onToggle={() => {
+            setUserInteracted(true);
+            setCollapsedState(!collapsed);
+          }}
         />
       ) : null}
       <div className="mt-3 flex items-center justify-between">

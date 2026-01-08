@@ -1,5 +1,7 @@
 import clsx from "clsx";
 import { ExternalLink } from "lucide-react";
+import type { ComponentType } from "react";
+const ExternalLinkIcon = ExternalLink as unknown as ComponentType<{ className?: string }>;
 
 import { AuthorDate } from "./AuthorDate";
 import { BreadcrumbsLine } from "./BreadcrumbsLine";
@@ -46,9 +48,9 @@ export function ListItem({
       </div>
 
       <div className="flex gap-3">
-        {item.thumbnailUrl ? (
+        {item.cover ? (
           <img
-            src={item.thumbnailUrl}
+            src={item.cover}
             alt={item.thumbnailAlt ?? item.title}
             className="h-[90px] w-[160px] flex-none rounded-lg object-cover ring-1 ring-slate-200 dark:ring-slate-700"
             loading="lazy"
@@ -56,9 +58,9 @@ export function ListItem({
         ) : null}
 
         <div className="min-w-0 flex-1 flex flex-col justify-between">
-          {item.description ? (
+          {item.summary ? (
             <div className="line-clamp-2 text-sm text-[#666]">
-              {item.description}
+              {item.summary}
             </div>
           ) : null}
 
@@ -70,7 +72,7 @@ export function ListItem({
                 <AuthorDate author={item.author} date={item.date} />
                 {item.href ? (
                   <span className="flex-none text-[#007EFF]">
-                    <ExternalLink className="h-3 w-3" />
+                    <ExternalLinkIcon className="h-3 w-3" />
                   </span>
                 ) : null}
               </div>

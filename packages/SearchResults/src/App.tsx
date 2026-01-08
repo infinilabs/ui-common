@@ -271,7 +271,7 @@ const item5: SearchResultVideoGroupItem = {
       mediaType: "video",
       title: "城市夜景延时摄影",
       href: "https://example.com/video/0",
-      thumbnailUrl: "https://picsum.photos/seed/video-thumb-0/640/360",
+      cover: "https://picsum.photos/seed/video-thumb-0/640/360",
       sourceLabel: "视频库",
       categoryLabel: "视频"
     },
@@ -281,7 +281,7 @@ const item5: SearchResultVideoGroupItem = {
       mediaType: "video",
       title: "海边日落慢镜头",
       href: "https://example.com/video/1",
-      thumbnailUrl: "https://picsum.photos/seed/video-thumb-1/640/360",
+      cover: "https://picsum.photos/seed/video-thumb-1/640/360",
       sourceLabel: "视频库",
       categoryLabel: "视频"
     }

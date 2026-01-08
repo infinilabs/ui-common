@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), dts({ rollupTypes: true, tsconfigPath: "./tsconfig.app.json" }), cssInjectedByJsPlugin()],
   build: {
     lib: {
-      entry: "src/index.ts",
+      entry: "src/components/index.ts",
       name: "AIAnswer",
       formats: ["es", "cjs"],
       fileName: "ai-answer"

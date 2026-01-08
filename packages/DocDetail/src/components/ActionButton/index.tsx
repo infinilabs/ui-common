@@ -35,11 +35,7 @@ const ActionButton: FC<ActionButtonProps> = (props) => {
 
       <motion.span
         className="overflow-hidden"
-        initial={{
-          width: 0,
-          opacity: 0,
-          paddingLeft: 0,
-        }}
+        initial={false}
         animate={{
           width: hovered ? "auto" : 0,
           opacity: Number(hovered),
