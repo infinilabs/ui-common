@@ -16,7 +16,7 @@ const Attachment: FC<AttachmentProps> = (props) => {
 
   const [uploading, setUploading] = useState(!attachmentId);
   const [analyzing, setAnalyzing] = useState(false);
-  const [failed, setFailed] = useState(true);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (!uploading) return;
