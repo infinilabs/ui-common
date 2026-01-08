@@ -41,7 +41,10 @@ export function SectionRenderer({
 }) {
   if (Array.isArray(section)) {
     const first = section[0] as SearchResultsRecord | undefined;
-    const recordType = typeof first?.type === "string" ? first.type.toLowerCase() : undefined;
+    const recordType =
+      typeof first?.metadata?.content_type === "string"
+        ? first.metadata.content_type.toLowerCase()
+        : undefined;
     if (recordType === "image") return <SearchResultsImageGroup section={section as SearchResultsRecord[]} />;
     if (recordType === "video") return <SearchResultsVideoGroup section={section as SearchResultsRecord[]} />;
   }
@@ -78,7 +81,7 @@ const images: SearchResultsRecord[] = [
   {
     id: "img-0",
     title: "黑色壁纸全屏",
-    type: "image",
+    metadata: { content_type: "image" },
     thumbnail: "https://example.com/image_thumb_0.png",
     url: "https://example.com/image_0.png",
     source: { name: "壁纸", type: "connector", id: "wallpaper" }
@@ -89,7 +92,7 @@ const videos: SearchResultsRecord[] = [
   {
     id: "video-0",
     title: "城市夜景延时摄影",
-    type: "video",
+    metadata: { content_type: "video" },
     thumbnail: "https://picsum.photos/seed/video-thumb-0/640/360",
     url: "https://example.com/video/0",
     source: { name: "视频库", type: "connector", id: "connector-video" }
@@ -203,8 +206,11 @@ export default function Demo({ data }: { data: Array<SearchResultsProps["section
     <div className="space-y-10">
       {data.map((section, index) => {
         if (Array.isArray(section)) {
-          const first = section[0] as { type?: unknown } | undefined;
-          const recordType = typeof first?.type === "string" ? first.type.toLowerCase() : undefined;
+          const first = section[0] as SearchResultsRecord | undefined;
+          const recordType =
+            typeof first?.metadata?.content_type === "string"
+              ? first.metadata.content_type.toLowerCase()
+              : undefined;
           if (recordType === "image") return <SearchResultsImageGroup key={index} section={section} />;
           if (recordType === "video") return <SearchResultsVideoGroup key={index} section={section} />;
         }

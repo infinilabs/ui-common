@@ -159,10 +159,17 @@ function resolveSection(
     };
   }
 
-  const recordType =
-    typeof (value as { type?: unknown }).type === "string"
-      ? ((value as { type: string }).type.trim().toLowerCase() as string)
+  const meta = (value as { metadata?: unknown }).metadata;
+  const metaContentType =
+    typeof meta === "object" && meta
+      ? (meta as { content_type?: unknown }).content_type
       : undefined;
+  const recordType =
+    typeof metaContentType === "string"
+      ? (metaContentType.trim().toLowerCase() as string)
+      : typeof (value as { type?: unknown }).type === "string"
+        ? ((value as { type: string }).type.trim().toLowerCase() as string)
+        : undefined;
   if (recordType === "image" || recordType === "video") {
     const recordId = typeof (value as { id?: unknown }).id === "string" ? (value as { id: string }).id : undefined;
     const cover =
@@ -298,10 +305,17 @@ function recordToMediaItem(
 ): SearchResultMediaItem | undefined {
   const value = record as unknown as Record<string, unknown>;
 
-  const recordType =
-    typeof (value as { type?: unknown }).type === "string"
-      ? ((value as { type: string }).type.trim().toLowerCase() as string)
+  const meta2 = (value as { metadata?: unknown }).metadata;
+  const metaContentType2 =
+    typeof meta2 === "object" && meta2
+      ? (meta2 as { content_type?: unknown }).content_type
       : undefined;
+  const recordType =
+    typeof metaContentType2 === "string"
+      ? (metaContentType2.trim().toLowerCase() as string)
+      : typeof (value as { type?: unknown }).type === "string"
+        ? ((value as { type: string }).type.trim().toLowerCase() as string)
+        : undefined;
   if (recordType !== "image" && recordType !== "video") return undefined;
 
   const recordId = typeof (value as { id?: unknown }).id === "string" ? (value as { id: string }).id : undefined;

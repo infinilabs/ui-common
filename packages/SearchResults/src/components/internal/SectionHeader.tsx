@@ -16,6 +16,7 @@ export function SectionHeader({
   source,
   className,
   titleClassName,
+  titleAction,
 }: {
   title?: string;
   titleIcon?: React.ReactNode;
@@ -23,6 +24,13 @@ export function SectionHeader({
   source?: string;
   className?: string;
   titleClassName?: string;
+  titleAction?: {
+    label: string;
+    href?: string;
+    target?: string;
+    rel?: string;
+    onClick?: () => void;
+  };
 }) {
   if (!title && !titleIcon && !source) return null;
 
@@ -41,14 +49,31 @@ export function SectionHeader({
       ) : null}
 
       {title ? (
-        <div
-          className={clsx(
-            "min-w-0 cursor-pointer text-xl hover:underline hover:underline-offset-2 group-hover:underline group-hover:underline-offset-2",
-            titleClassName
-          )}
-        >
-          {title}
-        </div>
+        titleAction?.href ? (
+          <a
+            className={clsx(
+              "min-w-0 cursor-pointer text-xl hover:underline hover:underline-offset-2 group-hover:underline group-hover:underline-offset-2",
+              titleClassName
+            )}
+            href={titleAction.href}
+            target={titleAction.target}
+            rel={titleAction.rel}
+            onClick={() => titleAction.onClick?.()}
+          >
+            {title}
+          </a>
+        ) : (
+          <button
+            type="button"
+            className={clsx(
+              "min-w-0 cursor-pointer bg-transparent p-0 text-left text-xl hover:underline hover:underline-offset-2 group-hover:underline group-hover:underline-offset-2",
+              titleClassName
+            )}
+            onClick={titleAction?.onClick}
+          >
+            {title}
+          </button>
+        )
       ) : null}
 
       {source ? (
