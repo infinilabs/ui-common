@@ -203,6 +203,52 @@ importers:
         specifier: ^4.5.4
         version: 4.5.4(@types/node@24.10.4)(rollup@4.52.4)(typescript@5.9.3)(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(less@4.2.0)(lightningcss@1.30.2))
 
+  packages/Attachments:
+    dependencies:
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      nanoid:
+        specifier: ^5.1.6
+        version: 5.1.6
+      react:
+        specifier: ^19.2.0
+        version: 19.2.3
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.3(react@19.2.3)
+      react-helmet:
+        specifier: ^6.1.0
+        version: 6.1.0(react@19.2.3)
+    devDependencies:
+      '@types/node':
+        specifier: ^24.10.1
+        version: 24.10.4
+      '@types/react':
+        specifier: ^19.2.5
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.7)
+      '@types/react-helmet':
+        specifier: ^6.1.11
+        version: 6.1.11
+      '@vitejs/plugin-react':
+        specifier: ^5.1.1
+        version: 5.1.2(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(less@4.2.0)(lightningcss@1.30.2))
+      globals:
+        specifier: ^16.5.0
+        version: 16.5.0
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      unocss:
+        specifier: ^66.5.10
+        version: 66.5.10(postcss@8.5.6)(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(less@4.2.0)(lightningcss@1.30.2))
+      vite:
+        specifier: ^7.2.4
+        version: 7.3.0(@types/node@24.10.4)(jiti@2.6.1)(less@4.2.0)(lightningcss@1.30.2)
+
   packages/ChatMessage:
     dependencies:
       clsx:
@@ -2666,6 +2712,9 @@ packages:
     peerDependencies:
       '@types/react': ^19.2.0
 
+  '@types/react-helmet@6.1.11':
+    resolution: {integrity: sha512-0QcdGLddTERotCXo3VFlUSWO3ztraw8nZ6e3zJSgG7apwV5xt+pJUS8ewPBqT4NYB1optGLprNQzFleIY84u/g==}
+
   '@types/react@18.3.5':
     resolution: {integrity: sha512-WeqMfGJLGuLCqHGYRGHxnKrXcTitc6L/nBUWfWPcTarG3t9PsquqUMuVeXZeca+mglY4Vo5GZjCi0A3Or2lnxA==}
 
@@ -4663,9 +4712,9 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@3.3.7:
-    resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+  nanoid@5.1.6:
+    resolution: {integrity: sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg==}
+    engines: {node: ^18 || >=20}
     hasBin: true
 
   natural-compare@1.4.0:
@@ -5097,6 +5146,14 @@ packages:
     peerDependencies:
       react: ^19.2.3
 
+  react-fast-compare@3.2.2:
+    resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
+
+  react-helmet@6.1.0:
+    resolution: {integrity: sha512-4uMzEY9nlDlgxr61NL3XbKRy1hEkXmKNXhjbAIOVw5vcFrsdYbH2FEwcNyWvWinl103nXgzYNlns9ca+8kFiWw==}
+    peerDependencies:
+      react: '>=16.3.0'
+
   react-i18next@16.0.0:
     resolution: {integrity: sha512-JQ+dFfLnFSKJQt7W01lJHWRC0SX7eDPobI+MSTJ3/gP39xH2g33AuTE7iddAfXYHamJdAeMGM0VFboPaD3G68Q==}
     peerDependencies:
@@ -5149,6 +5206,11 @@ packages:
   react-refresh@0.18.0:
     resolution: {integrity: sha512-QgT5//D3jfjJb6Gsjxv0Slpj23ip+HtOpnNgnb2S5zU3CB26G/IDPGoy4RJB42wzFE46DRsstbW6tKHoKbhAxw==}
     engines: {node: '>=0.10.0'}
+
+  react-side-effect@2.1.2:
+    resolution: {integrity: sha512-PVjOcvVOyIILrYoyGEpDN3vmYNLdy1CajSFNt4TDsVQC5KpTijDvWVoR+/7Rz2xT978D8/ZtFceXxzsPwZEDvw==}
+    peerDependencies:
+      react: ^16.3.0 || ^17.0.0 || ^18.0.0
 
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
@@ -8032,6 +8094,10 @@ snapshots:
       '@types/react': 19.2.2
 
   '@types/react-dom@19.2.3(@types/react@19.2.7)':
+    dependencies:
+      '@types/react': 19.2.7
+
+  '@types/react-helmet@6.1.11':
     dependencies:
       '@types/react': 19.2.7
 
@@ -11007,7 +11073,7 @@ snapshots:
 
   nanoid@3.3.11: {}
 
-  nanoid@3.3.7: {}
+  nanoid@5.1.6: {}
 
   natural-compare@1.4.0: {}
 
@@ -11160,7 +11226,7 @@ snapshots:
 
   postcss@8.4.45:
     dependencies:
-      nanoid: 3.3.7
+      nanoid: 3.3.11
       picocolors: 1.1.0
       source-map-js: 1.2.1
 
@@ -11852,6 +11918,16 @@ snapshots:
       react: 19.2.3
       scheduler: 0.27.0
 
+  react-fast-compare@3.2.2: {}
+
+  react-helmet@6.1.0(react@19.2.3):
+    dependencies:
+      object-assign: 4.1.1
+      prop-types: 15.8.1
+      react: 19.2.3
+      react-fast-compare: 3.2.2
+      react-side-effect: 2.1.2(react@19.2.3)
+
   react-i18next@16.0.0(i18next@25.6.0(typescript@5.8.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3):
     dependencies:
       '@babel/runtime': 7.28.4
@@ -11906,6 +11982,10 @@ snapshots:
   react-refresh@0.17.0: {}
 
   react-refresh@0.18.0: {}
+
+  react-side-effect@2.1.2(react@19.2.3):
+    dependencies:
+      react: 19.2.3
 
   react@18.3.1:
     dependencies:
