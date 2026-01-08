@@ -172,7 +172,7 @@ const videoGroup: SearchResultVideoGroupItem = {
       mediaType: "video",
       title: "城市夜景延时摄影",
       href: "https://example.com/video/0",
-      thumbnailUrl: "https://picsum.photos/seed/video-thumb-0/640/360",
+      cover: "https://picsum.photos/seed/video-thumb-0/640/360",
       breadcrumbs: ["视频库", "视频"],
       onClick: () => console.log("clicked video item")
     }

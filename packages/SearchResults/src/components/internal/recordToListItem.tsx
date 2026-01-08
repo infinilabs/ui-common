@@ -8,8 +8,8 @@ export function recordToListItem(
   index: number,
   onClick?: () => void
 ): SearchResultListItem {
-  const thumbnailUrl = record.thumbnail ?? record.cover ?? record.metadata?.thumbnail_link;
-  const description = record.summary ?? record.content;
+  const cover = record.thumbnail ?? record.cover ?? record.metadata?.thumbnail_link;
+  const summary = record.summary ?? record.content;
   const fileType = normalizeFileType(record.metadata?.file_extension ?? record.type);
 
   const sourceName = record.source?.name;
@@ -29,8 +29,8 @@ export function recordToListItem(
     id: `${record.source?.id ?? record.url ?? record.title}-${index}`,
     title: record.title,
     href: record.url,
-    description,
-    thumbnailUrl,
+    summary,
+    cover,
     fileType,
     typeIcon,
     breadcrumbs: breadcrumbs.length ? breadcrumbs : undefined,

@@ -165,7 +165,7 @@ function resolveSection(
       : undefined;
   if (recordType === "image" || recordType === "video") {
     const recordId = typeof (value as { id?: unknown }).id === "string" ? (value as { id: string }).id : undefined;
-    const thumbnailUrl =
+    const cover =
       typeof (value as { thumbnail?: unknown }).thumbnail === "string"
         ? (value as { thumbnail: string }).thumbnail
         : typeof (value as { cover?: unknown }).cover === "string"
@@ -176,7 +176,7 @@ function resolveSection(
               : undefined
             : undefined;
 
-    if (thumbnailUrl) {
+    if (cover) {
       const categoryLabel =
         typeof (value as { category?: unknown }).category === "string"
           ? (value as { category: string }).category
@@ -201,7 +201,7 @@ function resolveSection(
         mediaType: recordType === "video" ? "video" : "image",
         title,
         href: onRecordClick ? undefined : url,
-        thumbnailUrl,
+        cover,
         sourceLabel: sourceName,
         categoryLabel,
         breadcrumbs: [sourceName, categoryLabel].filter(Boolean) as string[],
@@ -305,7 +305,7 @@ function recordToMediaItem(
   if (recordType !== "image" && recordType !== "video") return undefined;
 
   const recordId = typeof (value as { id?: unknown }).id === "string" ? (value as { id: string }).id : undefined;
-  const thumbnailUrl =
+  const cover =
     typeof (value as { thumbnail?: unknown }).thumbnail === "string"
       ? (value as { thumbnail: string }).thumbnail
       : typeof (value as { cover?: unknown }).cover === "string"
@@ -316,7 +316,7 @@ function recordToMediaItem(
             : undefined
           : undefined;
 
-  if (!thumbnailUrl) return undefined;
+  if (!cover) return undefined;
 
   const categoryLabel =
     typeof (value as { category?: unknown }).category === "string"
@@ -344,7 +344,7 @@ function recordToMediaItem(
     mediaType: recordType === "video" ? "video" : "image",
     title,
     href: shouldUseRecordClick ? undefined : url,
-    thumbnailUrl,
+    cover,
     sourceLabel: sourceName,
     categoryLabel,
     breadcrumbs: [sourceName, categoryLabel].filter(Boolean) as string[],

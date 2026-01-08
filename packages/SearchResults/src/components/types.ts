@@ -30,12 +30,12 @@ export type SearchResultCommon = {
 
 export type SearchResultListItem = SearchResultCommon & {
   type: "result";
-  description?: string;
+  summary?: string;
   meta?: string[];
   breadcrumbs?: string[];
   author?: string;
   date?: string;
-  thumbnailUrl?: string;
+  cover?: string;
   thumbnailAlt?: string;
   fileType?: SearchResultFileType;
   typeIcon?: React.ReactNode;
@@ -57,7 +57,7 @@ export type SearchResultImageItem = SearchResultCommon & {
 export type SearchResultMediaItem = SearchResultCommon & {
   type: "media";
   mediaType: "image" | "video";
-  thumbnailUrl: string;
+  cover: string;
   thumbnailAlt?: string;
   matchCountText?: string;
   sourceLabel?: string;

@@ -1,5 +1,5 @@
 import { default as default_2 } from 'react';
-import { JSX as JSX_2 } from 'react/jsx-runtime';
+import { JSX } from 'react/jsx-runtime';
 
 export declare function itemsToSections(items: SearchResultsItem[], imageGridColumns?: 2 | 3 | 4): SearchResultsSection[];
 
@@ -36,12 +36,12 @@ export declare type SearchResultImageItem = SearchResultCommon & {
 
 export declare type SearchResultListItem = SearchResultCommon & {
     type: "result";
-    description?: string;
+    summary?: string;
     meta?: string[];
     breadcrumbs?: string[];
     author?: string;
     date?: string;
-    thumbnailUrl?: string;
+    cover?: string;
     thumbnailAlt?: string;
     fileType?: SearchResultFileType;
     typeIcon?: default_2.ReactNode;
@@ -54,7 +54,7 @@ export declare type SearchResultListItem = SearchResultCommon & {
 export declare type SearchResultMediaItem = SearchResultCommon & {
     type: "media";
     mediaType: "image" | "video";
-    thumbnailUrl: string;
+    cover: string;
     thumbnailAlt?: string;
     matchCountText?: string;
     sourceLabel?: string;
@@ -63,7 +63,7 @@ export declare type SearchResultMediaItem = SearchResultCommon & {
     onClick?: () => void;
 };
 
-declare function SearchResults({ section, className, theme, footerAction, onRecordClick, onItemClick }: SearchResultsProps): JSX_2.Element;
+declare function SearchResults({ section, className, theme, footerAction, onRecordClick, onItemClick }: SearchResultsProps): JSX.Element;
 export default SearchResults;
 
 export declare type SearchResultsAction = {
@@ -74,7 +74,7 @@ export declare type SearchResultsAction = {
     onClick?: () => void;
 };
 
-export declare function SearchResultsImageGroup(props: SearchResultsImageGroupProps): JSX_2.Element;
+export declare function SearchResultsImageGroup(props: SearchResultsImageGroupProps): JSX.Element;
 
 export declare type SearchResultsImageGroupProps = Omit<SearchResultsProps, "section"> & {
     section: SearchResultImageGroupItem | SearchResultsRecord[] | SearchResultsSection;
@@ -177,7 +177,7 @@ export declare type SearchResultsSection = {
 
 export declare type SearchResultsTheme = "light" | "dark" | "auto";
 
-export declare function SearchResultsVideoGroup(props: SearchResultsVideoGroupProps): JSX_2.Element;
+export declare function SearchResultsVideoGroup(props: SearchResultsVideoGroupProps): JSX.Element;
 
 export declare type SearchResultsVideoGroupProps = Omit<SearchResultsProps, "section"> & {
     section: SearchResultVideoGroupItem | SearchResultsRecord[] | SearchResultsSection;
