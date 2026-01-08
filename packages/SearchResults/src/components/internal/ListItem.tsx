@@ -1,5 +1,7 @@
 import clsx from "clsx";
 import { ExternalLink } from "lucide-react";
+import type { ComponentType } from "react";
+const ExternalLinkIcon = ExternalLink as unknown as ComponentType<{ className?: string }>;
 
 import { AuthorDate } from "./AuthorDate";
 import { BreadcrumbsLine } from "./BreadcrumbsLine";
@@ -70,7 +72,7 @@ export function ListItem({
                 <AuthorDate author={item.author} date={item.date} />
                 {item.href ? (
                   <span className="flex-none text-[#007EFF]">
-                    <ExternalLink className="h-3 w-3" />
+                    <ExternalLinkIcon className="h-3 w-3" />
                   </span>
                 ) : null}
               </div>
