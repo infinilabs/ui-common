@@ -41,6 +41,7 @@ export function renderSection(
           titleIcon={section.titleIcon}
           titleIconBgColor={section.titleIconBgColor}
           titleClassName={section.titleClassName}
+          titleAction={section.footerAction}
         />
         <div className={clsx("grid gap-3", gridColsClass)}>
           {section.items.map((item) => (
@@ -63,6 +64,7 @@ export function renderSection(
         titleIcon={section.titleIcon}
         titleIconBgColor={section.titleIconBgColor}
         titleClassName={section.titleClassName}
+        titleAction={section.footerAction}
       />
       <div className={clsx("grid gap-3", gridColsClass)}>
         {section.items.map((item) => (
