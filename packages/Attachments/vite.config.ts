@@ -27,7 +27,6 @@ export default defineConfig({
         "react/jsx-runtime",
         "react/jsx-dev-runtime",
         "antd",
-        "lucide-react",
       ],
       output: {
         globals: {
