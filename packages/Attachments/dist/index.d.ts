@@ -9,12 +9,13 @@ declare interface AttachmentIconProps extends HTMLAttributes<SVGElement> {
     extname?: string;
 }
 
-declare interface AttachmentProps extends Pick<AttachmentsProps, "i18n"> {
+declare interface AttachmentProps extends Pick<AttachmentsProps, "i18n" | "onItemPress" | "onItemRemove"> {
     id: string;
-    name?: string;
+    status?: AttachmentStatus;
+    filename?: string;
     extname?: string;
-    attachmentId?: string;
     size?: string;
+    failedMessage?: string;
 }
 
 export declare const Attachments: FC<AttachmentsProps>;
@@ -28,6 +29,10 @@ declare interface AttachmentsProps extends HTMLAttributes<HTMLDivElement> {
             failed?: string;
         };
     };
+    onItemPress?: (item: AttachmentProps) => void;
+    onItemRemove?: (item: AttachmentProps) => void;
 }
+
+declare type AttachmentStatus = "uploading" | "analyzing" | "failed" | "uploaded";
 
 export { }
