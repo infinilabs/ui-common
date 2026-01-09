@@ -1,73 +1,77 @@
-# React + TypeScript + Vite
+# @infinilabs/attachments
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一个用于展示附件列表的 React 组件库（基于 antd + UnoCSS）。
 
-Currently, two official plugins are available:
+## 安装
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm add @infinilabs/attachments
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 使用
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```tsx
+import { Attachments } from "@infinilabs/attachments";
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+export function Demo() {
+  return (
+    <Attachments
+      data={[
+        {
+          id: "1",
+          filename: "report.pdf",
+          extname: "pdf",
+          size: "1.2MB",
+          status: "uploaded",
+        },
+        {
+          id: "2",
+          filename: "model.bin",
+          extname: "bin",
+          status: "uploading",
+        },
+      ]}
+      i18n={{
+        labels: {
+          uploading: "上传中…",
+          analyzing: "分析中…",
+          failed: "上传失败",
+        },
+      }}
+      onItemPress={(item) => {
+        console.log("press", item);
+      }}
+      onItemRemove={(item) => {
+        console.log("remove", item);
+      }}
+    />
+  );
+}
 ```
+
+## API
+
+### `<Attachments />`
+
+- `data: AttachmentProps[]`：附件数据列表（必填）
+- `i18n?: { labels?: { uploading?: string; analyzing?: string; failed?: string } }`：文案覆盖
+- `onItemPress?: (item: AttachmentProps) => void`：点击附件回调
+- `onItemRemove?: (item: AttachmentProps) => void`：移除附件回调
+- 其余 props 透传到外层 `div`（`HTMLAttributes<HTMLDivElement>`）
+
+### `AttachmentProps`
+
+- `id: string`
+- `status?: "uploading" | "analyzing" | "failed" | "uploaded"`
+- `filename?: string`
+- `extname?: string`
+- `size?: string`
+- `failedMessage?: string`
+
+### `<AttachmentIcon />`
+
+根据 `extname` 渲染对应的 SVG `<use />` 引用图标。
+
+## 注意事项
+
+- 组件内部会在浏览器环境下动态注入一个外部脚本（iconfont）。如果你的环境限制外网资源，请自行处理替换方案。
