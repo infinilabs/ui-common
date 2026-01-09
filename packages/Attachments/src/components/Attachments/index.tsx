@@ -12,11 +12,12 @@ export interface AttachmentsProps extends HTMLAttributes<HTMLDivElement> {
       failed?: string;
     };
   };
+  onItemPress?: (item: AttachmentProps) => void;
+  onItemRemove?: (item: AttachmentProps) => void;
 }
 
 const Attachments: FC<AttachmentsProps> = (props) => {
-  const { data, i18n, className, ...rest } = props;
-
+  const { data, i18n, className, onItemPress, onItemRemove, ...rest } = props;
   return (
     <>
       <Helmet>
@@ -25,7 +26,13 @@ const Attachments: FC<AttachmentsProps> = (props) => {
 
       <div className={clsx("flex flex-wrap -m-1.5", className)} {...rest}>
         {data.map((item) => (
-          <Attachment key={item.id} {...item} i18n={i18n} />
+          <Attachment
+            key={item.id}
+            {...item}
+            i18n={i18n}
+            onItemPress={onItemPress}
+            onItemRemove={onItemRemove}
+          />
         ))}
       </div>
     </>

@@ -1,5 +1,8 @@
 import { nanoid } from "nanoid";
-import type { AttachmentProps } from "./components/Attachment";
+import type {
+  AttachmentProps,
+  AttachmentStatus,
+} from "./components/Attachment";
 import Attachments from "./components/Attachments";
 
 const getRandomSize = (): string => {
@@ -93,14 +96,18 @@ const App = () => {
     "bash",
     "zsh",
     "fish",
+    "unknown",
   ].map((extname) => {
     const id = nanoid();
 
     return {
       id,
-      name: `${id}.${extname}`,
+      filename: `${id}.${extname}`,
       extname,
       size: getRandomSize(),
+      status: ["uploading", "analyzing", "failed", "uploaded"][
+        Math.floor(Math.random() * 4)
+      ] as AttachmentStatus,
     };
   });
 

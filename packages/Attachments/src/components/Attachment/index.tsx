@@ -1,50 +1,60 @@
-import { useEffect, useState, type FC } from "react";
+import { useMemo, type FC } from "react";
 import type { AttachmentsProps } from "../Attachments";
 import AttachmentIcon from "../AttachmentIcon";
-import clsx from "clsx";
+import { Tooltip, Typography } from "antd";
+import { CloseCircleFilled } from "@ant-design/icons";
 
-export interface AttachmentProps extends Pick<AttachmentsProps, "i18n"> {
+const { Text } = Typography;
+
+export type AttachmentStatus =
+  | "uploading"
+  | "analyzing"
+  | "failed"
+  | "uploaded";
+
+export interface AttachmentProps
+  extends Pick<AttachmentsProps, "i18n" | "onItemPress" | "onItemRemove"> {
   id: string;
-  name?: string;
+  status?: AttachmentStatus;
+  filename?: string;
   extname?: string;
-  attachmentId?: string;
   size?: string;
+  failedMessage?: string;
 }
 
 const Attachment: FC<AttachmentProps> = (props) => {
-  const { name, extname, size, attachmentId, i18n } = props;
+  const {
+    status = "uploaded",
+    filename,
+    extname,
+    size,
+    i18n,
+    failedMessage,
+    onItemPress,
+    onItemRemove,
+  } = props;
 
-  const [uploading, setUploading] = useState(!attachmentId);
-  const [analyzing, setAnalyzing] = useState(false);
-  const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    if (!uploading) return;
-
-    const randomDelay = () => 1000 + Math.floor(Math.random() * 2000);
-
-    setTimeout(() => {
-      setUploading(false);
-      setAnalyzing(true);
-
-      setTimeout(() => {
-        setAnalyzing(false);
-        setFailed(Math.random() > 0.7);
-      }, randomDelay());
-    }, randomDelay());
-  }, [uploading]);
+  const removable = useMemo(() => {
+    return (status === "uploaded" || status === "failed") && onItemRemove;
+  }, [status, onItemRemove]);
 
   const renderStatus = () => {
-    if (uploading) {
+    if (status === "uploading") {
       return i18n?.labels?.uploading || "Uploading...";
     }
 
-    if (analyzing) {
+    if (status === "analyzing") {
       return i18n?.labels?.analyzing || "Analyzing...";
     }
 
-    if (failed) {
-      return i18n?.labels?.failed || "Upload failed";
+    if (status === "failed") {
+      return (
+        <Tooltip title={failedMessage}>
+          <Text type="danger" className="text-xs">
+            {i18n?.labels?.failed || "Upload failed"}
+          </Text>
+        </Tooltip>
+      );
     }
 
     return (
@@ -57,19 +67,33 @@ const Attachment: FC<AttachmentProps> = (props) => {
   };
 
   return (
-    <div className="w-1/3 p-1.5 box-border">
+    <div
+      className="group relative w-1/3 p-1.5 box-border"
+      onClick={() => {
+        onItemPress?.(props);
+      }}
+    >
+      {removable && (
+        <Text
+          type="danger"
+          className="absolute top-2.5 right-2.5 inline-flex items-center cursor-pointer opacity-0 transition group-hover:opacity-100"
+          onClick={() => {
+            onItemRemove?.(props);
+          }}
+        >
+          <CloseCircleFilled />
+        </Text>
+      )}
+
       <div className="flex items-center gap-2 p-3 bg-black/4 dark:bg-white/8 rounded-xl">
         <AttachmentIcon className="min-w-10 size-10" extname={extname} />
 
         <div className="flex flex-col gap-1 overflow-hidden">
-          <span className="text-sm truncate">{name}</span>
-          <span
-            className={clsx("text-xs", [
-              failed ? "text-[#ff4d4f]" : "text-[#999]",
-            ])}
-          >
+          <span className="text-sm truncate">{filename}</span>
+
+          <Text type="secondary" className="text-xs">
             {renderStatus()}
-          </span>
+          </Text>
         </div>
       </div>
     </div>

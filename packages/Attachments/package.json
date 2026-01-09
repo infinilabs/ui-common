@@ -23,6 +23,8 @@
     "prepublishOnly": "vite build"
   },
   "dependencies": {
+    "@ant-design/icons": "~6.1.0",
+    "antd": "^6.1.4",
     "clsx": "^2.1.1",
     "nanoid": "^5.1.6",
     "react": "^19.2.0",
