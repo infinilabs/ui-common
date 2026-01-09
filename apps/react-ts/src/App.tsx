@@ -1,15 +1,17 @@
-// import FilterDemo from "./demos/FilterDemo";
+import FilterDemo from "./demos/FilterDemo";
 import AIAnswerDemo from "./demos/AIAnswerDemo";
 import SearchResultsDemo from "./demos/SearchResultsDemo";
+import ChatMessageDemo from "./demos/ChatMessageDemo";
 
 function App() {
   return (
     <div className="min-h-screen bg-slate-50 p-6 text-left">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 lg:flex-row">
-        {/* <FilterDemo /> */}
+        <FilterDemo />
 
         <div className="min-w-0 flex-1">
           <div className="mx-auto max-w-3xl">
+            <ChatMessageDemo />
             <AIAnswerDemo />
             <SearchResultsDemo />
           </div>

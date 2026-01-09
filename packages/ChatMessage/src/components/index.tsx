@@ -1,6 +1,7 @@
 import { memo, useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation, I18nextProvider } from "react-i18next";
 import clsx from "clsx";
+import i18nInstance from "../i18n/config";
 
 import logoImg from "@/assets/icon.svg";
 import type { IChatMessage, IChunkData } from "@/types/chat";
@@ -36,6 +37,7 @@ interface ChatMessageProps {
   copyButtonId?: string;
   formatUrl?: (data: IChunkData) => string;
   theme?: "light" | "dark" | "system";
+  locale?: string;
 }
 
 function resolveTheme(theme: "light" | "dark" | "system" | undefined): "light" | "dark" | undefined {
@@ -52,7 +54,7 @@ function resolveTheme(theme: "light" | "dark" | "system" | undefined): "light" |
   return "light";
 }
 
-export const ChatMessage = memo(function ChatMessage({
+const InnerChatMessage = memo(function InnerChatMessage({
   message,
   isTyping,
   query_intent,
@@ -71,8 +73,9 @@ export const ChatMessage = memo(function ChatMessage({
   copyButtonId,
   formatUrl,
   theme,
+  locale,
 }: ChatMessageProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const resolvedTheme = resolveTheme(theme);
 
   const currentAssistant = useConnectStore((state) => state.currentAssistant);
@@ -82,6 +85,12 @@ export const ChatMessage = memo(function ChatMessage({
   const isAssistant = message?._source?.type === "assistant";
   const assistant_id = message?._source?.assistant_id;
   const assistant_item = message?._source?.assistant_item;
+
+  useEffect(() => {
+    if (locale && i18n.language !== locale) {
+      i18n.changeLanguage(locale);
+    }
+  }, [locale, i18n]);
 
   useEffect(() => {
     if (assistant_item) {
@@ -239,3 +248,11 @@ export const ChatMessage = memo(function ChatMessage({
     </div>
   );
 });
+
+export const ChatMessage = (props: ChatMessageProps) => {
+  return (
+    <I18nextProvider i18n={i18nInstance}>
+      <InnerChatMessage {...props} />
+    </I18nextProvider>
+  );
+};
