@@ -1,0 +1,55 @@
+{
+  "name": "@infinilabs/attachments",
+  "private": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "version": "0.0.0",
+  "type": "module",
+  "main": "dist/attachments.cjs",
+  "module": "dist/attachments.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/attachments.js",
+      "require": "./dist/attachments.cjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "prepublishOnly": "pnpm build"
+  },
+  "peerDependencies": {
+    "@ant-design/icons": ">=6",
+    "antd": ">=6",
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "nanoid": "^5.1.6"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "@ant-design/icons": "~6.1.0",
+    "antd": "^6.1.4",
+    "globals": "^16.5.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "typescript": "~5.9.3",
+    "unocss": "^66.5.10",
+    "vite": "^7.2.4",
+    "vite-plugin-css-injected-by-js": "^3.5.2",
+    "vite-plugin-dts": "^4.5.4"
+  }
+}
