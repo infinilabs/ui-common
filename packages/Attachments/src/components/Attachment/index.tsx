@@ -1,8 +1,9 @@
-import { useMemo, type FC } from "react";
+import { useMemo, type FC, type HTMLAttributes, type ReactNode } from "react";
 import type { AttachmentsProps } from "../Attachments";
 import AttachmentIcon from "../AttachmentIcon";
 import { Tooltip, Typography } from "antd";
 import { CloseCircleFilled } from "@ant-design/icons";
+import clsx from "clsx";
 
 const { Text } = Typography;
 
@@ -13,13 +14,15 @@ export type AttachmentStatus =
   | "uploaded";
 
 export interface AttachmentProps
-  extends Pick<AttachmentsProps, "i18n" | "onItemPress" | "onItemRemove"> {
+  extends Pick<AttachmentsProps, "i18n" | "onItemPress" | "onItemRemove">,
+    HTMLAttributes<HTMLDivElement> {
   id: string;
   status?: AttachmentStatus;
   filename?: string;
   extname?: string;
   size?: string;
   failedMessage?: string;
+  extra?: ReactNode;
 }
 
 const Attachment: FC<AttachmentProps> = (props) => {
@@ -30,8 +33,12 @@ const Attachment: FC<AttachmentProps> = (props) => {
     size,
     i18n,
     failedMessage,
+    className,
+    extra,
+    onClick,
     onItemPress,
     onItemRemove,
+    ...rest
   } = props;
 
   const removable = useMemo(() => {
@@ -68,10 +75,13 @@ const Attachment: FC<AttachmentProps> = (props) => {
 
   return (
     <div
-      className="group relative w-1/3 p-1.5 box-border"
-      onClick={() => {
+      className={clsx("group relative w-1/3 p-1.5 box-border", className)}
+      onClick={(event) => {
         onItemPress?.(props);
+
+        onClick?.(event);
       }}
+      {...rest}
     >
       {removable && (
         <Text
@@ -85,16 +95,20 @@ const Attachment: FC<AttachmentProps> = (props) => {
         </Text>
       )}
 
-      <div className="flex items-center gap-2 p-3 bg-black/4 dark:bg-white/8 rounded-xl">
-        <AttachmentIcon className="min-w-10 size-10" extname={extname} />
+      <div className="flex items-center justify-between gap-4 p-3 bg-black/4 dark:bg-white/8 rounded-xl">
+        <div className="flex-1 flex items-center gap-2 overflow-hidden">
+          <AttachmentIcon className="min-w-10 size-10" extname={extname} />
 
-        <div className="flex flex-col gap-1 overflow-hidden">
-          <span className="text-sm truncate">{filename}</span>
+          <div className="flex flex-col gap-1 overflow-hidden">
+            <span className="text-sm truncate">{filename}</span>
 
-          <Text type="secondary" className="text-xs">
-            {renderStatus()}
-          </Text>
+            <Text type="secondary" className="text-xs">
+              {renderStatus()}
+            </Text>
+          </div>
         </div>
+
+        {extra}
       </div>
     </div>
   );
