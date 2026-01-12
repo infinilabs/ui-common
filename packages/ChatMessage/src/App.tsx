@@ -4,6 +4,7 @@ import type { IChatMessage, IChunkData } from "./types/chat";
 import { demoData } from "./demo";
 import "./App.css";
 import { Send, Square } from "lucide-react";
+import SessionFiles from "./components/SessionFiles";
 
 const INITIAL_MESSAGES: IChatMessage[] = [
   ...(demoData?.hits?.hits ?? []).map((hit: any) => ({
@@ -17,9 +18,9 @@ const INITIAL_MESSAGES: IChatMessage[] = [
       message: "Here are some files for you to review.",
       created: new Date().toISOString(),
       user: { username: "User" },
-      attachments: ["1", "2", "3"]
-    }
-  }
+      attachments: ["1", "2", "3"],
+    },
+  },
 ];
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const activeMessageRef = useRef<ChatMessageRef>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  
+
   const [locale, setLocale] = useState("en");
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
@@ -59,15 +60,15 @@ function App() {
     };
 
     setMessages((prev) => [...prev, assistantMsg]);
-    
+
     // Allow React to render the new message and attach ref
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     if (!activeMessageRef.current) {
-        console.error("Active message ref not attached!");
+      console.error("Active message ref not attached!");
     } else {
-        // Clear any previous state in the component instance
-        activeMessageRef.current.reset();
+      // Clear any previous state in the component instance
+      activeMessageRef.current.reset();
     }
 
     // Use demo data if available, otherwise fallback to simple simulation
@@ -77,109 +78,108 @@ function App() {
 
     // Iterate through details from demo data to simulate the process
     for (const detail of demoDetails) {
-        if (abortController.signal.aborted) return;
+      if (abortController.signal.aborted) return;
 
-        // Update message state to include this detail (for persistence/Detail prop)
-        setMessages((prev) => 
-            prev.map(msg => {
-                if (msg._id === newMsgId) {
-                    return {
-                        ...msg,
-                        _source: {
-                            ...msg._source,
-                            details: [...(msg._source.details || []), detail]
-                        }
-                    };
-                }
-                return msg;
-            })
-        );
+      // Update message state to include this detail (for persistence/Detail prop)
+      setMessages((prev) =>
+        prev.map((msg) => {
+          if (msg._id === newMsgId) {
+            return {
+              ...msg,
+              _source: {
+                ...msg._source,
+                details: [...(msg._source.details || []), detail],
+              },
+            };
+          }
+          return msg;
+        })
+      );
 
-        // Simulate streaming based on type
-        const type = detail.type;
-        const payload = detail.payload;
+      // Simulate streaming based on type
+      const type = detail.type;
+      const payload = detail.payload;
 
-        if (type === "query_intent") {
-             // Simulate analysis delay
-             await new Promise(r => setTimeout(r, 500));
-             // Send JSON chunk
-             const chunk: IChunkData = {
-                 chunk_type: "query_intent",
-                 message_chunk: "<JSON>" + JSON.stringify(payload) + "</JSON>"
-             };
-             activeMessageRef.current?.addChunk(chunk);
-             await new Promise(r => setTimeout(r, 500));
-        } 
-        else if (type === "fetch_source") {
-            // Simulate fetching
-            const sources = payload as any[];
-            if (sources && sources.length > 0) {
-                 // Send total count first
-                 activeMessageRef.current?.addChunk({
-                     chunk_type: "fetch_source",
-                     message_chunk: `<Payload total=${sources.length}>`
-                 });
-                 
-                 // Stream sources in batches or all at once
-                 // The component regex matches the full array: /\[([\s\S]*)\]/
-                 // So we send the full JSON array string
-                 const jsonStr = JSON.stringify(sources);
-                 // We can simulate streaming this string if we want, but sending it in one go is safer for the regex
-                 activeMessageRef.current?.addChunk({
-                     chunk_type: "fetch_source",
-                     message_chunk: jsonStr
-                 });
-                 await new Promise(r => setTimeout(r, 1000));
-            }
+      if (type === "query_intent") {
+        // Simulate analysis delay
+        await new Promise((r) => setTimeout(r, 500));
+        // Send JSON chunk
+        const chunk: IChunkData = {
+          chunk_type: "query_intent",
+          message_chunk: "<JSON>" + JSON.stringify(payload) + "</JSON>",
+        };
+        activeMessageRef.current?.addChunk(chunk);
+        await new Promise((r) => setTimeout(r, 500));
+      } else if (type === "fetch_source") {
+        // Simulate fetching
+        const sources = payload as any[];
+        if (sources && sources.length > 0) {
+          // Send total count first
+          activeMessageRef.current?.addChunk({
+            chunk_type: "fetch_source",
+            message_chunk: `<Payload total=${sources.length}>`,
+          });
+
+          // Stream sources in batches or all at once
+          // The component regex matches the full array: /\[([\s\S]*)\]/
+          // So we send the full JSON array string
+          const jsonStr = JSON.stringify(sources);
+          // We can simulate streaming this string if we want, but sending it in one go is safer for the regex
+          activeMessageRef.current?.addChunk({
+            chunk_type: "fetch_source",
+            message_chunk: jsonStr,
+          });
+          await new Promise((r) => setTimeout(r, 1000));
         }
-        else if (type === "pick_source") {
-            const picks = payload as any[];
-            if (picks && picks.length > 0) {
-                const chunk: IChunkData = {
-                    chunk_type: "pick_source",
-                    message_chunk: "<JSON>" + JSON.stringify(picks) + "</JSON>"
-                };
-                activeMessageRef.current?.addChunk(chunk);
-                await new Promise(r => setTimeout(r, 800));
-            }
+      } else if (type === "pick_source") {
+        const picks = payload as any[];
+        if (picks && picks.length > 0) {
+          const chunk: IChunkData = {
+            chunk_type: "pick_source",
+            message_chunk: "<JSON>" + JSON.stringify(picks) + "</JSON>",
+          };
+          activeMessageRef.current?.addChunk(chunk);
+          await new Promise((r) => setTimeout(r, 800));
         }
-        else if (type === "deep_read") {
-             // Simulate reading documents
-             // For demo, we can just show a loading state or stream some text if we had the doc titles separate
-             // The Detail.description contains the text.
-             // DeepRead component uses message_chunk split by & to show "reading..." items.
-             // We can extract titles from the description if possible, or just skip streaming chunk and rely on Detail
-             
-             // Let's try to simulate streaming "Reading..." items
-             const lines = (detail.description || "").split("\n").filter(l => l.trim().startsWith("Obtaining"));
-             let accumulated = "";
-             for (const line of lines) {
-                 const title = line.split(":").pop()?.trim();
-                 if (title) {
-                     accumulated = accumulated ? accumulated + "&" + title : title;
-                     activeMessageRef.current?.addChunk({
-                         chunk_type: "deep_read",
-                         message_chunk: accumulated
-                     });
-                     await new Promise(r => setTimeout(r, 300));
-                 }
-             }
-             if (!lines.length) {
-                 await new Promise(r => setTimeout(r, 500));
-             }
+      } else if (type === "deep_read") {
+        // Simulate reading documents
+        // For demo, we can just show a loading state or stream some text if we had the doc titles separate
+        // The Detail.description contains the text.
+        // DeepRead component uses message_chunk split by & to show "reading..." items.
+        // We can extract titles from the description if possible, or just skip streaming chunk and rely on Detail
+
+        // Let's try to simulate streaming "Reading..." items
+        const lines = (detail.description || "")
+          .split("\n")
+          .filter((l) => l.trim().startsWith("Obtaining"));
+        let accumulated = "";
+        for (const line of lines) {
+          const title = line.split(":").pop()?.trim();
+          if (title) {
+            accumulated = accumulated ? accumulated + "&" + title : title;
+            activeMessageRef.current?.addChunk({
+              chunk_type: "deep_read",
+              message_chunk: accumulated,
+            });
+            await new Promise((r) => setTimeout(r, 300));
+          }
         }
-        else if (type === "think") {
-             // Stream thought text
-             const text = detail.description || "";
-             for (let i = 0; i < text.length; i+=5) { // Stream faster
-                if (abortController.signal.aborted) return;
-                activeMessageRef.current?.addChunk({
-                    chunk_type: "think",
-                    message_chunk: text.slice(i, i+5)
-                });
-                await new Promise(r => setTimeout(r, 10));
-             }
+        if (!lines.length) {
+          await new Promise((r) => setTimeout(r, 500));
         }
+      } else if (type === "think") {
+        // Stream thought text
+        const text = detail.description || "";
+        for (let i = 0; i < text.length; i += 5) {
+          // Stream faster
+          if (abortController.signal.aborted) return;
+          activeMessageRef.current?.addChunk({
+            chunk_type: "think",
+            message_chunk: text.slice(i, i + 5),
+          });
+          await new Promise((r) => setTimeout(r, 10));
+        }
+      }
     }
 
     // Simulate Response Phase
@@ -191,33 +191,33 @@ function App() {
       if (abortController.signal.aborted) return;
       const char = responseText[i];
       fullResponse += char;
-      
+
       const chunk: IChunkData = {
-          chunk_type: "response",
-          message_chunk: char,
+        chunk_type: "response",
+        message_chunk: char,
       };
       activeMessageRef.current?.addChunk(chunk);
-      
+
       // Variable speed typing
-      await new Promise(r => setTimeout(r, Math.random() * 10));
+      await new Promise((r) => setTimeout(r, Math.random() * 10));
     }
 
     // Finalize: Update the message in state so it persists with full content
-    setMessages((prev) => 
-        prev.map(msg => {
-          if (msg._id === newMsgId) {
-            return {
-              ...msg,
-              _source: {
-                ...msg._source,
-                message: fullResponse,
-                // Ensure all details are final
-                details: demoDetails
-              }
-            };
-          }
-          return msg;
-        })
+    setMessages((prev) =>
+      prev.map((msg) => {
+        if (msg._id === newMsgId) {
+          return {
+            ...msg,
+            _source: {
+              ...msg._source,
+              message: fullResponse,
+              // Ensure all details are final
+              details: demoDetails,
+            },
+          };
+        }
+        return msg;
+      })
     );
 
     setIsTyping(false);
@@ -239,7 +239,7 @@ function App() {
     setMessages((prev) => [...prev, userMsg]);
     const question = inputValue;
     setInputValue("");
-    
+
     streamResponse(question);
   };
 
@@ -252,34 +252,74 @@ function App() {
   };
 
   return (
-    <div className={`chat-container ${theme === 'dark' ? 'dark bg-[#1a1a1a] text-white' : ''}`}>
+    <div
+      className={`chat-container ${
+        theme === "dark" ? "dark bg-[#1a1a1a] text-white" : ""
+      }`}
+    >
       <div className="chat-header flex justify-between items-center px-4">
         <span>Coco Chat</span>
         <div className="flex gap-2 text-sm">
-             <button onClick={() => setLocale('en')} className={`px-2 py-1 rounded ${locale === 'en' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}>EN</button>
-             <button onClick={() => setLocale('zh')} className={`px-2 py-1 rounded ${locale === 'zh' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}>ZH</button>
-             <button onClick={() => setTheme('light')} className={`px-2 py-1 rounded ${theme === 'light' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}>Light</button>
-             <button onClick={() => setTheme('dark')} className={`px-2 py-1 rounded ${theme === 'dark' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}>Dark</button>
+          <button
+            onClick={() => setLocale("en")}
+            className={`px-2 py-1 rounded ${
+              locale === "en"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200 text-black"
+            }`}
+          >
+            EN
+          </button>
+          <button
+            onClick={() => setLocale("zh")}
+            className={`px-2 py-1 rounded ${
+              locale === "zh"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200 text-black"
+            }`}
+          >
+            ZH
+          </button>
+          <button
+            onClick={() => setTheme("light")}
+            className={`px-2 py-1 rounded ${
+              theme === "light"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200 text-black"
+            }`}
+          >
+            Light
+          </button>
+          <button
+            onClick={() => setTheme("dark")}
+            className={`px-2 py-1 rounded ${
+              theme === "dark"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200 text-black"
+            }`}
+          >
+            Dark
+          </button>
         </div>
       </div>
-      
+
       <div className="messages-area">
         {messages.map((msg, index) => {
-            const isLast = index === messages.length - 1;
-            const isAssistant = msg._source.type === 'assistant';
-            // Only attach ref to the last assistant message if we are typing
-            const shouldAttachRef = isLast && isAssistant && isTyping;
-            
-            return (
-                <ChatMessage 
-                  key={msg._id}
-                  ref={shouldAttachRef ? activeMessageRef : null}
-                  message={msg} 
-                  locale={locale}
-                  theme={theme}
-                  isTyping={shouldAttachRef} // Pass isTyping only to the active message
-                />
-            );
+          const isLast = index === messages.length - 1;
+          const isAssistant = msg._source.type === "assistant";
+          // Only attach ref to the last assistant message if we are typing
+          const shouldAttachRef = isLast && isAssistant && isTyping;
+
+          return (
+            <ChatMessage
+              key={msg._id}
+              ref={shouldAttachRef ? activeMessageRef : null}
+              message={msg}
+              locale={locale}
+              theme={theme}
+              isTyping={shouldAttachRef} // Pass isTyping only to the active message
+            />
+          );
         })}
         <div ref={messagesEndRef} />
       </div>
@@ -304,8 +344,8 @@ function App() {
               <Square fill="currentColor" />
             </button>
           ) : (
-            <button 
-              className="send-button" 
+            <button
+              className="send-button"
               onClick={handleSend}
               disabled={!inputValue.trim()}
             >
@@ -314,6 +354,8 @@ function App() {
           )}
         </div>
       </div>
+
+      <SessionFiles />
     </div>
   );
 }
