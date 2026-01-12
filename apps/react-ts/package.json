@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@infinilabs/ai-answer": "workspace:*",
+    "@infinilabs/chat-message": "workspace:*",
     "@infinilabs/filter": "workspace:*",
     "@infinilabs/search-results": "workspace:*",
     "antd": "^5.20.6",

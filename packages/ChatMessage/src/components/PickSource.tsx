@@ -54,7 +54,7 @@ export const PickSource = ({
                 setData(data);
                 break;
               }
-            } catch (e) {
+            } catch {
               continue;
             }
           }
