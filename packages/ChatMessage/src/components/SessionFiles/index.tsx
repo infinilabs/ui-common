@@ -27,7 +27,7 @@ const SessionFiles = () => {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed z-1000 top-20 bottom-20 right-4 flex flex-col rounded-xl overflow-hidden bg-white shadow-[0_2px_20px_rgba(0,0,0,0.1)]"
+            className="fixed z-1000 top-20 bottom-20 right-4 flex flex-col rounded-xl overflow-hidden bg-white shadow-[0_2px_20px_rgba(0,0,0,0.1)] dark:bg-black dark:shadow-[0_2px_20px_rgba(255,255,255,0.1)]"
             initial={{
               width: 0,
               height: 0,
