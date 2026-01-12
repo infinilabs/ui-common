@@ -1,25 +1,30 @@
-# @infinilabs/chatmessage
+# @infinilabs/chat-message
 
-A React component for rendering AI chat messages with support for thinking process, tool calls, and citations.
+A React component for rendering AI chat messages with support for streaming responses, thinking process, tool calls, and citations.
 
 ## Installation
 
 ```bash
-pnpm install @infinilabs/chatmessage
+pnpm install @infinilabs/chat-message
 ```
 
 ## Usage
 
-```tsx
-import { ChatMessage } from '@infinilabs/chatmessage';
+### Basic Rendering (Static Data)
 
-// Example message object
+```tsx
+import { ChatMessage } from '@infinilabs/chat-message';
+
 const message = {
   _id: '1',
   _source: {
-    type: 'assistant', // 'user' or 'assistant'
+    type: 'assistant',
     message: 'Hello! I am Coco AI.',
-    // ... other fields
+    // Pre-populated details for history
+    details: [
+       { type: 'think', description: 'Thinking process...' },
+       { type: 'query_intent', payload: { ... } }
+    ]
   }
 };
 
@@ -27,8 +32,57 @@ function App() {
   return (
     <ChatMessage 
       message={message} 
-      locale="en" // 'en' or 'zh'
-      theme="light" // 'light' or 'dark'
+      locale="en"
+      theme="light"
+    />
+  );
+}
+```
+
+### Streaming Responses (Real-time)
+
+To stream AI responses (including thinking, tools, etc.), use the `ref` to push chunks directly to the component. This allows the component to manage internal loading states and data accumulation efficiently.
+
+```tsx
+import { useRef } from 'react';
+import { ChatMessage, ChatMessageRef, IChatMessage } from '@infinilabs/chat-message';
+
+function App() {
+  const chatRef = useRef<ChatMessageRef>(null);
+  
+  // Initial empty message structure
+  const message: IChatMessage = {
+    _id: 'streaming-msg',
+    _source: {
+      type: 'assistant',
+      message: '',
+      details: []
+    }
+  };
+
+  const handleStream = async () => {
+    // 1. Reset component state for new stream
+    chatRef.current?.reset();
+
+    // 2. Add chunks as they arrive
+    // Example: Thinking chunk
+    chatRef.current?.addChunk({
+      chunk_type: 'think',
+      message_chunk: 'Thinking process...'
+    });
+
+    // Example: Response chunk
+    chatRef.current?.addChunk({
+      chunk_type: 'response',
+      message_chunk: 'Hello world!'
+    });
+  };
+
+  return (
+    <ChatMessage 
+      ref={chatRef}
+      message={message} 
+      isTyping={true}
     />
   );
 }
@@ -39,17 +93,31 @@ function App() {
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `message` | `IChatMessage` | Required | The message object containing content and metadata. |
-| `locale` | `'en' \| 'zh'` | `'en'` | Language for UI elements. |
-| `theme` | `'light' \| 'dark'` | `'light'` | Color theme. |
-| `think` | `object` | `undefined` | Real-time thinking process chunk. |
-| `tools` | `object` | `undefined` | Real-time tool call chunk. |
-| `query_intent` | `object` | `undefined` | Real-time query intent chunk. |
+| `isTyping` | `boolean` | `false` | Shows typing cursor/animation. |
+| `onResend` | `(value: string) => void` | - | Callback for resending a message (user messages). |
+| `hide_assistant` | `boolean` | `false` | Whether to hide the assistant avatar/name. |
+| `theme` | `'light' \| 'dark' \| 'system'` | - | Color theme. |
+| `locale` | `string` | - | Language code (e.g., 'en', 'zh'). |
+| `formatUrl` | `(data: IChunkData) => string` | - | Custom formatter for source URLs. |
+| `rootClassName` | `string` | - | Custom class for the root element. |
+| `actionClassName` | `string` | - | Custom class for the action buttons area. |
+| `actionIconSize` | `number` | - | Size of the action icons. |
+| `copyButtonId` | `string` | - | ID for the copy button (for tracking/testing). |
+
+## Instance Methods (Ref)
+
+| Method | Type | Description |
+|--------|------|-------------|
+| `addChunk` | `(chunk: IChunkData) => void` | Feeds a new data chunk (think, tools, response, etc.) to the component. Automatically handles loading states and data merging. |
+| `reset` | `() => void` | Clears internal streaming state and resets loading indicators. |
 
 ## Features
 
-- **Markdown Support**: Renders Markdown content including code blocks and tables.
+- **Internal State Management**: Automatically handles complex AI steps like `query_intent`, `tools`, `fetch_source`, `pick_source`, `deep_read`, and `think` via streaming chunks.
+- **Streaming Support**: Real-time rendering of content as it arrives using `addChunk`.
+- **Markdown Support**: Integrated with `@ant-design/x-markdown` for rich text rendering including code blocks and tables.
 - **Thinking Process**: Collapsible section for AI thought process.
-- **Tool Calls**: Displays tool execution steps.
-- **Citations**: Supports source citations (if data provided).
-- **Theming**: Built-in light and dark modes.
+- **Tool Calls**: Visualizes tool execution steps.
+- **Citations**: Supports source citations.
+- **Theming**: Built-in light, dark, and system modes.
 - **I18n**: Built-in English and Chinese support.

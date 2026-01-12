@@ -6,7 +6,7 @@ import { CopyButton } from "@/components/Common/CopyButton";
 import { useAsyncEffect } from "ahooks";
 import platformAdapter from "@/utils/platformAdapter";
 import { useConnectStore } from "@/stores/connectStore";
-import { AttachmentItem } from "./Assistant/AttachmentList";
+import { Attachments } from "@infinilabs/attachments";
 import { useAppStore } from "@/stores/appStore";
 
 interface UserMessageProps {
@@ -81,31 +81,22 @@ export const UserMessage: FC<UserMessageProps> = (props) => {
         </div>
       )}
 
-      {attachmentData && (
+      {attachmentData && attachmentData.length > 0 && (
         <div
-          className={clsx("flex justify-end flex-wrap gap-y-2 w-full", {
+          className={clsx("w-full", {
             "mt-3": message,
           })}
         >
-          {attachmentData.map((item) => {
-            const { id, name, size, icon } = item._source;
-
-            return (
-              <AttachmentItem
-                {...item._source}
-                key={id}
-                uploading={false}
-                uploaded
-                id={id}
-                extname={icon}
-                attachmentId={id}
-                name={name}
-                path={name}
-                size={size}
-                deletable={false}
-              />
-            );
-          })}
+          <Attachments
+            data={attachmentData.map((item) => ({
+              id: item._source.id,
+              filename: item._source.name,
+              extname: item._source.icon,
+              size: item._source.size,
+              status: "uploaded",
+            }))}
+            className="text-left"
+          />
         </div>
       )}
     </>

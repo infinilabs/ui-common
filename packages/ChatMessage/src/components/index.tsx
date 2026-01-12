@@ -1,10 +1,11 @@
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react";
 import { useTranslation, I18nextProvider } from "react-i18next";
 import clsx from "clsx";
 import i18nInstance from "../i18n/config";
 
 import logoImg from "@/assets/icon.svg";
 import type { IChatMessage, IChunkData } from "@/types/chat";
+export type { IChatMessage, IChunkData };
 import { QueryIntent } from "./QueryIntent";
 import { CallTools } from "./CallTools";
 import { FetchSource } from "./FetchSource";
@@ -17,19 +18,12 @@ import { SuggestionList } from "./SuggestionList";
 import { UserMessage } from "./UserMessage";
 import { useConnectStore } from "@/stores/connectStore";
 import FontIcon from "@/components/Common/Icons/FontIcon";
+import useMessageChunkData from "../hooks/useMessageChunkData";
 
-interface ChatMessageProps {
+export interface ChatMessageProps {
   message: IChatMessage;
   isTyping?: boolean;
-  query_intent?: IChunkData;
-  tools?: IChunkData;
-  fetch_source?: IChunkData;
-  pick_source?: IChunkData;
-  deep_read?: IChunkData;
-  think?: IChunkData;
-  response?: IChunkData;
   onResend?: (value: string) => void;
-  loadingStep?: Record<string, boolean>;
   hide_assistant?: boolean;
   rootClassName?: string;
   actionClassName?: string;
@@ -38,6 +32,18 @@ interface ChatMessageProps {
   formatUrl?: (data: IChunkData) => string;
   theme?: "light" | "dark" | "system";
   locale?: string;
+  query_intent?: IChunkData;
+  tools?: IChunkData;
+  fetch_source?: IChunkData;
+  pick_source?: IChunkData;
+  deep_read?: IChunkData;
+  think?: IChunkData;
+  response?: IChunkData;
+}
+
+export interface ChatMessageRef {
+  addChunk: (chunk: IChunkData) => void;
+  reset: () => void;
 }
 
 function resolveTheme(theme: "light" | "dark" | "system" | undefined): "light" | "dark" | undefined {
@@ -54,18 +60,10 @@ function resolveTheme(theme: "light" | "dark" | "system" | undefined): "light" |
   return "light";
 }
 
-const InnerChatMessage = memo(function InnerChatMessage({
+const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(function InnerChatMessage({
   message,
   isTyping,
-  query_intent,
-  tools,
-  fetch_source,
-  pick_source,
-  deep_read,
-  think,
-  response,
   onResend,
-  loadingStep,
   hide_assistant = false,
   rootClassName,
   actionClassName,
@@ -74,13 +72,139 @@ const InnerChatMessage = memo(function InnerChatMessage({
   formatUrl,
   theme,
   locale,
-}: ChatMessageProps) {
+  query_intent: prop_query_intent,
+  tools: prop_tools,
+  fetch_source: prop_fetch_source,
+  pick_source: prop_pick_source,
+  deep_read: prop_deep_read,
+  think: prop_think,
+  response: prop_response,
+}, ref) {
   const { t, i18n } = useTranslation();
   const resolvedTheme = resolveTheme(theme);
 
   const currentAssistant = useConnectStore((state) => state.currentAssistant);
   const assistantList = useConnectStore((state) => state.assistantList);
   const [assistant, setAssistant] = useState<any>({});
+  
+  const {
+    data: {
+      query_intent,
+      tools,
+      fetch_source,
+      pick_source,
+      deep_read,
+      think,
+      response,
+    },
+    handlers,
+    clearAllChunkData,
+  } = useMessageChunkData();
+
+  useEffect(() => {
+    if (prop_query_intent) handlers.deal_query_intent(prop_query_intent);
+  }, [prop_query_intent]);
+
+  useEffect(() => {
+    if (prop_tools) handlers.deal_tools(prop_tools);
+  }, [prop_tools]);
+
+  useEffect(() => {
+    if (prop_fetch_source) handlers.deal_fetch_source(prop_fetch_source);
+  }, [prop_fetch_source]);
+
+  useEffect(() => {
+    if (prop_pick_source) handlers.deal_pick_source(prop_pick_source);
+  }, [prop_pick_source]);
+
+  useEffect(() => {
+    if (prop_deep_read) handlers.deal_deep_read(prop_deep_read);
+  }, [prop_deep_read]);
+
+  useEffect(() => {
+    if (prop_think) handlers.deal_think(prop_think);
+  }, [prop_think]);
+
+  useEffect(() => {
+    if (prop_response) handlers.deal_response(prop_response);
+  }, [prop_response]);
+
+  const [loadingStep, setLoadingStep] = useState<Record<string, boolean>>({
+    query_intent: false,
+    tools: false,
+    fetch_source: false,
+    pick_source: false,
+    deep_read: false,
+    think: false,
+    response: false,
+  });
+
+  const inThinkRef = useRef<boolean>(false);
+
+  useImperativeHandle(ref, () => ({
+    addChunk: (chunkData: IChunkData) => {
+      setLoadingStep(() => ({
+        query_intent: false,
+        tools: false,
+        fetch_source: false,
+        pick_source: false,
+        deep_read: false,
+        think: false,
+        response: false,
+        [chunkData.chunk_type || '']: true,
+      }));
+
+      if (chunkData.chunk_type === "query_intent") {
+        handlers.deal_query_intent(chunkData);
+      } else if (chunkData.chunk_type === "tools") {
+        handlers.deal_tools(chunkData);
+      } else if (chunkData.chunk_type === "fetch_source") {
+        handlers.deal_fetch_source(chunkData);
+      } else if (chunkData.chunk_type === "pick_source") {
+        handlers.deal_pick_source(chunkData);
+      } else if (chunkData.chunk_type === "deep_read") {
+        handlers.deal_deep_read(chunkData);
+      } else if (chunkData.chunk_type === "think") {
+        handlers.deal_think(chunkData);
+      } else if (chunkData.chunk_type === "response") {
+        const message_chunk = chunkData.message_chunk;
+        if (typeof message_chunk === "string") {
+          if (
+            message_chunk.includes("\u003cthink\u003e") ||
+            message_chunk.includes("<think>")
+          ) {
+            inThinkRef.current = true;
+            return;
+          } else if (
+            message_chunk.includes("\u003c/think\u003e") ||
+            message_chunk.includes("</think>")
+          ) {
+            inThinkRef.current = false;
+            return;
+          }
+
+          if (inThinkRef.current) {
+            handlers.deal_think({ ...chunkData, chunk_type: "think" });
+          } else {
+            handlers.deal_response(chunkData);
+          }
+        }
+      }
+    },
+    reset: () => {
+      clearAllChunkData();
+      setLoadingStep({
+        query_intent: false,
+        tools: false,
+        fetch_source: false,
+        pick_source: false,
+        deep_read: false,
+        think: false,
+        response: false,
+      });
+      inThinkRef.current = false;
+    }
+  }));
 
   const isAssistant = message?._source?.type === "assistant";
   const assistant_id = message?._source?.assistant_id;
@@ -247,12 +371,12 @@ const InnerChatMessage = memo(function InnerChatMessage({
       </div>
     </div>
   );
-});
+}));
 
-export const ChatMessage = (props: ChatMessageProps) => {
+export const ChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>((props, ref) => {
   return (
     <I18nextProvider i18n={i18nInstance}>
-      <InnerChatMessage {...props} />
+      <InnerChatMessage {...props} ref={ref} />
     </I18nextProvider>
   );
-};
+}));

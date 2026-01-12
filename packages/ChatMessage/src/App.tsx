@@ -1,20 +1,33 @@
 import { useState, useEffect, useRef } from "react";
-import { ChatMessage } from "./components";
-import type { IChatMessage } from "./types/chat";
+import { ChatMessage, type ChatMessageRef } from "./components";
+import type { IChatMessage, IChunkData } from "./types/chat";
 import { demoData } from "./demo";
 import "./App.css";
 import { Send, Square } from "lucide-react";
 
-const INITIAL_MESSAGES: IChatMessage[] = (demoData?.hits?.hits ?? []).map((hit: any) => ({
-  _id: hit?._id ?? String(Math.random()),
-  _source: hit?._source ?? {},
-}));
+const INITIAL_MESSAGES: IChatMessage[] = [
+  ...(demoData?.hits?.hits ?? []).map((hit: any) => ({
+    _id: hit?._id ?? String(Math.random()),
+    _source: hit?._source ?? {},
+  })),
+  {
+    _id: "demo-attachment-msg",
+    _source: {
+      type: "user",
+      message: "Here are some files for you to review.",
+      created: new Date().toISOString(),
+      user: { username: "User" },
+      attachments: ["1", "2", "3"]
+    }
+  }
+];
 
 function App() {
   const [messages, setMessages] = useState<IChatMessage[]>(INITIAL_MESSAGES);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const activeMessageRef = useRef<ChatMessageRef>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   
   const [locale, setLocale] = useState("en");
@@ -26,9 +39,10 @@ function App() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isTyping]); // Scroll when messages change or typing starts
 
   const streamResponse = async (userQuestion: string) => {
+    console.log("User asked:", userQuestion);
     setIsTyping(true);
     const newMsgId = Date.now().toString();
     const abortController = new AbortController();
@@ -38,87 +52,173 @@ function App() {
       _id: newMsgId,
       _source: {
         type: "assistant",
-        message: "",
+        message: "", // Initially empty
         assistant_id: "coco-bot",
         details: [],
-        think: undefined,
-        tools: undefined,
       },
     };
 
     setMessages((prev) => [...prev, assistantMsg]);
-
-    const thinkContent = "I need to analyze the user's request: \"" + userQuestion + "\".\nChecking available tools...\nDeciding to answer directly.";
-    let currentThink = "";
     
-    for (let i = 0; i < thinkContent.length; i++) {
-      if (abortController.signal.aborted) return;
-      currentThink += thinkContent[i];
-      
-      setMessages((prev) => 
-        prev.map(msg => {
-          if (msg._id === newMsgId) {
-            return {
-              ...msg,
-              _source: {
-                ...msg._source,
-                details: [{ type: "think", description: currentThink }],
-                think: { chunk_type: "think", message_chunk: currentThink }
-              }
-            };
-          }
-          return msg;
-        })
-      );
-      await new Promise(r => setTimeout(r, 20));
+    // Allow React to render the new message and attach ref
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    if (!activeMessageRef.current) {
+        console.error("Active message ref not attached!");
+    } else {
+        // Clear any previous state in the component instance
+        activeMessageRef.current.reset();
     }
 
-    if (userQuestion.toLowerCase().includes("calc") || userQuestion.toLowerCase().includes("math")) {
-        const toolContent = "Running: `calculate_expression`\nInput: " + userQuestion;
+    // Use demo data if available, otherwise fallback to simple simulation
+    const demoHit = demoData?.hits?.hits?.[1];
+    const demoDetails = demoHit?._source?.details || [];
+    const demoMessage = demoHit?._source?.message || "I am Coco AI.";
+
+    // Iterate through details from demo data to simulate the process
+    for (const detail of demoDetails) {
+        if (abortController.signal.aborted) return;
+
+        // Update message state to include this detail (for persistence/Detail prop)
         setMessages((prev) => 
             prev.map(msg => {
-              if (msg._id === newMsgId) {
-                return {
-                  ...msg,
-                  _source: {
-                    ...msg._source,
-                    details: [
-                        ...msg._source.details!,
-                        { type: "tools", description: toolContent }
-                    ],
-                    tools: { chunk_type: "tools", message_chunk: toolContent }
-                  }
-                };
-              }
-              return msg;
+                if (msg._id === newMsgId) {
+                    return {
+                        ...msg,
+                        _source: {
+                            ...msg._source,
+                            details: [...(msg._source.details || []), detail]
+                        }
+                    };
+                }
+                return msg;
             })
-          );
-        await new Promise(r => setTimeout(r, 800));
+        );
+
+        // Simulate streaming based on type
+        const type = detail.type;
+        const payload = detail.payload;
+
+        if (type === "query_intent") {
+             // Simulate analysis delay
+             await new Promise(r => setTimeout(r, 500));
+             // Send JSON chunk
+             const chunk: IChunkData = {
+                 chunk_type: "query_intent",
+                 message_chunk: "<JSON>" + JSON.stringify(payload) + "</JSON>"
+             };
+             activeMessageRef.current?.addChunk(chunk);
+             await new Promise(r => setTimeout(r, 500));
+        } 
+        else if (type === "fetch_source") {
+            // Simulate fetching
+            const sources = payload as any[];
+            if (sources && sources.length > 0) {
+                 // Send total count first
+                 activeMessageRef.current?.addChunk({
+                     chunk_type: "fetch_source",
+                     message_chunk: `<Payload total=${sources.length}>`
+                 });
+                 
+                 // Stream sources in batches or all at once
+                 // The component regex matches the full array: /\[([\s\S]*)\]/
+                 // So we send the full JSON array string
+                 const jsonStr = JSON.stringify(sources);
+                 // We can simulate streaming this string if we want, but sending it in one go is safer for the regex
+                 activeMessageRef.current?.addChunk({
+                     chunk_type: "fetch_source",
+                     message_chunk: jsonStr
+                 });
+                 await new Promise(r => setTimeout(r, 1000));
+            }
+        }
+        else if (type === "pick_source") {
+            const picks = payload as any[];
+            if (picks && picks.length > 0) {
+                const chunk: IChunkData = {
+                    chunk_type: "pick_source",
+                    message_chunk: "<JSON>" + JSON.stringify(picks) + "</JSON>"
+                };
+                activeMessageRef.current?.addChunk(chunk);
+                await new Promise(r => setTimeout(r, 800));
+            }
+        }
+        else if (type === "deep_read") {
+             // Simulate reading documents
+             // For demo, we can just show a loading state or stream some text if we had the doc titles separate
+             // The Detail.description contains the text.
+             // DeepRead component uses message_chunk split by & to show "reading..." items.
+             // We can extract titles from the description if possible, or just skip streaming chunk and rely on Detail
+             
+             // Let's try to simulate streaming "Reading..." items
+             const lines = (detail.description || "").split("\n").filter(l => l.trim().startsWith("Obtaining"));
+             let accumulated = "";
+             for (const line of lines) {
+                 const title = line.split(":").pop()?.trim();
+                 if (title) {
+                     accumulated = accumulated ? accumulated + "&" + title : title;
+                     activeMessageRef.current?.addChunk({
+                         chunk_type: "deep_read",
+                         message_chunk: accumulated
+                     });
+                     await new Promise(r => setTimeout(r, 300));
+                 }
+             }
+             if (!lines.length) {
+                 await new Promise(r => setTimeout(r, 500));
+             }
+        }
+        else if (type === "think") {
+             // Stream thought text
+             const text = detail.description || "";
+             for (let i = 0; i < text.length; i+=5) { // Stream faster
+                if (abortController.signal.aborted) return;
+                activeMessageRef.current?.addChunk({
+                    chunk_type: "think",
+                    message_chunk: text.slice(i, i+5)
+                });
+                await new Promise(r => setTimeout(r, 10));
+             }
+        }
     }
 
-    const responseText = `Here is a simulated response for your query: **"${userQuestion}"**.\n\nI can format code:\n\`\`\`typescript\nconst answer = 42;\nconsole.log(answer);\n\`\`\`\n\nAnd I can also use lists:\n- Item A\n- Item B\n- Item C`;
-    let currentMessage = "";
+    // Simulate Response Phase
+    let fullResponse = "";
+    // Use the demo message
+    const responseText = demoMessage;
 
     for (let i = 0; i < responseText.length; i++) {
       if (abortController.signal.aborted) return;
-      currentMessage += responseText[i];
+      const char = responseText[i];
+      fullResponse += char;
       
-      setMessages((prev) => 
+      const chunk: IChunkData = {
+          chunk_type: "response",
+          message_chunk: char,
+      };
+      activeMessageRef.current?.addChunk(chunk);
+      
+      // Variable speed typing
+      await new Promise(r => setTimeout(r, Math.random() * 10));
+    }
+
+    // Finalize: Update the message in state so it persists with full content
+    setMessages((prev) => 
         prev.map(msg => {
           if (msg._id === newMsgId) {
             return {
               ...msg,
               _source: {
                 ...msg._source,
-                message: currentMessage,
+                message: fullResponse,
+                // Ensure all details are final
+                details: demoDetails
               }
             };
           }
           return msg;
         })
-      );
-      await new Promise(r => setTimeout(r, 30 + Math.random() * 20));
-    }
+    );
 
     setIsTyping(false);
     abortControllerRef.current = null;
@@ -128,7 +228,7 @@ function App() {
     if (!inputValue.trim() || isTyping) return;
 
     const userMsg: IChatMessage = {
-      _id: Date.now().toString(),
+      _id: `user-${Date.now()}`,
       _source: {
         type: "user",
         question: inputValue,
@@ -152,7 +252,7 @@ function App() {
   };
 
   return (
-    <div className={`chat-container ${theme === 'dark' ? 'bg-[#1a1a1a] text-white' : ''}`}>
+    <div className={`chat-container ${theme === 'dark' ? 'dark bg-[#1a1a1a] text-white' : ''}`}>
       <div className="chat-header flex justify-between items-center px-4">
         <span>Coco Chat</span>
         <div className="flex gap-2 text-sm">
@@ -164,16 +264,23 @@ function App() {
       </div>
       
       <div className="messages-area">
-        {messages.map((msg) => (
-            <ChatMessage 
-              key={msg._id}
-              message={msg} 
-              think={msg._source.think}
-              tools={msg._source.tools}
-              locale={locale}
-              theme={theme}
-            />
-        ))}
+        {messages.map((msg, index) => {
+            const isLast = index === messages.length - 1;
+            const isAssistant = msg._source.type === 'assistant';
+            // Only attach ref to the last assistant message if we are typing
+            const shouldAttachRef = isLast && isAssistant && isTyping;
+            
+            return (
+                <ChatMessage 
+                  key={msg._id}
+                  ref={shouldAttachRef ? activeMessageRef : null}
+                  message={msg} 
+                  locale={locale}
+                  theme={theme}
+                  isTyping={shouldAttachRef} // Pass isTyping only to the active message
+                />
+            );
+        })}
         <div ref={messagesEndRef} />
       </div>
 
