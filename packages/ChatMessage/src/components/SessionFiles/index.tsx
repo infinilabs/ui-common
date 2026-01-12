@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
-import { Button, Checkbox, Typography } from "antd";
+import { Badge, Button, Checkbox, Typography } from "antd";
 import { Trash, X } from "lucide-react";
 import { Attachment } from "@infinilabs/attachments";
 
@@ -17,12 +17,15 @@ const SessionFiles = () => {
 
   return (
     <div className="[&_.ant-btn-icon]:flex">
-      <Button
-        type="primary"
-        className="fixed! top-21 right-5"
-        icon={<Icon className="block size-5 text-white" />}
-        onClick={toggleOpen}
-      />
+      <div className="fixed top-21 right-5">
+        <Badge count={9} color="green">
+          <Button
+            type="primary"
+            icon={<Icon className="block size-5 text-white" />}
+            onClick={toggleOpen}
+          />
+        </Badge>
+      </div>
 
       <AnimatePresence>
         {open && (
