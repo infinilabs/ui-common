@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { ConfigProvider, theme as antTheme } from "antd";
 import { ChatMessage, type ChatMessageRef } from "./components";
 import type { IChatMessage, IChunkData } from "./types/chat";
 import { demoData } from "./demo";
@@ -355,7 +356,16 @@ function App() {
         </div>
       </div>
 
-      <SessionFiles />
+      <ConfigProvider
+        theme={{
+          algorithm:
+            theme === "dark"
+              ? antTheme.darkAlgorithm
+              : antTheme.defaultAlgorithm,
+        }}
+      >
+        <SessionFiles />
+      </ConfigProvider>
     </div>
   );
 }
