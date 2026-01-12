@@ -70,7 +70,7 @@ const SessionFiles = () => {
               </div>
             </div>
 
-            <div className="flex-1 overflow-auto flex flex-col gap-2">
+            <div className="flex-1 flex flex-col gap-2 overflow-auto -mx-6 px-6">
               {[
                 "ts",
                 "js",
