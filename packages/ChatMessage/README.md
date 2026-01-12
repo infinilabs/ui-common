@@ -50,40 +50,56 @@ import { ChatMessage, ChatMessageRef, IChatMessage } from '@infinilabs/chat-mess
 function App() {
   const chatRef = useRef<ChatMessageRef>(null);
   
-  // Initial empty message structure
   const message: IChatMessage = {
     _id: 'streaming-msg',
-    _source: {
-      type: 'assistant',
-      message: '',
-      details: []
-    }
+    _source: { type: 'assistant', message: '', details: [] }
   };
 
   const handleStream = async () => {
-    // 1. Reset component state for new stream
     chatRef.current?.reset();
-
-    // 2. Add chunks as they arrive
-    // Example: Thinking chunk
-    chatRef.current?.addChunk({
-      chunk_type: 'think',
-      message_chunk: 'Thinking process...'
-    });
-
-    // Example: Response chunk
-    chatRef.current?.addChunk({
-      chunk_type: 'response',
-      message_chunk: 'Hello world!'
-    });
+    chatRef.current?.addChunk({ chunk_type: 'think', message_chunk: '...' });
+    chatRef.current?.addChunk({ chunk_type: 'response', message_chunk: 'Hello world!' });
   };
 
   return (
-    <ChatMessage 
+    <ChatMessage
       ref={chatRef}
-      message={message} 
-      isTyping={true}
+      message={message}
+      isTyping
     />
+  );
+}
+```
+
+### List Rendering with Streaming (Recommended)
+
+When rendering a list of messages, attach the `ref` only to the last assistant message while streaming, and pass `isTyping` to that active message.
+
+```tsx
+import { useRef } from 'react';
+import { ChatMessage, ChatMessageRef } from '@infinilabs/chat-message';
+
+function MessagesList({ messages, isTyping, locale, theme }) {
+  const activeMessageRef = useRef<ChatMessageRef>(null);
+
+  return (
+    <div>
+      {messages.map((msg, index) => {
+        const isLast = index === messages.length - 1;
+        const isAssistant = msg._source.type === 'assistant';
+        const shouldAttachRef = isLast && isAssistant && isTyping;
+        return (
+          <ChatMessage
+            key={msg._id}
+            ref={shouldAttachRef ? activeMessageRef : null}
+            message={msg}
+            locale={locale}
+            theme={theme}
+            isTyping={shouldAttachRef}
+          />
+        );
+      })}
+    </div>
   );
 }
 ```
