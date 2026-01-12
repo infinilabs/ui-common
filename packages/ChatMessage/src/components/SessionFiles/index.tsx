@@ -5,11 +5,13 @@ import { Trash, X } from "lucide-react";
 import { Attachment } from "@infinilabs/attachments";
 
 import Icon from "./components/Icon";
+import { useTranslation } from "react-i18next";
 
 const { Text } = Typography;
 
 const SessionFiles = () => {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   const toggleOpen = () => {
     setOpen((prev) => !prev);
@@ -51,7 +53,7 @@ const SessionFiles = () => {
             }}
           >
             <div className="flex items-center justify-between">
-              <span className="text-xl">Files in the conversation</span>
+              <span className="text-xl">{t("sessionFiles.modal.title")}</span>
 
               <Button
                 type="text"
@@ -62,12 +64,11 @@ const SessionFiles = () => {
 
             <div className="flex items-center justify-between gap-2 my-3">
               <Text type="secondary">
-                Only the selected files will participate in the current
-                conversation
+                {t("sessionFiles.modal.description")}
               </Text>
 
               <div className="inline-flex items-center gap-3 pr-3">
-                <span>All</span>
+                <span className="text-sm">{t("sessionFiles.labels.all")}</span>
 
                 <Checkbox />
               </div>
