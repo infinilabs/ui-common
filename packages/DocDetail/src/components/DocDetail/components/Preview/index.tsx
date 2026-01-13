@@ -33,8 +33,8 @@ const Preview: FC<DocDetailProps> = (props) => {
   };
 
   const renderContent = () => {
+    const { url } = data;
     const type = data?.metadata?.content_type;
-    const url = data?.metadata?.preview_url;
 
     if (!type || !url) return;
 
