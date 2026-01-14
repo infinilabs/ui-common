@@ -12,7 +12,7 @@ import { useState, type FC, type HTMLAttributes, type ReactNode } from "react";
 import Preview from "./components/Preview";
 import AIInterpretation from "./components/AIInterpretation";
 import { cn } from "@/utils/cn";
-import ActionButton from "../ActionButton";
+import ActionButton, { type ActionButtonProps } from "../ActionButton";
 
 const { Text } = Typography;
 
@@ -83,10 +83,18 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
     };
   };
   extraButtons?: ReactNode[];
+  openSourceButtonProps?: ActionButtonProps;
 }
 
 const DocDetail: FC<DocDetailProps> = (props) => {
-  const { data, i18n, extraButtons, className, ...rest } = props;
+  const {
+    data,
+    i18n,
+    extraButtons,
+    className,
+    openSourceButtonProps,
+    ...rest
+  } = props;
 
   const [visibleMore, setVisibleMore] = useState(false);
 
@@ -153,6 +161,7 @@ const DocDetail: FC<DocDetailProps> = (props) => {
             onClick={() => {
               window.open(data.url);
             }}
+            {...openSourceButtonProps}
           >
             {i18n?.buttons?.openSource ?? "Open Source"}
           </ActionButton>
