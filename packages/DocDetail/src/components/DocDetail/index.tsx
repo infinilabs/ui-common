@@ -146,7 +146,7 @@ const DocDetail: FC<DocDetailProps> = (props) => {
           <div>{data?.updated ?? "-"}</div>
 
           <Ellipsis
-            className="pl-2 min-w-3 size-3 hover:text-primary transition cursor-pointer"
+            className="ml-2 size-3 hover:text-primary transition cursor-pointer"
             onClick={() => {
               setVisibleMore((prev) => !prev);
             }}
