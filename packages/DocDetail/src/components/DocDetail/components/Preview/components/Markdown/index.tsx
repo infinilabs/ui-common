@@ -13,8 +13,6 @@ const Code: FC<ComponentProps> = (props) => {
   const { className, children } = props;
   const lang = className?.match(/language-(\w+)/)?.[1] ?? "";
 
-  console.log("lang", lang);
-
   if (typeof children !== "string") return null;
 
   if (lang === "mermaid") {
