@@ -4,7 +4,7 @@ import {
   type XMarkdownProps,
 } from "@ant-design/x-markdown";
 import { useEffect, useState, type FC } from "react";
-import { Mermaid } from "@ant-design/x";
+import { Mermaid, CodeHighlighter } from "@ant-design/x";
 import { Typography } from "antd";
 
 const { Text } = Typography;
@@ -17,6 +17,10 @@ const Code: FC<ComponentProps> = (props) => {
 
   if (lang === "mermaid") {
     return <Mermaid>{children}</Mermaid>;
+  }
+
+  if (lang) {
+    return <CodeHighlighter lang={lang}>{children}</CodeHighlighter>;
   }
 
   return <Text code>{children}</Text>;
