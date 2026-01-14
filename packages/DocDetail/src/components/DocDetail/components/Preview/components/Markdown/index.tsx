@@ -6,7 +6,6 @@ import {
 import { useEffect, useState, type FC } from "react";
 import { Mermaid, CodeHighlighter } from "@ant-design/x";
 import { Typography } from "antd";
-import "./index.css";
 
 const { Text } = Typography;
 
