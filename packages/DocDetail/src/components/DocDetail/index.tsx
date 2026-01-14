@@ -73,13 +73,13 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
       openSource?: string;
     };
     labels?: {
-      preview?: string;
-      aiInterpretation?: string;
-      createdBy?: string;
-      updatedAt?: string;
-      updatedBy?: string;
       type?: string;
       size?: string;
+      createdBy?: string;
+      createdAt?: string;
+      updatedAt?: string;
+      preview?: string;
+      aiInterpretation?: string;
     };
   };
   extraButtons?: ReactNode[];
@@ -108,12 +108,12 @@ const DocDetail: FC<DocDetailProps> = (props) => {
       value: data?.size,
     },
     {
-      label: i18n?.labels?.createdBy ?? "Created At",
-      value: data?.created,
-    },
-    {
       label: i18n?.labels?.createdBy ?? "Created By",
       value: data?.owner?.title,
+    },
+    {
+      label: i18n?.labels?.createdAt ?? "Created At",
+      value: data?.created,
     },
     {
       label: i18n?.labels?.updatedAt ?? "Updated At",
