@@ -57,13 +57,13 @@ declare interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
             openSource?: string;
         };
         labels?: {
-            preview?: string;
-            aiInterpretation?: string;
-            createdBy?: string;
-            updatedAt?: string;
-            updatedBy?: string;
             type?: string;
             size?: string;
+            createdBy?: string;
+            createdAt?: string;
+            updatedAt?: string;
+            preview?: string;
+            aiInterpretation?: string;
         };
     };
     extraButtons?: ReactNode[];

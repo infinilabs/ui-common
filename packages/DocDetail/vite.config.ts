@@ -36,6 +36,7 @@ export default defineConfig({
         "lucide-react",
       ],
       output: {
+        inlineDynamicImports: true,
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
