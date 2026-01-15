@@ -2,6 +2,7 @@ import { memo, useState, useEffect, forwardRef, useImperativeHandle, useRef } fr
 import { useTranslation, I18nextProvider } from "react-i18next";
 import clsx from "clsx";
 import i18nInstance from "../i18n/config";
+import { XMarkdown } from "@ant-design/x-markdown";
 
 import logoImg from "@/assets/icon.svg";
 import type { IChatMessage, IChunkData } from "@/types/chat";
@@ -13,12 +14,12 @@ import { PickSource } from "./PickSource";
 import { DeepRead } from "./DeepRead";
 import { Think } from "./Think";
 import { MessageActions } from "./MessageActions";
-import { XMarkdown } from "@ant-design/x-markdown";
 import { SuggestionList } from "./SuggestionList";
 import { UserMessage } from "./UserMessage";
-import { useConnectStore } from "@/stores/connectStore";
 import FontIcon from "@/components/Common/Icons/FontIcon";
 import useMessageChunkData from "../hooks/useMessageChunkData";
+
+import "./index.css";
 
 export interface ChatMessageProps {
   message: IChatMessage;
@@ -39,6 +40,8 @@ export interface ChatMessageProps {
   deep_read?: IChunkData;
   think?: IChunkData;
   response?: IChunkData;
+  currentAssistant?: any;
+  assistantList?: any[];
 }
 
 export interface ChatMessageRef {
@@ -79,12 +82,12 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
   deep_read: prop_deep_read,
   think: prop_think,
   response: prop_response,
+  currentAssistant,
+  assistantList,
 }, ref) {
   const { t, i18n } = useTranslation();
   const resolvedTheme = resolveTheme(theme);
 
-  const currentAssistant = useConnectStore((state) => state.currentAssistant);
-  const assistantList = useConnectStore((state) => state.assistantList);
   const [assistant, setAssistant] = useState<any>({});
   
   const {
@@ -103,30 +106,37 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
 
   useEffect(() => {
     if (prop_query_intent) handlers.deal_query_intent(prop_query_intent);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prop_query_intent]);
 
   useEffect(() => {
     if (prop_tools) handlers.deal_tools(prop_tools);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prop_tools]);
 
   useEffect(() => {
     if (prop_fetch_source) handlers.deal_fetch_source(prop_fetch_source);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prop_fetch_source]);
 
   useEffect(() => {
     if (prop_pick_source) handlers.deal_pick_source(prop_pick_source);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prop_pick_source]);
 
   useEffect(() => {
     if (prop_deep_read) handlers.deal_deep_read(prop_deep_read);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prop_deep_read]);
 
   useEffect(() => {
     if (prop_think) handlers.deal_think(prop_think);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prop_think]);
 
   useEffect(() => {
     if (prop_response) handlers.deal_response(prop_response);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prop_response]);
 
   const [loadingStep, setLoadingStep] = useState<Record<string, boolean>>({
@@ -342,9 +352,9 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
           }`}
         >
           {!hide_assistant && (
-            <div className="w-full flex items-center gap-1 font-semibold text-sm text-[#333] dark:text-[#d8d8d8]">
+            <div className="w-full flex items-center gap-1 font-semibold text-sm text-[#333] dark:text-white">
               {isAssistant ? (
-                <div className="w-6 h-6 flex justify-center items-center rounded-full bg-white border border-[#E6E6E6]">
+                <div className="w-6 h-6 flex justify-center items-center rounded-full bg-white dark:bg-[#2A2A2A] border border-[#E6E6E6] dark:border-[#3A3A3A]">
                   {assistant?._source?.icon?.startsWith("font_") ? (
                     <FontIcon
                       name={assistant._source.icon}
@@ -363,7 +373,7 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
             </div>
           )}
           <div className="w-full prose dark:prose-invert prose-sm max-w-none">
-            <div className="w-full pl-7 text-[#333] dark:text-[#d8d8d8] leading-relaxed">
+            <div className="w-full pl-7 text-[#333] dark:text-white leading-relaxed">
               {renderContent()}
             </div>
           </div>

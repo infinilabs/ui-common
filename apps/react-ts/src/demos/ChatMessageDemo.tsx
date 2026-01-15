@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { ChatMessage, type IChatMessage } from '@infinilabs/chat-message';
+import { ChatMessage } from '@infinilabs/chat-message';
+import type { IChatMessage } from '@infinilabs/chat-message';
 import { Send, Square } from 'lucide-react';
 
 // Using partial data from packages/ChatMessage/src/demo.ts

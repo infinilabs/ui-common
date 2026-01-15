@@ -2,16 +2,13 @@ import { MoveRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { FC } from "react";
 
-import { useConnectStore } from "@/stores/connectStore";
-
 interface PrevSuggestionProps {
   sendMessage: (message: string) => void;
+  currentAssistant: any;
 }
 
 const PrevSuggestion: FC<PrevSuggestionProps> = (props) => {
-  const { sendMessage } = props;
-
-  const currentAssistant = useConnectStore((state) => state.currentAssistant);
+  const { sendMessage, currentAssistant } = props;
 
   const [list, setList] = useState<string[]>([]);
   const currentAssistantStr = JSON.stringify(currentAssistant);
@@ -31,7 +28,7 @@ const PrevSuggestion: FC<PrevSuggestionProps> = (props) => {
         return (
           <li
             key={item}
-            className="flex items-center self-start gap-2 px-3 py-2 leading-4 text-sm text-[#333] dark:text-[#d8d8d8] rounded-xl border border-black/15 dark:border-white/15 hover:!border-[#0072ff] hover:!text-[#0072ff] transition cursor-pointer"
+            className="flex items-center self-start gap-2 px-3 py-2 leading-4 text-sm text-[#333] dark:text-white rounded-xl border border-black/15 dark:border-white/15 hover:border-[#0072ff]! hover:text-[#0072ff]! transition cursor-pointer"
             onClick={() => sendMessage(item)}
           >
             {item}
