@@ -14,7 +14,7 @@ export function SuggestionList({ suggestions, onSelect }: SuggestionListProps) {
         <button
           key={index}
           onClick={() => onSelect(suggestion)}
-          className="text-left inline-flex items-center px-3 py-1.5 rounded-full bg-white dark:bg-[#202126] border border-[#E4E5EF] dark:border-[#272626] text-sm text-[#666666] dark:text-[#A3A3A3] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors w-fit max-w-full break-words whitespace-pre-wrap"
+          className="text-left inline-flex items-center px-3 py-1.5 rounded-full bg-[#F5F5F5] dark:bg-[#2A2A2A] border border-[#E4E5EF] dark:border-[#3A3A3A] text-sm text-[#333333] dark:text-white hover:bg-[#EDEDED] dark:hover:bg-[#3A3A3A] transition-colors w-fit max-w-full wrap-break-word whitespace-pre-wrap"
         >
           <span className="break-all">{suggestion}</span>
           <MoveRight className="w-3 h-3 ml-1.5 shrink-0" />

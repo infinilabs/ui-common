@@ -6,8 +6,6 @@ export const copyToClipboard = async (text: string) => {
   }
 };
 
-export const isDefaultServer = () => true;
-
 export const OpenURLWithBrowser = (url: string) => {
   window.open(url, '_blank');
 };

@@ -1,13 +1,10 @@
 import { useState } from "react";
 import type { FC } from "react";
 import clsx from "clsx";
+import { Attachments } from "@infinilabs/attachments";
 
 import { CopyButton } from "@/components/Common/CopyButton";
 import { useAsyncEffect } from "ahooks";
-import platformAdapter from "@/utils/platformAdapter";
-import { useConnectStore } from "@/stores/connectStore";
-import { Attachments } from "@infinilabs/attachments";
-import { useAppStore } from "@/stores/appStore";
 
 interface UserMessageProps {
   message: string;
@@ -18,9 +15,7 @@ export const UserMessage: FC<UserMessageProps> = (props) => {
   const { message, attachments } = props;
 
   const [showCopyButton, setShowCopyButton] = useState(false);
-  const { currentService } = useConnectStore();
   const [attachmentData, setAttachmentData] = useState<any[]>([]);
-  const { addError } = useAppStore();
 
   const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (typeof window !== "undefined" && typeof document !== "undefined") {
@@ -43,17 +38,12 @@ export const UserMessage: FC<UserMessageProps> = (props) => {
     try {
       if (attachments.length === 0) return;
 
-      const result: any = await platformAdapter.commands(
-        "get_attachment_by_ids",
-        {
-          serverId: currentService.id,
-          attachments,
-        }
-      );
+      // todo: 调用平台接口获取附件详情
+      const result: any = {};
 
       setAttachmentData(result?.hits?.hits);
     } catch (error) {
-      addError(String(error));
+      console.error("Get attachment failed:", String(error));
     }
   }, [attachments]);
 
@@ -73,7 +63,7 @@ export const UserMessage: FC<UserMessageProps> = (props) => {
             <CopyButton textToCopy={message} />
           </div>
           <div
-            className="max-w-[85%] overflow-auto text-left px-3 py-2 bg-white dark:bg-[#202126] rounded-xl border border-black/12 dark:border-black/15 font-normal text-sm text-[#333333] dark:text-[#D8D8D8] cursor-pointer user-select-text whitespace-pre-wrap"
+            className="max-w-[85%] overflow-auto text-left px-3 py-2 bg-white dark:bg-[#202126]! rounded-xl border border-black/12 dark:border-black/15 font-normal text-sm text-[#333333] dark:text-white cursor-pointer user-select-text whitespace-pre-wrap"
             onDoubleClick={handleDoubleClick}
           >
             {message}
