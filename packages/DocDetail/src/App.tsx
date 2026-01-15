@@ -1,4 +1,4 @@
-import { Bot } from "lucide-react";
+import { Bot, SquareArrowOutUpRight } from "lucide-react";
 import { ActionButton, DocDetail } from "./components";
 
 const App = () => {
@@ -90,9 +90,11 @@ mindmap
           created: "2026-01-09T02:30:10.188Z",
           updated: "2026-01-09T02:30:10.188Z",
         }}
-        extraButtons={[
-          <ActionButton key="bot" icon={<Bot />}>
-            Continue Chat
+        actionButtons={[
+          <ActionButton icon={<Bot />}>Continue Chat</ActionButton>,
+
+          <ActionButton icon={<SquareArrowOutUpRight />}>
+            Open Source
           </ActionButton>,
         ]}
       />

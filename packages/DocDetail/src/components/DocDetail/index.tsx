@@ -1,18 +1,17 @@
 import { Typography } from "antd";
-import {
-  ChevronRight,
-  Dot,
-  Ellipsis,
-  Minus,
-  SquareArrowOutUpRight,
-} from "lucide-react";
+import { ChevronRight, Dot, Ellipsis, Minus } from "lucide-react";
 import { motion } from "motion/react";
 
-import { useState, type FC, type HTMLAttributes, type ReactNode } from "react";
+import {
+  Fragment,
+  useState,
+  type FC,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 import Preview from "./components/Preview";
 import AIInterpretation from "./components/AIInterpretation";
 import { cn } from "@/utils/cn";
-import ActionButton, { type ActionButtonProps } from "../ActionButton";
 
 const { Text } = Typography;
 
@@ -69,9 +68,6 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
     };
   };
   i18n?: {
-    buttons?: {
-      openSource?: string;
-    };
     labels?: {
       type?: string;
       size?: string;
@@ -82,19 +78,11 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
       aiInterpretation?: string;
     };
   };
-  extraButtons?: ReactNode[];
-  openSourceButtonProps?: ActionButtonProps;
+  actionButtons?: ReactNode[];
 }
 
 const DocDetail: FC<DocDetailProps> = (props) => {
-  const {
-    data,
-    i18n,
-    extraButtons,
-    className,
-    openSourceButtonProps,
-    ...rest
-  } = props;
+  const { data, i18n, actionButtons, className, ...rest } = props;
 
   const [visibleMore, setVisibleMore] = useState(false);
 
@@ -154,17 +142,9 @@ const DocDetail: FC<DocDetailProps> = (props) => {
         </Text>
 
         <div className="inline-flex gap-2">
-          {extraButtons}
-
-          <ActionButton
-            icon={<SquareArrowOutUpRight />}
-            onClick={() => {
-              window.open(data.url);
-            }}
-            {...openSourceButtonProps}
-          >
-            {i18n?.buttons?.openSource ?? "Open Source"}
-          </ActionButton>
+          {actionButtons?.map((button, index) => (
+            <Fragment key={index}>{button}</Fragment>
+          ))}
         </div>
       </div>
 
