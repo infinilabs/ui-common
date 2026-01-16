@@ -6,6 +6,7 @@ import {
 import { useEffect, useState, type FC } from "react";
 import { Mermaid, CodeHighlighter } from "@ant-design/x";
 import { Typography } from "antd";
+import clsx from "clsx";
 
 const { Text } = Typography;
 
@@ -31,7 +32,7 @@ interface MarkdownProps extends XMarkdownProps {
 }
 
 const Markdown: FC<MarkdownProps> = (props) => {
-  const { url, ...rest } = props;
+  const { url, className, ...rest } = props;
 
   const [content, setContent] = useState(rest.content);
 
@@ -49,7 +50,14 @@ const Markdown: FC<MarkdownProps> = (props) => {
     fetchContent(url);
   }, [url]);
 
-  return <XMarkdown {...rest} content={content} components={{ code: Code }} />;
+  return (
+    <XMarkdown
+      {...rest}
+      className={clsx("[&_h1,h2,h3,h4,h5,h6,ul,ol,p]:[all:revert]", className)}
+      content={content}
+      components={{ code: Code }}
+    />
+  );
 };
 
 export default Markdown;

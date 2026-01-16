@@ -1,18 +1,11 @@
 import { Typography } from "antd";
-import {
-  ChevronRight,
-  Dot,
-  Ellipsis,
-  Minus,
-  SquareArrowOutUpRight,
-} from "lucide-react";
+import { ChevronDown, ChevronRight, Dot, Minus } from "lucide-react";
 import { motion } from "motion/react";
 
 import { useState, type FC, type HTMLAttributes, type ReactNode } from "react";
 import Preview from "./components/Preview";
 import AIInterpretation from "./components/AIInterpretation";
 import { cn } from "@/utils/cn";
-import ActionButton, { type ActionButtonProps } from "../ActionButton";
 
 const { Text } = Typography;
 
@@ -59,7 +52,7 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
     tags?: string[];
     url?: string;
     size?: ReactNode;
-    owner: {
+    owner?: {
       type?: string;
       id?: string;
       icon?: string;
@@ -69,9 +62,6 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
     };
   };
   i18n?: {
-    buttons?: {
-      openSource?: string;
-    };
     labels?: {
       type?: string;
       size?: string;
@@ -82,21 +72,13 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
       aiInterpretation?: string;
     };
   };
-  extraButtons?: ReactNode[];
-  openSourceButtonProps?: ActionButtonProps;
+  actionButtons?: ReactNode[];
 }
 
 const DocDetail: FC<DocDetailProps> = (props) => {
-  const {
-    data,
-    i18n,
-    extraButtons,
-    className,
-    openSourceButtonProps,
-    ...rest
-  } = props;
+  const { data, i18n, actionButtons, className, ...rest } = props;
 
-  const [visibleMore, setVisibleMore] = useState(false);
+  const [expandMore, setExpandMore] = useState(false);
 
   const moreInfo = [
     {
@@ -145,36 +127,29 @@ const DocDetail: FC<DocDetailProps> = (props) => {
           <Dot className="size-3" />
           <div>{data?.updated ?? "-"}</div>
 
-          <Ellipsis
-            className="ml-2 size-3 hover:text-primary transition cursor-pointer"
+          <ChevronDown
+            className={cn(
+              "ml-2 size-3 hover:text-primary transition cursor-pointer",
+              {
+                "-scale-y-100": expandMore,
+              }
+            )}
             onClick={() => {
-              setVisibleMore((prev) => !prev);
+              setExpandMore((prev) => !prev);
             }}
           />
         </Text>
 
-        <div className="inline-flex gap-2">
-          {extraButtons}
-
-          <ActionButton
-            icon={<SquareArrowOutUpRight />}
-            onClick={() => {
-              window.open(data.url);
-            }}
-            {...openSourceButtonProps}
-          >
-            {i18n?.buttons?.openSource ?? "Open Source"}
-          </ActionButton>
-        </div>
+        <div className="inline-flex gap-2">{actionButtons}</div>
       </div>
 
       <motion.div
         className="bg-black/3 dark:bg-white/4 rounded-lg overflow-hidden"
         initial={false}
         animate={{
-          height: visibleMore ? "auto" : 0,
-          opacity: visibleMore ? 1 : 0,
-          marginBottom: visibleMore ? "1rem" : 0,
+          height: expandMore ? "auto" : 0,
+          opacity: expandMore ? 1 : 0,
+          marginBottom: expandMore ? "1rem" : 0,
         }}
       >
         <div className="flex flex-wrap gap-row-2 p-4">

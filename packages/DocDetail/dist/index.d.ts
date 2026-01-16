@@ -43,7 +43,7 @@ declare interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
         tags?: string[];
         url?: string;
         size?: ReactNode;
-        owner: {
+        owner?: {
             type?: string;
             id?: string;
             icon?: string;
@@ -53,9 +53,6 @@ declare interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
         };
     };
     i18n?: {
-        buttons?: {
-            openSource?: string;
-        };
         labels?: {
             type?: string;
             size?: string;
@@ -66,8 +63,7 @@ declare interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
             aiInterpretation?: string;
         };
     };
-    extraButtons?: ReactNode[];
-    openSourceButtonProps?: ActionButtonProps;
+    actionButtons?: ReactNode[];
 }
 
 declare type MetadataContentType = "image" | "video" | "markdown" | "pdf" | "docx" | "pptx" | "xlsx";
