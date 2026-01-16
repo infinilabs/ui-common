@@ -7,9 +7,9 @@ import {
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-import { OpenURLWithBrowser } from "@/utils/index";
-import type { IChunkData } from "@/types/chat";
-import RetrieveIcon from "@/icons/Retrieve";
+import { OpenURLWithBrowser } from "../utils/index";
+import type { IChunkData } from "../types/chat";
+import RetrieveIcon from "../icons/Retrieve";
 
 interface FetchSourceProps {
   Detail?: any;

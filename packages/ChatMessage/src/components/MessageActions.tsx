@@ -9,7 +9,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 
-import { copyToClipboard } from "@/utils";
+import { copyToClipboard } from "../utils";
 
 interface MessageActionsProps {
   id: string;
@@ -95,7 +95,7 @@ export const MessageActions = ({
   };
 
   return (
-    <div className={clsx("flex items-center gap-1 mt-2", actionClassName)}>
+    <div className={clsx("flex items-center gap-2 mt-2", actionClassName)}>
       {!isRefreshOnly && (
         <button
           id={copyButtonId}

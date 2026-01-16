@@ -1,9 +1,9 @@
 import { Loader, Hammer, ChevronDown, ChevronUp } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-
-import type { IChunkData } from "@/types/chat";
 import { XMarkdown } from "@ant-design/x-markdown";
+
+import type { IChunkData } from "../types/chat";
 
 interface CallToolsProps {
   Detail?: any;
@@ -59,7 +59,7 @@ export const CallTools = ({ Detail, ChunkData, loading }: CallToolsProps) => {
         )}
       </button>
       {isThinkingExpanded && (
-        <div className="pl-2 border-l-2 border-[#e5e5e5] dark:border-[#4e4e56]">
+        <div className="pl-2 pt-1 border-l-2 border-[#e5e5e5] dark:border-[#4e4e56]">
           <div className="text-[#8b8b8b] dark:text-[#a6a6a6] space-y-2">
             <XMarkdown content={data || ""} />
             {/* {data?.split("\n").map(

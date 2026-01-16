@@ -1,9 +1,8 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`*,:before,:after,::backdrop{--un-rotate:0;--un-rotate-x:0;--un-rotate-y:0;--un-rotate-z:0;--un-scale-x:1;--un-scale-y:1;--un-scale-z:1;--un-skew-x:0;--un-skew-y:0;--un-translate-x:0;--un-translate-y:0;--un-translate-z:0;--un-pan-x: ;--un-pan-y: ;--un-pinch-zoom: ;--un-scroll-snap-strictness:proximity;--un-ordinal: ;--un-slashed-zero: ;--un-numeric-figure: ;--un-numeric-spacing: ;--un-numeric-fraction: ;--un-border-spacing-x:0;--un-border-spacing-y:0;--un-ring-offset-shadow:0 0 #0000;--un-ring-shadow:0 0 #0000;--un-shadow-inset: ;--un-shadow:0 0 #0000;--un-ring-inset: ;--un-ring-offset-width:0px;--un-ring-offset-color:#fff;--un-ring-width:0px;--un-ring-color:#93c5fd80;--un-blur: ;--un-brightness: ;--un-contrast: ;--un-drop-shadow: ;--un-grayscale: ;--un-hue-rotate: ;--un-invert: ;--un-saturate: ;--un-sepia: ;--un-backdrop-blur: ;--un-backdrop-brightness: ;--un-backdrop-contrast: ;--un-backdrop-grayscale: ;--un-backdrop-hue-rotate: ;--un-backdrop-invert: ;--un-backdrop-opacity: ;--un-backdrop-saturate: ;--un-backdrop-sepia: }.b-default{--un-border-opacity:1;border-width:1px;border-color:rgb(217 217 217/var(--un-border-opacity));border-style:solid}.children\\:absolute>*{position:absolute}.relative{position:relative}.children\\:inset-0>*{inset:0}.mt-2{margin-top:.5rem}.mt-4{margin-top:1rem}.size-12{width:3rem;height:3rem}.size-4{width:1rem;height:1rem}.size-full{width:100%;height:100%}.h-6{height:1.5rem}.w-full{width:100%}.flex{display:flex}.inline-flex{display:inline-flex}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.-scale-y-100{--un-scale-y:-1;transform:translateX(var(--un-translate-x))translateY(var(--un-translate-y))translateZ(var(--un-translate-z))rotate(var(--un-rotate))rotateX(var(--un-rotate-x))rotateY(var(--un-rotate-y))rotateZ(var(--un-rotate-z))skewX(var(--un-skew-x))skewY(var(--un-skew-y))scaleX(var(--un-scale-x))scaleY(var(--un-scale-y))scaleZ(var(--un-scale-z))}.cursor-pointer{cursor:pointer}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-1{gap:.25rem}.gap-2{gap:.5rem}.gap-4{gap:1rem}.overflow-hidden{overflow:hidden}.b-2{border-width:2px}.border-primary{--un-border-opacity:1;border-color:rgb(22 119 255/var(--un-border-opacity))}.border-transparent{border-color:#0000}.hover\\:border-primary:hover{--un-border-opacity:1;border-color:rgb(22 119 255/var(--un-border-opacity))}.rounded-full{border-radius:9999px}.bg-primary-bg{--un-bg-opacity:1;background-color:rgb(230 244 255/var(--un-bg-opacity))}.px-0\\.5{padding-left:.125rem;padding-right:.125rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-3{padding-left:.75rem;padding-right:.75rem}.pb-0\\.5{padding-bottom:.125rem}.pt-4{padding-top:1rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-primary{--un-text-opacity:1;color:rgb(22 119 255/var(--un-text-opacity))}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter,backdrop-filter;transition-duration:.15s;transition-timing-function:cubic-bezier(.4,0,.2,1)}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-duration:.15s;transition-timing-function:cubic-bezier(.4,0,.2,1)}
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`*,:before,:after,::backdrop{--un-rotate:0;--un-rotate-x:0;--un-rotate-y:0;--un-rotate-z:0;--un-scale-x:1;--un-scale-y:1;--un-scale-z:1;--un-skew-x:0;--un-skew-y:0;--un-translate-x:0;--un-translate-y:0;--un-translate-z:0;--un-pan-x: ;--un-pan-y: ;--un-pinch-zoom: ;--un-scroll-snap-strictness:proximity;--un-ordinal: ;--un-slashed-zero: ;--un-numeric-figure: ;--un-numeric-spacing: ;--un-numeric-fraction: ;--un-border-spacing-x:0;--un-border-spacing-y:0;--un-ring-offset-shadow:0 0 #0000;--un-ring-shadow:0 0 #0000;--un-shadow-inset: ;--un-shadow:0 0 #0000;--un-ring-inset: ;--un-ring-offset-width:0px;--un-ring-offset-color:#fff;--un-ring-width:0px;--un-ring-color:#93c5fd80;--un-blur: ;--un-brightness: ;--un-contrast: ;--un-drop-shadow: ;--un-grayscale: ;--un-hue-rotate: ;--un-invert: ;--un-saturate: ;--un-sepia: ;--un-backdrop-blur: ;--un-backdrop-brightness: ;--un-backdrop-contrast: ;--un-backdrop-grayscale: ;--un-backdrop-hue-rotate: ;--un-backdrop-invert: ;--un-backdrop-opacity: ;--un-backdrop-saturate: ;--un-backdrop-sepia: }.b-default{border-width:1px;border-color:var(--color-border);border-style:solid}:root{--color-border:#d9d9d9;--color-primary:#1677ff;--color-primary-bg:#e6f4ff}.dark{--color-border:#424242;--color-primary:#1668dc;--color-primary-bg:#111a2c}.children\\:absolute>*{position:absolute}.relative{position:relative}.children\\:inset-0>*{inset:0}.mt-2{margin-top:.5rem}.mt-4{margin-top:1rem}.size-12{width:3rem;height:3rem}.size-4{width:1rem;height:1rem}.size-full{width:100%;height:100%}.h-6{height:1.5rem}.w-full{width:100%}.flex{display:flex}.inline-flex{display:inline-flex}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.-scale-y-100{--un-scale-y:-1;transform:translateX(var(--un-translate-x))translateY(var(--un-translate-y))translateZ(var(--un-translate-z))rotate(var(--un-rotate))rotateX(var(--un-rotate-x))rotateY(var(--un-rotate-y))rotateZ(var(--un-rotate-z))skewX(var(--un-skew-x))skewY(var(--un-skew-y))scaleX(var(--un-scale-x))scaleY(var(--un-scale-y))scaleZ(var(--un-scale-z))}.cursor-pointer{cursor:pointer}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-1{gap:.25rem}.gap-2{gap:.5rem}.gap-4{gap:1rem}.overflow-hidden{overflow:hidden}.b-2{border-width:2px}.border-primary{border-color:var(--color-primary)}.border-transparent{border-color:#0000}.hover\\:border-primary:hover{border-color:var(--color-primary)}.rounded-full{border-radius:9999px}.bg-primary-bg{background-color:var(--color-primary-bg)}.px-0\\.5{padding-left:.125rem;padding-right:.125rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-3{padding-left:.75rem;padding-right:.75rem}.pb-0\\.5{padding-bottom:.125rem}.pt-4{padding-top:1rem}.text-sm{font-size:.875rem;line-height:1.25rem}.dark .dark\\:text-white{--un-text-opacity:1;color:rgb(255 255 255/var(--un-text-opacity))}.dark .dark\\:text-white\\/80{color:#fffc}.text-\\[\\#666\\]{--un-text-opacity:1;color:rgb(102 102 102/var(--un-text-opacity))}.text-\\[\\#999\\]{--un-text-opacity:1;color:rgb(153 153 153/var(--un-text-opacity))}.text-primary{color:var(--color-primary)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter,backdrop-filter;transition-duration:.15s;transition-timing-function:cubic-bezier(.4,0,.2,1)}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-duration:.15s;transition-timing-function:cubic-bezier(.4,0,.2,1)}
 /*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();import * as React from "react";
 import { Children, Component, Fragment, createContext, createElement, forwardRef, isValidElement, useCallback, useContext, useEffect, useId, useInsertionEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Fragment as Fragment$1, jsx, jsxs } from "react/jsx-runtime";
-import * as LucideIcons from "lucide-react";
-import { ChevronDown } from "lucide-react";
+import { BrushCleaning, ChevronDown, SquareMinus, SquarePlus } from "lucide-react";
 import { Checkbox, ColorPicker, Input, Select, Slider } from "antd";
 var __defProp = Object.defineProperty, __getOwnPropDesc = Object.getOwnPropertyDescriptor, __getOwnPropNames = Object.getOwnPropertyNames, __hasOwnProp = Object.prototype.hasOwnProperty, __esmMin = (t, o) => () => (t && (o = t(t = 0)), o), __export = (t) => {
 	let o = {};
@@ -1854,14 +1853,22 @@ var validMotionProps = new Set(/* @__PURE__ */ "animate.exit.variants.initial.st
 function isValidMotionProp(t) {
 	return t.startsWith("while") || t.startsWith("drag") && t !== "draggable" || t.startsWith("layout") || t.startsWith("onTap") || t.startsWith("onPan") || t.startsWith("onLayout") || validMotionProps.has(t);
 }
-var is_prop_valid_framer_motion_exports = /* @__PURE__ */ __export({ default: () => is_prop_valid_framer_motion_default }), is_prop_valid_framer_motion_default, init_is_prop_valid_framer_motion = __esmMin((() => {
-	throw is_prop_valid_framer_motion_default = {}, Error("Could not resolve \"@emotion/is-prop-valid\" imported by \"framer-motion\". Is it installed?");
+function memoize(t) {
+	var o = Object.create(null);
+	return function(s) {
+		return o[s] === void 0 && (o[s] = t(s)), o[s];
+	};
+}
+var init_emotion_memoize_esm = __esmMin((() => {})), emotion_is_prop_valid_esm_exports = /* @__PURE__ */ __export({ default: () => isPropValid }), reactPropsRegex, isPropValid, init_emotion_is_prop_valid_esm = __esmMin((() => {
+	init_emotion_memoize_esm(), reactPropsRegex = /^((children|dangerouslySetInnerHTML|key|ref|autoFocus|defaultValue|defaultChecked|innerHTML|suppressContentEditableWarning|suppressHydrationWarning|valueLink|abbr|accept|acceptCharset|accessKey|action|allow|allowUserMedia|allowPaymentRequest|allowFullScreen|allowTransparency|alt|async|autoComplete|autoPlay|capture|cellPadding|cellSpacing|challenge|charSet|checked|cite|classID|className|cols|colSpan|content|contentEditable|contextMenu|controls|controlsList|coords|crossOrigin|data|dateTime|decoding|default|defer|dir|disabled|disablePictureInPicture|disableRemotePlayback|download|draggable|encType|enterKeyHint|fetchpriority|fetchPriority|form|formAction|formEncType|formMethod|formNoValidate|formTarget|frameBorder|headers|height|hidden|high|href|hrefLang|htmlFor|httpEquiv|id|inputMode|integrity|is|keyParams|keyType|kind|label|lang|list|loading|loop|low|marginHeight|marginWidth|max|maxLength|media|mediaGroup|method|min|minLength|multiple|muted|name|nonce|noValidate|open|optimum|pattern|placeholder|playsInline|popover|popoverTarget|popoverTargetAction|poster|preload|profile|radioGroup|readOnly|referrerPolicy|rel|required|reversed|role|rows|rowSpan|sandbox|scope|scoped|scrolling|seamless|selected|shape|size|sizes|slot|span|spellCheck|src|srcDoc|srcLang|srcSet|start|step|style|summary|tabIndex|target|title|translate|type|useMap|value|width|wmode|wrap|about|datatype|inlist|prefix|property|resource|typeof|vocab|autoCapitalize|autoCorrect|autoSave|color|incremental|fallback|inert|itemProp|itemScope|itemType|itemID|itemRef|on|option|results|security|unselectable|accentHeight|accumulate|additive|alignmentBaseline|allowReorder|alphabetic|amplitude|arabicForm|ascent|attributeName|attributeType|autoReverse|azimuth|baseFrequency|baselineShift|baseProfile|bbox|begin|bias|by|calcMode|capHeight|clip|clipPathUnits|clipPath|clipRule|colorInterpolation|colorInterpolationFilters|colorProfile|colorRendering|contentScriptType|contentStyleType|cursor|cx|cy|d|decelerate|descent|diffuseConstant|direction|display|divisor|dominantBaseline|dur|dx|dy|edgeMode|elevation|enableBackground|end|exponent|externalResourcesRequired|fill|fillOpacity|fillRule|filter|filterRes|filterUnits|floodColor|floodOpacity|focusable|fontFamily|fontSize|fontSizeAdjust|fontStretch|fontStyle|fontVariant|fontWeight|format|from|fr|fx|fy|g1|g2|glyphName|glyphOrientationHorizontal|glyphOrientationVertical|glyphRef|gradientTransform|gradientUnits|hanging|horizAdvX|horizOriginX|ideographic|imageRendering|in|in2|intercept|k|k1|k2|k3|k4|kernelMatrix|kernelUnitLength|kerning|keyPoints|keySplines|keyTimes|lengthAdjust|letterSpacing|lightingColor|limitingConeAngle|local|markerEnd|markerMid|markerStart|markerHeight|markerUnits|markerWidth|mask|maskContentUnits|maskUnits|mathematical|mode|numOctaves|offset|opacity|operator|order|orient|orientation|origin|overflow|overlinePosition|overlineThickness|panose1|paintOrder|pathLength|patternContentUnits|patternTransform|patternUnits|pointerEvents|points|pointsAtX|pointsAtY|pointsAtZ|preserveAlpha|preserveAspectRatio|primitiveUnits|r|radius|refX|refY|renderingIntent|repeatCount|repeatDur|requiredExtensions|requiredFeatures|restart|result|rotate|rx|ry|scale|seed|shapeRendering|slope|spacing|specularConstant|specularExponent|speed|spreadMethod|startOffset|stdDeviation|stemh|stemv|stitchTiles|stopColor|stopOpacity|strikethroughPosition|strikethroughThickness|string|stroke|strokeDasharray|strokeDashoffset|strokeLinecap|strokeLinejoin|strokeMiterlimit|strokeOpacity|strokeWidth|surfaceScale|systemLanguage|tableValues|targetX|targetY|textAnchor|textDecoration|textRendering|textLength|to|transform|u1|u2|underlinePosition|underlineThickness|unicode|unicodeBidi|unicodeRange|unitsPerEm|vAlphabetic|vHanging|vIdeographic|vMathematical|values|vectorEffect|version|vertAdvY|vertOriginX|vertOriginY|viewBox|viewTarget|visibility|widths|wordSpacing|writingMode|x|xHeight|x1|x2|xChannelSelector|xlinkActuate|xlinkArcrole|xlinkHref|xlinkRole|xlinkShow|xlinkTitle|xlinkType|xmlBase|xmlns|xmlnsXlink|xmlLang|xmlSpace|y|y1|y2|yChannelSelector|z|zoomAndPan|for|class|autofocus)|(([Dd][Aa][Tt][Aa]|[Aa][Rr][Ii][Aa]|x)-.*))$/, isPropValid = /* @__PURE__ */ memoize(function(t) {
+		return reactPropsRegex.test(t) || t.charCodeAt(0) === 111 && t.charCodeAt(1) === 110 && t.charCodeAt(2) < 91;
+	});
 })), shouldForward = (t) => !isValidMotionProp(t);
 function loadExternalIsValidProp(t) {
 	typeof t == "function" && (shouldForward = (o) => o.startsWith("on") ? !isValidMotionProp(o) : t(o));
 }
 try {
-	loadExternalIsValidProp((init_is_prop_valid_framer_motion(), __toCommonJS(is_prop_valid_framer_motion_exports)).default);
+	loadExternalIsValidProp((init_emotion_is_prop_valid_esm(), __toCommonJS(emotion_is_prop_valid_esm_exports)).default);
 } catch {}
 function filterProps(t, o, s) {
 	let c = {};
@@ -4365,52 +4372,7 @@ var gestureAnimations = {
 	...gestureAnimations,
 	...drag,
 	...layout
-}, createDomVisualElement), FilterCollapse_default = (t) => {
-	let { defaultExpand: o, title: s, children: c, onClear: l } = t, [u, d] = useState(o ?? !1), f = LucideIcons.SquarePlus, p = LucideIcons.SquareMinus, m = LucideIcons.BrushCleaning ?? LucideIcons.Eraser ?? LucideIcons.Trash2 ?? LucideIcons.X;
-	return /* @__PURE__ */ jsxs("div", {
-		className: "text-sm",
-		children: [/* @__PURE__ */ jsxs("div", {
-			className: "flex items-center justify-between cursor-pointer",
-			onClick: () => {
-				d((t) => !t);
-			},
-			children: [/* @__PURE__ */ jsxs("div", {
-				className: "flex items-center gap-2",
-				children: [/* @__PURE__ */ jsxs("div", {
-					className: "relative size-4 children:absolute children:inset-0",
-					children: [/* @__PURE__ */ jsx(motion.div, {
-						initial: { opacity: 1 },
-						animate: { opacity: u ? 0 : 1 },
-						children: f ? /* @__PURE__ */ jsx(f, { className: "size-4" }) : null
-					}), /* @__PURE__ */ jsx(motion.div, {
-						initial: { opacity: 0 },
-						animate: { opacity: u ? 1 : 0 },
-						children: p ? /* @__PURE__ */ jsx(p, { className: "size-4" }) : null
-					})]
-				}), /* @__PURE__ */ jsx("span", { children: s })]
-			}), m ? /* @__PURE__ */ jsx(m, {
-				className: "size-4",
-				onClick: (t) => {
-					t.stopPropagation(), l?.(t);
-				}
-			}) : null]
-		}), /* @__PURE__ */ jsx(motion.div, {
-			initial: {
-				height: 0,
-				opacity: 0
-			},
-			animate: {
-				height: u ? "auto" : 0,
-				opacity: u ? 1 : 0
-			},
-			className: "overflow-hidden",
-			children: /* @__PURE__ */ jsx("div", {
-				className: "pt-4",
-				children: c
-			})
-		})]
-	});
-};
+}, createDomVisualElement);
 function r(t) {
 	var o, s, c = "";
 	if (typeof t == "string" || typeof t == "number") c += t;
@@ -6030,74 +5992,125 @@ var concatArrays = (t, o) => {
 	};
 });
 const cn = (...t) => twMerge(clsx(t));
-var FilterTags_default = (t) => {
-	let { value: o, options: s, onChange: c, ...l } = t, u = s.filter((t) => !t.icon), d = s.filter((t) => t.icon), f = (t) => {
-		o.includes(t) ? c?.(o.filter((o) => o !== t)) : c?.([...o, t]);
+var FilterCollapse_default = (t) => {
+	let { defaultExpand: o, title: s, children: c, classNames: l, onClear: u } = t, [d, f] = useState(o ?? !1);
+	return /* @__PURE__ */ jsxs("div", {
+		className: "text-sm",
+		children: [/* @__PURE__ */ jsxs("div", {
+			className: cn("flex items-center justify-between cursor-pointer text-[#999]", l?.title),
+			onClick: () => {
+				f((t) => !t);
+			},
+			children: [/* @__PURE__ */ jsxs("div", {
+				className: "flex items-center gap-2",
+				children: [/* @__PURE__ */ jsxs("div", {
+					className: "relative size-4 children:absolute children:inset-0",
+					children: [/* @__PURE__ */ jsx(motion.div, {
+						initial: { opacity: 1 },
+						animate: { opacity: d ? 0 : 1 },
+						children: /* @__PURE__ */ jsx(SquarePlus, { className: "size-4" })
+					}), /* @__PURE__ */ jsx(motion.div, {
+						initial: { opacity: 0 },
+						animate: { opacity: d ? 1 : 0 },
+						children: /* @__PURE__ */ jsx(SquareMinus, { className: "size-4" })
+					})]
+				}), /* @__PURE__ */ jsx("span", { children: s })]
+			}), /* @__PURE__ */ jsx(BrushCleaning, {
+				className: "size-4",
+				onClick: (t) => {
+					t.stopPropagation(), u?.(t);
+				}
+			})]
+		}), /* @__PURE__ */ jsx(motion.div, {
+			initial: {
+				height: 0,
+				opacity: 0
+			},
+			animate: {
+				height: d ? "auto" : 0,
+				opacity: d ? 1 : 0
+			},
+			className: "overflow-hidden",
+			children: /* @__PURE__ */ jsx("div", {
+				className: "pt-4",
+				children: c
+			})
+		})]
+	});
+}, FilterTags_default = (t) => {
+	let { value: o, options: s, classNames: c, onChange: l } = t, u = s.filter((t) => !t.icon), d = s.filter((t) => t.icon), f = (t) => {
+		o.includes(t) ? l?.(o.filter((o) => o !== t)) : l?.([...o, t]);
 	};
 	return /* @__PURE__ */ jsxs(FilterCollapse_default, {
-		...l,
+		...t,
 		children: [/* @__PURE__ */ jsx("div", {
 			className: "flex flex-wrap gap-2",
 			children: u.map((t) => {
-				let { label: s, value: c } = t;
+				let { label: s, value: l } = t;
 				return /* @__PURE__ */ jsx("div", {
-					className: cn("inline-flex items-center h-6 px-3 cursor-pointer b-default rounded-full hover:border-primary transition-colors", { "border-primary bg-primary-bg": o.includes(c) }),
+					className: cn("inline-flex items-center h-6 px-3 cursor-pointer b-default rounded-full hover:border-primary transition-colors dark:text-white", { "border-primary bg-primary-bg": o.includes(l) }, c?.tag),
 					onClick: () => {
-						f(c);
+						f(l);
 					},
 					children: s
-				}, c);
+				}, l);
 			})
 		}), /* @__PURE__ */ jsx("div", {
 			className: "flex flex-wrap gap-2 mt-2",
 			children: d.map((t) => {
-				let { label: s, value: c, icon: l } = t;
+				let { label: s, value: l, icon: u } = t;
 				return /* @__PURE__ */ jsx("div", {
-					className: cn("size-12 rounded-full overflow-hidden cursor-pointer b-default b-2 border-transparent hover:border-primary transition-colors", { "border-primary": o.includes(c) }),
+					className: cn("size-12 rounded-full overflow-hidden cursor-pointer b-default b-2 border-transparent hover:border-primary transition-colors", { "border-primary": o.includes(l) }, c?.icon),
 					onClick: () => {
-						f(c);
+						f(l);
 					},
 					children: /* @__PURE__ */ jsx("img", {
-						src: l,
+						src: u,
 						alt: s,
 						className: "size-full"
 					})
-				}, c);
+				}, l);
 			})
 		})]
 	});
 }, FilterCheckboxGroup_default = (t) => {
-	let { options: o, value: s, onChange: c, ...l } = t, [u, d] = useState(!1), f = (t) => /* @__PURE__ */ jsx("div", {
+	let { options: o, value: s, i18n: c, classNames: l, onChange: u } = t, [d, f] = useState(!1), p = (t) => /* @__PURE__ */ jsx("div", {
 		className: "flex flex-col gap-4",
 		children: t.map((t) => {
-			let { label: o, value: l, icon: u, count: d } = t;
+			let { label: o, value: c, icon: d, count: f } = t;
 			return /* @__PURE__ */ jsxs("div", {
 				className: "flex items-center justify-between",
 				children: [/* @__PURE__ */ jsx(Checkbox, {
 					className: "inline-flex items-center",
-					checked: s.includes(l),
+					checked: s.includes(c),
 					onChange: (t) => {
-						t.target.checked ? c?.([...s, l]) : c?.(s.filter((t) => t !== l));
+						t.target.checked ? u?.([...s, c]) : u?.(s.filter((t) => t !== c));
 					},
 					children: /* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-1",
-						children: [/* @__PURE__ */ jsx("img", {
-							src: u,
+						children: [d && /* @__PURE__ */ jsx("img", {
+							src: d,
 							alt: o,
-							className: "size-4"
-						}), /* @__PURE__ */ jsx("span", { children: o })]
+							className: cn("size-4", l?.icon)
+						}), /* @__PURE__ */ jsx("span", {
+							className: cn("text-[#666] dark:text-white/80", l?.label),
+							children: o
+						})]
 					})
-				}), /* @__PURE__ */ jsx("span", { children: d })]
-			}, l);
+				}), /* @__PURE__ */ jsx("span", {
+					className: cn("text-[#666] dark:text-white/80", l?.count),
+					children: f
+				})]
+			}, c);
 		})
-	}), p = () => {
-		d((t) => !t);
+	}), m = () => {
+		f((t) => !t);
 	};
 	return /* @__PURE__ */ jsxs(FilterCollapse_default, {
-		...l,
+		...t,
 		children: [
-			f(o.slice(0, 5)),
-			/* @__PURE__ */ jsx(AnimatePresence, { children: u && /* @__PURE__ */ jsx(motion.div, {
+			p(o.slice(0, 5)),
+			/* @__PURE__ */ jsx(AnimatePresence, { children: d && /* @__PURE__ */ jsx(motion.div, {
 				initial: {
 					height: 0,
 					opacity: 0
@@ -6113,13 +6126,13 @@ var FilterTags_default = (t) => {
 				className: "overflow-hidden",
 				children: /* @__PURE__ */ jsx("div", {
 					className: "mt-4",
-					children: f(o.slice(5))
+					children: p(o.slice(5))
 				})
 			}) }),
 			o.length > 5 && /* @__PURE__ */ jsxs("div", {
-				className: "inline-flex items-center mt-4 text-primary cursor-pointer",
-				onClick: p,
-				children: [/* @__PURE__ */ jsx("span", { children: "更多" }), /* @__PURE__ */ jsx(ChevronDown, { className: cn("size-4 transition", { "-scale-y-100": u }) })]
+				className: cn("inline-flex items-center gap-2 mt-4 text-primary cursor-pointer", l?.more),
+				onClick: m,
+				children: [/* @__PURE__ */ jsx(ChevronDown, { className: cn("size-4 transition", { "-scale-y-100": d }) }), /* @__PURE__ */ jsx("span", { children: c?.labels?.more ?? "More" })]
 			})
 		]
 	});
@@ -6146,15 +6159,15 @@ var FilterTags_default = (t) => {
 	"#000000",
 	"#964B00"
 ], FilterColorPicker_default = (t) => {
-	let { presets: o, ...s } = t;
+	let { presets: o, i18n: s, ...c } = t;
 	return /* @__PURE__ */ jsx(FilterCollapse_default, {
 		...t,
 		children: /* @__PURE__ */ jsx(ColorPicker, {
 			presets: [{
-				label: "预设颜色",
+				label: s?.labels?.presetColors ?? "Preset Colors",
 				colors: PRESET_COLORS
 			}, ...o ?? []],
-			...s
+			...c
 		})
 	});
 }, FilterSlider_default = (t) => /* @__PURE__ */ jsx(FilterCollapse_default, {
