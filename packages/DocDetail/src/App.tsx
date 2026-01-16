@@ -17,7 +17,14 @@ const App = () => {
           url: "http://192.168.3.181:9101/coco-server/test.pdf",
           metadata: {
             content_type: "pdf",
-            ai_insights: `
+          },
+          owner: {
+            title: "Alice Johnson",
+          },
+          created: "2026-01-09T02:30:10.188Z",
+          updated: "2026-01-09T02:30:10.188Z",
+          ai_insights: {
+            text: `
 # Document Analysis: "106862408.jpg"
 
 ## Overview
@@ -84,11 +91,6 @@ mindmap
       Represents organizational cohesion
 \`\`\``,
           },
-          owner: {
-            title: "Alice Johnson",
-          },
-          created: "2026-01-09T02:30:10.188Z",
-          updated: "2026-01-09T02:30:10.188Z",
         }}
         actionButtons={[
           <ActionButton icon={<Bot />}>Continue Chat</ActionButton>,

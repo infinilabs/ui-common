@@ -18,7 +18,7 @@ const AIInterpretation: FC<DocDetailProps> = (props) => {
         {
           key: "ai-interpretation",
           label: i18n?.labels?.aiInterpretation ?? "AI Interpretation",
-          children: <Markdown content={data?.metadata?.ai_insights} />,
+          children: <Markdown content={data?.ai_insights?.text} />,
         },
       ]}
     />

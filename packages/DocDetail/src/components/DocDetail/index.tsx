@@ -29,7 +29,6 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
       tenant_id?: string;
     };
     metadata?: {
-      ai_insights?: string;
       colors?: string[];
       content_type?: MetadataContentType;
       height?: number;
@@ -59,6 +58,9 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
       title?: string;
       subtitle?: string;
       cover?: string;
+    };
+    ai_insights?: {
+      text?: string;
     };
   };
   i18n?: {
