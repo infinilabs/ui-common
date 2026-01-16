@@ -43,7 +43,7 @@ declare interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
         tags?: string[];
         url?: string;
         size?: ReactNode;
-        owner: {
+        owner?: {
             type?: string;
             id?: string;
             icon?: string;
