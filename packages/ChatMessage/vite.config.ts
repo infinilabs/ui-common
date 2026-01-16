@@ -1,8 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from "@tailwindcss/vite";
 import { readFileSync } from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
+import dts from "vite-plugin-dts";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const packageJson = JSON.parse(
   readFileSync("./package.json", { encoding: "utf-8" })
@@ -11,14 +16,30 @@ const globals = {
   ...(packageJson?.dependencies || {}),
 };
 
-function resolve(str) {
+function resolve(str: string) {
   return path.resolve(__dirname, str);
 }
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), cssInjectedByJsPlugin()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    cssInjectedByJsPlugin(),
+    dts({
+      insertTypesEntry: true,
+      tsconfigPath: resolve("tsconfig.app.json"),
+    }) as any
+  ],
+  resolve: {
+    alias: {
+      "@": resolve("src"),
+    },
+  },
   css: {
+    postcss: {
+      plugins: [],
+    },
     modules: {
       localsConvention: "camelCase",
       generateScopedName: "[name]__[local]___[hash:base64:5]",
@@ -53,6 +74,10 @@ export default defineConfig({
           mermaid: "mermaid",
           "use-debounce": "useDebounce",
           zustand: "zustand",
+          i18next: "i18n",
+          "@ant-design/x-markdown": "xMarkdown",
+          ahooks: "ahooks",
+          "@infinilabs/attachments": "attachments",
         },
       },
     },

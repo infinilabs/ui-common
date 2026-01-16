@@ -7,9 +7,9 @@ import {
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-import { OpenURLWithBrowser } from "@/utils/index";
-import type { IChunkData } from "@/types/chat";
-import RetrieveIcon from "@/icons/Retrieve";
+import { OpenURLWithBrowser } from "../utils/index";
+import type { IChunkData } from "../types/chat";
+import RetrieveIcon from "../icons/Retrieve";
 
 interface FetchSourceProps {
   Detail?: any;
@@ -107,7 +107,7 @@ export const FetchSource = ({
         }`}
       >
         <div className="flex-1 min-w-0 flex items-center gap-2">
-          <RetrieveIcon className="w-4 h-4 text-[#38C200] flex-shrink-0" />
+          <RetrieveIcon className="w-4 h-4 text-[#38C200] shrink-0" />
           <span className="text-xs text-[#999999]">
             {t(
               `assistant.message.steps.${ChunkData?.chunk_type || Detail.type}`,
@@ -139,7 +139,7 @@ export const FetchSource = ({
             >
               <div className="w-full flex items-center gap-2">
                 <div className="w-[75%] mobile:w-full flex items-center gap-1">
-                  <Globe className="w-3 h-3 flex-shrink-0" />
+                  <Globe className="w-3 h-3 shrink-0" />
                   <div className="text-xs text-[#333333] dark:text-[#D8D8D8] truncate font-normal group-hover:text-[#0072FF] dark:group-hover:text-[#0072FF]">
                     {item.title || item.category}
                   </div>
@@ -150,7 +150,7 @@ export const FetchSource = ({
                   <span className="text-xs text-[#999999] dark:text-[#999999] truncate">
                     {item.source?.name || item?.category}
                   </span>
-                  <SquareArrowOutUpRight className="w-3 h-3 text-[#999999] dark:text-[#999999] flex-shrink-0" />
+                  <SquareArrowOutUpRight className="w-3 h-3 text-[#999999] dark:text-[#999999] shrink-0" />
                 </div>
               </div>
             </div>

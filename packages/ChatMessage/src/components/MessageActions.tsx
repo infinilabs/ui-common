@@ -9,8 +9,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 
-import { copyToClipboard, isDefaultServer } from "@/utils";
-import { useChatStore } from "@/stores/chatStore";
+import { copyToClipboard } from "../utils";
 
 interface MessageActionsProps {
   id: string;
@@ -41,8 +40,6 @@ export const MessageActions = ({
 
   const isRefreshOnly = RefreshOnlyIds.includes(id);
 
-  const { synthesizeItem, setSynthesizeItem } = useChatStore();
-
   const handleCopy = async () => {
     try {
       await copyToClipboard(content);
@@ -67,10 +64,6 @@ export const MessageActions = ({
   };
 
   const handleSpeak = async () => {
-    if (isDefaultServer()) {
-      return setSynthesizeItem({ id, content });
-    }
-
     if ("speechSynthesis" in window) {
       if (isSpeaking) {
         window.speechSynthesis.cancel();
@@ -102,7 +95,7 @@ export const MessageActions = ({
   };
 
   return (
-    <div className={clsx("flex items-center gap-1 mt-2", actionClassName)}>
+    <div className={clsx("flex items-center gap-2 mt-2", actionClassName)}>
       {!isRefreshOnly && (
         <button
           id={copyButtonId}
@@ -176,7 +169,7 @@ export const MessageActions = ({
           >
             <Volume2
               className={`w-4 h-4 ${
-                isSpeaking || synthesizeItem?.id === id
+                isSpeaking
                   ? "text-[#1990FF] dark:text-[#1990FF]"
                   : "text-[#666666] dark:text-[#A3A3A3]"
               }`}

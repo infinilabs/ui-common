@@ -1,0 +1,71 @@
+import { type FC } from "react";
+import type {
+  DocDetailProps,
+  MetadataContentType,
+} from "@/components/DocDetail";
+import { Collapse } from "antd";
+import Pdf from "./components/Pdf";
+import Markdown from "./components/Markdown";
+import Docx from "./components/Docx";
+import Pptx from "./components/Pptx";
+
+const Preview: FC<DocDetailProps> = (props) => {
+  const { data, i18n } = props;
+
+  const renderFile = (type: MetadataContentType, url: string) => {
+    if (type === "markdown") {
+      return <Markdown url={url} />;
+    }
+
+    if (type === "pdf") {
+      return <Pdf url={url} {...props} />;
+    }
+
+    if (type === "docx") {
+      return <Docx url={url} {...props} />;
+    }
+
+    if (type === "pptx") {
+      return <Pptx url={url} {...props} />;
+    }
+
+    return null;
+  };
+
+  const renderContent = () => {
+    const { url } = data;
+    const type = data?.metadata?.content_type;
+
+    if (!type || !url) return;
+
+    if (type === "image") {
+      return <img src={url} className="w-full" />;
+    }
+
+    if (type === "video") {
+      return <video src={url} className="w-full" controls />;
+    }
+
+    return (
+      <Collapse
+        size="small"
+        defaultActiveKey={["preview"]}
+        classNames={{
+          root: "bg-transparent",
+          body: "p-4!",
+        }}
+        items={[
+          {
+            key: "preview",
+            label: i18n?.labels?.preview ?? "Preview",
+            children: renderFile(type, url),
+          },
+        ]}
+      />
+    );
+  };
+
+  return renderContent();
+};
+
+export default Preview;
