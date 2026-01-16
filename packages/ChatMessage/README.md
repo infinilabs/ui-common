@@ -282,8 +282,3 @@ export interface ChatMessageRef {
 - 引用与来源：展示检索文档、选中来源等信息。
 - 主题与暗色模式：内置 light / dark / system，组件内部已处理暗色配色。
 - 国际化：内置中英文文案，支持通过 `locale` 切换。
-
----
-
-这样，所有 props（包括内部用到的流式 chunk props）和 ref 方法都覆盖到了，而且跟当前实现是对齐的。  
-如果你希望 README 里再加一个「完整数据结构示例」（比如用当前 demo 的 JSON），我也可以再帮你补一节。

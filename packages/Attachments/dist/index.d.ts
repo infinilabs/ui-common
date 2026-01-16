@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { HTMLAttributes } from 'react';
+import { ReactNode } from 'react';
 
 export declare const Attachment: FC<AttachmentProps>;
 
@@ -9,13 +10,14 @@ declare interface AttachmentIconProps extends HTMLAttributes<SVGElement> {
     extname?: string;
 }
 
-declare interface AttachmentProps extends Pick<AttachmentsProps, "i18n" | "onItemPress" | "onItemRemove"> {
+declare interface AttachmentProps extends Pick<AttachmentsProps, "i18n" | "onItemPress" | "onItemRemove">, HTMLAttributes<HTMLDivElement> {
     id: string;
     status?: AttachmentStatus;
     filename?: string;
     extname?: string;
     size?: string;
     failedMessage?: string;
+    extra?: ReactNode;
 }
 
 export declare const Attachments: FC<AttachmentsProps>;

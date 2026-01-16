@@ -13,13 +13,25 @@ export declare const FilterCheckboxGroup: FC<FilterCheckboxGroupProps>;
 declare interface FilterCheckboxGroupOption {
     label: string;
     value: string | number;
-    icon: string;
+    icon?: string;
     count: number;
 }
 
 declare interface FilterCheckboxGroupProps extends FilterCollapseProps {
     value: Array<string | number>;
     options: FilterCheckboxGroupOption[];
+    i18n?: {
+        labels?: {
+            more?: string;
+        };
+    };
+    classNames?: {
+        title?: string;
+        icon?: string;
+        label?: string;
+        count?: string;
+        more?: string;
+    };
     onChange?: (value: Array<string | number>) => void;
 }
 
@@ -28,12 +40,21 @@ export declare const FilterCollapse: FC<FilterCollapseProps>;
 declare interface FilterCollapseProps extends PropsWithChildren {
     defaultExpand?: boolean;
     title: string;
+    classNames?: {
+        title?: string;
+    };
     onClear?: (event: MouseEvent_2) => void;
 }
 
 export declare const FilterColorPicker: FC<FilterColorPickerProps>;
 
-declare type FilterColorPickerProps = FilterCollapseProps & ColorPickerProps;
+declare type FilterColorPickerProps = FilterCollapseProps & ColorPickerProps & {
+    i18n?: {
+        labels?: {
+            presetColors?: string;
+        };
+    };
+};
 
 export declare const FilterInput: (props: FilterInputProps) => JSX_2.Element;
 
@@ -58,6 +79,11 @@ export declare const FilterTags: FC<FilterTagsProps>;
 declare interface FilterTagsProps extends FilterCollapseProps {
     value: Array<string | number>;
     options: FilterTagOption[];
+    classNames?: {
+        title?: string;
+        tag?: string;
+        icon?: string;
+    };
     onChange?: (value: Array<string | number>) => void;
 }
 
