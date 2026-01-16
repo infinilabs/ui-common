@@ -36,6 +36,7 @@ export function recordToListItem(
     breadcrumbs: breadcrumbs.length ? breadcrumbs : undefined,
     author,
     date,
-    onClick
+    onClick,
+    isActive: !!record.isActive
   };
 }

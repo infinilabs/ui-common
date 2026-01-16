@@ -43,6 +43,7 @@ export type SearchResultListItem = SearchResultCommon & {
   leading?: React.ReactNode;
   trailing?: React.ReactNode;
   onClick?: () => void;
+  isActive?: boolean;
 };
 
 export type SearchResultImageItem = SearchResultCommon & {
