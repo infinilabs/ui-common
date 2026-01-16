@@ -48,7 +48,7 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
             className={clsx(
               "flex items-center justify-center rounded-full transition-colors w-8 h-8 bg-[#E4E5F0] dark:bg-[rgb(84,84,84)]",
               {
-                "!bg-[#0072FF]": inputValue,
+                "bg-[#0072FF]!": inputValue,
               }
             )}
             type="submit"

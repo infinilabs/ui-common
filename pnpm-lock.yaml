@@ -216,8 +216,8 @@ importers:
         specifier: ^2.8.15
         version: 2.8.15(react@18.3.1)
       '@infinilabs/chat-message':
-        specifier: workspace:*
-        version: link:../ChatMessage
+        specifier: ^0.0.6
+        version: 0.0.6(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@emotion/is-prop-valid@1.4.0)(@types/react@18.3.3)(immer@11.1.3)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react-i18next@16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.6.0(react@18.3.1))(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(less@4.2.0)(lightningcss@1.30.2))
       '@radix-ui/react-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1811,6 +1811,13 @@ packages:
       antd: '>=6'
       react: '>=18'
       react-dom: '>=18'
+
+  '@infinilabs/chat-message@0.0.6':
+    resolution: {integrity: sha512-12yy9RlFPlfSKR5k28Wr1x91GuRbowjBIN6x/60ZeMHEOBOOAVBSFKm2ITORGz2xuwfMp5yhVtqU/3uKqTQNeQ==}
+    peerDependencies:
+      react: ^18.3.1
+      react-dom: ^18.3.1
+      react-i18next: '>=11.0.0'
 
   '@infinilabs/datepicker@0.0.5':
     resolution: {integrity: sha512-juQV2yjfBdEfuahSYUCQGTgRcXQa5FPDThLylBr+KNATJswc3AVMjIxxVtAc/EEKxTBeSan6Gt0ZAqrUpaq7oQ==}
@@ -7797,6 +7804,51 @@ snapshots:
       nanoid: 5.1.6
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
+
+  '@infinilabs/attachments@0.0.1(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.2.0(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@ant-design/icons': 6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      antd: 6.2.0(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      clsx: 2.1.1
+      nanoid: 5.1.6
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
+  '@infinilabs/chat-message@0.0.6(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@emotion/is-prop-valid@1.4.0)(@types/react@18.3.3)(immer@11.1.3)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react-i18next@16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.6.0(react@18.3.1))(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(less@4.2.0)(lightningcss@1.30.2))':
+    dependencies:
+      '@ant-design/x-markdown': 2.1.3(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@infinilabs/attachments': 0.0.1(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.2.0(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tailwindcss/vite': 4.1.18(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(less@4.2.0)(lightningcss@1.30.2))
+      ahooks: 3.9.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      antd: 6.2.0(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      clsx: 2.1.1
+      i18next: 25.7.3(typescript@5.9.3)
+      lucide-react: 0.461.0(react@18.3.1)
+      mermaid: 11.12.2
+      motion: 12.25.0(@emotion/is-prop-valid@1.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-i18next: 16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)
+      react-markdown: 9.1.0(@types/react@18.3.3)(react@18.3.1)
+      rehype-highlight: 7.0.2
+      rehype-katex: 7.0.1
+      remark-breaks: 4.0.0
+      remark-gfm: 4.0.1
+      remark-math: 6.0.0
+      use-debounce: 10.0.6(react@18.3.1)
+      zustand: 5.0.10(@types/react@18.3.3)(immer@11.1.3)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
+    transitivePeerDependencies:
+      - '@ant-design/icons'
+      - '@emotion/is-prop-valid'
+      - '@types/react'
+      - date-fns
+      - immer
+      - luxon
+      - moment
+      - supports-color
+      - typescript
+      - use-sync-external-store
+      - vite
 
   '@infinilabs/datepicker@0.0.5':
     dependencies:
