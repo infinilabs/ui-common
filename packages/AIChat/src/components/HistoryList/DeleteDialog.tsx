@@ -3,7 +3,6 @@ import { Button } from "../ui/button";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 
-import VisibleKey from "@/components/VisibleKey";
 import { type Chat } from "@/types/chat";
 import { type KeyboardEvent } from "react";
 
@@ -54,14 +53,7 @@ const DeleteDialog = ({
         </div>
 
         <div className="flex gap-4 self-end">
-          <VisibleKey
-            shortcut="N"
-            shortcutClassName="left-[unset] right-0"
-            onKeyPress={() => {
-              setIsOpen(false);
-            }}
-          >
-            <Button
+          <Button
               variant="outline"
               autoFocus
               onClick={() => setIsOpen(false)}
@@ -73,14 +65,8 @@ const DeleteDialog = ({
             >
               {t("history_list.delete_modal.button.cancel")}
             </Button>
-          </VisibleKey>
 
-          <VisibleKey
-            shortcut="Y"
-            shortcutClassName="left-[unset] right-0"
-            onKeyPress={handleRemove}
-          >
-            <Button
+          <Button
               variant="destructive"
               className="text-white"
               onClick={handleRemove}
@@ -90,7 +76,6 @@ const DeleteDialog = ({
             >
               {t("history_list.delete_modal.button.delete")}
             </Button>
-          </VisibleKey>
         </div>
       </div>
     </Dialog>

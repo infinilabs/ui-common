@@ -4,8 +4,8 @@ import clsx from "clsx";
 import i18nInstance from "../i18n/config";
 import { XMarkdown } from "@ant-design/x-markdown";
 
-import logoImg from "@/assets/icon.svg";
-import type { IChatMessage, IChunkData } from "@/types/chat";
+import logoImg from "../assets/icon.svg";
+import type { IChatMessage, IChunkData } from "../types/chat";
 export type { IChatMessage, IChunkData };
 import { QueryIntent } from "./QueryIntent";
 import { CallTools } from "./CallTools";
@@ -16,7 +16,7 @@ import { Think } from "./Think";
 import { MessageActions } from "./MessageActions";
 import { SuggestionList } from "./SuggestionList";
 import { UserMessage } from "./UserMessage";
-import FontIcon from "@/components/Common/Icons/FontIcon";
+import FontIcon from "./Common/Icons/FontIcon";
 import useMessageChunkData from "../hooks/useMessageChunkData";
 
 import "./index.css";
@@ -42,6 +42,7 @@ export interface ChatMessageProps {
   response?: IChunkData;
   currentAssistant?: any;
   assistantList?: any[];
+  loadingStep?: Record<string, boolean>;
 }
 
 export interface ChatMessageRef {
@@ -84,6 +85,7 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
   response: prop_response,
   currentAssistant,
   assistantList,
+  loadingStep: externalLoadingStep,
 }, ref) {
   const { t, i18n } = useTranslation();
   const resolvedTheme = resolveTheme(theme);
@@ -148,6 +150,8 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
     think: false,
     response: false,
   });
+
+  const activeLoadingStep = externalLoadingStep || loadingStep;
 
   const inThinkRef = useRef<boolean>(false);
 
@@ -273,35 +277,35 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
           Detail={details.find((item) => item.type === "query_intent")}
           ChunkData={query_intent}
           getSuggestion={getSuggestion}
-          loading={loadingStep?.query_intent}
+          loading={activeLoadingStep?.query_intent}
         />
 
         <CallTools
           Detail={details.find((item) => item.type === "tools")}
           ChunkData={tools}
-          loading={loadingStep?.tools}
+          loading={activeLoadingStep?.tools}
         />
 
         <FetchSource
           Detail={details.find((item) => item.type === "fetch_source")}
           ChunkData={fetch_source}
-          loading={loadingStep?.fetch_source}
+          loading={activeLoadingStep?.fetch_source}
           formatUrl={formatUrl}
         />
         <PickSource
           Detail={details.find((item) => item.type === "pick_source")}
           ChunkData={pick_source}
-          loading={loadingStep?.pick_source}
+          loading={activeLoadingStep?.pick_source}
         />
         <DeepRead
           Detail={details.find((item) => item.type === "deep_read")}
           ChunkData={deep_read}
-          loading={loadingStep?.deep_read}
+          loading={activeLoadingStep?.deep_read}
         />
         <Think
           Detail={details.find((item) => item.type === "think")}
           ChunkData={think}
-          loading={loadingStep?.think}
+          loading={activeLoadingStep?.think}
         />
         <XMarkdown content={messageContent || response?.message_chunk || ""} />
         {isTyping && (

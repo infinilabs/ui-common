@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import { debounce } from "lodash-es";
-import { useChatStore } from "@/stores/chatStore";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
-import i18n from "@/i18n";
 import { ChevronDown, RefreshCw, Search } from "lucide-react";
+
+import i18n from "@/i18n";
 import { Input, type InputRef } from "@/components/ui/input";
 import { Post } from "@/api/axiosRequest";
+import { useChatStore } from "@/stores/chatStore";
+import FontIcon from "./FontIcon";
+import { useIconfontScript } from "@/hooks/useScript";
 
 interface AssistantListProps {
   BaseUrl: string;
@@ -26,11 +29,13 @@ interface AssistantHit {
   };
 }
 
-export function AssistantList({ assistantIDs = [], locale = "en", t: tProp }: AssistantListProps) {
+function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: AssistantListProps) {
+  useIconfontScript();
   const { t: tOriginal } = useTranslation();
   const t = tProp || tOriginal;
   const currentAssistant = useChatStore((state) => state.currentAssistant);
   const setCurrentAssistant = useChatStore((state) => state.setCurrentAssistant);
+  const setAssistantList = useChatStore((state) => state.setAssistantList);
 
   useEffect(() => {
     if (locale && i18n.language !== locale) {
@@ -39,24 +44,43 @@ export function AssistantList({ assistantIDs = [], locale = "en", t: tProp }: As
   }, [locale]);
 
   const [assistants, setAssistants] = useState<AssistantHit[]>([]);
+
+  useEffect(() => {
+    setAssistantList(assistants);
+  }, [assistants, setAssistantList]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [open, setOpen] = useState(false);
   const searchInputRef = useRef<InputRef>(null);
   const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const pageSize = 10;
+  
   const debouncedKeyword = useMemo(
-    () => debounce((k: string) => setKeyword(k), 500),
+    () => debounce((k: string) => {
+      setKeyword(k);
+      setPage(1);
+      setAssistants([]);
+      setTotal(0);
+      setHasMore(true);
+    }, 500),
     []
   );
 
+  const assistantIDsStr = JSON.stringify(assistantIDs);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const stableAssistantIDs = useMemo(() => assistantIDs, [assistantIDsStr]);
+
   const fetchAssistant = useCallback(
-    async (page = 1, pageSize = 5) => {
+    async (currentPage: number, isLoadMore = false) => {
       try {
-        const queryParams = [`current=${page}`, `pageSize=${pageSize}`];
+        const queryParams = [`current=${currentPage}`, `pageSize=${pageSize}`];
         if (keyword) queryParams.push(`keyword=${encodeURIComponent(keyword)}`);
-        if (assistantIDs.length) queryParams.push(`ids=${encodeURIComponent(assistantIDs.join(","))}`);
+        if (stableAssistantIDs.length) queryParams.push(`ids=${encodeURIComponent(stableAssistantIDs.join(","))}`);
 
         const [error, res] = await Post<{
-          hits?: { hits?: AssistantHit[] };
+          hits?: { hits?: AssistantHit[], total?: { value: number } };
         }>(`/assistant/_search?${queryParams.join("&")}`, undefined);
 
         if (error) {
@@ -64,42 +88,81 @@ export function AssistantList({ assistantIDs = [], locale = "en", t: tProp }: As
           return;
         }
 
-        const list = (res?.data?.hits?.hits ?? []) as AssistantHit[];
-        setAssistants(list);
+        const list = (res?.hits?.hits ?? []) as AssistantHit[];
+        const totalValue = res?.hits?.total?.value ?? 0;
+
+        setAssistants(prev => isLoadMore ? [...prev, ...list] : list);
+        setTotal(totalValue);
+        // Calculate hasMore based on total
+        const currentCount = (currentPage - 1) * pageSize + list.length;
+        setHasMore(currentCount < totalValue);
+
+        if (!isLoadMore && list.length > 0) {
+          const current = useChatStore.getState().currentAssistant;
+          // If no assistant is selected, select the first one
+          if (!current?._id) {
+            setCurrentAssistant({
+              _id: list[0]._id,
+              _source: list[0]._source,
+            });
+          } else {
+             // If there is a current assistant, check if it is in the list
+             // If we need to validate or update the current assistant's info, we can do it here
+             // For now, we respect the user's previous selection (persisted in store)
+          }
+        }
       } catch (e) {
         console.error(e);
       }
     },
-    [assistantIDs, keyword]
+    [stableAssistantIDs, keyword]
   );
 
   useEffect(() => {
     const t = setTimeout(() => {
-      fetchAssistant(1, 5);
+      fetchAssistant(1);
     }, 0);
     return () => clearTimeout(t);
   }, [fetchAssistant]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    await fetchAssistant(1, 5);
+    setPage(1);
+    await fetchAssistant(1);
     setTimeout(() => setIsRefreshing(false), 800);
   };
 
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    if (scrollHeight - scrollTop <= clientHeight + 50 && hasMore && !isRefreshing) {
+       // Simple throttle
+       if (assistants.length >= page * pageSize) {
+          const nextPage = page + 1;
+          setPage(nextPage);
+          fetchAssistant(nextPage, true);
+       }
+    }
+  };
+
   return (
-    <I18nextProvider i18n={i18n}>
-      <div className="relative">
-        <button
-          className="flex cursor-pointer items-center gap-1 border border-border rounded-xl px-2 py-1.5 hover:bg-accent transition-colors"
-          type="button"
-          onClick={() => {
-            setOpen((v) => !v);
-            setTimeout(() => {
-              if (searchInputRef.current) searchInputRef.current.focus();
-            }, 0);
-          }}
-        >
-          {currentAssistant?._source?.icon ? (
+    <div className="relative">
+      <button
+        className="flex cursor-pointer items-center gap-1 border border-border rounded-xl px-2 py-1.5 hover:bg-accent transition-colors"
+        type="button"
+        onClick={() => {
+          setOpen((v) => !v);
+          setTimeout(() => {
+            if (searchInputRef.current) searchInputRef.current.focus();
+          }, 0);
+        }}
+      >
+        {currentAssistant?._source?.icon ? (
+          currentAssistant._source.icon.startsWith("font_") ? (
+            <FontIcon
+              name={currentAssistant._source.icon}
+              className="w-4 h-4 mr-1"
+            />
+          ) : (
             <img
               src={currentAssistant._source.icon}
               className="w-4 h-4 mr-1"
@@ -109,81 +172,91 @@ export function AssistantList({ assistantIDs = [], locale = "en", t: tProp }: As
                 el.style.display = "none";
               }}
             />
-          ) : null}
-          <span className="text-sm">
-            {currentAssistant?._source?.name || t("assistant_list.default_name")}
-          </span>
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
-        </button>
+          )
+        ) : null}
+        <span className="text-sm">
+          {currentAssistant?._source?.name || t("assistant_list.default_name")}
+        </span>
+        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+      </button>
 
-        {open && (
-          <div
-            className="absolute left-0 top-full z-50 mt-2 w-64 rounded-xl border border-border bg-background text-foreground shadow-lg p-3"
-            onMouseMove={() => {
-              // no-op
-            }}
-          >
-            <div className="flex items-center justify-between text-sm font-semibold mb-2">
-              <div className="truncate">
-                {t("assistant_list.title")}（{assistants.length}）
-              </div>
-              <button
-                className="h-6 w-6 flex items-center justify-center cursor-pointer rounded hover:bg-accent transition-colors"
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleRefresh();
-                }}
-                disabled={isRefreshing}
-              >
-                <RefreshCw
-                  className={clsx("w-4 h-4 text-foreground hover:text-primary", {
-                    "animate-spin": isRefreshing,
-                  })}
-                />
-              </button>
+      {open && (
+        <div
+          className="absolute left-0 top-full z-50 mt-2 w-64 rounded-xl border border-border bg-white dark:bg-zinc-950 text-foreground shadow-lg p-3"
+          onMouseMove={() => {
+            // no-op
+          }}
+        >
+          <div className="flex items-center justify-between text-sm font-semibold mb-2">
+            <div className="truncate">
+              {t("assistant_list.title")}（{total}）
             </div>
-
-            <div className="mt-2">
-              <Input
-                ref={searchInputRef}
-                autoFocus
-                value={keyword}
-                placeholder={t("assistant_list.search.placeholder")}
-                className="h-8 rounded-full bg-background"
-                prefix={<Search className="h-4 w-4 text-muted-foreground" />}
-                onChange={(event) => {
-                  debouncedKeyword(event.target.value);
-                }}
-                onClick={(e) => e.stopPropagation()}
+            <button
+              className="h-6 w-6 flex items-center justify-center cursor-pointer rounded hover:bg-accent transition-colors"
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleRefresh();
+              }}
+              disabled={isRefreshing}
+            >
+              <RefreshCw
+                className={clsx("w-4 h-4 text-foreground hover:text-primary", {
+                  "animate-spin": isRefreshing,
+                })}
               />
-            </div>
+            </button>
+          </div>
 
-            <div className="mt-2 max-h-60 overflow-auto custom-scrollbar">
-              {assistants.length > 0 ? (
-                <div className="flex flex-col gap-1">
-                  {assistants.map((assistant) => {
-                    const name = assistant._source?.name || assistant._id;
-                    const isActive = currentAssistant?._id === assistant._id;
-                    return (
-                      <button
-                        key={assistant._id}
-                        className={clsx(
-                          "w-full text-left flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm transition-colors",
-                          isActive
-                            ? "bg-accent text-accent-foreground"
-                            : "hover:bg-accent hover:text-accent-foreground"
-                        )}
-                        onClick={() => {
-                          setCurrentAssistant({
-                            _id: assistant._id,
-                            _source: assistant._source,
-                          });
-                          setOpen(false);
-                        }}
-                      >
-                        {assistant._source?.icon ? (
+          <div className="mt-2">
+            <Input
+              ref={searchInputRef}
+              autoFocus
+              value={keyword}
+              placeholder={t("assistant_list.search.placeholder")}
+              className="h-8 rounded-full bg-gray-50 dark:bg-zinc-900"
+              prefix={<Search className="h-4 w-4 text-muted-foreground" />}
+              onChange={(event) => {
+                debouncedKeyword(event.target.value);
+              }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+
+          <div
+            className="mt-2 max-h-60 overflow-auto custom-scrollbar"
+            onScroll={handleScroll}
+          >
+            {assistants.length > 0 ? (
+              <div className="flex flex-col gap-1">
+                {assistants.map((assistant) => {
+                  const name = assistant._source?.name || assistant._id;
+                  const isActive = currentAssistant?._id === assistant._id;
+                  return (
+                    <button
+                      key={assistant._id}
+                      className={clsx(
+                        "w-full text-left flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm transition-colors",
+                        isActive
+                          ? "bg-accent text-accent-foreground"
+                          : "hover:bg-accent hover:text-accent-foreground"
+                      )}
+                      onClick={() => {
+                        setCurrentAssistant({
+                          _id: assistant._id,
+                          _source: assistant._source,
+                        });
+                        setOpen(false);
+                      }}
+                    >
+                      {assistant._source?.icon ? (
+                        assistant._source.icon.startsWith("font_") ? (
+                          <FontIcon
+                            name={assistant._source.icon}
+                            className="w-4 h-4"
+                          />
+                        ) : (
                           <img
                             src={assistant._source.icon}
                             className="w-4 h-4"
@@ -193,21 +266,35 @@ export function AssistantList({ assistantIDs = [], locale = "en", t: tProp }: As
                               el.style.display = "none";
                             }}
                           />
-                        ) : null}
-                        <div className="truncate">{name}</div>
-                      </button>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="py-3 text-center text-sm text-muted-foreground">
-                  {t("assistant_list.no_data")}
-                </div>
-              )}
-            </div>
+                        )
+                      ) : null}
+                      <div className="truncate">{name}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="py-8 text-center text-sm text-muted-foreground">
+                {t("assistant_list.no_data")}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
+      {open && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setOpen(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+export function AssistantList(props: AssistantListProps) {
+  return (
+    <I18nextProvider i18n={i18n}>
+      <InnerAssistantList {...props} />
     </I18nextProvider>
   );
 }

@@ -105,7 +105,7 @@ export function useChatActions(
         size: 1000,
       });
       const hits =
-        (res?.data?.hits?.hits as ChatMessageItem[] | undefined) || [];
+        (res?.hits?.hits as ChatMessageItem[] | undefined) || [];
       const updatedChat: Chat = {
         ...chat,
         messages: hits,
@@ -151,7 +151,7 @@ export function useChatActions(
         size: 100,
         keyword,
       });
-      const hits = (res?.data?.hits?.hits as Chat[] | undefined) || [];
+      const hits = (res?.hits?.hits as Chat[] | undefined) || [];
       setChats(hits);
     } catch (error) {
       console.error("getChatHistory error:", error);

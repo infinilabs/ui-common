@@ -10,16 +10,10 @@ import {
   handleNetworkError,
 } from "./tools";
 
-type Fn = (data: FcResponse<unknown>) => unknown;
+type Fn = (data: unknown) => unknown;
 
 type RequestParams = Record<string, unknown>;
 type RequestHeaders = Record<string, string>;
-
-interface FcResponse<T> {
-  errno: string;
-  errmsg: string;
-  data: T;
-}
 
 axios.interceptors.request.use((config) => {
   config = handleChangeRequestHeader(config);
@@ -84,7 +78,7 @@ export const Get = <T>(
   url: string,
   params: RequestParams = {},
   clearFn?: Fn
-): Promise<[unknown, FcResponse<T> | undefined]> =>
+): Promise<[unknown, T | undefined]> =>
   new Promise((resolve) => {
     const appStore = JSON.parse(localStorage.getItem("app-store") || "{}");
 
@@ -112,16 +106,16 @@ export const Get = <T>(
     }
 
     axios
-      .get<FcResponse<T>>(baseURL + url, { params, withCredentials: true })
+      .get<T>(baseURL + url, { params, withCredentials: true })
       .then((result) => {
-        let res: FcResponse<T>;
+        let res: T;
         if (clearFn !== undefined) {
-          res = clearFn(result?.data) as unknown as FcResponse<T>;
+          res = clearFn(result?.data) as unknown as T;
         } else {
-          res = result?.data as FcResponse<T>;
+          res = result?.data as T;
         }
 
-        resolve([null, res as FcResponse<T>]);
+        resolve([null, res]);
       })
       .catch((err: unknown) => {
         handleApiError(err);
@@ -134,7 +128,7 @@ export const Post = <T>(
   data: RequestParams | undefined,
   params: RequestParams = {},
   headers: RequestHeaders = {}
-): Promise<[unknown, FcResponse<T> | undefined]> => {
+): Promise<[unknown, T | undefined]> => {
   return new Promise((resolve) => {
     const appStore = JSON.parse(localStorage.getItem("app-store") || "{}");
 
@@ -168,9 +162,108 @@ export const Post = <T>(
     };
 
     axios
-      .post<FcResponse<T>>(baseURL + url, data, config)
+      .post<T>(baseURL + url, data, config)
       .then((result) => {
-        resolve([null, result.data as FcResponse<T>]);
+        resolve([null, result.data as T]);
+      })
+      .catch((err: unknown) => {
+        handleApiError(err);
+        resolve([err, undefined]);
+      });
+  });
+};
+
+export const Put = <T>(
+  url: string,
+  data: RequestParams | undefined,
+  params: RequestParams = {},
+  headers: RequestHeaders = {}
+): Promise<[unknown, T | undefined]> => {
+  return new Promise((resolve) => {
+    const appStore = JSON.parse(localStorage.getItem("app-store") || "{}");
+
+    const meta = import.meta as unknown as { env?: { DEV?: boolean } };
+    const isDev = meta.env?.DEV === true;
+    const PROXY_PREFIXES: readonly string[] = [
+      "account",
+      "chat",
+      "query",
+      "connector",
+      "integration",
+      "assistant",
+      "datasource",
+      "settings",
+      "mcp_server",
+    ];
+    const shouldProxy =
+      isDev &&
+      url.startsWith("/") &&
+      PROXY_PREFIXES.some((p) => url.startsWith(`/${p}`));
+
+    let baseURL: string = appStore.state?.endpoint_http as string;
+    if (!baseURL || baseURL === "undefined" || shouldProxy) {
+      baseURL = "";
+    }
+
+    const config: AxiosRequestConfig = {
+      params,
+      headers,
+      withCredentials: true,
+    };
+
+    axios
+      .put<T>(baseURL + url, data, config)
+      .then((result) => {
+        resolve([null, result.data as T]);
+      })
+      .catch((err: unknown) => {
+        handleApiError(err);
+        resolve([err, undefined]);
+      });
+  });
+};
+
+export const Delete = <T>(
+  url: string,
+  params: RequestParams = {},
+  headers: RequestHeaders = {}
+): Promise<[unknown, T | undefined]> => {
+  return new Promise((resolve) => {
+    const appStore = JSON.parse(localStorage.getItem("app-store") || "{}");
+
+    const meta = import.meta as unknown as { env?: { DEV?: boolean } };
+    const isDev = meta.env?.DEV === true;
+    const PROXY_PREFIXES: readonly string[] = [
+      "account",
+      "chat",
+      "query",
+      "connector",
+      "integration",
+      "assistant",
+      "datasource",
+      "settings",
+      "mcp_server",
+    ];
+    const shouldProxy =
+      isDev &&
+      url.startsWith("/") &&
+      PROXY_PREFIXES.some((p) => url.startsWith(`/${p}`));
+
+    let baseURL: string = appStore.state?.endpoint_http as string;
+    if (!baseURL || baseURL === "undefined" || shouldProxy) {
+      baseURL = "";
+    }
+
+    const config: AxiosRequestConfig = {
+      params,
+      headers,
+      withCredentials: true,
+    };
+
+    axios
+      .delete<T>(baseURL + url, config)
+      .then((result) => {
+        resolve([null, result.data as T]);
       })
       .catch((err: unknown) => {
         handleApiError(err);

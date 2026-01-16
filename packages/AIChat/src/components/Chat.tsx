@@ -16,6 +16,9 @@ import useMessageChunkData from "@/hooks/useMessageChunkData";
 import { useMessageHandler } from "@/hooks/useMessageHandler";
 import { ChatContent } from "./ChatContent";
 import type { Chat, ChatMessageItem, IChunkData } from "@/types/chat";
+import { streamPost } from "@/api/streamFetch";
+import { Get, Post } from "@/api/axiosRequest";
+import { useIconfontScript } from "@/hooks/useScript";
 
 interface ChatAIProps {
   BaseUrl: string;
@@ -37,8 +40,9 @@ export interface ChatAIRef {
   onSelectChat: (chat: Chat) => void;
 }
 
-const ChatAI = memo(
+const InnerChatAI = memo(
   forwardRef<ChatAIRef, ChatAIProps>(({ BaseUrl, formatUrl, t: tProp }, ref) => {
+    useIconfontScript();
     const { t: tOriginal } = useTranslation();
     const t = tProp || tOriginal;
     const baseUrl = BaseUrl;
@@ -47,6 +51,7 @@ const ChatAI = memo(
     const activeChat = useChatStore((state) => state.activeChat);
     const setActiveChat = useChatStore((state) => state.setActiveChat);
     const setHasActiveChat = useChatStore((state) => state.setHasActiveChat);
+    const currentAssistant = useChatStore((state) => state.currentAssistant);
 
     const [timedoutShow, setTimedoutShow] = useState(false);
     const [Question, setQuestion] = useState<string>("");
@@ -82,36 +87,6 @@ const ChatAI = memo(
       setHasActiveChat(Boolean(activeChat));
     }, [activeChat, setHasActiveChat]);
 
-    const streamPost = useCallback(
-      async (
-        url: string,
-        body: Record<string, unknown>,
-        onMessage: (line: string) => void
-      ) => {
-        const headersStr = localStorage.getItem("headers") || "{}";
-        const headersStorage = JSON.parse(headersStr) as Record<string, string>;
-        const res = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", ...headersStorage },
-          credentials: "include",
-          body: JSON.stringify(body),
-        });
-        const reader = res.body?.getReader();
-        if (!reader) return;
-        const decoder = new TextDecoder();
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const text = decoder.decode(value, { stream: true });
-          const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
-          for (const line of lines) {
-            onMessage(line);
-          }
-        }
-      },
-      []
-    );
-
     type ChatStreamSingle = {
       _id?: string;
       _source?: {
@@ -124,11 +99,47 @@ const ChatAI = memo(
       };
     };
 
+    const { dealMsg } = useMessageHandler(
+      curIdRef,
+      curSessionIdRef,
+      setCurChatEnd,
+      setTimedoutShow,
+      () => {
+        if (activeChat?._id) {
+          Post(
+            `/chat/${activeChat._id}/_cancel?message_id=${curIdRef.current}`,
+            undefined
+          ).catch(() => {});
+        }
+      },
+      setLoadingStep,
+      handlers
+    );
+
+    useEffect(() => {
+      // no-op hook for future side effects tied to dealMsg
+    }, [dealMsg]);
+
     const handleStreamMessage = useCallback(
       (msg: string) => {
-        if (msg.includes("\"user\"") && msg.includes("_source") && msg.includes("result")) {
-          try {
+        try {
+          // Attempt to parse the message, as it might be a JSON string
+          if (msg.startsWith("{") && msg.endsWith("}")) {
+              const chunkData = JSON.parse(msg);
+              // Check if it's a message chunk handled by useMessageHandler
+              if (chunkData.chunk_type && ["query_intent", "tools", "fetch_source", "pick_source", "deep_read", "think", "response", "reply_end"].includes(chunkData.chunk_type)) {
+                  // It's a chunk, let dealMsg handle it
+              }
+          }
+          
+          // Delegate to useMessageHandler for streaming updates (thinking, response generation, etc.)
+          dealMsg(msg);
+
+          // Existing logic for updating the Chat List / History state
+          if (msg.includes("\"user\"") && msg.includes("_source") && msg.includes("result")) {
+            // ... (existing parsing logic)
             const parsed = JSON.parse(msg) as ChatMessageItem[] | ChatStreamSingle;
+            // ... (rest of the existing logic)
             let nextChat: Chat;
 
             if (Array.isArray(parsed)) {
@@ -194,14 +205,13 @@ const ChatAI = memo(
             }
 
             setActiveChat(nextChat);
-            return;
-          } catch (error) {
-            console.error("Failed to parse chat message:", error);
-            return;
           }
+        } catch (error) {
+           // If JSON parse fails or other errors, just log and continue
+           console.error("Failed to parse chat message:", error);
         }
       },
-      [activeChat, setActiveChat]
+      [activeChat, setActiveChat, dealMsg]
     );
 
     const resetChatState = useCallback(() => {
@@ -235,9 +245,17 @@ const ChatAI = memo(
           return;
         }
         await prepareChatSession(text);
-        await streamPost(`${baseUrl}/chat`, { message: text, attachments }, handleStreamMessage);
+        await streamPost({
+          url: "/chat/_create",
+          body: {
+            message: text,
+            attachments,
+            assistant_id: currentAssistant?._id,
+          },
+          onMessage: handleStreamMessage,
+        });
       },
-      [baseUrl, handleStreamMessage, prepareChatSession, streamPost]
+      [handleStreamMessage, prepareChatSession, currentAssistant]
     );
 
     const sendMessage = useCallback(
@@ -249,13 +267,13 @@ const ChatAI = memo(
           return;
         }
         await prepareChatSession(text);
-        await streamPost(
-          `${baseUrl}/chat/${chat._id}/_continue`,
-          { message: text, attachments },
-          handleStreamMessage
-        );
+        await streamPost({
+          url: `/chat/${chat._id}/_chat`,
+          body: { message: text, attachments },
+          onMessage: handleStreamMessage,
+        });
       },
-      [baseUrl, handleStreamMessage, prepareChatSession, streamPost]
+      [handleStreamMessage, prepareChatSession]
     );
 
     const handleSendMessage = useCallback(
@@ -273,93 +291,90 @@ const ChatAI = memo(
     const cancelChat = useCallback(async () => {
       if (activeChat?._id) {
         try {
-          const headersStr = localStorage.getItem("headers") || "{}";
-          const headersStorage = JSON.parse(headersStr) as Record<string, string>;
-          await fetch(`${baseUrl}/chat/${activeChat._id}/_cancel?message_id=${curIdRef.current}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", ...headersStorage },
-            credentials: "include",
-          });
+          await Post(
+            `/chat/${activeChat._id}/_cancel?message_id=${curIdRef.current}`,
+            undefined
+          );
         } catch (e) {
           console.error(e);
         }
       }
       resetChatState();
-    }, [activeChat, baseUrl, resetChatState]);
+    }, [activeChat, resetChatState]);
 
     const clearChat = useCallback(() => {
       setTimedoutShow(false);
       if (activeChat?._id) {
-        const headersStr = localStorage.getItem("headers") || "{}";
-        const headersStorage = JSON.parse(headersStr) as Record<string, string>;
-        fetch(`${baseUrl}/chat/${activeChat._id}/_close`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", ...headersStorage },
-          credentials: "include",
-        }).catch(() => {});
+        Post(`/chat/${activeChat._id}/_close`, {}).catch(() => {});
       }
       setActiveChat(undefined);
       setCurChatEnd(true);
-    }, [activeChat, baseUrl, setActiveChat, setCurChatEnd]);
+    }, [activeChat, setActiveChat, setCurChatEnd]);
 
-    const onSelectChat = useCallback(
-      async (chat: Chat) => {
-        setTimedoutShow(false);
-        await clearAllChunkData();
-        if (activeChat?._id) {
-          const headersStr = localStorage.getItem("headers") || "{}";
-          const headersStorage = JSON.parse(headersStr) as Record<string, string>;
-          await fetch(`${baseUrl}/chat/${activeChat._id}/_close`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", ...headersStorage },
-            credentials: "include",
-          }).catch(() => {});
-        }
-        setActiveChat(chat);
-        try {
-          const headersStr = localStorage.getItem("headers") || "{}";
-          const headersStorage = JSON.parse(headersStr) as Record<string, string>;
-          const res = await fetch(`${baseUrl}/chat/${chat._id}/_history`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json", ...headersStorage },
-            credentials: "include",
-          });
-          const data = await res.json();
-          const hits = (data?.hits?.hits ?? []) as ChatMessageItem[];
-          setActiveChat({
-            ...chat,
-            messages: hits,
-          });
-        } catch (e) {
-          console.error(e);
-        }
-      },
-      [activeChat, baseUrl, clearAllChunkData, setActiveChat]
-    );
-
-    const { dealMsg } = useMessageHandler(
-      curIdRef,
-      curSessionIdRef,
-      setCurChatEnd,
-      setTimedoutShow,
-      () => {
-        if (activeChat?._id) {
-          const headersStr = localStorage.getItem("headers") || "{}";
-          const headersStorage = JSON.parse(headersStr) as Record<string, string>;
-          fetch(`${baseUrl}/chat/${activeChat._id}/_cancel?message_id=${curIdRef.current}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", ...headersStorage },
-            credentials: "include",
-          }).catch(() => {});
-        }
-      },
-      setLoadingStep,
-      handlers
-    );
+    const prevActiveChatIdRef = useRef<string | undefined>(undefined);
 
     useEffect(() => {
-      // no-op hook for future side effects tied to dealMsg
-    }, [dealMsg]);
+      const currentChatId = activeChat?._id;
+      
+      // Only trigger if the chat ID has actually changed
+      if (currentChatId !== prevActiveChatIdRef.current) {
+        
+        // 1. Close the previous chat if it existed
+        if (prevActiveChatIdRef.current) {
+          Post(`/chat/${prevActiveChatIdRef.current}/_close`, {}).catch(() => {});
+        }
+
+        // 2. Update the ref to the current ID
+        prevActiveChatIdRef.current = currentChatId;
+
+        // 3. If there is a new chat, prepare the environment and fetch history
+        if (currentChatId) {
+          // Perform async operations to avoid synchronous state updates in effect
+          (async () => {
+             setTimedoutShow(false);
+             await clearAllChunkData();
+             
+             try {
+               const [err, res] = await Get<{ hits: { hits: ChatMessageItem[] } }>(
+                 `/chat/${currentChatId}/_history`,
+                 {
+                   from: 0,
+                   size: 1000,
+                 }
+               );
+               if (err || !res) return;
+               const hits = (res?.hits?.hits ?? []) as ChatMessageItem[];
+               
+               // Get the latest state to ensure we are updating the correct chat
+               const currentActive = useChatStore.getState().activeChat;
+               if (currentActive?._id === currentChatId) {
+                   setActiveChat({
+                       ...currentActive,
+                       messages: hits,
+                   });
+               }
+             } catch (e) {
+               console.error(e);
+             }
+          })();
+        } else {
+           // If currentChatId is undefined (chat cleared), just ensure state is clean
+           // Wrap in timeout to avoid synchronous state update warning
+           setTimeout(() => {
+               setTimedoutShow(false);
+               setCurChatEnd(true);
+           }, 0);
+        }
+      }
+    }, [activeChat?._id, clearAllChunkData, setActiveChat, setCurChatEnd]);
+
+    const onSelectChat = useCallback(
+      (chat: Chat) => {
+        // Just set the active chat; the useEffect will handle closing previous, clearing data, and fetching new history
+        setActiveChat(chat);
+      },
+      [setActiveChat]
+    );
 
     useImperativeHandle(ref, () => ({
       init: (params: SendMessageParams) => {
@@ -382,27 +397,36 @@ const ChatAI = memo(
     );
 
     return (
+      <div className="flex flex-col rounded-md h-full overflow-hidden relative">
+        <ChatContent
+          activeChat={activeChat}
+          query_intent={query_intent}
+          tools={tools}
+          fetch_source={fetch_source}
+          pick_source={pick_source}
+          deep_read={deep_read}
+          think={think}
+          response={response}
+          loadingStep={loadingStep}
+          timedoutShow={timedoutShow}
+          Question={Question}
+          handleSendMessage={(message) => handleSendMessage(activeChat, { message })}
+          getFileUrl={getFileUrl}
+          formatUrl={formatUrl}
+          curIdRef={curIdRef}
+          t={t}
+          currentAssistant={currentAssistant}
+        />
+      </div>
+    );
+  })
+);
+
+const ChatAI = memo(
+  forwardRef<ChatAIRef, ChatAIProps>((props, ref) => {
+    return (
       <I18nextProvider i18n={i18n}>
-        <div className="flex flex-col rounded-md h-full overflow-hidden relative">
-          <ChatContent
-            activeChat={activeChat}
-            query_intent={query_intent}
-            tools={tools}
-            fetch_source={fetch_source}
-            pick_source={pick_source}
-            deep_read={deep_read}
-            think={think}
-            response={response}
-            loadingStep={loadingStep}
-            timedoutShow={timedoutShow}
-            Question={Question}
-            handleSendMessage={(message) => handleSendMessage(activeChat, { message })}
-            getFileUrl={getFileUrl}
-            formatUrl={formatUrl}
-            curIdRef={curIdRef}
-            t={t}
-          />
-        </div>
+        <InnerChatAI {...props} ref={ref} />
       </I18nextProvider>
     );
   })

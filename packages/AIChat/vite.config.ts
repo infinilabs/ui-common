@@ -10,14 +10,23 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), tailwindcss()],
     build: {
+      minify: false,
       lib: {
-        entry: path.resolve(__dirname, "src/components/index.tsx"),
+        entry: path.resolve(__dirname, "src/index.ts"),
         name: "AIChat",
         fileName: "index",
-        formats: ["es", "cjs"],
+        formats: ["es"],
       },
       rollupOptions: {
-        external: ["react", "react-dom", "@infinilabs/chat-message"],
+        external: [
+          "react",
+          "react-dom",
+          "antd",
+          "lucide-react",
+          "react-i18next",
+          "i18next",
+          "axios"
+        ],
       },
     },
     resolve: {

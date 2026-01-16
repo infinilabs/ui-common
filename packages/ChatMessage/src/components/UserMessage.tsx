@@ -1,10 +1,10 @@
 import { useState } from "react";
 import type { FC } from "react";
 import clsx from "clsx";
+import { useAsyncEffect } from "ahooks";
 import { Attachments } from "@infinilabs/attachments";
 
-import { CopyButton } from "@/components/Common/CopyButton";
-import { useAsyncEffect } from "ahooks";
+import { CopyButton } from "./Common/CopyButton";
 
 interface UserMessageProps {
   message: string;

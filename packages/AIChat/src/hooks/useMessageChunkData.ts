@@ -17,8 +17,7 @@ export default function useMessageChunkData() {
         if (!prev) return data;
         return {
           ...prev,
-          message_chunk:
-            (prev.message_chunk ?? "") + (data.message_chunk ?? ""),
+          message_chunk: data.message_chunk ?? prev.message_chunk,
         };
       });
     }, []),
@@ -27,8 +26,7 @@ export default function useMessageChunkData() {
         if (!prev) return data;
         return {
           ...prev,
-          message_chunk:
-            (prev.message_chunk ?? "") + (data.message_chunk ?? ""),
+          message_chunk: data.message_chunk ?? prev.message_chunk,
         };
       });
     }, []),
@@ -37,8 +35,7 @@ export default function useMessageChunkData() {
         if (!prev) return data;
         return {
           ...prev,
-          message_chunk:
-            (prev.message_chunk ?? "") + (data.message_chunk ?? ""),
+          message_chunk: data.message_chunk ?? prev.message_chunk,
         };
       });
     }, []),
@@ -47,8 +44,7 @@ export default function useMessageChunkData() {
         if (!prev) return data;
         return {
           ...prev,
-          message_chunk:
-            (prev.message_chunk ?? "") + (data.message_chunk ?? ""),
+          message_chunk: data.message_chunk ?? prev.message_chunk,
         };
       });
     }, []),
@@ -69,8 +65,7 @@ export default function useMessageChunkData() {
         if (!prev) return data;
         return {
           ...prev,
-          message_chunk:
-            (prev.message_chunk ?? "") + (data.message_chunk ?? ""),
+          message_chunk: data.message_chunk ?? prev.message_chunk,
         };
       });
     }, []),
@@ -79,8 +74,7 @@ export default function useMessageChunkData() {
         if (!prev) return data;
         return {
           ...prev,
-          message_chunk:
-            (prev.message_chunk ?? "") + (data.message_chunk ?? ""),
+          message_chunk: data.message_chunk ?? prev.message_chunk,
         };
       });
     }, []),

@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import type { Chat } from "@/types/chat";
-import { useChatStore } from "@/stores/chatStore";
-import { Get, Post } from "@/api/axiosRequest";
-import HistoryList from "./HistoryList";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
+import { message } from "antd";
+
+import type { Chat } from "@/types/chat";
+import { useChatStore } from "@/stores/chatStore";
+import { Get, Put, Delete } from "@/api/axiosRequest";
+import HistoryList from "./HistoryList";
 import i18n from "@/i18n";
 
 interface HistoryProps {
@@ -14,13 +16,14 @@ interface HistoryProps {
   t?: TFunction;
 }
 
-export function History({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps) {
+function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps) {
   const { t: tOriginal } = useTranslation();
   const t = tProp || tOriginal;
   const chats = useChatStore((state) => state.chats);
   const setChats = useChatStore((state) => state.setChats);
   const active = useChatStore((state) => state.activeChat);
   const setActive = useChatStore((state) => state.setActiveChat);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const [keyword, setKeyword] = useState("");
 
@@ -55,12 +58,19 @@ export function History({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProp
       if (err) {
         return;
       }
-      const hits = (res?.data?.hits?.hits as Chat[] | undefined) || [];
+      const hits = (res?.hits?.hits as Chat[] | undefined) || [];
       setChats(hits);
+
+      if (hits.length > 0) {
+        const currentActive = useChatStore.getState().activeChat;
+        if (!currentActive) {
+          setActive(hits[0]);
+        }
+      }
     } catch (e) {
       console.error(e);
     }
-  }, [keyword, setChats]);
+  }, [keyword, setChats, setActive]);
 
   useEffect(() => {
     fetchChatHistory();
@@ -75,11 +85,27 @@ export function History({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProp
 
   const onRename = useCallback(
     async (chatId: string, title: string) => {
+      const key = "rename_message";
       try {
-        const [err] = await Post(`/chat/${chatId}/_update`, { title });
+        messageApi.open({
+          key,
+          type: "loading",
+          content: t("history_list.operate.renaming"),
+        });
+        const [err] = await Put(`/chat/${chatId}`, { title });
         if (err) {
+          messageApi.open({
+            key,
+            type: "error",
+            content: t("history_list.operate.rename_error"),
+          });
           return;
         }
+        messageApi.open({
+          key,
+          type: "success",
+          content: t("history_list.operate.rename_success"),
+        });
         setChats(
           chats.map((c) =>
             c._id === chatId
@@ -98,18 +124,39 @@ export function History({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProp
         }
       } catch (e) {
         console.error(e);
+        messageApi.open({
+          key,
+          type: "error",
+          content: t("history_list.operate.rename_error"),
+        });
       }
     },
-    [active, chats, setActive, setChats]
+    [active, chats, setActive, setChats, messageApi, t]
   );
 
   const onRemove = useCallback(
     async (chatId: string) => {
+      const key = "delete_message";
       try {
-        const [err] = await Post(`/chat/${chatId}/_delete`, {});
+        messageApi.open({
+          key,
+          type: "loading",
+          content: t("history_list.operate.deleting"),
+        });
+        const [err] = await Delete(`/chat/${chatId}`);
         if (err) {
+          messageApi.open({
+            key,
+            type: "error",
+            content: t("history_list.operate.delete_error"),
+          });
           return;
         }
+        messageApi.open({
+          key,
+          type: "success",
+          content: t("history_list.operate.delete_success"),
+        });
         const next = chats.filter((c) => c._id !== chatId);
         setChats(next);
         if (active?._id === chatId) {
@@ -117,13 +164,19 @@ export function History({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProp
         }
       } catch (e) {
         console.error(e);
+        messageApi.open({
+          key,
+          type: "error",
+          content: t("history_list.operate.delete_error"),
+        });
       }
     },
-    [active, chats, setActive, setChats]
+    [active, chats, setActive, setChats, messageApi, t]
   );
 
   return (
-    <I18nextProvider i18n={i18n}>
+    <>
+      {contextHolder}
       <HistoryList
         historyPanelId="history-panel"
         chats={chats}
@@ -135,6 +188,14 @@ export function History({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProp
         onRemove={onRemove}
         t={t}
       />
+    </>
+  );
+}
+
+export function History(props: HistoryProps) {
+  return (
+    <I18nextProvider i18n={i18n}>
+      <InnerHistory {...props} />
     </I18nextProvider>
   );
 }

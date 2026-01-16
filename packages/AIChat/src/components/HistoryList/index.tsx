@@ -2,13 +2,11 @@ import { Input, type InputRef } from "@/components/ui/input";
 import { debounce } from "lodash-es";
 import { type FC, useMemo, useRef, useState, type ChangeEvent } from "react";
 import clsx from "clsx";
-import { PanelLeftClose, RefreshCcw, Search } from "lucide-react";
+import { RefreshCcw, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 
-import VisibleKey from "@/components/VisibleKey";
 import type { Chat } from "@/types/chat";
-import { closeHistoryPanel } from "@/utils";
 import HistoryListContent from "./HistoryListContent";
 import { Button } from "../ui/button";
 
@@ -40,9 +38,22 @@ const HistoryList: FC<HistoryListProps> = (props) => {
   const t = tProp || tOriginal;
   const searchInputRef = useRef<InputRef>(null);
   const [isRefresh, setIsRefresh] = useState(false);
+  const [keyword, setKeyword] = useState("");
+
+  const filteredChats = useMemo(() => {
+    if (!keyword) return chats;
+    
+    return chats.filter(chat => {
+      const title = (chat._source?.title || "") as string;
+      return title.toLowerCase().includes(keyword.toLowerCase());
+    });
+  }, [chats, keyword]);
 
   const debouncedSearch = useMemo(() => {
-    return debounce((value: string) => onSearch(value), 300);
+    return debounce((value: string) => {
+      setKeyword(value);
+      onSearch(value);
+    }, 300);
   }, [onSearch]);
 
   const handleRefresh = async () => {
@@ -58,24 +69,15 @@ const HistoryList: FC<HistoryListProps> = (props) => {
   return (
     <div
       id={historyPanelId}
-      className={clsx(
-        "flex flex-col h-screen text-sm bg-transparent"
-      )}
+      className={clsx("flex flex-col h-screen text-sm bg-transparent")}
     >
-      <div className="flex gap-1 p-2 border-b border-input">
+      <div className="flex gap-1 p-2">
         <div className="flex-1">
           <Input
             autoFocus
             ref={searchInputRef}
             prefix={
-              <VisibleKey
-                shortcut="F"
-                onKeyPress={() => {
-                  searchInputRef.current?.focus();
-                }}
-              >
-                <Search className="size-4 text-muted-foreground" />
-              </VisibleKey>
+             <Search className="size-4 text-muted-foreground" />
             }
             className="w-full"
             placeholder={t("history_list.search.placeholder")}
@@ -91,19 +93,17 @@ const HistoryList: FC<HistoryListProps> = (props) => {
           className="size-8"
           onClick={handleRefresh}
         >
-          <VisibleKey shortcut="R" onKeyPress={handleRefresh}>
-            <RefreshCcw
-              className={clsx("size-4 text-[#0287FF]", {
-                "animate-spin": isRefresh,
-              })}
-            />
-          </VisibleKey>
+          <RefreshCcw
+            className={clsx("size-4 text-[#0287FF]", {
+              "animate-spin": isRefresh,
+            })}
+          />
         </Button>
       </div>
 
       <div className="flex-1 px-2 overflow-auto custom-scrollbar">
         <HistoryListContent
-          chats={chats}
+          chats={filteredChats}
           active={active}
           onSelect={onSelect}
           onRename={onRename}
@@ -111,17 +111,6 @@ const HistoryList: FC<HistoryListProps> = (props) => {
           t={t}
         />
       </div>
-
-      {historyPanelId && (
-        <div className="flex justify-end p-2 border-t border-input">
-          <VisibleKey shortcut="Esc" shortcutClassName="w-7">
-            <PanelLeftClose
-              className="size-4 text-muted-foreground cursor-pointer"
-              onClick={closeHistoryPanel}
-            />
-          </VisibleKey>
-        </div>
-      )}
     </div>
   );
 };

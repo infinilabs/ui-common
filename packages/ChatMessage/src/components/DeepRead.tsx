@@ -2,8 +2,8 @@ import { ChevronDown, ChevronUp, Loader } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { IChunkData } from "@/types/chat";
-import ReadingIcon from "@/icons/Reading";
+import type { IChunkData } from "../types/chat";
+import ReadingIcon from "../icons/Reading";
 
 interface DeepReadeProps {
   Detail?: any;
@@ -84,7 +84,7 @@ export const DeepRead = ({
         )}
       </button>
       {isThinkingExpanded && (
-        <div className="pl-2 border-l-2 border-[#e5e5e5] dark:border-[#4e4e56]">
+        <div className="pl-2 pt-1 border-l-2 border-[#e5e5e5] dark:border-[#4e4e56]">
           <div className="text-[#8b8b8b] dark:text-[#a6a6a6] space-y-2">
             <div className="mb-4 space-y-3 text-xs">
               {data?.map((item) => (

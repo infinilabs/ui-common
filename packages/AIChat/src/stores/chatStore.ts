@@ -41,6 +41,8 @@ export type IChatStore = {
   setActiveChat: (chat?: Chat) => void;
   currentAssistant?: Assistant;
   setCurrentAssistant: (assistant?: Assistant) => void;
+  assistantList?: Assistant[];
+  setAssistantList: (assistantList: Assistant[]) => void;
 };
 
 export const useChatStore = create<IChatStore>()(
@@ -70,6 +72,9 @@ export const useChatStore = create<IChatStore>()(
       currentAssistant: undefined,
       setCurrentAssistant: (assistant?: Assistant) =>
         set(() => ({ currentAssistant: assistant })),
+      assistantList: [],
+      setAssistantList: (assistantList: Assistant[]) =>
+        set(() => ({ assistantList })),
     }),
     {
       name: "chat-state",

@@ -210,7 +210,7 @@ const HistoryListContent: FC<HistoryListContentProps> = ({
 
   if (chats.length === 0) {
     return (
-      <div className="flex items-center justify-center flex-1 pt-8">
+      <div className="flex items-center justify-center flex-1" style={{ paddingTop: "32px" }}>
         <NoDataImage />
       </div>
     );

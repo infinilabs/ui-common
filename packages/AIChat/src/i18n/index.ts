@@ -1,4 +1,4 @@
-import i18n from "i18next";
+import i18n, { type i18n as I18n } from "i18next";
 import { initReactI18next } from "react-i18next";
 
 const resources = {
@@ -25,6 +25,14 @@ const resources = {
             cancel: "Cancel",
             delete: "Delete",
           },
+        },
+        operate: {
+          rename_success: "Rename successful",
+          rename_error: "Rename failed",
+          renaming: "Renaming...",
+          delete_success: "Delete successful",
+          delete_error: "Delete failed",
+          deleting: "Deleting...",
         },
       },
       assistant_list: {
@@ -77,6 +85,14 @@ const resources = {
             delete: "删除",
           },
         },
+        operate: {
+          rename_success: "重命名成功",
+          rename_error: "重命名失败",
+          renaming: "正在重命名...",
+          delete_success: "删除成功",
+          delete_error: "删除失败",
+          deleting: "正在删除...",
+        },
       },
       assistant_list: {
         default_name: "助手",
@@ -106,7 +122,7 @@ const resources = {
   },
 };
 
-const i18nInstance = i18n.createInstance();
+const i18nInstance: I18n = i18n.createInstance();
 
 i18nInstance.use(initReactI18next).init({
   resources,
