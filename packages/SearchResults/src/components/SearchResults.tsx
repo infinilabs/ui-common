@@ -170,58 +170,58 @@ function resolveSection(
       : typeof (value as { type?: unknown }).type === "string"
         ? ((value as { type: string }).type.trim().toLowerCase() as string)
         : undefined;
-  if (recordType === "image" || recordType === "video") {
-    const recordId = typeof (value as { id?: unknown }).id === "string" ? (value as { id: string }).id : undefined;
-    const cover =
-      typeof (value as { thumbnail?: unknown }).thumbnail === "string"
-        ? (value as { thumbnail: string }).thumbnail
-        : typeof (value as { cover?: unknown }).cover === "string"
-          ? (value as { cover: string }).cover
-          : typeof (value as { metadata?: unknown }).metadata === "object" && (value as { metadata?: unknown }).metadata
-            ? typeof ((value as { metadata: { thumbnail_link?: unknown } }).metadata.thumbnail_link) === "string"
-              ? (value as { metadata: { thumbnail_link: string } }).metadata.thumbnail_link
-              : undefined
-            : undefined;
+  // if (recordType === "image" || recordType === "video") {
+  //   const recordId = typeof (value as { id?: unknown }).id === "string" ? (value as { id: string }).id : undefined;
+  //   const cover =
+  //     typeof (value as { thumbnail?: unknown }).thumbnail === "string"
+  //       ? (value as { thumbnail: string }).thumbnail
+  //       : typeof (value as { cover?: unknown }).cover === "string"
+  //         ? (value as { cover: string }).cover
+  //         : typeof (value as { metadata?: unknown }).metadata === "object" && (value as { metadata?: unknown }).metadata
+  //           ? typeof ((value as { metadata: { thumbnail_link?: unknown } }).metadata.thumbnail_link) === "string"
+  //             ? (value as { metadata: { thumbnail_link: string } }).metadata.thumbnail_link
+  //             : undefined
+  //           : undefined;
 
-    if (cover) {
-      const categoryLabel =
-        typeof (value as { category?: unknown }).category === "string"
-          ? (value as { category: string }).category
-          : Array.isArray((value as { categories?: unknown }).categories)
-            ? (value as { categories: unknown[] }).categories
-                .filter((v): v is string => typeof v === "string")
-                .join(" / ")
-            : undefined;
+  //   if (cover) {
+  //     const categoryLabel =
+  //       typeof (value as { category?: unknown }).category === "string"
+  //         ? (value as { category: string }).category
+  //         : Array.isArray((value as { categories?: unknown }).categories)
+  //           ? (value as { categories: unknown[] }).categories
+  //               .filter((v): v is string => typeof v === "string")
+  //               .join(" / ")
+  //           : undefined;
 
-      const title = typeof (value as { title?: unknown }).title === "string" ? (value as { title: string }).title : "Untitled";
-      const url = typeof (value as { url?: unknown }).url === "string" ? (value as { url: string }).url : undefined;
-      const sourceName =
-        typeof (value as { source?: unknown }).source === "object" && (value as { source?: unknown }).source
-          ? typeof ((value as { source: { name?: unknown } }).source.name) === "string"
-            ? (value as { source: { name: string } }).source.name
-            : undefined
-          : undefined;
+  //     const title = typeof (value as { title?: unknown }).title === "string" ? (value as { title: string }).title : "Untitled";
+  //     const url = typeof (value as { url?: unknown }).url === "string" ? (value as { url: string }).url : undefined;
+  //     const sourceName =
+  //       typeof (value as { source?: unknown }).source === "object" && (value as { source?: unknown }).source
+  //         ? typeof ((value as { source: { name?: unknown } }).source.name) === "string"
+  //           ? (value as { source: { name: string } }).source.name
+  //           : undefined
+  //         : undefined;
 
-      const mediaItem: SearchResultMediaItem = {
-        type: "media",
-        id: recordId ?? `${url ?? title}-0`,
-        mediaType: recordType === "video" ? "video" : "image",
-        title,
-        href: onRecordClick ? undefined : url,
-        cover,
-        sourceLabel: sourceName,
-        categoryLabel,
-        breadcrumbs: [sourceName, categoryLabel].filter(Boolean) as string[],
-        ...(onRecordClick ? { onClick: () => onRecordClick(input as SearchResultsRecord, 0) } : {})
-      };
+  //     const mediaItem: SearchResultMediaItem = {
+  //       type: "media",
+  //       id: recordId ?? `${url ?? title}-0`,
+  //       mediaType: recordType === "video" ? "video" : "image",
+  //       title,
+  //       href: onRecordClick ? undefined : url,
+  //       cover,
+  //       sourceLabel: sourceName,
+  //       categoryLabel,
+  //       breadcrumbs: [sourceName, categoryLabel].filter(Boolean) as string[],
+  //       ...(onRecordClick ? { onClick: () => onRecordClick(input as SearchResultsRecord, 0) } : {})
+  //     };
 
-      return {
-        type: "section",
-        layout: "mediaGrid",
-        items: [mediaItem]
-      };
-    }
-  }
+  //     return {
+  //       type: "section",
+  //       layout: "mediaGrid",
+  //       items: [mediaItem]
+  //     };
+  //   }
+  // }
 
   return {
     type: "section",

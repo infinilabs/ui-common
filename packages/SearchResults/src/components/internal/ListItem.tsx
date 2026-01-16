@@ -36,7 +36,7 @@ export function ListItem({
   const interactiveHref = item.onClick ? undefined : item.href;
 
   const content = (
-    <div className="w-full py-2">
+    <div className="w-full">
       <div className="flex min-w-0 items-center gap-2">
         <SectionHeader
           className="mb-0 w-full"
@@ -52,14 +52,14 @@ export function ListItem({
           <img
             src={item.cover}
             alt={item.thumbnailAlt ?? item.title}
-            className="h-[90px] w-[160px] flex-none rounded-lg object-cover ring-1 ring-slate-200 dark:ring-slate-700"
+            className="!h-[90px] !w-[160px] flex-none rounded-lg object-cover ring-1 ring-slate-200 dark:ring-slate-700"
             loading="lazy"
           />
         ) : null}
 
         <div className="min-w-0 flex-1 flex flex-col justify-between">
           {item.summary ? (
-            <div className="line-clamp-2 text-sm text-[#666]">
+            <div className="line-clamp-3 text-sm text-[#666]">
               {item.summary}
             </div>
           ) : null}
@@ -94,9 +94,10 @@ export function ListItem({
       rel={item.rel}
       onClick={handleClick}
       className={clsx(
-        "group block w-full rounded-xl border border-transparent px-6 py-3 text-left no-underline transition-colors",
+        "group block w-full rounded-xl border border-transparent !px-6 !py-4 text-left no-underline transition-colors",
         "hover:border-slate-200 hover:bg-slate-100/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300",
-        "dark:hover:border-slate-700 dark:hover:bg-slate-800/60 dark:focus-visible:ring-slate-600"
+        "dark:hover:border-slate-700 dark:hover:bg-slate-800/60 dark:focus-visible:ring-slate-600",
+        item.isActive ? "border-slate-200 bg-slate-100/70 dark:border-slate-700 dark:bg-slate-800/60" : ''
       )}
     >
       {content}
