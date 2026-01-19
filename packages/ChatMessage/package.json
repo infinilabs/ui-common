@@ -35,7 +35,11 @@
   "dependencies": {
     "@ant-design/x-markdown": "^2.1.3",
     "@infinilabs/attachments": "^0.0.1",
+<<<<<<< HEAD
     "@infinilabs/search-results": "^0.0.16",
+=======
+    "@infinilabs/search-results": "workspace:*",
+>>>>>>> main
     "@tailwindcss/vite": "^4.1.18",
     "ahooks": "^3.9.6",
     "antd": "^6.1.4",
