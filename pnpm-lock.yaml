@@ -383,8 +383,8 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.1.4(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@infinilabs/search-results':
-        specifier: workspace:*
-        version: link:../SearchResults
+        specifier: ^0.0.16
+        version: 0.0.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tailwindcss/vite':
         specifier: ^4.1.18
         version: 4.1.18(vite@7.1.9(@types/node@25.0.9)(jiti@2.6.1)(less@4.2.0)(lightningcss@1.30.2))
@@ -2017,6 +2017,12 @@ packages:
     resolution: {integrity: sha512-SZaGMwOJ7GCYYU/KCkwR2+ucmNjI2aWkcNpvU3n7tglAeIt42JjesyXczlLXmeCAvg/4oKUbqpxrMI8LT0vwdA==}
     peerDependencies:
       antd: '>=5'
+      react: '>=17'
+      react-dom: '>=17'
+
+  '@infinilabs/search-results@0.0.16':
+    resolution: {integrity: sha512-AuWsMeZEy5WzfSylT2L4enhxgaBH81m4UjLkruxMxe5ttRL9DC9NEw8KfkOZIJGoSBts5t4xG8N6qliAtznvpA==}
+    peerDependencies:
       react: '>=17'
       react-dom: '>=17'
 
@@ -8211,6 +8217,13 @@ snapshots:
   '@infinilabs/entity-ui@0.0.4(antd@5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       antd: 5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      lucide-react: 0.461.0(react@18.3.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
+  '@infinilabs/search-results@0.0.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      clsx: 2.1.1
       lucide-react: 0.461.0(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
