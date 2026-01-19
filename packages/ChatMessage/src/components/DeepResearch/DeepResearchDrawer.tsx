@@ -2,12 +2,12 @@ import { AnimatePresence, motion } from "motion/react";
 import { Button, Segmented } from "antd";
 import { Download, Share2, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { ResearchStepsContent } from "./ResearchStepsContent";
 import type { StepItem, StepStatus, StepSearchHit } from "./ResearchStepsContent";
 import {
   ResearchReportContent,
-  mockResearchReportContent,
   type ResearchReportData,
 } from "./ResearchReportContent";
 import { ResearchSearchResultsContent } from "./ResearchSearchResultsContent";
@@ -21,6 +21,7 @@ interface DeepResearchDrawerProps {
   executionStatus?: StepStatus;
   reportStatus?: StepStatus;
   reportData?: ResearchReportData;
+  reportContent?: string;
   searchHits?: StepSearchHit[];
 }
 
@@ -33,12 +34,14 @@ export const DeepResearchDrawer = ({
   executionStatus,
   reportStatus,
   reportData,
+  reportContent,
   searchHits,
 }: DeepResearchDrawerProps) => {
-  const [activeTab, setActiveTab] = useState(defaultActiveTab || "研究步骤");
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState(defaultActiveTab || t("deepResearch.tab.steps"));
 
   useEffect(() => {
-    setActiveTab(defaultActiveTab || "研究步骤");
+    if (defaultActiveTab) setActiveTab(defaultActiveTab);
   }, [defaultActiveTab]);
 
   return (
@@ -79,10 +82,14 @@ export const DeepResearchDrawer = ({
                 value={activeTab}
                 style={{ marginBottom: 8 }}
                 onChange={(val) => setActiveTab(val as string)}
-                options={["研究报告", "研究步骤", "搜索结果"]}
+                options={[
+                  t("deepResearch.tab.report"),
+                  t("deepResearch.tab.steps"),
+                  t("deepResearch.tab.searchResults"),
+                ]}
               />
               <div className="flex items-center gap-2">
-                {activeTab === "研究报告" && (
+                {activeTab === t("deepResearch.tab.report") && (
                   <>
                     <button
                       type="button"
@@ -90,14 +97,14 @@ export const DeepResearchDrawer = ({
                       onClick={() => reportData?.url && window.open(reportData.url, '_blank')}
                     >
                       <Download className="w-4 h-4" />
-                      <span>下载</span>
+                      <span>{t("deepResearch.button.download")}</span>
                     </button>
                     <button
                       type="button"
                       className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#E9F0FE] text-sm text-[#1784FC] hover:bg-[#E0E9FD] border-none outline-none cursor-pointer"
                     >
                       <Share2 className="w-4 h-4" />
-                      <span>分享</span>
+                      <span>{t("deepResearch.button.share")}</span>
                     </button>
                   </>
                 )}
@@ -112,13 +119,13 @@ export const DeepResearchDrawer = ({
             </div>
 
             <div className="pt-6 flex-1 overflow-y-auto bg-white dark:bg-black">
-              {activeTab === "研究报告" && (
+              {activeTab === t("deepResearch.tab.report") && (
                 <ResearchReportContent
-                  content={mockResearchReportContent}
+                  content={reportContent}
                   data={reportData}
                 />
               )}
-              {activeTab === "研究步骤" && (
+              {activeTab === t("deepResearch.tab.steps") && (
                 <ResearchStepsContent
                   steps={steps}
                   plannerStatus={plannerStatus}
@@ -126,7 +133,7 @@ export const DeepResearchDrawer = ({
                   reportStatus={reportStatus}
                 />
               )}
-              {activeTab === "搜索结果" && (
+              {activeTab === t("deepResearch.tab.searchResults") && (
                 <ResearchSearchResultsContent hits={searchHits} />
               )}
             </div>

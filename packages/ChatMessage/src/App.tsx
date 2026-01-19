@@ -6,7 +6,7 @@ import { demoData } from "./demo";
 import "./App.css";
 import { Send, Square } from "lucide-react";
 import SessionFiles from "./components/SessionFiles";
-import { deepResearchMockChunks } from "./components/data";
+import { deepResearchMockChunks, mockResearchReportContent } from "./mocks";
 
 const INITIAL_MESSAGES: IChatMessage[] = [
   ...(demoData?.hits?.hits ?? []).map((hit: any) => ({
@@ -383,6 +383,7 @@ function App() {
               locale={locale}
               theme={theme}
               isTyping={shouldAttachRef} // Pass isTyping only to the active message
+              report_content={mockResearchReportContent}
             />
           );
         })}

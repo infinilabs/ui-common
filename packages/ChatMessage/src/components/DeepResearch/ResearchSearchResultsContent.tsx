@@ -59,6 +59,7 @@ export const ResearchSearchResultsContent = ({
       <SearchResults
         section={records}
         theme="light"
+        hideHeader
         onRecordClick={(record) => {
           if (typeof record.url === "string") window.open(record.url);
         }}

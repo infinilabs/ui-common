@@ -23,13 +23,14 @@ export function SearchResults({
   theme,
   footerAction,
   onRecordClick,
-  onItemClick
+  onItemClick,
+  hideHeader
 }: SearchResultsProps) {
   const resolvedSection = applyFooterAction(resolveSection(section, onRecordClick), footerAction);
   const resolvedTheme = resolveTheme(theme);
   return (
     <div className={clsx(resolvedTheme === "dark" && "dark", className)}>
-      {renderSection(resolvedSection, onItemClick)}
+      {renderSection(resolvedSection, onItemClick, hideHeader)}
     </div>
   );
 }

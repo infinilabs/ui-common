@@ -185,6 +185,7 @@ export type SearchResultsProps = {
   footerAction?: SearchResultsAction;
   onRecordClick?: (record: SearchResultsRecord, index: number) => void;
   onItemClick?: (item: SearchResultsItem) => void;
+  hideHeader?: boolean;
 };
 
 export type SearchResultsImageGroupProps = Omit<SearchResultsProps, "section"> & {
