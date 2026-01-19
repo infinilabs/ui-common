@@ -17,21 +17,21 @@ function b({
   target: t,
   rel: l,
   onClick: r,
-  className: s,
-  children: a
+  className: i,
+  children: s
 }) {
-  const i = s ? `${s} cursor-pointer` : "cursor-pointer";
+  const a = i ? `${i} cursor-pointer` : "cursor-pointer";
   return e ? /* @__PURE__ */ n(
     "a",
     {
       href: e,
       target: t,
       rel: C(l, t),
-      className: i,
+      className: a,
       onClick: () => r?.(),
-      children: a
+      children: s
     }
-  ) : /* @__PURE__ */ n("button", { type: "button", className: i, onClick: r, children: a });
+  ) : /* @__PURE__ */ n("button", { type: "button", className: a, onClick: r, children: s });
 }
 function U({
   item: e,
@@ -91,11 +91,11 @@ function y({
   titleIcon: t,
   titleIconBgColor: l,
   source: r,
-  className: s,
-  titleClassName: a,
-  titleAction: i
+  className: i,
+  titleClassName: s,
+  titleAction: a
 }) {
-  return !e && !t && !r ? null : /* @__PURE__ */ o("div", { className: c("mb-2 flex min-w-0 items-center gap-2", s), children: [
+  return !e && !t && !r ? null : /* @__PURE__ */ o("div", { className: c("mb-2 flex min-w-0 items-center gap-2", i), children: [
     t ? /* @__PURE__ */ n(
       "span",
       {
@@ -107,17 +107,17 @@ function y({
         children: t
       }
     ) : null,
-    e ? i?.href ? /* @__PURE__ */ n(
+    e ? a?.href ? /* @__PURE__ */ n(
       "a",
       {
         className: c(
           "min-w-0 cursor-pointer text-xl hover:underline hover:underline-offset-2 group-hover:underline group-hover:underline-offset-2",
-          a
+          s
         ),
-        href: i.href,
-        target: i.target,
-        rel: i.rel,
-        onClick: () => i.onClick?.(),
+        href: a.href,
+        target: a.target,
+        rel: a.rel,
+        onClick: () => a.onClick?.(),
         children: e
       }
     ) : /* @__PURE__ */ n(
@@ -126,15 +126,15 @@ function y({
         type: "button",
         className: c(
           "min-w-0 cursor-pointer bg-transparent p-0 text-left text-xl hover:underline hover:underline-offset-2 group-hover:underline group-hover:underline-offset-2",
-          a
+          s
         ),
-        onClick: i?.onClick,
+        onClick: a?.onClick,
         children: e
       }
     ) : null
   ] });
 }
-function H(e) {
+function D(e) {
   switch (e) {
     case "doc":
     case "word":
@@ -145,7 +145,7 @@ function H(e) {
       return "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200";
   }
 }
-function D(e) {
+function V(e) {
   switch (e) {
     case "xls":
       return /* @__PURE__ */ n(L, { className: "h-5 w-5" });
@@ -169,20 +169,20 @@ function w({
     {
       className: c(
         "inline-flex h-6 w-6 items-center justify-center rounded-md",
-        H(e)
+        D(e)
       ),
-      children: D(e)
+      children: V(e)
     }
   ) : null;
 }
-const V = _;
+const H = _;
 function P({
   item: e,
   onItemClick: t
 }) {
   const l = e.typeIcon ? /* @__PURE__ */ n(w, { typeIcon: e.typeIcon }) : e.fileType ? /* @__PURE__ */ n(w, { fileType: e.fileType }) : null, r = e.onClick || t ? () => {
     e.onClick?.(), t?.(e);
-  } : void 0, s = e.onClick ? void 0 : e.href, a = /* @__PURE__ */ o("div", { className: "w-full", children: [
+  } : void 0, i = e.onClick ? void 0 : e.href, s = /* @__PURE__ */ o("div", { className: "w-full", children: [
     /* @__PURE__ */ n("div", { className: "flex min-w-0 items-center gap-2", children: /* @__PURE__ */ n(
       y,
       {
@@ -210,16 +210,16 @@ function P({
           /* @__PURE__ */ n("span", { className: "h-3 w-px flex-none bg-[#666]", "aria-hidden": "true" }),
           /* @__PURE__ */ o("div", { className: "flex flex-none items-center gap-2", children: [
             /* @__PURE__ */ n(z, { author: e.author, date: e.date }),
-            e.href ? /* @__PURE__ */ n("span", { className: "flex-none text-[#007EFF]", children: /* @__PURE__ */ n(V, { className: "h-3 w-3" }) }) : null
+            e.href ? /* @__PURE__ */ n("span", { className: "flex-none text-[#007EFF]", children: /* @__PURE__ */ n(H, { className: "h-3 w-3" }) }) : null
           ] })
         ] }) : /* @__PURE__ */ n(M, { meta: e.meta })
       ] })
     ] })
   ] });
-  return !s && !r ? a : /* @__PURE__ */ n(
+  return !i && !r ? s : /* @__PURE__ */ n(
     b,
     {
-      href: s,
+      href: i,
       target: e.target,
       rel: e.rel,
       onClick: r,
@@ -229,7 +229,7 @@ function P({
         "dark:hover:border-slate-700 dark:hover:bg-slate-800/60 dark:focus-visible:ring-slate-600",
         e.isActive ? "border-slate-200 bg-slate-100/70 dark:border-slate-700 dark:bg-slate-800/60" : ""
       ),
-      children: a
+      children: s
     }
   );
 }
@@ -312,10 +312,10 @@ function h({ action: e }) {
     /* @__PURE__ */ n("span", { className: "h-px flex-1 bg-[#e8e8e8] dark:bg-slate-700", "aria-hidden": "true" })
   ] }) : null;
 }
-function J(e, t) {
+function J(e, t, l) {
   if (e.layout === "list")
     return /* @__PURE__ */ o("div", { className: c("space-y-6", e.className), children: [
-      /* @__PURE__ */ n(
+      !l && /* @__PURE__ */ n(
         y,
         {
           title: e.title,
@@ -330,7 +330,7 @@ function J(e, t) {
   if (e.layout === "mediaGrid") {
     const s = e.columns ?? 3, a = s === 2 ? "grid-cols-2" : s === 4 ? "grid-cols-4" : "grid-cols-3";
     return /* @__PURE__ */ o("div", { className: c("px-6 py-3", e.className), children: [
-      /* @__PURE__ */ n(
+      !l && /* @__PURE__ */ n(
         y,
         {
           title: e.title,
@@ -340,13 +340,13 @@ function J(e, t) {
           titleAction: e.footerAction
         }
       ),
-      /* @__PURE__ */ n("div", { className: c("grid gap-3", a), children: e.items.map((i) => /* @__PURE__ */ n(O, { item: i, onItemClick: t }, i.id)) }),
+      /* @__PURE__ */ n("div", { className: c("grid gap-3", a), children: e.items.map((u) => /* @__PURE__ */ n(O, { item: u, onItemClick: t }, u.id)) }),
       /* @__PURE__ */ n(h, { action: e.footerAction })
     ] });
   }
-  const l = e.columns ?? 3, r = l === 2 ? "grid-cols-2" : l === 4 ? "grid-cols-4" : "grid-cols-3";
+  const r = e.columns ?? 3, i = r === 2 ? "grid-cols-2" : r === 4 ? "grid-cols-4" : "grid-cols-3";
   return /* @__PURE__ */ o("div", { className: c("px-6 py-3", e.className), children: [
-    /* @__PURE__ */ n(
+    !l && /* @__PURE__ */ n(
       y,
       {
         title: e.title,
@@ -356,7 +356,7 @@ function J(e, t) {
         titleAction: e.footerAction
       }
     ),
-    /* @__PURE__ */ n("div", { className: c("grid gap-3", r), children: e.items.map((s) => /* @__PURE__ */ n(U, { item: s, onItemClick: t }, s.id)) }),
+    /* @__PURE__ */ n("div", { className: c("grid gap-3", i), children: e.items.map((s) => /* @__PURE__ */ n(U, { item: s, onItemClick: t }, s.id)) }),
     /* @__PURE__ */ n(h, { action: e.footerAction })
   ] });
 }
@@ -371,15 +371,15 @@ function Q(e) {
     return t === "pdf" ? "pdf" : t === "doc" || t === "docx" || t === "word" ? "doc" : t === "ppt" || t === "pptx" ? "ppt" : t === "xls" || t === "xlsx" || t === "excel" ? "xls" : t === "link" || t === "url" || t === "html" ? "link" : t === "txt" || t === "text" ? "text" : "unknown";
 }
 function x(e, t, l) {
-  const r = e.thumbnail ?? e.cover ?? e.metadata?.thumbnail_link, s = e.summary ?? e.content, a = Q(e.metadata?.file_extension ?? e.type), i = e.source?.name, u = e.category ?? e.categories?.join(" / ") ?? "Categories", d = [i, u].filter(Boolean), m = e.last_updated_by?.user?.username ?? e.owner?.username, p = K(e.last_updated_by?.timestamp ?? e.metadata?.last_reviewed), f = e.metadata?.icon_link ?? e.icon, g = f ? /* @__PURE__ */ n("img", { src: f, alt: "", className: "h-5 w-5 rounded-sm object-contain" }) : void 0;
+  const r = e.thumbnail ?? e.cover ?? e.metadata?.thumbnail_link, i = e.summary ?? e.content, s = Q(e.metadata?.file_extension ?? e.type), a = e.source?.name, u = e.category ?? e.categories?.join(" / ") ?? "Categories", d = [a, u].filter(Boolean), m = e.last_updated_by?.user?.username ?? e.owner?.username, p = K(e.last_updated_by?.timestamp ?? e.metadata?.last_reviewed), f = e.metadata?.icon_link ?? e.icon, g = f ? /* @__PURE__ */ n("img", { src: f, alt: "", className: "h-5 w-5 rounded-sm object-contain" }) : void 0;
   return {
     type: "result",
     id: `${e.source?.id ?? e.url ?? e.title}-${t}`,
     title: e.title,
     href: e.url,
-    summary: s,
+    summary: i,
     cover: r,
-    fileType: a,
+    fileType: s,
     typeIcon: g,
     breadcrumbs: d.length ? d : void 0,
     author: m,
@@ -393,11 +393,12 @@ function I({
   className: t,
   theme: l,
   footerAction: r,
-  onRecordClick: s,
-  onItemClick: a
+  onRecordClick: i,
+  onItemClick: s,
+  hideHeader: a
 }) {
-  const i = W(B(e, s), r), u = R(l);
-  return /* @__PURE__ */ n("div", { className: c(u === "dark" && "dark", t), children: J(i, a) });
+  const u = W(B(e, i), r), d = R(l);
+  return /* @__PURE__ */ n("div", { className: c(d === "dark" && "dark", t), children: J(u, s, a) });
 }
 function R(e) {
   if (e)
@@ -423,7 +424,7 @@ function B(e, t) {
       title: r.title,
       layout: "mediaGrid",
       items: r.items.filter(
-        (a) => typeof a == "object" && !!a && a.type === "media"
+        (s) => typeof s == "object" && !!s && s.type === "media"
       ),
       columns: r.columns,
       footerAction: r.footerAction,
@@ -433,7 +434,7 @@ function B(e, t) {
       title: r.title,
       layout: "imageGrid",
       items: r.items.filter(
-        (a) => typeof a == "object" && !!a && a.type === "image"
+        (s) => typeof s == "object" && !!s && s.type === "image"
       ),
       columns: r.columns,
       footerAction: r.footerAction,
@@ -480,26 +481,26 @@ function X(e, t) {
   if (!e.length)
     return { type: "section", layout: "list", items: [] };
   if (e.every(F)) {
-    if (e.every((a) => a.type === "result"))
+    if (e.every((s) => s.type === "result"))
       return { type: "section", layout: "list", items: e };
-    if (e.every((a) => a.type === "media"))
+    if (e.every((s) => s.type === "media"))
       return { type: "section", layout: "mediaGrid", items: e };
-    if (e.every((a) => a.type === "image" && "imageUrl" in a))
+    if (e.every((s) => s.type === "image" && "imageUrl" in s))
       return { type: "section", layout: "imageGrid", items: e };
     if (e.length === 1) return B(e[0], t);
   }
   const l = [], r = [];
-  for (const [a, i] of e.entries()) {
-    const u = Y(i, a, t);
+  for (const [s, a] of e.entries()) {
+    const u = Y(a, s, t);
     u ? l.push(u) : r.push(
       x(
-        i,
         a,
-        t ? () => t(i, a) : void 0
+        s,
+        t ? () => t(a, s) : void 0
       )
     );
   }
-  return l.length && !r.length ? { type: "section", title: A(e, (i) => i.category ?? i.source?.name), layout: "mediaGrid", items: l } : { type: "section", title: A(e, (a) => a.category ?? a.source?.name), layout: "list", items: r };
+  return l.length && !r.length ? { type: "section", title: A(e, (a) => a.category ?? a.source?.name), layout: "mediaGrid", items: l } : { type: "section", title: A(e, (s) => s.category ?? s.source?.name), layout: "list", items: r };
 }
 function F(e) {
   if (!e || typeof e != "object") return !1;
@@ -507,15 +508,15 @@ function F(e) {
   return t.type === "result" || t.type === "media" || t.type === "imageGroup" || t.type === "videoGroup" || t.type === "image" && typeof e.imageUrl == "string";
 }
 function Y(e, t, l) {
-  const r = e, s = r.metadata, a = typeof s == "object" && s ? s.content_type : void 0, i = typeof a == "string" ? a.trim().toLowerCase() : typeof r.type == "string" ? r.type.trim().toLowerCase() : void 0;
-  if (i !== "image" && i !== "video") return;
+  const r = e, i = r.metadata, s = typeof i == "object" && i ? i.content_type : void 0, a = typeof s == "string" ? s.trim().toLowerCase() : typeof r.type == "string" ? r.type.trim().toLowerCase() : void 0;
+  if (a !== "image" && a !== "video") return;
   const u = typeof r.id == "string" ? r.id : void 0, d = typeof r.thumbnail == "string" ? r.thumbnail : typeof r.cover == "string" ? r.cover : typeof r.metadata == "object" && r.metadata && typeof r.metadata.thumbnail_link == "string" ? r.metadata.thumbnail_link : void 0;
   if (!d) return;
   const m = typeof r.category == "string" ? r.category : Array.isArray(r.categories) ? r.categories.filter((j) => typeof j == "string").join(" / ") : void 0, p = typeof r.title == "string" ? r.title : "Untitled", f = typeof r.url == "string" ? r.url : void 0, g = typeof r.source == "object" && r.source && typeof r.source.name == "string" ? r.source.name : void 0, N = !!l && !F(e);
   return {
     type: "media",
     id: u ?? `${f ?? p}-0`,
-    mediaType: i === "video" ? "video" : "image",
+    mediaType: a === "video" ? "video" : "image",
     title: p,
     href: N ? void 0 : f,
     cover: d,
@@ -528,8 +529,8 @@ function Y(e, t, l) {
 function A(e, t) {
   const l = e[0], r = t(l);
   if (r) {
-    for (const s of e)
-      if (t(s) !== r) return;
+    for (const i of e)
+      if (t(i) !== r) return;
     return r;
   }
 }
@@ -538,10 +539,10 @@ function Z(e) {
   const t = e;
   return t.type === "section" && (t.layout === "list" || t.layout === "imageGrid" || t.layout === "mediaGrid") && Array.isArray(t.items);
 }
-function ae(e, t) {
+function se(e, t) {
   const l = [];
   for (const r of e) {
-    const s = l.length ? l[l.length - 1] : void 0;
+    const i = l.length ? l[l.length - 1] : void 0;
     if (r.type === "imageGroup") {
       r.items[0]?.type === "media" ? l.push({
         type: "section",
@@ -550,7 +551,7 @@ function ae(e, t) {
         titleIconBgColor: "#FFAF36",
         titleClassName: "text-[#1A0CAB] dark:text-[#8AB4F8]",
         layout: "mediaGrid",
-        items: r.items.filter((i) => i.type === "media"),
+        items: r.items.filter((a) => a.type === "media"),
         columns: r.columns ?? t,
         footerAction: r.footerAction,
         className: r.className
@@ -561,7 +562,7 @@ function ae(e, t) {
         titleIconBgColor: "#FFAF36",
         titleClassName: "text-[#1A0CAB] dark:text-[#8AB4F8]",
         layout: "imageGrid",
-        items: r.items.filter((i) => i.type === "image"),
+        items: r.items.filter((a) => a.type === "image"),
         columns: r.columns ?? t,
         footerAction: r.footerAction,
         className: r.className
@@ -584,8 +585,8 @@ function ae(e, t) {
       continue;
     }
     if (r.type === "result") {
-      if (s?.layout === "list") {
-        s.items.push(r);
+      if (i?.layout === "list") {
+        i.items.push(r);
         continue;
       }
       l.push({
@@ -596,8 +597,8 @@ function ae(e, t) {
       continue;
     }
     if (r.type === "media") {
-      if (s?.layout === "mediaGrid") {
-        s.items.push(r);
+      if (i?.layout === "mediaGrid") {
+        i.items.push(r);
         continue;
       }
       l.push({
@@ -608,8 +609,8 @@ function ae(e, t) {
       });
       continue;
     }
-    if (s?.layout === "imageGrid") {
-      s.items.push(r);
+    if (i?.layout === "imageGrid") {
+      i.items.push(r);
       continue;
     }
     l.push({
@@ -621,13 +622,13 @@ function ae(e, t) {
   }
   return l;
 }
-function se(e) {
+function ae(e) {
   return e.map((t, l) => x(t, l));
 }
 export {
   ne as SearchResultsImageGroup,
   le as SearchResultsVideoGroup,
   I as default,
-  ae as itemsToSections,
-  se as recordsToItems
+  se as itemsToSections,
+  ae as recordsToItems
 };

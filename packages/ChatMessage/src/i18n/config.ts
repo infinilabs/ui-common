@@ -28,6 +28,43 @@ const resources = {
           },
         },
       },
+      deepResearch: {
+        status: {
+          completedWithCount:
+            "Deep research completed · Found {{count}} related results",
+          completed: "Deep research completed",
+          running: "Deep research in progress",
+          preparing: "Preparing deep research",
+        },
+        button: {
+          view: "View",
+          download: "Download",
+          share: "Share",
+        },
+        tab: {
+          report: "Research Report",
+          steps: "Research Steps",
+          searchResults: "Search Results",
+        },
+        report: {
+          generatingTitle: "Generating research report",
+          generatingDescription:
+            "Running a complete research workflow based on your question and compiling a structured report. It will appear here once ready.",
+          defaultTitle: "Research Report",
+        },
+        steps: {
+          intro:
+            "I will collect and analyze information related to this topic, including its definition, use cases, market landscape and common questions. If it refers to a specific domain, I will further study its concrete applications and impact in that domain, and then report the results to you.",
+          planTitle: "Plan research steps",
+          planDescription: "I am planning a research workflow around this topic.",
+          generatedPlans: "Generated plans",
+          executeTitle: "Execute research plans",
+          searching: "Searching",
+          searchTitle: "Search sources",
+          optimizePlan: "Optimize research plan",
+          reportTitle: "Write research report",
+        },
+      },
       sessionFiles: {
         labels: {
           all: "All",
@@ -64,6 +101,42 @@ const resources = {
             suggestion: "建议",
             informationSeeking: "信息查询",
           },
+        },
+      },
+      deepResearch: {
+        status: {
+          completedWithCount: "深度研究完成 · 找到 {{count}} 条相关结果",
+          completed: "深度研究完成",
+          running: "正在执行深度研究",
+          preparing: "正在准备深度研究",
+        },
+        button: {
+          view: "查看",
+          download: "下载",
+          share: "分享",
+        },
+        tab: {
+          report: "研究报告",
+          steps: "研究步骤",
+          searchResults: "搜索结果",
+        },
+        report: {
+          generatingTitle: "研究报告生成中",
+          generatingDescription:
+            "我正在根据你的问题执行完整的研究流程，整理结构化的研究报告。研究完成后，报告会自动展示在这里。",
+          defaultTitle: "研究报告",
+        },
+        steps: {
+          intro:
+            "将为你整理与该主题相关的信息，包括其定义、用途、市场情况以及常见问题。如果是指特定领域的主题，我还会进一步深入研究其在该领域的具体应用和影响。完成后我会向你汇报结果。",
+          planTitle: "规划研究计划",
+          planDescription: "我正在针对该主题，进行规划研究计划",
+          generatedPlans: "生成的计划",
+          executeTitle: "执行研究计划",
+          searching: "正在搜索",
+          searchTitle: "搜索资料",
+          optimizePlan: "优化研究计划",
+          reportTitle: "编写研究报告",
         },
       },
       sessionFiles: {

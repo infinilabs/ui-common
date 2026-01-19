@@ -64,7 +64,7 @@ export declare type SearchResultMediaItem = SearchResultCommon & {
     onClick?: () => void;
 };
 
-declare function SearchResults({ section, className, theme, footerAction, onRecordClick, onItemClick }: SearchResultsProps): JSX_2.Element;
+declare function SearchResults({ section, className, theme, footerAction, onRecordClick, onItemClick, hideHeader }: SearchResultsProps): JSX_2.Element;
 export default SearchResults;
 
 export declare type SearchResultsAction = {
@@ -90,6 +90,7 @@ export declare type SearchResultsProps = {
     footerAction?: SearchResultsAction;
     onRecordClick?: (record: SearchResultsRecord, index: number) => void;
     onItemClick?: (item: SearchResultsItem) => void;
+    hideHeader?: boolean;
 };
 
 export declare type SearchResultsRecord = {

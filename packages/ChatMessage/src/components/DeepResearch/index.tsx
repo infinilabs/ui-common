@@ -1,7 +1,12 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Loader, Hourglass, CirclePause, Check } from "lucide-react";
 import { DeepResearchDrawer } from "./DeepResearchDrawer";
-import type { StepItem, StepStatus, StepSearchHit } from "./ResearchStepsContent";
+import type {
+  StepItem,
+  StepStatus,
+  StepSearchHit,
+} from "./ResearchStepsContent";
 import type { ResearchReportData } from "./ResearchReportContent";
 
 interface DeepResearchProps {
@@ -11,12 +16,13 @@ interface DeepResearchProps {
   statusText?: string;
   resultCount?: number;
   progress?: number;
-   steps?: StepItem[];
-   plannerStatus?: StepStatus;
-   executionStatus?: StepStatus;
-   reportStatus?: StepStatus;
-   reportData?: ResearchReportData;
-   searchHits?: StepSearchHit[];
+  steps?: StepItem[];
+  plannerStatus?: StepStatus;
+  executionStatus?: StepStatus;
+  reportStatus?: StepStatus;
+  reportData?: ResearchReportData;
+  reportContent?: string;
+  searchHits?: StepSearchHit[];
 }
 
 export const DeepResearch = ({
@@ -31,10 +37,12 @@ export const DeepResearch = ({
   executionStatus,
   reportStatus,
   reportData,
+  reportContent,
   searchHits,
 }: DeepResearchProps) => {
+  const { t } = useTranslation();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [drawerDefaultTab, setDrawerDefaultTab] = useState("研究步骤");
+  const [drawerDefaultTab, setDrawerDefaultTab] = useState(t("deepResearch.tab.steps"));
 
   const normalizedProgress = useMemo(() => {
     if (typeof progress !== "number" || Number.isNaN(progress)) return 0;
@@ -47,22 +55,22 @@ export const DeepResearch = ({
     if (statusText) return statusText;
     if (normalizedProgress >= 1) {
       if (typeof resultCount === "number") {
-        return `深度研究完成 · 找到 ${resultCount} 条相关结果`;
+        return t("deepResearch.status.completedWithCount", { count: resultCount });
       }
-      return "深度研究完成";
+      return t("deepResearch.status.completed");
     }
     if (normalizedProgress > 0) {
-      return "正在执行深度研究";
+      return t("deepResearch.status.running");
     }
-    return "正在准备深度研究";
-  }, [statusText, normalizedProgress, resultCount]);
+    return t("deepResearch.status.preparing");
+  }, [statusText, normalizedProgress, resultCount, t]);
 
   return (
     <>
       <div
         className="w-full my-3 cursor-pointer"
         onClick={() => {
-          setDrawerDefaultTab("研究步骤");
+          setDrawerDefaultTab(t("deepResearch.tab.steps"));
           setIsDrawerOpen(true);
         }}
       >
@@ -106,11 +114,11 @@ export const DeepResearch = ({
                   className="px-3 py-1 text-xs font-medium rounded-full bg-[#E9F0FE] text-[#1784FC] hover:bg-[#E0E9FD] cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setDrawerDefaultTab("研究报告");
+                    setDrawerDefaultTab(t("deepResearch.tab.report"));
                     setIsDrawerOpen(true);
                   }}
                 >
-                  查看
+                  {t("deepResearch.button.view")}
                 </button>
               )}
             </div>
@@ -125,9 +133,7 @@ export const DeepResearch = ({
                 style={{ width: `${normalizedProgress * 100}%` }}
               />
             </div>
-            <div 
-              className="flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
-            >
+            <div className="flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity">
               {normalizedProgress >= 1 ? (
                 <Check className="h-4 w-4 text-[#22C55E]" />
               ) : (
@@ -146,6 +152,7 @@ export const DeepResearch = ({
         executionStatus={executionStatus}
         reportStatus={reportStatus}
         reportData={reportData}
+        reportContent={reportContent}
         searchHits={searchHits}
       />
     </>

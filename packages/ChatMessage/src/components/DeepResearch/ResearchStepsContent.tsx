@@ -9,8 +9,8 @@ import {
   List,
   ChevronUp,
 } from "lucide-react";
-import { deepResearchMockChunks } from "../data";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export type StepStatus = "done" | "in_progress" | "pending";
 
@@ -42,112 +42,6 @@ export interface StepItem {
   showOptimizePlan?: boolean;
 }
 
-const mockSteps: StepItem[] = (() => {
-  const plannerChunk = deepResearchMockChunks.find(
-    (chunk) => chunk.chunk_type === "research_planner_end"
-  );
-
-  let plans: string[] = [];
-
-  if (plannerChunk && typeof plannerChunk.message_chunk === "string") {
-    try {
-      const payload = JSON.parse(plannerChunk.message_chunk);
-      if (Array.isArray(payload)) {
-        plans = payload.map((item) => String(item));
-      }
-    } catch (error) {
-      console.error(error);
-      plans = [];
-    }
-  }
-
-  const searchMap = new Map<
-    string,
-    {
-      query?: string;
-      resultCount?: number;
-      hits?: StepSearchHit[];
-    }
-  >();
-
-  for (const chunk of deepResearchMockChunks) {
-    if (
-      chunk.chunk_type === "research_researcher_step_start" &&
-      typeof chunk.message_chunk === "string" &&
-      chunk.message_chunk
-    ) {
-      try {
-        const payload = JSON.parse(chunk.message_chunk);
-        const plan =
-          typeof payload?.plan === "string" ? payload.plan : "";
-        const query =
-          typeof payload?.step?.payload?.query === "string"
-            ? payload.step.payload.query
-            : undefined;
-        if (plan) {
-          const existing = searchMap.get(plan) ?? {};
-          if (query) {
-            existing.query = query;
-          }
-          searchMap.set(plan, existing);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    } else if (
-      chunk.chunk_type === "research_researcher_step_end" &&
-      typeof chunk.message_chunk === "string" &&
-      chunk.message_chunk
-    ) {
-      try {
-        const payload = JSON.parse(chunk.message_chunk);
-        const plan =
-          typeof payload?.plan === "string" ? payload.plan : "";
-        const hits = Array.isArray(payload?.step?.payload?.hits)
-          ? payload.step.payload.hits
-          : undefined;
-        if (plan) {
-          const existing = searchMap.get(plan) ?? {};
-          if (hits) {
-            existing.resultCount = hits.length;
-            existing.hits = hits;
-          }
-          searchMap.set(plan, existing);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
-
-  if (!plans.length) {
-    return [];
-  }
-
-  return plans.map((plan, index) => {
-    const searchInfo = searchMap.get(plan);
-    const searches = searchInfo?.query
-      ? [
-          {
-            id: `step-${index + 1}-search-1`,
-            query: searchInfo.query,
-            resultCount: searchInfo.resultCount,
-            status: "done" as StepSearchStatus,
-            hits: searchInfo.hits,
-          },
-        ]
-      : undefined;
-
-    return {
-      id: `step-${index + 1}`,
-      title: plan,
-      status: "done" as StepStatus,
-      searches,
-      showOptimizePlan: index === 0,
-    };
-  });
-})();
-
 interface ResearchStepsContentProps {
   steps?: StepItem[];
   plannerStatus?: StepStatus;
@@ -161,8 +55,10 @@ export const ResearchStepsContent = ({
   executionStatus,
   reportStatus,
 }: ResearchStepsContentProps) => {
-  const data = steps && steps.length ? steps : mockSteps;
+  const { t } = useTranslation();
+  const data = steps ?? [];
   const [expandedSearches, setExpandedSearches] = useState<Set<string>>(new Set());
+  const [plansExpanded, setPlansExpanded] = useState(false);
 
   const toggleSearch = (searchId: string) => {
     setExpandedSearches((prev) => {
@@ -201,9 +97,7 @@ export const ResearchStepsContent = ({
   return (
     <div className="space-y-6 pr-6">
       <div className="text-sm text-[#333] dark:text-[#E5E7EB]">
-        将为你整理关于“Coco
-        AI”的相关信息，包括其定义、用途、市场情况以及与之相关的常见问题。如果是指特定领域的“Coco
-        AI”，我还会进一步深入研究其在该领域的具体应用和影响。完成后我会向你汇报结果。
+        {t("deepResearch.steps.intro")}
       </div>
 
       <div className="space-y-4">
@@ -213,19 +107,37 @@ export const ResearchStepsContent = ({
           }`}
         >
           <PencilLine className="w-4 h-4 text-[#1784FC]" />
-          规划研究计划
+          {t("deepResearch.steps.planTitle")}
         </div>
         <div className=" text-[#999] dark:text-[#A6A6A6] text-sm mb-2">
-          我正在针对 Coco AI，进行规划研究计划
+          {t("deepResearch.steps.planDescription")}
         </div>
 
-        <div className="border border-[#EEF0F3] dark:border-[#1D3A6F] rounded-lg p-3 bg-white dark:bg-[#020817] flex justify-between items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-[#111827] transition-colors">
+        <div
+          className="border border-[#EEF0F3] dark:border-[#1D3A6F] rounded-lg p-3 bg-white dark:bg-[#020817] flex justify-between items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-[#111827] transition-colors"
+          onClick={() => setPlansExpanded((prev) => !prev)}
+        >
           <div className="flex items-center gap-2 text-sm text-[#333] dark:text-[#E5E7EB]">
             <List className="w-4 h-4 text-[#1784FC]" />
-            生成的计划
+            {t("deepResearch.steps.generatedPlans")}
           </div>
-          <ChevronDown className="w-4 h-4 text-gray-400" />
+          {plansExpanded ? (
+            <ChevronUp className="w-4 h-4 text-gray-400" />
+          ) : (
+            <ChevronDown className="w-4 h-4 text-gray-400" />
+          )}
         </div>
+
+        {plansExpanded && data.length > 0 && (
+          <div className="mt-2 space-y-1 rounded-lg bg-white dark:bg-[#020817] border border-[#EEF0F3] dark:border-[#1D3A6F] p-3">
+            {data.map((step, index) => (
+              <div key={step.id} className="flex items-start gap-2 text-sm">
+                <span className="text-[#999] dark:text-[#A6A6A6]">{index + 1}.</span>
+                <span className="text-[#333] dark:text-[#E5E7EB]">{step.title}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="pt-2">
@@ -235,7 +147,7 @@ export const ResearchStepsContent = ({
           }`}
         >
           <List className="w-4 h-4 text-[#1784FC]" />
-          执行研究计划
+          {t("deepResearch.steps.executeTitle")}
         </div>
 
         {data.map((step, index) => {
@@ -294,23 +206,25 @@ export const ResearchStepsContent = ({
                   </h3>
 
                   {step.description && (
-                    <p className="text-[#999] dark:text-[#A6A6A6] text-sm mt-4 mb-2">
+                    <p className="text-[#999] dark:text-[#A6A6A6] text-sm mt-4">
                       {step.description}
                     </p>
                   )}
 
                   {step.searches && (
-                    <div className="space-y-3">
+                    <div className="mt-2 space-y-3">
                       {step.searches.map((search) =>
                         search.status === "searching" ? (
                           <div
                             key={search.id}
                             className="flex items-center justify-between border border-blue-100 dark:border-blue-900/30 bg-blue-50/30 dark:bg-blue-900/10 rounded-lg p-3"
                           >
-                            <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 text-sm">
-                              <Search className="w-4 h-4 text-[#1784FC] animate-pulse" />
-                              <span className="text-[#333] dark:text-[#E5E7EB]">正在搜索</span>
-                              <span className="text-[#999] dark:text-[#A6A6A6]">
+                            <div className="flex items-center gap-2 text-sm overflow-hidden">
+                              <Search className="w-4 h-4 text-[#1784FC] animate-pulse shrink-0" />
+                              <span className="text-[#333] dark:text-[#E5E7EB] shrink-0">
+                                {t("deepResearch.steps.searching")}
+                              </span>
+                              <span className="text-[#999] dark:text-[#A6A6A6] truncate">
                                 ｜ {search.query}
                               </span>
                             </div>
@@ -321,10 +235,12 @@ export const ResearchStepsContent = ({
                               className="flex items-center justify-between border border-gray-200 dark:border-[#1D3A6F] rounded-lg p-3 bg-gray-50 dark:bg-[#111827] cursor-pointer hover:bg-gray-100 dark:hover:bg-[#1F2937] transition-colors"
                               onClick={() => toggleSearch(search.id)}
                             >
-                              <div className="flex items-center gap-2 text-sm">
-                                <Search className="w-4 h-4 text-[#1784FC]" />
-                                <span className="text-[#333] dark:text-[#E5E7EB]">搜索资料</span>
-                                <span className="text-[#999] dark:text-[#A6A6A6]">
+                              <div className="flex items-center gap-2 text-sm overflow-hidden">
+                                <Search className="w-4 h-4 text-[#1784FC] shrink-0" />
+                                <span className="text-[#333] dark:text-[#E5E7EB] shrink-0">
+                                  {t("deepResearch.steps.searchTitle")}
+                                </span>
+                                <span className="text-[#999] dark:text-[#A6A6A6] truncate">
                                   ｜ {search.query}
                                 </span>
                               </div>
@@ -380,7 +296,9 @@ export const ResearchStepsContent = ({
                         <div className="border border-gray-200 dark:border-[#1D3A6F] rounded-lg p-3 bg-white dark:bg-[#020817] flex justify-between items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-[#111827] transition-colors">
                           <div className="flex items-center gap-2 text-sm">
                             <FileText className="w-4 h-4 text-[#1784FC]" />
-                            <span className="text-[#333] dark:text-[#E5E7EB]">优化研究计划</span>
+                            <span className="text-[#333] dark:text-[#E5E7EB]">
+                              {t("deepResearch.steps.optimizePlan")}
+                            </span>
                           </div>
                           <ChevronDown className="w-4 h-4 text-[#999]" />
                         </div>
@@ -404,7 +322,7 @@ export const ResearchStepsContent = ({
                 report === "pending" ? "text-[#999]" : "text-[#1784FC]"
               }`}
             />
-            编写研究报告
+            {t("deepResearch.steps.reportTitle")}
           </div>
         </div>
       </div>

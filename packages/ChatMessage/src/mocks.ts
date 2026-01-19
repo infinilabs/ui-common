@@ -1,4 +1,4 @@
-import type { IChunkData } from "../types/chat";
+import type { IChunkData } from "./types/chat";
 
 export const deepResearchMockChunks: IChunkData[] = [
   {
@@ -860,3 +860,32 @@ export const deepResearchMockChunks: IChunkData[] = [
     message_chunk: "Processing completed",
   },
 ];
+
+export const mockResearchReportContent = `# What is coco ai
+
+## 摘要
+
+本研究报告对 Coco AI 相关的系统与能力进行了调研和分析，对其产品定位、技术特点、应用场景以及市场竞争力进行了系统性梳理。
+
+## 目录
+
+1. [Coco AI 概述与基本定义]
+2. [Coco AI 核心技术与功能特性]
+3. [市场竞争分析与差异化优势]
+4. [应用场景与实际使用案例]
+5. [发展历程与版本演进]
+6. [发展前景与趋势展望]
+
+## Coco AI 概述与基本定义
+
+### 1.1 产品定位与核心概念
+
+Coco AI 是面向企业级知识检索与智能问答场景打造的智能搜索系统，专注于通过自然语言交互帮助用户在复杂的信息系统中高效获取答案。
+
+该产品定位为企业级智能数据搜索与知识解决方案，目标是提升信息检索效率、降低知识获取门槛，并通过智能推荐与语义理解能力，提升整体决策质量。
+
+### 1.2 技术特征与功能属性
+
+#### 1.2.1 智能检索能力
+
+Coco AI 依托语义理解和大模型相关技术，支持对非结构化文本、半结构化内容以及多源异构数据进行统一检索与聚合，提供多维度、可追溯的检索结果。`;

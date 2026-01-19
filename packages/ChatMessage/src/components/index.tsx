@@ -49,6 +49,7 @@ export interface ChatMessageProps {
   deep_read?: IChunkData;
   think?: IChunkData;
   response?: IChunkData;
+  report_content?: string;
   currentAssistant?: any;
   assistantList?: any[];
   loadingStep?: Record<string, boolean>;

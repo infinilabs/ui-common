@@ -10,17 +10,20 @@ import type { SearchResultsProps, SearchResultsSection } from "../types";
 
 export function renderSection(
   section: SearchResultsSection,
-  onItemClick?: SearchResultsProps["onItemClick"]
+  onItemClick?: SearchResultsProps["onItemClick"],
+  hideHeader?: boolean
 ) {
   if (section.layout === "list") {
     return (
       <div className={clsx("space-y-6", section.className)}>
-        <SectionHeader
-          title={section.title}
-          titleIcon={section.titleIcon}
-          titleIconBgColor={section.titleIconBgColor}
-          titleClassName={section.titleClassName}
-        />
+        {!hideHeader && (
+          <SectionHeader
+            title={section.title}
+            titleIcon={section.titleIcon}
+            titleIconBgColor={section.titleIconBgColor}
+            titleClassName={section.titleClassName}
+          />
+        )}
         {section.items.map((item) => (
           <ListItem key={item.id} item={item} onItemClick={onItemClick} />
         ))}
@@ -36,13 +39,15 @@ export function renderSection(
 
     return (
       <div className={clsx("px-6 py-3", section.className)}>
-        <SectionHeader
-          title={section.title}
-          titleIcon={section.titleIcon}
-          titleIconBgColor={section.titleIconBgColor}
-          titleClassName={section.titleClassName}
-          titleAction={section.footerAction}
-        />
+        {!hideHeader && (
+          <SectionHeader
+            title={section.title}
+            titleIcon={section.titleIcon}
+            titleIconBgColor={section.titleIconBgColor}
+            titleClassName={section.titleClassName}
+            titleAction={section.footerAction}
+          />
+        )}
         <div className={clsx("grid gap-3", gridColsClass)}>
           {section.items.map((item) => (
             <MediaItem key={item.id} item={item} onItemClick={onItemClick} />
@@ -59,13 +64,15 @@ export function renderSection(
 
   return (
     <div className={clsx("px-6 py-3",section.className)}>
-      <SectionHeader
-        title={section.title}
-        titleIcon={section.titleIcon}
-        titleIconBgColor={section.titleIconBgColor}
-        titleClassName={section.titleClassName}
-        titleAction={section.footerAction}
-      />
+      {!hideHeader && (
+        <SectionHeader
+          title={section.title}
+          titleIcon={section.titleIcon}
+          titleIconBgColor={section.titleIconBgColor}
+          titleClassName={section.titleClassName}
+          titleAction={section.footerAction}
+        />
+      )}
       <div className={clsx("grid gap-3", gridColsClass)}>
         {section.items.map((item) => (
           <ImageItem key={item.id} item={item} onItemClick={onItemClick} />
