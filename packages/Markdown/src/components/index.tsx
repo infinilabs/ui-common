@@ -2,6 +2,7 @@ import { XMarkdown, type XMarkdownProps } from "@ant-design/x-markdown";
 import clsx from "clsx";
 import { useEffect, useState, type FC } from "react";
 import { Typography } from "antd";
+import "virtual:uno.css";
 
 import "virtual:uno.css";
 

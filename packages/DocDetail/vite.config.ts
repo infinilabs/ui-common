@@ -44,4 +44,13 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    proxy: {
+      "/document": {
+        target: "https://dev.infini.cloud:27200",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 });
