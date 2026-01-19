@@ -2,6 +2,7 @@ import FilterDemo from "./demos/FilterDemo";
 import AIAnswerDemo from "./demos/AIAnswerDemo";
 import SearchResultsDemo from "./demos/SearchResultsDemo";
 import ChatMessageDemo from "./demos/ChatMessageDemo";
+import MarkdownDemo from "./demos/MarkdownDemo";
 
 function App() {
   return (
@@ -10,10 +11,11 @@ function App() {
         <FilterDemo />
 
         <div className="min-w-0 flex-1">
-          <div className="mx-auto max-w-3xl">
+          <div className="mx-auto max-w-3xl space-y-8">
             <ChatMessageDemo />
             <AIAnswerDemo />
             <SearchResultsDemo />
+            <MarkdownDemo />
           </div>
         </div>
       </div>

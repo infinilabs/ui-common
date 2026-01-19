@@ -3,8 +3,8 @@ import clsx from "clsx";
 import { useEffect, useState, type FC } from "react";
 import { Typography } from "antd";
 
-import Code from "./components/Code";
-import Table from "./components/Table";
+import Code from "./Code";
+import Table from "./Table";
 
 const { Link } = Typography;
 

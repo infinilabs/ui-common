@@ -1,73 +1,111 @@
-# React + TypeScript + Vite
+# @infinilabs/markdown
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A powerful and flexible Markdown component for React applications, built on top of `@ant-design/x-markdown`. It supports rendering markdown content from strings or URLs, with syntax highlighting, tables, and customizable components.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install @infinilabs/markdown antd react react-dom
+# or
+pnpm add @infinilabs/markdown antd react react-dom
+# or
+yarn add @infinilabs/markdown antd react react-dom
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Usage
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Basic Usage
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Render markdown content directly:
+
+```tsx
+import Markdown from '@infinilabs/markdown';
+
+const markdownContent = `
+# Hello World
+
+This is a markdown component.
+
+- Item 1
+- Item 2
+`;
+
+function App() {
+  return (
+    <Markdown content={markdownContent} />
+  );
+}
 ```
+
+### Fetch from URL
+
+Fetch and render markdown from a URL:
+
+```tsx
+import Markdown from '@infinilabs/markdown';
+
+function App() {
+  return (
+    <Markdown url="https://raw.githubusercontent.com/infinilabs/ui-common/main/README.md" />
+  );
+}
+```
+
+### With Custom Styles
+
+```tsx
+import Markdown from '@infinilabs/markdown';
+
+function App() {
+  return (
+    <Markdown 
+      content="# Styled Content" 
+      className="custom-markdown-class"
+      style={{ padding: 20 }}
+    />
+  );
+}
+```
+
+## API Reference
+
+### Markdown
+
+The `Markdown` component accepts all props from `XMarkdownProps` (from `@ant-design/x-markdown`) plus the following additional props:
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `content` | `string` | - | The markdown content string to render. |
+| `url` | `string` | - | The URL to fetch markdown content from. If provided, it overrides `content` after fetching. |
+| `className` | `string` | - | Custom CSS class name. |
+| `style` | `CSSProperties` | - | Custom inline styles. |
+| `components` | `Components` | - | Map of custom components to override default markdown elements (e.g., `code`, `a`, `table`). |
+
+### Supported Syntax
+
+- Headers (H1-H6)
+- Lists (Ordered and Unordered)
+- Links
+- Images
+- Tables
+- Code Blocks (with syntax highlighting)
+- Blockquotes
+- Inline Code
+- Emphasis (Bold, Italic)
+
+## Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm dev
+
+# Build for production
+pnpm build
+```
+
+## License
+
+MIT

@@ -1,4 +1,4 @@
-import Markdown from "./components";
+import Markdown from "@infinilabs/markdown";
 
 const content = `
 # Hello World
@@ -56,8 +56,11 @@ mindmap
 \`\`\`
 `;
 
-const App = () => {
-  return <Markdown content={content} />;
-};
-
-export default App;
+export default function MarkdownDemo() {
+  return (
+    <div className="rounded-lg bg-white p-6 shadow-sm">
+      <h2 className="mb-4 text-lg font-semibold text-slate-900">Markdown Demo</h2>
+      <Markdown content={content} />
+    </div>
+  );
+}
