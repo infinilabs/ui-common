@@ -3,6 +3,8 @@ import clsx from "clsx";
 import { useEffect, useState, type FC } from "react";
 import { Typography } from "antd";
 
+import "virtual:uno.css";
+
 import Code from "./Code";
 import Table from "./Table";
 
