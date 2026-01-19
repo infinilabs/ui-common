@@ -97,9 +97,6 @@ const Table: FC<TableProps> = ({ children }) => {
 
   return (
     <AntTable
-      classNames={{
-        content: "13",
-      }}
       className="[&_table]:(w-full! table!)"
       columns={columns}
       dataSource={dataSource}
