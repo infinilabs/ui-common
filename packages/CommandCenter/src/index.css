@@ -1,0 +1,51 @@
+@import "tailwindcss";
+@import "@infinilabs/search-chat-ui/style.css";
+
+:root {
+  --cc-radius: 12px;
+}
+
+/* 背景毛玻璃层 */
+.cc-backdrop {
+  backdrop-filter: blur(14px) saturate(120%);
+}
+
+/* 中央卡片渐变边框 */
+.cc-card {
+  border-radius: var(--cc-radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.6));
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+}
+.cc-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--cc-radius);
+  padding: 1px; /* 渐变边框厚度 */
+  background: linear-gradient(120deg, rgba(180,180,255,0.9), rgba(255,200,140,0.9));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* 微动效元素 */
+.cc-floating {
+  transition: transform 250ms ease, box-shadow 250ms ease;
+}
+.cc-floating:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+/* 深浅色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .cc-card {
+    background: linear-gradient(180deg, rgba(20,20,30,0.7), rgba(20,20,30,0.6));
+  }
+  .cc-card::before {
+    background: linear-gradient(120deg, rgba(120,120,255,0.8), rgba(255,160,80,0.8));
+  }
+}

@@ -6,6 +6,7 @@ import { demoData } from "./demo";
 import "./App.css";
 import { Send, Square } from "lucide-react";
 import SessionFiles from "./components/SessionFiles";
+import { deepResearchMockChunks } from "./components/data";
 
 const INITIAL_MESSAGES: IChatMessage[] = [
   ...(demoData?.hits?.hits ?? []).map((hit: any) => ({
@@ -225,6 +226,65 @@ function App() {
     abortControllerRef.current = null;
   };
 
+  const streamDeepResearchDemo = async (userQuestion: string) => {
+    console.log("Deep research demo for:", userQuestion);
+    setIsTyping(true);
+    const newMsgId = Date.now().toString();
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    const assistantMsg: IChatMessage = {
+      _id: newMsgId,
+      _source: {
+        type: "assistant",
+        message: "",
+        assistant_id: "coco-bot",
+        details: [],
+      },
+    };
+
+    setMessages((prev) => [...prev, assistantMsg]);
+
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    if (!activeMessageRef.current) {
+      console.error("Active message ref not attached!");
+      setIsTyping(false);
+      abortControllerRef.current = null;
+      return;
+    }
+
+    activeMessageRef.current.reset();
+
+    const summary =
+      "这是一个围绕 “Coco AI” 的深度研究流程示例，真实环境下内容由服务端生成。";
+
+    setMessages((prev) =>
+      prev.map((msg) => {
+        if (msg._id === newMsgId) {
+          return {
+            ...msg,
+            _source: {
+              ...msg._source,
+              message: summary,
+            },
+          };
+        }
+        return msg;
+      })
+    );
+
+    for (const chunk of deepResearchMockChunks) {
+      if (abortController.signal.aborted) return;
+      activeMessageRef.current.addChunk(chunk);
+      console.log(chunk);
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+
+    setIsTyping(false);
+    abortControllerRef.current = null;
+  };
+
   const handleSend = () => {
     if (!inputValue.trim() || isTyping) return;
 
@@ -241,7 +301,11 @@ function App() {
     const question = inputValue;
     setInputValue("");
 
-    streamResponse(question);
+    if (question.trim().toLowerCase() === "what is coco ai?") {
+      streamDeepResearchDemo(question);
+    } else {
+      streamResponse(question);
+    }
   };
 
   const handleStop = () => {

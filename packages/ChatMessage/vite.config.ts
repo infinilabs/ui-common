@@ -78,6 +78,8 @@ export default defineConfig({
           "@ant-design/x-markdown": "xMarkdown",
           ahooks: "ahooks",
           "@infinilabs/attachments": "attachments",
+          antd: "antd",
+          "@infinilabs/search-results": "SearchResults",
         },
       },
     },

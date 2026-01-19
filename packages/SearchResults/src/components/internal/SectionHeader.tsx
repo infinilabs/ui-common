@@ -2,12 +2,12 @@ import clsx from "clsx";
 
 import type React from "react";
 
-function getSourceBadgeText(source: string) {
-  const normalized = source.trim().toLowerCase();
-  if (!normalized) return "";
-  if (normalized === "google") return "G";
-  return source.trim().slice(0, 1).toUpperCase();
-}
+// function getSourceBadgeText(source: string) {
+//   const normalized = source.trim().toLowerCase();
+//   if (!normalized) return "";
+//   if (normalized === "google") return "G";
+//   return source.trim().slice(0, 1).toUpperCase();
+// }
 
 export function SectionHeader({
   title,
@@ -76,14 +76,14 @@ export function SectionHeader({
         )
       ) : null}
 
-      {source ? (
+      {/* {source ? (
         <span
           className="inline-flex h-6 w-6 flex-none items-center justify-center rounded-md bg-slate-100 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200"
           title={source}
         >
           {getSourceBadgeText(source)}
         </span>
-      ) : null}
+      ) : null} */}
     </div>
   );
 }

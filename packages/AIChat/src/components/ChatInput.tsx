@@ -1,20 +1,24 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { resources } from "../i18n";
 import { useSize } from "ahooks";
 import clsx from "clsx";
+
+import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
 import AutoResizeTextarea from "./AutoResizeTextarea";
 import ChatIcons, { type SendMessageParams } from "./ChatIcons";
 import InputControls from "./InputControls";
-import VisibleKey from "./VisibleKey";
 import { useChatStore } from "@/stores/chatStore";
 
 interface ChatInputProps {
   onSend: (params: SendMessageParams) => void;
   disabled: boolean;
-  isChatMode: boolean;
   inputValue: string;
   changeInput: (val: string) => void;
   isDeepThinkActive: boolean;
-  setIsDeepThinkActive: () => void;
+  setIsDeepThinkActive: (val: boolean) => void;
+  isDeepResearchActive?: boolean;
+  setIsDeepResearchActive?: (val: boolean) => void;
   chatPlaceholder?: string;
   searchPlaceholder?: string;
   returnToInputShortcut?: string;
@@ -23,119 +27,181 @@ interface ChatInputProps {
 export default function ChatInput({
   onSend,
   disabled,
-  isChatMode,
   inputValue,
   changeInput,
   isDeepThinkActive,
   setIsDeepThinkActive,
+  isDeepResearchActive,
+  setIsDeepResearchActive,
   chatPlaceholder,
-  returnToInputShortcut = "i",
 }: ChatInputProps) {
+  const { i18n } = useTranslation("ai_chat");
+
+  const [internalDeepResearchActive, setInternalDeepResearchActive] = useState(
+    isDeepResearchActive || false
+  );
+
+  const deepResearchActive =
+    typeof setIsDeepResearchActive === "function"
+      ? (isDeepResearchActive ?? false)
+      : internalDeepResearchActive;
+
+  const handleDeepResearchChange = (val: boolean) => {
+    if (typeof setIsDeepResearchActive === "function") {
+      setIsDeepResearchActive(val);
+    } else {
+      setInternalDeepResearchActive(val);
+    }
+  };
+
+  useEffect(() => {
+    (Object.keys(resources) as Array<keyof typeof resources>).forEach((lng) => {
+      if (resources[lng]?.translation) {
+        i18n.addResourceBundle(
+          lng as string,
+          "ai_chat",
+          resources[lng].translation,
+          true,
+          true
+        );
+      }
+    });
+  }, [i18n]);
+
   const textareaRef = useRef<{ reset: () => void; focus: () => void }>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const containerSize = useSize(containerRef);
-  
+
   const { curChatEnd } = useChatStore();
   const [lineCount, setLineCount] = useState(1);
 
-  const handleToggleFocus = useCallback(() => {
-    textareaRef.current?.focus();
-  }, [textareaRef]);
+  const committedRef = useRef("");
+  const {
+    supported: speechSupported,
+    listening,
+    start,
+    stop,
+  } = useSpeechRecognition({
+    lang: i18n.language || "zh-CN",
+    autoRestart: true,
+    onInterim: (interim) => {
+      const composed =
+        committedRef.current +
+        (interim ? (committedRef.current ? " " : "") + interim : "");
+      changeInput(composed);
+    },
+    onFinal: (finalText) => {
+      if (finalText) {
+        committedRef.current =
+          (committedRef.current ? committedRef.current + " " : "") + finalText;
+        changeInput(committedRef.current);
+      }
+    },
+  });
+
+  const handleVoiceToggle = () => {
+    if (listening) {
+      stop();
+      changeInput(committedRef.current);
+    } else {
+      committedRef.current = inputValue;
+      start();
+    }
+  };
 
   const handleSubmit = useCallback(() => {
     const trimmedValue = inputValue.trim();
-    if (trimmedValue && !disabled) {
+    if (trimmedValue) {
       changeInput("");
       onSend({ message: trimmedValue });
     }
-  }, [inputValue, disabled, onSend, changeInput]);
+  }, [inputValue, onSend, changeInput]);
 
   const handleInputChange = useCallback(
     (value: string) => {
       changeInput(value);
-      if (!isChatMode) {
-        onSend({ message: value });
+      if (listening) {
+        committedRef.current = value;
       }
     },
-    [changeInput, isChatMode, onSend]
+    [changeInput, listening]
   );
-  
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-     if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
-        e.preventDefault();
-        handleSubmit();
-     }
+    if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+      e.preventDefault();
+      handleSubmit();
+    }
   };
 
   const renderTextarea = () => {
     return (
-      <VisibleKey
-        shortcut={returnToInputShortcut}
-        rootClassName="flex-1 flex items-center justify-center w-full"
-        shortcutClassName="!left-auto !right-2 !translate-x-0"
-        onKeyPress={handleToggleFocus}
-      >
-        <AutoResizeTextarea
-          ref={textareaRef}
-          isChatMode={isChatMode}
-          input={inputValue}
-          setInput={handleInputChange}
-          handleKeyDown={handleKeyDown}
-          chatPlaceholder={chatPlaceholder}
-          lineCount={lineCount}
-          onLineCountChange={setLineCount}
-          firstLineMaxWidth={containerSize?.width ?? 0}
-          disabled={disabled}
-        />
-      </VisibleKey>
+      <AutoResizeTextarea
+        ref={textareaRef}
+        input={inputValue}
+        setInput={handleInputChange}
+        handleKeyDown={handleKeyDown}
+        chatPlaceholder={chatPlaceholder}
+        lineCount={lineCount}
+        onLineCountChange={setLineCount}
+        firstLineMaxWidth={containerSize?.width ?? 0}
+        disabled={disabled}
+      />
     );
   };
 
+  const handleIconSend = (params: SendMessageParams) => {
+    if (params.message) {
+      changeInput("");
+      onSend(params);
+    }
+  };
+
   const renderExtraIcon = () => (
-      <div className="flex items-center gap-2 w-fit">
-        {isChatMode && (
-            <ChatIcons
-            isChatMode={isChatMode}
-            curChatEnd={curChatEnd}
-            inputValue={inputValue}
-            onSend={onSend}
-            />
-        )}
-      </div>
+    <div className="flex items-center gap-2 w-fit">
+      <ChatIcons
+        curChatEnd={curChatEnd}
+        inputValue={inputValue}
+        onSend={handleIconSend}
+        speechSupported={speechSupported}
+        listening={listening}
+        onVoiceToggle={handleVoiceToggle}
+      />
+    </div>
   );
 
   return (
-    <div className={`w-full relative rounded-xl border border-[#E5E5E5] dark:border-[#333] overflow-hidden bg-white dark:bg-transparent`}>
+    <div
+      className={`w-full p-1 relative rounded-xl border border-[#E5E5E5] dark:border-[#333] overflow-hidden bg-white dark:bg-transparent`}
+    >
       <div
         ref={containerRef}
-        className={`flex items-center dark:text-[#D8D8D8] transition-all relative bg-[#F9F9F9] dark:bg-[#202126]`}
+        className={`rounded-sm flex items-center dark:text-[#D8D8D8] transition-all relative bg-[#F3F4F6] dark:bg-[#202126]`}
       >
-          <div
-            className={clsx(
-              "min-h-[52px] w-full p-3 bg-transparent",
-              {
-                "flex items-center gap-2": lineCount === 1,
-              }
-            )}
-          >
-            {renderTextarea()}
+        <div
+          className={clsx("min-h-[48px] w-full p-2 bg-transparent", {
+            "flex items-center gap-2": lineCount === 1,
+          })}
+        >
+          {renderTextarea()}
 
-            {lineCount === 1 && renderExtraIcon()}
+          {lineCount === 1 && renderExtraIcon()}
 
-            {lineCount > 1 && (
-              <div className="flex items-center mt-2">
-                <div className="flex-1"></div>
-                <div className="self-end">{renderExtraIcon()}</div>
-              </div>
-            )}
-          </div>
+          {lineCount > 1 && (
+            <div className="flex items-center mt-2">
+              <div className="flex-1"></div>
+              <div className="self-end">{renderExtraIcon()}</div>
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="px-3 pb-3">
+      <div className="pb-3">
         <InputControls
-          isChatMode={isChatMode}
           isDeepThinkActive={isDeepThinkActive}
           setIsDeepThinkActive={setIsDeepThinkActive}
+          isDeepResearchActive={deepResearchActive}
+          setIsDeepResearchActive={handleDeepResearchChange}
         />
       </div>
     </div>
