@@ -49,6 +49,7 @@ export declare type SearchResultListItem = SearchResultCommon & {
     leading?: default_2.ReactNode;
     trailing?: default_2.ReactNode;
     onClick?: () => void;
+    isActive?: boolean;
 };
 
 export declare type SearchResultMediaItem = SearchResultCommon & {

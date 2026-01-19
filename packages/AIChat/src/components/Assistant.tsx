@@ -115,7 +115,7 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
         console.error(e);
       }
     },
-    [stableAssistantIDs, keyword]
+    [keyword, stableAssistantIDs, setCurrentAssistant]
   );
 
   useEffect(() => {

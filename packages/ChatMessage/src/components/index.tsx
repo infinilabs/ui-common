@@ -1,4 +1,4 @@
-import { memo, useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react";
+import { memo, useState, useEffect, forwardRef, useImperativeHandle, useRef, useMemo } from "react";
 import { useTranslation, I18nextProvider } from "react-i18next";
 import clsx from "clsx";
 import i18nInstance from "../i18n/config";
@@ -18,6 +18,15 @@ import { SuggestionList } from "./SuggestionList";
 import { UserMessage } from "./UserMessage";
 import FontIcon from "./Common/Icons/FontIcon";
 import useMessageChunkData from "../hooks/useMessageChunkData";
+import { DeepResearch } from "./DeepResearch";
+import type {
+  StepItem,
+  StepStatus,
+  StepSearch,
+  StepSearchStatus,
+  StepSearchHit,
+} from "./DeepResearch/ResearchStepsContent";
+import type { ResearchReportData } from "./DeepResearch/ResearchReportContent";
 
 import "./index.css";
 
@@ -91,7 +100,18 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
   const resolvedTheme = resolveTheme(theme);
 
   const [assistant, setAssistant] = useState<any>({});
-  
+  const [deepResearchPlans, setDeepResearchPlans] = useState<string[]>([]);
+  const [deepResearchCurrentStepIndex, setDeepResearchCurrentStepIndex] = useState<number>(-1);
+  const [deepResearchQuery, setDeepResearchQuery] = useState<string>("");
+  const [deepResearchResultCount, setDeepResearchResultCount] = useState<number | undefined>(undefined);
+  const [deepResearchResearcherStarted, setDeepResearchResearcherStarted] = useState(false);
+  const [deepResearchReporterStarted, setDeepResearchReporterStarted] = useState(false);
+  const [deepResearchReporterFinished, setDeepResearchReporterFinished] = useState(false);
+  const [deepResearchReportData, setDeepResearchReportData] = useState<ResearchReportData | undefined>(undefined);
+  const [deepResearchSearchMap, setDeepResearchSearchMap] = useState<
+    Record<string, { query?: string; resultCount?: number; hits?: StepSearchHit[] }>
+  >({});
+
   const {
     data: {
       query_intent,
@@ -153,6 +173,276 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
 
   const activeLoadingStep = externalLoadingStep || loadingStep;
 
+  const hasDeepResearchPlan =
+    deepResearchPlans.length > 0 &&
+    deepResearchCurrentStepIndex >= 0 &&
+    deepResearchCurrentStepIndex < deepResearchPlans.length;
+
+  const deepResearchStepTitle = hasDeepResearchPlan
+    ? deepResearchPlans[deepResearchCurrentStepIndex]
+    : "";
+
+  const deepResearchPlanningProgress = deepResearchPlans.length > 0 ? 1 : 0;
+
+  const deepResearchExecutionProgress = hasDeepResearchPlan
+    ? (deepResearchCurrentStepIndex + 1) / deepResearchPlans.length
+    : 0;
+
+  const deepResearchReportProgress = deepResearchReporterFinished
+    ? 1
+    : deepResearchReporterStarted
+      ? 0.5
+      : 0;
+
+  const deepResearchProgress =
+    (deepResearchPlanningProgress +
+      deepResearchExecutionProgress +
+      deepResearchReportProgress) /
+    3;
+
+  const deepResearchStatusText = useMemo(() => {
+    if (deepResearchReporterFinished) {
+      if (typeof deepResearchResultCount === "number") {
+        return `深度研究完成 · 找到 ${deepResearchResultCount} 条相关结果`;
+      }
+      return "深度研究完成";
+    }
+    if (deepResearchReporterStarted) {
+      return "正在编写研究报告";
+    }
+    if (deepResearchResearcherStarted) {
+      return "正在执行研究计划";
+    }
+    if (deepResearchPlans.length > 0) {
+      return "正在规划研究计划";
+    }
+    return undefined;
+  }, [
+    deepResearchReporterFinished,
+    deepResearchResultCount,
+    deepResearchReporterStarted,
+    deepResearchResearcherStarted,
+    deepResearchPlans.length,
+  ]);
+
+  const deepResearchSteps = useMemo<StepItem[]>(() => {
+    if (!deepResearchPlans.length) return [];
+
+    return deepResearchPlans.map((title, index) => {
+      let status: StepStatus = "pending";
+
+      if (deepResearchReporterFinished) {
+        status = "done";
+      } else if (deepResearchResearcherStarted) {
+        if (index < deepResearchCurrentStepIndex) {
+          status = "done";
+        } else if (index === deepResearchCurrentStepIndex) {
+          status = "in_progress";
+        }
+      }
+
+      const searchInfo = deepResearchSearchMap[title];
+      const searches: StepSearch[] | undefined = searchInfo?.query
+        ? [
+            {
+              id: `step-${index + 1}-search-1`,
+              query: searchInfo.query,
+              resultCount: searchInfo.resultCount,
+              status:
+                typeof searchInfo.resultCount === "number"
+                  ? ("done" as StepSearchStatus)
+                  : ("searching" as StepSearchStatus),
+              hits: searchInfo.hits,
+            },
+          ]
+        : undefined;
+
+      return {
+        id: `step-${index + 1}`,
+        title,
+        status,
+        searches,
+        showOptimizePlan: false,
+      };
+    });
+  }, [
+    deepResearchPlans,
+    deepResearchCurrentStepIndex,
+    deepResearchResearcherStarted,
+    deepResearchReporterFinished,
+    deepResearchSearchMap,
+  ]);
+
+  const deepResearchAllHits = useMemo(() => {
+    const allHits: StepSearchHit[] = [];
+    Object.values(deepResearchSearchMap).forEach((info) => {
+      if (info.hits && Array.isArray(info.hits)) {
+        allHits.push(...info.hits);
+      }
+    });
+    return allHits;
+  }, [deepResearchSearchMap]);
+
+  const deepResearchPlannerStatus: StepStatus = deepResearchPlans.length
+    ? "done"
+    : "pending";
+
+  const deepResearchExecutionStatus: StepStatus = useMemo(() => {
+    if (!deepResearchSteps.length) return "pending";
+    if (deepResearchSteps.some((step) => step.status === "in_progress")) {
+      return "in_progress";
+    }
+    if (deepResearchSteps.some((step) => step.status === "done")) {
+      return "done";
+    }
+    return "pending";
+  }, [deepResearchSteps]);
+
+  const deepResearchReportStatus: StepStatus = deepResearchReporterFinished
+    ? "done"
+    : deepResearchReporterStarted
+      ? "in_progress"
+      : "pending";
+
+  const resetDeepResearchState = () => {
+    setDeepResearchPlans([]);
+    setDeepResearchCurrentStepIndex(-1);
+    setDeepResearchQuery("");
+    setDeepResearchResultCount(undefined);
+    setDeepResearchResearcherStarted(false);
+    setDeepResearchReporterStarted(false);
+    setDeepResearchReporterFinished(false);
+    setDeepResearchReportData(undefined);
+    setDeepResearchSearchMap({});
+  };
+
+  const handleDeepResearchChunk = (chunkData: IChunkData) => {
+    if (chunkData.chunk_type === "research_planner_start") {
+      resetDeepResearchState();
+      return;
+    }
+
+    if (chunkData.chunk_type === "research_planner_end") {
+      if (typeof chunkData.message_chunk === "string") {
+        try {
+          const payload = JSON.parse(chunkData.message_chunk);
+          if (Array.isArray(payload)) {
+            const plans = payload.map((item) => String(item));
+            setDeepResearchPlans(plans);
+            setDeepResearchCurrentStepIndex(plans.length > 0 ? 0 : -1);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      return;
+    }
+
+    if (chunkData.chunk_type === "research_researcher_start") {
+      if (typeof chunkData.message_chunk === "string" && chunkData.message_chunk) {
+        try {
+          const payload = JSON.parse(chunkData.message_chunk);
+          const planText = typeof payload?.plan === "string" ? payload.plan : "";
+          if (planText) {
+            setDeepResearchResearcherStarted(true);
+            setDeepResearchCurrentStepIndex((prevIndex) => {
+              const index = deepResearchPlans.findIndex(
+                (title) => title === planText
+              );
+              if (index !== -1) return index;
+              if (prevIndex >= 0) return prevIndex;
+              return 0;
+            });
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      return;
+    }
+
+    if (chunkData.chunk_type === "research_researcher_step_start") {
+      if (typeof chunkData.message_chunk === "string" && chunkData.message_chunk) {
+        try {
+          const payload = JSON.parse(chunkData.message_chunk);
+          const planText = typeof payload?.plan === "string" ? payload.plan : "";
+          const stepQuery = payload?.step?.payload?.query;
+          if (typeof stepQuery === "string") {
+            setDeepResearchQuery(stepQuery);
+          }
+          setDeepResearchResultCount(undefined);
+          if (planText && typeof stepQuery === "string") {
+            setDeepResearchSearchMap((prev) => {
+              const prevInfo = prev[planText] ?? {};
+              return {
+                ...prev,
+                [planText]: {
+                  ...prevInfo,
+                  query: stepQuery,
+                },
+              };
+            });
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      return;
+    }
+
+    if (chunkData.chunk_type === "research_researcher_step_end") {
+      if (typeof chunkData.message_chunk === "string" && chunkData.message_chunk) {
+        try {
+          const payload = JSON.parse(chunkData.message_chunk);
+          const planText = typeof payload?.plan === "string" ? payload.plan : "";
+          const hits = payload?.step?.payload?.hits;
+          if (Array.isArray(hits)) {
+            setDeepResearchResultCount(hits.length);
+            if (planText) {
+              setDeepResearchSearchMap((prev) => {
+                const prevInfo = prev[planText] ?? {};
+                return {
+                  ...prev,
+                  [planText]: {
+                    ...prevInfo,
+                    resultCount: hits.length,
+                    hits: hits,
+                  },
+                };
+              });
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      return;
+    }
+
+    if (chunkData.chunk_type === "research_researcher_end") {
+      setDeepResearchQuery("");
+      return;
+    }
+
+    if (chunkData.chunk_type === "research_reporter_start") {
+      setDeepResearchReporterStarted(true);
+      return;
+    }
+
+    if (chunkData.chunk_type === "research_reporter_end") {
+      setDeepResearchReporterStarted(true);
+      setDeepResearchReporterFinished(true);
+      if (typeof chunkData.message_chunk === "string" && chunkData.message_chunk) {
+        try {
+          const payload = JSON.parse(chunkData.message_chunk);
+          setDeepResearchReportData(payload);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+  };
+
   const inThinkRef = useRef<boolean>(false);
 
   useImperativeHandle(ref, () => ({
@@ -168,7 +458,9 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
         [chunkData.chunk_type || '']: true,
       }));
 
-      if (chunkData.chunk_type === "query_intent") {
+      if (chunkData.chunk_type === "reply_start") {
+        resetDeepResearchState();
+      } else if (chunkData.chunk_type === "query_intent") {
         handlers.deal_query_intent(chunkData);
       } else if (chunkData.chunk_type === "tools") {
         handlers.deal_tools(chunkData);
@@ -203,6 +495,17 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
             handlers.deal_response(chunkData);
           }
         }
+      } else if (
+        chunkData.chunk_type === "research_planner_start" ||
+        chunkData.chunk_type === "research_planner_end" ||
+        chunkData.chunk_type === "research_researcher_start" ||
+        chunkData.chunk_type === "research_researcher_step_start" ||
+        chunkData.chunk_type === "research_researcher_step_end" ||
+        chunkData.chunk_type === "research_researcher_end" ||
+        chunkData.chunk_type === "research_reporter_start" ||
+        chunkData.chunk_type === "research_reporter_end"
+      ) {
+        handleDeepResearchChunk(chunkData);
       }
     },
     reset: () => {
@@ -216,6 +519,7 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
         think: false,
         response: false,
       });
+      resetDeepResearchState();
       inThinkRef.current = false;
     }
   }));
@@ -292,25 +596,49 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
           loading={activeLoadingStep?.fetch_source}
           formatUrl={formatUrl}
         />
+
         <PickSource
           Detail={details.find((item) => item.type === "pick_source")}
           ChunkData={pick_source}
           loading={activeLoadingStep?.pick_source}
         />
+
         <DeepRead
           Detail={details.find((item) => item.type === "deep_read")}
           ChunkData={deep_read}
           loading={activeLoadingStep?.deep_read}
         />
+
         <Think
           Detail={details.find((item) => item.type === "think")}
           ChunkData={think}
           loading={activeLoadingStep?.think}
         />
-        <XMarkdown content={messageContent || response?.message_chunk || ""} />
+
+        <div className="cm-markdown">
+          <XMarkdown content={messageContent || response?.message_chunk || ""} />
+        </div>
+
+        {hasDeepResearchPlan && (
+          <DeepResearch
+            stepTitle={deepResearchStepTitle}
+            query={deepResearchQuery || question}
+            resultCount={deepResearchResultCount}
+            progress={deepResearchProgress}
+            statusText={deepResearchStatusText}
+            steps={deepResearchSteps}
+            plannerStatus={deepResearchPlannerStatus}
+            executionStatus={deepResearchExecutionStatus}
+            reportStatus={deepResearchReportStatus}
+            reportData={deepResearchReportData}
+            searchHits={deepResearchAllHits}
+          />
+        )}
+
         {isTyping && (
           <div className="inline-block w-1.5 h-5 ml-0.5 -mb-0.5 bg-[#666666] dark:bg-[#A3A3A3] rounded-sm animate-typing" />
         )}
+
         {showActions && (
           <MessageActions
             id={message._id ?? ""}
@@ -326,6 +654,7 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
             }}
           />
         )}
+
         {!isTyping && (
           <SuggestionList
             suggestions={suggestion}

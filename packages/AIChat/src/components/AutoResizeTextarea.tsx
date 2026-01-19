@@ -14,7 +14,6 @@ import { useTranslation } from "react-i18next";
 const MAX_HEIGHT = 240;
 
 interface AutoResizeTextareaProps {
-  isChatMode: boolean;
   input: string;
   setInput: (value: string) => void;
   handleKeyDown?: (e: KeyboardEvent<HTMLTextAreaElement>) => void;
@@ -32,7 +31,6 @@ const AutoResizeTextarea = forwardRef<
 >(
   (
     {
-      isChatMode,
       input,
       setInput,
       handleKeyDown,
@@ -44,7 +42,7 @@ const AutoResizeTextarea = forwardRef<
     },
     ref
   ) => {
-    const { t } = useTranslation();
+    const { t } = useTranslation("ai_chat");
     const [isComposition, { setTrue, setFalse }] = useBoolean();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const calcRef = useRef<HTMLDivElement>(null);
@@ -96,7 +94,7 @@ const AutoResizeTextarea = forwardRef<
       textarea.style.minHeight = `${minHeight}px`;
 
       onLineCountChange?.(height / lineHeight);
-    }, [input, firstLineMaxWidth]);
+    }, [input, firstLineMaxWidth, onLineCountChange]);
 
     const handleChange = useCallback(
       (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -109,7 +107,7 @@ const AutoResizeTextarea = forwardRef<
       <>
         <textarea
           ref={textareaRef}
-          id={isChatMode ? "chat-textarea" : "search-textarea"}
+          id="chat-textarea"
           autoFocus
           autoComplete="off"
           autoCapitalize="none"
@@ -120,6 +118,9 @@ const AutoResizeTextarea = forwardRef<
               "overflow-y-hidden": lineCount === 1,
             }
           )}
+          style={{
+            resize: "none",
+          }}
           placeholder={chatPlaceholder || t("search.textarea.placeholder")}
           aria-label={t("search.textarea.ariaLabel")}
           value={input}

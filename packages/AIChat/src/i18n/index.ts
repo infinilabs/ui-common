@@ -1,7 +1,7 @@
 import i18n, { type i18n as I18n } from "i18next";
 import { initReactI18next } from "react-i18next";
 
-const resources = {
+export const resources = {
   en: {
     translation: {
       history_list: {
@@ -57,6 +57,27 @@ const resources = {
         new_chat: "New Chat",
         logo: {
           chat: "Chat",
+        },
+      },
+      search: {
+        input: {
+          attachment: "Attachment",
+          voice: "Voice",
+          send: "Send",
+          stop: "Stop",
+          deepThink: "DeepThink",
+          deepResearch: "DeepResearch",
+          search: "Search",
+          MCP: "MCP",
+          searchPopover: {
+            title: "Select",
+            placeholder: "Search...",
+            allScope: "All Scope",
+          },
+        },
+        textarea: {
+          placeholder: "Ask whatever you want...",
+          ariaLabel: "Chat Input",
         },
       },
     },
@@ -116,6 +137,27 @@ const resources = {
         new_chat: "新对话",
         logo: {
           chat: "对话",
+        },
+      },
+      search: {
+        input: {
+          attachment: "附件",
+          voice: "语音",
+          send: "发送",
+          stop: "停止",
+          deepThink: "深度思考",
+          deepResearch: "深度研究",
+          search: "联网搜索",
+          MCP: "MCP",
+          searchPopover: {
+            title: "选择",
+            placeholder: "搜索...",
+            allScope: "全部范围",
+          },
+        },
+        textarea: {
+          placeholder: "问点什么...",
+          ariaLabel: "聊天输入",
         },
       },
     },

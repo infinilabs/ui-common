@@ -1,0 +1,271 @@
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Globe, Layers, Box, ChevronDown } from "lucide-react";
+import clsx from "clsx";
+import { useTranslation } from "react-i18next";
+import { useDebounce } from "ahooks";
+import { Popover } from "antd";
+
+import Checkbox from "./Common/Checkbox";
+import NoDataImage from "./NoDataImage";
+import Pagination from "./Common/Pagination";
+import { Input, type InputRef } from "./ui/input";
+
+export interface DataSource {
+  id: string;
+  name?: string;
+  icon?: string;
+  [key: string]: unknown;
+}
+
+interface SearchPopoverProps {
+  datasource: { enabled?: boolean; visible?: boolean };
+  selectedIds: string[];
+  onSelectionChange: (ids: string[]) => void;
+  isSearchActive: boolean;
+  setIsSearchActive: (val: boolean) => void;
+  getDataSources: (query?: string) => Promise<DataSource[]>;
+  shortcut?: string;
+}
+
+export default function SearchPopover({
+  datasource,
+  selectedIds,
+  onSelectionChange,
+  isSearchActive,
+  setIsSearchActive,
+  getDataSources,
+}: SearchPopoverProps) {
+  const { t } = useTranslation("ai_chat");
+
+  const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+  const [visibleList, setVisibleList] = useState<DataSource[]>([]);
+  const searchInputRef = useRef<InputRef>(null);
+  
+  const [dataSourceList, setDataSourceList] = useState<DataSource[]>([]);
+  const [keyword, setKeyword] = useState("");
+  const debouncedKeyword = useDebounce(keyword, { wait: 500 });
+
+  const getDataSourceList = useCallback(async () => {
+    try {
+      setPage(1);
+      const res: DataSource[] = await getDataSources(debouncedKeyword);
+
+      if (!res || res.length === 0) {
+        setDataSourceList([]);
+        return;
+      }
+      const data = res.length
+        ? [
+            {
+              id: "all",
+              name: "search.input.searchPopover.allScope",
+            },
+            ...res,
+          ]
+        : [];
+
+      setDataSourceList(data);
+    } catch (err) {
+      setDataSourceList([]);
+      console.error("datasource_search", err);
+    }
+  }, [debouncedKeyword, getDataSources]);
+
+  useEffect(() => {
+    if (open) {
+      getDataSourceList();
+    }
+  }, [debouncedKeyword, open, getDataSourceList]);
+
+  useEffect(() => {
+    setTotalPage(Math.max(Math.ceil(dataSourceList.length / 10), 1));
+  }, [dataSourceList]);
+
+  useEffect(() => {
+    if (dataSourceList.length === 0) {
+      return setVisibleList([]);
+    }
+
+    const startIndex = (page - 1) * 9;
+    const endIndex = startIndex + 9;
+
+    const list = [
+      dataSourceList[0],
+      ...dataSourceList.slice(1).slice(startIndex, endIndex),
+    ];
+
+    setVisibleList(list);
+  }, [dataSourceList, page]);
+
+  const onSelectDataSource = useCallback(
+    (id: string, checked: boolean, isAll: boolean) => {
+      const nextSourceDataIds = new Set(selectedIds);
+
+      const ids = isAll ? visibleList.slice(1).map((item) => item.id) : [id];
+
+      for (const id of ids) {
+        if (checked) {
+          nextSourceDataIds.add(id);
+        } else {
+          nextSourceDataIds.delete(id);
+        }
+      }
+
+      onSelectionChange(Array.from(nextSourceDataIds));
+    },
+    [visibleList, selectedIds, onSelectionChange]
+  );
+
+  const handlePrev = () => {
+    if (page === 1) return;
+    setPage(page - 1);
+  };
+
+  const handleNext = () => {
+    if (page === totalPage) return;
+    setPage(page + 1);
+  };
+
+  if (!(datasource?.enabled && datasource?.visible)) {
+    return null;
+  }
+
+  return (
+    <div
+      className={clsx(
+        "flex justify-center items-center gap-1 h-8 px-2 rounded-full transition cursor-pointer hover:bg-[#EDEDED] dark:hover:bg-[#202126]"
+      )}
+      style={{
+        backgroundColor: isSearchActive ? "rgba(1,138,229,0.21)" : undefined,
+      }}
+      onClick={() => {
+        setIsSearchActive(!isSearchActive);
+      }}
+    >
+      <Globe
+        className={`size-4 ${
+          isSearchActive
+            ? "text-[#1784FC] dark:text-[#1784FC]"
+            : "text-[#333] dark:text-[#999]"
+        }`}
+      />
+
+      {isSearchActive && (
+        <>
+          <span className="text-[#1784FC] text-xs">
+            {t("search.input.search") || "Search"}
+          </span>
+
+          <Popover
+            open={open}
+            trigger="click"
+            onOpenChange={setOpen}
+            placement="bottomLeft"
+            content={
+              <div
+                className="w-[300px] flex flex-col gap-2"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center gap-2 px-2 py-1 border rounded-md border-input">
+                  <Input
+                    autoFocus
+                    autoCorrect="off"
+                    value={keyword}
+                    ref={searchInputRef}
+                    className="h-6 p-0 border-0 shadow-none focus-visible:ring-0"
+                    placeholder={
+                      t("search.input.searchPopover.placeholder") || "Search..."
+                    }
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setKeyword(e.target.value);
+                    }}
+                  />
+                </div>
+
+                {visibleList.length > 0 ? (
+                  <ul className="flex flex-col gap-1 p-0 m-0 list-none">
+                    {visibleList.map((item, index) => {
+                      const { id, name } = item;
+                      const isAll = index === 0;
+
+                      const isChecked = () => {
+                        if (isAll) {
+                          return visibleList.slice(1).every((vItem) => {
+                            return selectedIds.includes(vItem.id);
+                          });
+                        } else {
+                          return selectedIds.includes(id);
+                        }
+                      };
+
+                      return (
+                        <li
+                          key={id}
+                          className="flex justify-between items-center px-2 py-1 hover:bg-black/5 dark:hover:bg-white/10 rounded-sm cursor-pointer"
+                          onClick={() => {
+                            onSelectDataSource(id, !isChecked(), isAll);
+                          }}
+                        >
+                          <div className="flex items-center gap-2 overflow-hidden">
+                            {isAll ? (
+                              <Layers className="size-4 text-[#0287FF]" />
+                            ) : (
+                              <Box className="size-4 text-muted-foreground" />
+                            )}
+
+                            <span className="truncate text-sm">
+                              {isAll && name ? t(name) || "All" : name}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-1">
+                            <div className="flex justify-center items-center size-6">
+                              <Checkbox
+                                checked={isChecked()}
+                                indeterminate={isAll}
+                                onChange={(checked) =>
+                                  onSelectDataSource(id, checked, isAll)
+                                }
+                              />
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <div className="flex items-center justify-center py-4">
+                    <NoDataImage />
+                  </div>
+                )}
+
+                {visibleList.length > 0 && (
+                  <Pagination
+                    current={page}
+                    totalPage={totalPage}
+                    onPrev={handlePrev}
+                    onNext={handleNext}
+                    className="dark:border-t-[#202126]"
+                  />
+                )}
+              </div>
+            }
+          >
+            <div
+              role="button"
+              tabIndex={0}
+              className="flex items-center justify-center size-4 rounded-sm hover:bg-black/5 dark:hover:bg-white/10"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <ChevronDown className="size-3 opacity-50" />
+            </div>
+          </Popover>
+        </>
+      )}
+    </div>
+  );
+}
