@@ -50,6 +50,10 @@ const Markdown: FC<MarkdownProps> = (props) => {
     fetchContent(url);
   }, [url]);
 
+  useEffect(() => {
+    setContent(rest.content);
+  }, [rest.content]);
+
   return (
     <XMarkdown
       {...rest}

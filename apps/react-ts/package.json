@@ -14,6 +14,7 @@
     "@infinilabs/chat-message": "workspace:*",
     "@infinilabs/filter": "workspace:*",
     "@infinilabs/search-results": "workspace:*",
+    "@infinilabs/markdown": "workspace:*",
     "antd": "^5.20.6",
     "clsx": "^2.1.1",
     "lucide-react": "^0.562.0",
