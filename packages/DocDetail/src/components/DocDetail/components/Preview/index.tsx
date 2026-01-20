@@ -4,8 +4,9 @@ import type {
   MetadataContentType,
 } from "@/components/DocDetail";
 import { Collapse } from "antd";
+import Markdown from "@infinilabs/markdown";
+
 import Pdf from "./components/Pdf";
-import Markdown from "./components/Markdown";
 import Docx from "./components/Docx";
 import Pptx from "./components/Pptx";
 

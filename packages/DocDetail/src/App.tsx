@@ -14,7 +14,7 @@ const App = () => {
           title: "Q3 Business Report",
           icon: "https://picsum.photos/seed/file-icon/40/40",
           size: 1048576,
-          url: "http://192.168.3.181:9101/coco-server/test.pdf",
+          url: "/document/dce0c5efb29bf5647c34eb58ecabca93/raw_content/1%E5%88%86%E9%92%9F%E8%83%BD%E5%81%9A%E4%BB%80%E4%B9%88%EF%BC%9F%E4%B8%8D%E5%8F%AF%E6%80%9D%E8%AE%AE%E7%9A%84_%E6%88%98%E6%8B%96_%E5%BF%83%E7%90%86%E5%AD%A6_(%E7%BE%8E)%E6%9D%B0%E5%A4%AB%C2%B7%E6%88%B4%E7%BB%B4%E6%A3%AE_%E6%96%B0%E4%B8%96%E7%95%8C_2013.5.pdf",
           metadata: {
             content_type: "pdf",
           },
@@ -50,6 +50,13 @@ Approximately ten individuals, mostly men with one woman visible, are depicted w
 ## Relationships and Synthesis
 The document intertwines physical setting, human activity, and symbolic communication to portray a snapshot of corporate culture. The environment supports the event's purpose, the participants' uniformity reflects organizational cohesion, and the banner bridges corporate messaging with cultural tradition. Together, these elements construct a narrative of a modern, globally-aware company marking a moment of collective planning and aspirational growth.
 
+[Link to Coco](https://coco.rs)
+
+| Name   | Age | City      |
+|--------|-----|-----------|
+| Alice  | 30  | New York  |
+| Bob    | 25  | San Francisco |
+| Charlie| 35  | Los Angeles |
 
 \`\`\`ts
 const analysisSummary = {
@@ -93,9 +100,11 @@ mindmap
           },
         }}
         actionButtons={[
-          <ActionButton icon={<Bot />}>Continue Chat</ActionButton>,
+          <ActionButton key="chat" icon={<Bot />}>
+            Continue Chat
+          </ActionButton>,
 
-          <ActionButton icon={<SquareArrowOutUpRight />}>
+          <ActionButton key="open" icon={<SquareArrowOutUpRight />}>
             Open Source
           </ActionButton>,
         ]}

@@ -1,8 +1,8 @@
 import type { FC } from "react";
 import { Collapse } from "antd";
+import Markdown from "@infinilabs/markdown";
 
 import type { DocDetailProps } from "@/components/DocDetail";
-import Markdown from "../Preview/components/Markdown";
 
 const AIInterpretation: FC<DocDetailProps> = (props) => {
   const { data, i18n } = props;

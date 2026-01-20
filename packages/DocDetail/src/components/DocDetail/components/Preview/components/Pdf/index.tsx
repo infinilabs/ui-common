@@ -23,6 +23,7 @@ const Pdf: FC<PdfProps> = (props) => {
           pageSize={1}
           total={numPages}
           current={pageNumber}
+          showSizeChanger={false}
           onChange={(page) => setPageNumber(page)}
         />
       </div>
