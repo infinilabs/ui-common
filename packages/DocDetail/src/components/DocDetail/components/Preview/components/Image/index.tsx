@@ -8,7 +8,7 @@ const Image: FC<DocDetailProps> = (props) => {
   const { data } = props;
   const containerRef = useRef<HTMLDivElement>(null);
   const containerSize = useSize(containerRef);
-  const [errored, setErrored] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   const calcHeight = useMemo(() => {
     const containerWidth = containerSize?.width;
@@ -42,9 +42,9 @@ const Image: FC<DocDetailProps> = (props) => {
             }}
           />
         }
-        src={errored ? data?.thumbnail : data?.url}
+        src={failed ? data?.thumbnail : data?.url}
         onError={() => {
-          setErrored(true);
+          setFailed(true);
         }}
       />
     </div>
