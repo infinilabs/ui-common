@@ -12,11 +12,16 @@ const App = () => {
           },
           category: "report",
           title: "Q3 Business Report",
-          icon: "https://picsum.photos/seed/file-icon/40/40",
+          icon: "https://dev.infini.cloud:27200/assets/icons/connector/s3/file.png",
           size: 1048576,
-          url: "/document/dce0c5efb29bf5647c34eb58ecabca93/raw_content/1%E5%88%86%E9%92%9F%E8%83%BD%E5%81%9A%E4%BB%80%E4%B9%88%EF%BC%9F%E4%B8%8D%E5%8F%AF%E6%80%9D%E8%AE%AE%E7%9A%84_%E6%88%98%E6%8B%96_%E5%BF%83%E7%90%86%E5%AD%A6_(%E7%BE%8E)%E6%9D%B0%E5%A4%AB%C2%B7%E6%88%B4%E7%BB%B4%E6%A3%AE_%E6%96%B0%E4%B8%96%E7%95%8C_2013.5.pdf",
+          // url: "/document/dce0c5efb29bf5647c34eb58ecabca93/raw_content/1%E5%8z8%86%E9%92%9F%E8%83%BD%E5%81%9A%E4%BB%80%E4%B9%88%EF%BC%9F%E4%B8%8D%E5%8F%AF%E6%80%9D%E8%AE%AE%E7%9A%84_%E6%88%98%E6%8B%96_%E5%BF%83%E7%90%86%E5%AD%A6_(%E7%BE%8E)%E6%9D%B0%E5%A4%AB%C2%B7%E6%88%B4%E7%BB%B4%E6%A3%AE_%E6%96%B0%E4%B8%96%E7%95%8C_2013.5.pdf",
+          url: "/document/3fbcffdbdf044ad2cf9edc3b0e1741d3/raw_content/106347408.jpg",
+          thumbnail:
+            "https://dev.infini.cloud:27200/attachment/d5itnq14d9v3mq6oucag",
           metadata: {
-            content_type: "pdf",
+            content_type: "image",
+            width: 3062,
+            height: 2041,
           },
           owner: {
             title: "Alice Johnson",

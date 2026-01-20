@@ -9,6 +9,7 @@ import Markdown from "@infinilabs/markdown";
 import Pdf from "./components/Pdf";
 import Docx from "./components/Docx";
 import Pptx from "./components/Pptx";
+import Image from "./components/Image";
 
 const Preview: FC<DocDetailProps> = (props) => {
   const { data, i18n } = props;
@@ -40,7 +41,7 @@ const Preview: FC<DocDetailProps> = (props) => {
     if (!type || !url) return;
 
     if (type === "image") {
-      return <img src={url} className="w-full" />;
+      return <Image {...props} />;
     }
 
     if (type === "video") {
