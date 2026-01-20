@@ -17,12 +17,21 @@
 pnpm add @infinilabs/ai-chat
 ```
 
+### Peer Dependencies
+
+在使用本组件库之前，请确保你的项目中安装了以下依赖（通常这些也是你项目的基础依赖）：
+
+- `react` >= 18.3.1
+- `react-dom` >= 18.3.1
+- `antd` >= 6
+
 本包默认内置：
 
 - React 组件 + Zustand 状态管理
-- Tailwind v4 + 一套内置样式（通过 `index.css` 自动引入）
+- Tailwind v4 + 一套内置样式（JS 自动注入，无需手动引入 CSS）
 - `react-i18next` 国际化配置（中英文文案）
 - 依赖 `antd` 的 `message` 组件做操作反馈
+- `axios`, `dayjs`, `lucide-react` 等工具库
 
 开发与构建：
 
