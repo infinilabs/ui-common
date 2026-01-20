@@ -23,6 +23,8 @@ interface DeepResearchProps {
   reportData?: ResearchReportData;
   reportContent?: string;
   searchHits?: StepSearchHit[];
+  formatUrl?: (data: any) => string;
+  theme?: "light" | "dark";
 }
 
 export const DeepResearch = ({
@@ -39,6 +41,8 @@ export const DeepResearch = ({
   reportData,
   reportContent,
   searchHits,
+  formatUrl,
+  theme,
 }: DeepResearchProps) => {
   const { t } = useTranslation();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -77,7 +81,7 @@ export const DeepResearch = ({
         <div className="w-full rounded-xl border border-[#EEF0F3] bg-[#F3F4F6] dark:border-[#1D3A6F] dark:bg-[#020817] p-4">
           <div className="flex items-center gap-2 mb-4">
             <Hourglass className="h-4 w-4 text-[#148EFF] cm-hourglass-rotate" />
-            <div className="text-sm font-medium text-[#333] dark:text-[#E5E7EB]">
+            <div className="text-sm font-medium text-[#333] dark:text-[#E5E7EB] truncate">
               {stepTitle}
             </div>
           </div>
@@ -97,7 +101,7 @@ export const DeepResearch = ({
               )}
               <span className="">
                 {displayStatus}
-                <span className="truncate text-[#999] dark:text-[#A6A6A6]">
+                <span className="text-[#999] dark:text-[#A6A6A6] truncate">
                   ｜ {query}
                 </span>
               </span>
@@ -111,7 +115,7 @@ export const DeepResearch = ({
               {normalizedProgress >= 1 && (
                 <button
                   type="button"
-                  className="px-3 py-1 text-xs font-medium rounded-full bg-[#E9F0FE] text-[#1784FC] hover:bg-[#E0E9FD] cursor-pointer"
+                  className="px-3 py-1 text-xs font-medium rounded-full bg-[#E9F0FE] dark:bg-blue-900/30 text-[#1784FC] dark:text-blue-400 hover:bg-[#E0E9FD] dark:hover:bg-blue-900/50 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     setDrawerDefaultTab(t("deepResearch.tab.report"));
@@ -154,6 +158,8 @@ export const DeepResearch = ({
         reportData={reportData}
         reportContent={reportContent}
         searchHits={searchHits}
+        formatUrl={formatUrl}
+        theme={theme}
       />
     </>
   );

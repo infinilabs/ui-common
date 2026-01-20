@@ -6,10 +6,12 @@ import type { StepSearchHit } from "./ResearchStepsContent";
 
 interface ResearchSearchResultsContentProps {
   hits?: StepSearchHit[];
+  theme?: "light" | "dark";
 }
 
 export const ResearchSearchResultsContent = ({
   hits,
+  theme,
 }: ResearchSearchResultsContentProps) => {
   const records = useMemo(() => {
     if (!hits || !Array.isArray(hits)) return [];
@@ -58,7 +60,7 @@ export const ResearchSearchResultsContent = ({
     <div className="pb-8 max-w-[730px]">
       <SearchResults
         section={records}
-        theme="light"
+        theme={theme || "light"}
         hideHeader
         onRecordClick={(record) => {
           if (typeof record.url === "string") window.open(record.url);

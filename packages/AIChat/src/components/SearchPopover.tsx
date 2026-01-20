@@ -135,7 +135,7 @@ export default function SearchPopover({
   return (
     <div
       className={clsx(
-        "flex justify-center items-center gap-1 h-8 px-2 rounded-full transition cursor-pointer hover:bg-[#EDEDED] dark:hover:bg-[#202126]"
+        "flex justify-center items-center gap-1 h-6 px-2 rounded-full transition cursor-pointer hover:bg-[#EDEDED] dark:hover:bg-[#202126]"
       )}
       style={{
         backgroundColor: isSearchActive ? "rgba(1,138,229,0.21)" : undefined,

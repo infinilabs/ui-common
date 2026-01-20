@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { debounce } from "lodash-es";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
-import { ChevronDown, RefreshCw, Search } from "lucide-react";
+import { ChevronDown, RefreshCw, Search, Check } from "lucide-react";
 
 import i18n from "@/i18n";
 import { Input, type InputRef } from "@/components/ui/input";
@@ -52,10 +52,11 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
   const [open, setOpen] = useState(false);
   const searchInputRef = useRef<InputRef>(null);
   const [keyword, setKeyword] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const pageSize = 10;
+  const pageSize = 100;
   
   const debouncedKeyword = useMemo(
     () => debounce((k: string) => {
@@ -213,12 +214,14 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
             <Input
               ref={searchInputRef}
               autoFocus
-              value={keyword}
+              value={inputValue}
               placeholder={t("assistant_list.search.placeholder")}
               className="h-8 rounded-full bg-gray-50 dark:bg-zinc-900"
               prefix={<Search className="h-4 w-4 text-muted-foreground" />}
               onChange={(event) => {
-                debouncedKeyword(event.target.value);
+                const val = event.target.value;
+                setInputValue(val);
+                debouncedKeyword(val);
               }}
               onClick={(e) => e.stopPropagation()}
             />
@@ -239,8 +242,8 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
                       className={clsx(
                         "w-full text-left flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm transition-colors",
                         isActive
-                          ? "bg-accent text-accent-foreground"
-                          : "hover:bg-accent hover:text-accent-foreground"
+                          ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 font-medium"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800"
                       )}
                       onClick={() => {
                         setCurrentAssistant({
@@ -268,7 +271,8 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
                           />
                         )
                       ) : null}
-                      <div className="truncate">{name}</div>
+                      <div className="truncate flex-1">{name}</div>
+                      {isActive && <Check className="w-4 h-4 ml-auto text-blue-600 dark:text-blue-400" />}
                     </button>
                   );
                 })}

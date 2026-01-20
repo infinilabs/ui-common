@@ -22,6 +22,7 @@ export function useMessageHandler(
     deal_deep_read: (data: IChunkData) => void;
     deal_think: (data: IChunkData) => void;
     deal_response: (data: IChunkData) => void;
+    deal_deep_research: (data: IChunkData) => void;
   }
 ) {
   const messageTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
@@ -78,6 +79,19 @@ export function useMessageHandler(
           handlers.deal_pick_source(chunkData);
         } else if (chunkData.chunk_type === "deep_read") {
           handlers.deal_deep_read(chunkData);
+        } else if (
+          [
+            "research_planner_start",
+            "research_planner_end",
+            "research_researcher_start",
+            "research_researcher_step_start",
+            "research_researcher_step_end",
+            "research_researcher_end",
+            "research_reporter_start",
+            "research_reporter_end",
+          ].includes(chunkData.chunk_type)
+        ) {
+          handlers.deal_deep_research(chunkData);
         } else if (chunkData.chunk_type === "think") {
           handlers.deal_think(chunkData);
         } else if (chunkData.chunk_type === "response") {

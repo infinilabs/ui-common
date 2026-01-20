@@ -79,7 +79,7 @@ const InputControls = ({
     <div className="flex items-center pt-2 gap-2">
       <div
         className={clsx(
-          "flex items-center justify-center gap-1 h-8 px-2 rounded-full transition hover:bg-[#EDEDED] dark:hover:bg-[#202126] cursor-pointer"
+          "flex items-center justify-center gap-1 h-6 px-2 rounded-full transition hover:bg-[#EDEDED] dark:hover:bg-[#202126] cursor-pointer"
         )}
         style={{
           backgroundColor: isDeepResearchActive
@@ -104,7 +104,7 @@ const InputControls = ({
       
       <div
         className={clsx(
-          "flex items-center justify-center gap-1 h-8 px-2 rounded-full transition hover:bg-[#EDEDED] dark:hover:bg-[#202126] cursor-pointer"
+          "flex items-center justify-center gap-1 h-6 px-2 rounded-full transition hover:bg-[#EDEDED] dark:hover:bg-[#202126] cursor-pointer"
         )}
         style={{
           backgroundColor: isDeepThinkActive
