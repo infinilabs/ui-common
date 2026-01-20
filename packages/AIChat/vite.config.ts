@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 import path from "node:path";
 
 export default defineConfig(({ mode }) => {
@@ -8,42 +9,26 @@ export default defineConfig(({ mode }) => {
   const apiTarget = env.VITE_API_PROXY_TARGET || "http://localhost:8000";
 
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), cssInjectedByJsPlugin()],
     build: {
       minify: false,
       lib: {
-        entry: path.resolve(__dirname, "src/index.ts"),
+        entry: path.resolve(__dirname, "src/components/index.tsx"),
         name: "AIChat",
         fileName: "index",
-        formats: ["es"],
+        formats: ["es", "cjs"],
       },
       rollupOptions: {
         external: [
           "react",
           "react-dom",
-          "antd",
-          "lucide-react",
-          "react-i18next",
-          "i18next",
-          "axios"
+          "antd"
         ],
       },
     },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "src"),
-        "@infinilabs/chat-message": path.resolve(
-          __dirname,
-          "../ChatMessage/src/components/index.tsx"
-        ),
-        react: path.resolve(
-          __dirname,
-          "../ChatMessage/node_modules/react"
-        ),
-        "react-dom": path.resolve(
-          __dirname,
-          "../ChatMessage/node_modules/react-dom"
-        ),
       },
     },
     server: {
