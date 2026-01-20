@@ -10,10 +10,9 @@ import {
 import { I18nextProvider, useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 import i18n from "@/i18n";
+import { type ChatMessageRef } from "@infinilabs/chat-message";
 
 import { useChatStore } from "@/stores/chatStore";
-import useMessageChunkData from "@/hooks/useMessageChunkData";
-import { useMessageHandler } from "@/hooks/useMessageHandler";
 import { ChatContent } from "./ChatContent";
 import type { Chat, ChatMessageItem, IChunkData } from "@/types/chat";
 import { streamPost } from "@/api/streamFetch";
@@ -31,6 +30,12 @@ interface ChatAIProps {
 export interface SendMessageParams {
   message?: string;
   attachments?: string[];
+  search?: boolean;
+  deep_thinking?: boolean;
+  mcp?: boolean;
+  datasource?: string;
+  mcp_servers?: string;
+  assistant_id?: string;
 }
 
 export interface ChatAIRef {
@@ -58,30 +63,7 @@ const InnerChatAI = memo(
 
     const curIdRef = useRef("");
     const curSessionIdRef = useRef("");
-
-    const {
-      data: {
-        query_intent,
-        tools,
-        fetch_source,
-        pick_source,
-        deep_read,
-        think,
-        response,
-      },
-      handlers,
-      clearAllChunkData,
-    } = useMessageChunkData();
-
-    const [loadingStep, setLoadingStep] = useState<Record<string, boolean>>({
-      query_intent: false,
-      tools: false,
-      fetch_source: false,
-      pick_source: false,
-      deep_read: false,
-      think: false,
-      response: false,
-    });
+    const activeMessageRef = useRef<ChatMessageRef>(null);
 
     useEffect(() => {
       setHasActiveChat(Boolean(activeChat));
@@ -99,41 +81,20 @@ const InnerChatAI = memo(
       };
     };
 
-    const { dealMsg } = useMessageHandler(
-      curIdRef,
-      curSessionIdRef,
-      setCurChatEnd,
-      setTimedoutShow,
-      () => {
-        if (activeChat?._id) {
-          Post(
-            `/chat/${activeChat._id}/_cancel?message_id=${curIdRef.current}`,
-            undefined
-          ).catch(() => {});
-        }
-      },
-      setLoadingStep,
-      handlers
-    );
-
-    useEffect(() => {
-      // no-op hook for future side effects tied to dealMsg
-    }, [dealMsg]);
-
     const handleStreamMessage = useCallback(
       (msg: string) => {
         try {
           // Attempt to parse the message, as it might be a JSON string
           if (msg.startsWith("{") && msg.endsWith("}")) {
               const chunkData = JSON.parse(msg);
-              // Check if it's a message chunk handled by useMessageHandler
-              if (chunkData.chunk_type && ["query_intent", "tools", "fetch_source", "pick_source", "deep_read", "think", "response", "reply_end"].includes(chunkData.chunk_type)) {
-                  // It's a chunk, let dealMsg handle it
+              if (chunkData.chunk_type) {
+                activeMessageRef.current?.addChunk(chunkData);
+                
+                if (chunkData.chunk_type === "reply_end") {
+                  setCurChatEnd(true);
+                }
               }
           }
-          
-          // Delegate to useMessageHandler for streaming updates (thinking, response generation, etc.)
-          dealMsg(msg);
 
           // Existing logic for updating the Chat List / History state
           if (msg.includes("\"user\"") && msg.includes("_source") && msg.includes("result")) {
@@ -211,30 +172,22 @@ const InnerChatAI = memo(
            console.error("Failed to parse chat message:", error);
         }
       },
-      [activeChat, setActiveChat, dealMsg]
+      [activeChat, setActiveChat, setCurChatEnd]
     );
 
     const resetChatState = useCallback(() => {
       setCurChatEnd(true);
-      setLoadingStep({
-        query_intent: false,
-        tools: false,
-        fetch_source: false,
-        pick_source: false,
-        deep_read: false,
-        think: false,
-        response: false,
-      });
+      activeMessageRef.current?.reset();
     }, [setCurChatEnd]);
 
     const prepareChatSession = useCallback(
       async (value: string) => {
-        await clearAllChunkData();
+        activeMessageRef.current?.reset();
         setTimedoutShow(false);
         setQuestion(value);
         setCurChatEnd(false);
       },
-      [clearAllChunkData, setCurChatEnd]
+      [setCurChatEnd]
     );
 
     const createNewChat = useCallback(
@@ -245,13 +198,22 @@ const InnerChatAI = memo(
           return;
         }
         await prepareChatSession(text);
+        const queryParams = {
+          search: params.search,
+          deep_thinking: params.deep_thinking,
+          mcp: params.mcp,
+          datasource: params.datasource,
+          mcp_servers: params.mcp_servers,
+          assistant_id: params.assistant_id || currentAssistant?._id || "",
+        };
+
         await streamPost({
           url: "/chat/_create",
           body: {
             message: text,
             attachments,
-            assistant_id: currentAssistant?._id,
           },
+          queryParams,
           onMessage: handleStreamMessage,
         });
       },
@@ -267,13 +229,23 @@ const InnerChatAI = memo(
           return;
         }
         await prepareChatSession(text);
+        const queryParams = {
+          search: params.search,
+          deep_thinking: params.deep_thinking,
+          mcp: params.mcp,
+          datasource: params.datasource,
+          mcp_servers: params.mcp_servers,
+          assistant_id: params.assistant_id || currentAssistant?._id || "",
+        };
+
         await streamPost({
           url: `/chat/${chat._id}/_chat`,
           body: { message: text, attachments },
+          queryParams,
           onMessage: handleStreamMessage,
         });
       },
-      [handleStreamMessage, prepareChatSession]
+      [handleStreamMessage, prepareChatSession, currentAssistant]
     );
 
     const handleSendMessage = useCallback(
@@ -332,7 +304,7 @@ const InnerChatAI = memo(
           // Perform async operations to avoid synchronous state updates in effect
           (async () => {
              setTimedoutShow(false);
-             await clearAllChunkData();
+             activeMessageRef.current?.reset();
              
              try {
                const [err, res] = await Get<{ hits: { hits: ChatMessageItem[] } }>(
@@ -356,7 +328,7 @@ const InnerChatAI = memo(
              } catch (e) {
                console.error(e);
              }
-          })();
+           })();
         } else {
            // If currentChatId is undefined (chat cleared), just ensure state is clean
            // Wrap in timeout to avoid synchronous state update warning
@@ -366,7 +338,7 @@ const InnerChatAI = memo(
            }, 0);
         }
       }
-    }, [activeChat?._id, clearAllChunkData, setActiveChat, setCurChatEnd]);
+    }, [activeChat?._id, setActiveChat, setCurChatEnd]);
 
     const onSelectChat = useCallback(
       (chat: Chat) => {
@@ -400,14 +372,7 @@ const InnerChatAI = memo(
       <div className="flex flex-col rounded-md h-full overflow-hidden relative">
         <ChatContent
           activeChat={activeChat}
-          query_intent={query_intent}
-          tools={tools}
-          fetch_source={fetch_source}
-          pick_source={pick_source}
-          deep_read={deep_read}
-          think={think}
-          response={response}
-          loadingStep={loadingStep}
+          activeMessageRef={activeMessageRef}
           timedoutShow={timedoutShow}
           Question={Question}
           handleSendMessage={(message) => handleSendMessage(activeChat, { message })}

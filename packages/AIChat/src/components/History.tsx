@@ -19,10 +19,12 @@ interface HistoryProps {
 function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps) {
   const { t: tOriginal } = useTranslation();
   const t = tProp || tOriginal;
+
   const chats = useChatStore((state) => state.chats);
   const setChats = useChatStore((state) => state.setChats);
   const active = useChatStore((state) => state.activeChat);
   const setActive = useChatStore((state) => state.setActiveChat);
+  
   const [messageApi, contextHolder] = message.useMessage();
 
   const [keyword, setKeyword] = useState("");

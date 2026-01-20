@@ -1,6 +1,7 @@
-import { XMarkdown } from "@ant-design/x-markdown";
-import { FileText, Download } from "lucide-react";
+import { FileText, ExternalLink } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import Markdown from "@infinilabs/markdown";
+
 
 export interface ResearchReportData {
   title?: string;
@@ -12,17 +13,18 @@ export interface ResearchReportData {
 export interface ResearchReportContentProps {
   content?: string;
   data?: ResearchReportData;
+  formatUrl?: (data: any) => string;
 }
 
-export const ResearchReportContent = ({ content, data }: ResearchReportContentProps) => {
+export const ResearchReportContent = ({ content, data, formatUrl }: ResearchReportContentProps) => {
   const { t } = useTranslation();
   if (!content && !data) {
     return (
       <div className="px-6 pb-8 max-w-[730px] h-full flex flex-col items-center justify-center text-center">
-        <div className="mb-2 text-base font-medium text-[#333333]">
+        <div className="mb-2 text-base font-medium text-[#333333] dark:text-[#E5E7EB]">
           {t("deepResearch.report.generatingTitle")}
         </div>
-        <div className="text-sm text-[#999999] max-w-[520px] leading-relaxed">
+        <div className="text-sm text-[#999999] dark:text-[#A6A6A6] max-w-[520px] leading-relaxed">
           {t("deepResearch.report.generatingDescription")}
         </div>
       </div>
@@ -48,20 +50,20 @@ export const ResearchReportContent = ({ content, data }: ResearchReportContentPr
           </div>
           {data.url && (
             <a
-              href={data.url}
+              href={(formatUrl ? formatUrl({ url: data.url }) : data.url)}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              title={t("deepResearch.button.download")}
+              className="p-2 text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
+              title={t("deepResearch.button.view")}
             >
-              <Download className="w-5 h-5" />
+              <ExternalLink className="w-5 h-5" />
             </a>
           )}
         </div>
       )}
       {content && (
         <div className="cm-markdown">
-          <XMarkdown content={content} />
+          <Markdown content={content} />
         </div>
       )}
     </div>

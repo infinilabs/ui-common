@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import type { UIEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
-import { ChatMessage } from "@infinilabs/chat-message";
+import { ChatMessage, type ChatMessageRef } from "@infinilabs/chat-message";
 
 import { Greetings } from "./Greetings";
 import { useChatScroll } from "@/hooks/useChatScroll";
@@ -11,16 +11,59 @@ import { useConnectStore } from "@/stores/connectStore";
 import ScrollToBottom from "@/components/Common/ScrollToBottom";
 import { useChatStore, type Assistant } from "@/stores/chatStore";
 
+export interface ActiveChatMessageProps {
+  activeMessageRef?: React.RefObject<ChatMessageRef>;
+  activeChat?: Chat;
+  curChatEnd: boolean;
+  Question: string;
+  handleSendMessage: (content: string, newChat?: Chat) => void;
+  formatUrl?: (data: IChunkData) => string;
+  currentAssistant?: Assistant;
+  assistantList?: Assistant[];
+}
+
+export const ActiveChatMessage = ({
+  activeMessageRef,
+  activeChat,
+  curChatEnd,
+  Question,
+  handleSendMessage,
+  formatUrl,
+  currentAssistant,
+  assistantList,
+}: ActiveChatMessageProps) => {
+  const allMessages = activeChat?.messages || [];
+
+  if (curChatEnd || !activeChat?._source?.id) {
+    return null;
+  }
+
+  return (
+    <ChatMessage
+      key={"current"}
+      ref={activeMessageRef}
+      message={{
+        _id: "current",
+        _source: {
+          type: "assistant",
+          assistant_id:
+            allMessages[allMessages.length - 1]?._source?.assistant_id,
+          message: "",
+          question: Question,
+        },
+      }}
+      onResend={handleSendMessage}
+      isTyping={!curChatEnd}
+      formatUrl={formatUrl}
+      currentAssistant={currentAssistant}
+      assistantList={assistantList}
+    />
+  );
+};
+
 interface ChatContentProps {
   activeChat?: Chat;
-  query_intent?: IChunkData;
-  tools?: IChunkData;
-  fetch_source?: IChunkData;
-  pick_source?: IChunkData;
-  deep_read?: IChunkData;
-  think?: IChunkData;
-  response?: IChunkData;
-  loadingStep?: Record<string, boolean>;
+  activeMessageRef?: React.RefObject<ChatMessageRef>;
   timedoutShow: boolean;
   Question: string;
   handleSendMessage: (content: string, newChat?: Chat) => void;
@@ -33,14 +76,7 @@ interface ChatContentProps {
 
 export const ChatContent = ({
   activeChat,
-  query_intent,
-  tools,
-  fetch_source,
-  pick_source,
-  deep_read,
-  think,
-  response,
-  loadingStep,
+  activeMessageRef,
   timedoutShow,
   Question,
   handleSendMessage,
@@ -54,7 +90,7 @@ export const ChatContent = ({
   const setCurrentSessionId = useConnectStore(
     (state) => state.setCurrentSessionId
   );
-  
+
   const curChatEnd = useChatStore((state) => state.curChatEnd);
   const assistantList = useChatStore((state) => state.assistantList);
 
@@ -77,25 +113,13 @@ export const ChatContent = ({
 
   useEffect(() => {
     scrollToBottom();
-  }, [
-    activeChat?._id,
-    query_intent?.message_chunk,
-    fetch_source?.message_chunk,
-    pick_source?.message_chunk,
-    deep_read?.message_chunk,
-    think?.message_chunk,
-    response?.message_chunk,
-    curChatEnd,
-    scrollToBottom,
-  ]);
+  }, [activeChat?._id, curChatEnd, scrollToBottom]);
 
   useEffect(() => {
     return () => {
       scrollToBottom.cancel();
     };
   }, [scrollToBottom]);
-
-  const allMessages = activeChat?.messages || [];
 
   const handleScroll = (event: UIEvent<HTMLDivElement>) => {
     const { scrollHeight, scrollTop, clientHeight } =
@@ -118,53 +142,27 @@ export const ChatContent = ({
         )}
 
         {activeChat?.messages?.map((message, index) => (
-              <ChatMessage
-                key={message._id + index}
-                message={message}
-                isTyping={false}
-                onResend={handleSendMessage}
-                currentAssistant={currentAssistant}
-                assistantList={assistantList}
-              />
-            ))}
+          <ChatMessage
+            key={`${message._id || "msg"}-${index}`}
+            message={message}
+            isTyping={false}
+            onResend={handleSendMessage}
+            currentAssistant={currentAssistant}
+            assistantList={assistantList}
+            formatUrl={formatUrl}
+          />
+        ))}
 
-            {(!curChatEnd ||
-              query_intent ||
-              tools ||
-              fetch_source ||
-              pick_source ||
-              deep_read ||
-              think ||
-              response) &&
-            activeChat?._source?.id ? (
-              <ChatMessage
-                key={"current"}
-                message={{
-                  _id: "current",
-                  _source: {
-                    type: "assistant",
-                    assistant_id:
-                      allMessages[allMessages.length - 1]?._source
-                        ?.assistant_id,
-                    message: "",
-                    question: Question,
-                  },
-                }}
-                onResend={handleSendMessage}
-                isTyping={!curChatEnd}
-                query_intent={query_intent}
-                tools={tools}
-                fetch_source={fetch_source}
-                pick_source={pick_source}
-                deep_read={deep_read}
-                think={think}
-                response={response}
-                loadingStep={loadingStep}
-                formatUrl={formatUrl}
-                currentAssistant={currentAssistant}
-                assistantList={assistantList}
-              />
-            ) : null}
+        <ActiveChatMessage
+          activeMessageRef={activeMessageRef}
+          activeChat={activeChat}
+          curChatEnd={curChatEnd}
+          Question={Question}
+          handleSendMessage={handleSendMessage}
+          formatUrl={formatUrl}
+          currentAssistant={currentAssistant}
+          assistantList={assistantList}
+        />
 
         {timedoutShow ? (
           <ChatMessage

@@ -2,7 +2,7 @@ import { memo, useState, useEffect, forwardRef, useImperativeHandle, useRef, use
 import { useTranslation, I18nextProvider } from "react-i18next";
 import clsx from "clsx";
 import i18nInstance from "../i18n/config";
-import { XMarkdown } from "@ant-design/x-markdown";
+import Markdown from "@infinilabs/markdown";
 
 import logoImg from "../assets/icon.svg";
 import type { IChatMessage, IChunkData } from "../types/chat";
@@ -19,6 +19,7 @@ import { UserMessage } from "./UserMessage";
 import FontIcon from "./Common/Icons/FontIcon";
 import useMessageChunkData from "../hooks/useMessageChunkData";
 import { DeepResearch } from "./DeepResearch";
+import { PayloadCard } from "./PayloadCard";
 import type {
   StepItem,
   StepStatus,
@@ -53,6 +54,15 @@ export interface ChatMessageProps {
   currentAssistant?: any;
   assistantList?: any[];
   loadingStep?: Record<string, boolean>;
+  deepResearchPlans?: string[];
+  deepResearchCurrentStepIndex?: number;
+  deepResearchQuery?: string;
+  deepResearchResultCount?: number;
+  deepResearchResearcherStarted?: boolean;
+  deepResearchReporterStarted?: boolean;
+  deepResearchReporterFinished?: boolean;
+  deepResearchReportData?: ResearchReportData;
+  deepResearchSearchMap?: Record<string, { query?: string; resultCount?: number; hits?: StepSearchHit[] }>;
 }
 
 export interface ChatMessageRef {
@@ -96,6 +106,15 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
   currentAssistant,
   assistantList,
   loadingStep: externalLoadingStep,
+  deepResearchPlans: prop_deepResearchPlans,
+  deepResearchCurrentStepIndex: prop_deepResearchCurrentStepIndex,
+  deepResearchQuery: prop_deepResearchQuery,
+  deepResearchResultCount: prop_deepResearchResultCount,
+  deepResearchResearcherStarted: prop_deepResearchResearcherStarted,
+  deepResearchReporterStarted: prop_deepResearchReporterStarted,
+  deepResearchReporterFinished: prop_deepResearchReporterFinished,
+  deepResearchReportData: prop_deepResearchReportData,
+  deepResearchSearchMap: prop_deepResearchSearchMap,
 }, ref) {
   const { t, i18n } = useTranslation();
   const resolvedTheme = resolveTheme(theme);
@@ -174,24 +193,34 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
 
   const activeLoadingStep = externalLoadingStep || loadingStep;
 
+  const activeDeepResearchPlans = prop_deepResearchPlans ?? deepResearchPlans;
+  const activeDeepResearchCurrentStepIndex = prop_deepResearchCurrentStepIndex ?? deepResearchCurrentStepIndex;
+  const activeDeepResearchQuery = prop_deepResearchQuery ?? deepResearchQuery;
+  const activeDeepResearchResultCount = prop_deepResearchResultCount ?? deepResearchResultCount;
+  const activeDeepResearchResearcherStarted = prop_deepResearchResearcherStarted ?? deepResearchResearcherStarted;
+  const activeDeepResearchReporterStarted = prop_deepResearchReporterStarted ?? deepResearchReporterStarted;
+  const activeDeepResearchReporterFinished = prop_deepResearchReporterFinished ?? deepResearchReporterFinished;
+  const activeDeepResearchReportData = prop_deepResearchReportData ?? deepResearchReportData;
+  const activeDeepResearchSearchMap = prop_deepResearchSearchMap ?? deepResearchSearchMap;
+
   const hasDeepResearchPlan =
-    deepResearchPlans.length > 0 &&
-    deepResearchCurrentStepIndex >= 0 &&
-    deepResearchCurrentStepIndex < deepResearchPlans.length;
+    activeDeepResearchPlans.length > 0 &&
+    activeDeepResearchCurrentStepIndex >= 0 &&
+    activeDeepResearchCurrentStepIndex < activeDeepResearchPlans.length;
 
   const deepResearchStepTitle = hasDeepResearchPlan
-    ? deepResearchPlans[deepResearchCurrentStepIndex]
+    ? activeDeepResearchPlans[activeDeepResearchCurrentStepIndex]
     : "";
 
-  const deepResearchPlanningProgress = deepResearchPlans.length > 0 ? 1 : 0;
+  const deepResearchPlanningProgress = activeDeepResearchPlans.length > 0 ? 1 : 0;
 
   const deepResearchExecutionProgress = hasDeepResearchPlan
-    ? (deepResearchCurrentStepIndex + 1) / deepResearchPlans.length
+    ? (activeDeepResearchCurrentStepIndex + 1) / activeDeepResearchPlans.length
     : 0;
 
-  const deepResearchReportProgress = deepResearchReporterFinished
+  const deepResearchReportProgress = activeDeepResearchReporterFinished
     ? 1
-    : deepResearchReporterStarted
+    : activeDeepResearchReporterStarted
       ? 0.5
       : 0;
 
@@ -202,47 +231,47 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
     3;
 
   const deepResearchStatusText = useMemo(() => {
-    if (deepResearchReporterFinished) {
-      if (typeof deepResearchResultCount === "number") {
-        return `深度研究完成 · 找到 ${deepResearchResultCount} 条相关结果`;
+    if (activeDeepResearchReporterFinished) {
+      if (typeof activeDeepResearchResultCount === "number") {
+        return `深度研究完成 · 找到 ${activeDeepResearchResultCount} 条相关结果`;
       }
       return "深度研究完成";
     }
-    if (deepResearchReporterStarted) {
+    if (activeDeepResearchReporterStarted) {
       return "正在编写研究报告";
     }
-    if (deepResearchResearcherStarted) {
+    if (activeDeepResearchResearcherStarted) {
       return "正在执行研究计划";
     }
-    if (deepResearchPlans.length > 0) {
+    if (activeDeepResearchPlans.length > 0) {
       return "正在规划研究计划";
     }
     return undefined;
   }, [
-    deepResearchReporterFinished,
-    deepResearchResultCount,
-    deepResearchReporterStarted,
-    deepResearchResearcherStarted,
-    deepResearchPlans.length,
+    activeDeepResearchReporterFinished,
+    activeDeepResearchResultCount,
+    activeDeepResearchReporterStarted,
+    activeDeepResearchResearcherStarted,
+    activeDeepResearchPlans.length,
   ]);
 
   const deepResearchSteps = useMemo<StepItem[]>(() => {
-    if (!deepResearchPlans.length) return [];
+    if (!activeDeepResearchPlans.length) return [];
 
-    return deepResearchPlans.map((title, index) => {
+    return activeDeepResearchPlans.map((title, index) => {
       let status: StepStatus = "pending";
 
-      if (deepResearchReporterFinished) {
+      if (activeDeepResearchReporterFinished) {
         status = "done";
-      } else if (deepResearchResearcherStarted) {
-        if (index < deepResearchCurrentStepIndex) {
+      } else if (activeDeepResearchResearcherStarted) {
+        if (index < activeDeepResearchCurrentStepIndex) {
           status = "done";
-        } else if (index === deepResearchCurrentStepIndex) {
+        } else if (index === activeDeepResearchCurrentStepIndex) {
           status = "in_progress";
         }
       }
 
-      const searchInfo = deepResearchSearchMap[title];
+      const searchInfo = activeDeepResearchSearchMap[title];
       const searches: StepSearch[] | undefined = searchInfo?.query
         ? [
             {
@@ -267,24 +296,24 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
       };
     });
   }, [
-    deepResearchPlans,
-    deepResearchCurrentStepIndex,
-    deepResearchResearcherStarted,
-    deepResearchReporterFinished,
-    deepResearchSearchMap,
+    activeDeepResearchPlans,
+    activeDeepResearchCurrentStepIndex,
+    activeDeepResearchResearcherStarted,
+    activeDeepResearchReporterFinished,
+    activeDeepResearchSearchMap,
   ]);
 
   const deepResearchAllHits = useMemo(() => {
     const allHits: StepSearchHit[] = [];
-    Object.values(deepResearchSearchMap).forEach((info) => {
+    Object.values(activeDeepResearchSearchMap).forEach((info) => {
       if (info.hits && Array.isArray(info.hits)) {
         allHits.push(...info.hits);
       }
     });
     return allHits;
-  }, [deepResearchSearchMap]);
+  }, [activeDeepResearchSearchMap]);
 
-  const deepResearchPlannerStatus: StepStatus = deepResearchPlans.length
+  const deepResearchPlannerStatus: StepStatus = activeDeepResearchPlans.length
     ? "done"
     : "pending";
 
@@ -557,10 +586,13 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
     currentAssistant,
   ]);
 
-  const messageContent = message?._source?.message || "";
-  const attachments = message?._source?.attachments ?? [];
-  const details = message?._source?.details || [];
-  const question = message?._source?.question || "";
+  const source = message?._source;
+  const messageContent = source?.message || "";
+  const payload = source?.payload;
+
+  const attachments = source?.attachments ?? [];
+  const details = source?.details || [];
+  const question = source?.question || "";
 
   const showActions =
     isTyping === false && (messageContent || response?.message_chunk);
@@ -617,22 +649,26 @@ const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(funct
         />
 
         <div className="cm-markdown">
-          <XMarkdown content={messageContent || response?.message_chunk || ""} />
+          <Markdown content={messageContent || response?.message_chunk || ""} />
         </div>
+
+        <PayloadCard payload={payload as any} formatUrl={formatUrl} />
 
         {hasDeepResearchPlan && (
           <DeepResearch
             stepTitle={deepResearchStepTitle}
-            query={deepResearchQuery || question}
-            resultCount={deepResearchResultCount}
+            query={activeDeepResearchQuery || question}
+            resultCount={activeDeepResearchResultCount}
             progress={deepResearchProgress}
             statusText={deepResearchStatusText}
             steps={deepResearchSteps}
             plannerStatus={deepResearchPlannerStatus}
             executionStatus={deepResearchExecutionStatus}
             reportStatus={deepResearchReportStatus}
-            reportData={deepResearchReportData}
+            reportData={activeDeepResearchReportData}
             searchHits={deepResearchAllHits}
+            formatUrl={formatUrl}
+            theme={resolvedTheme}
           />
         )}
 

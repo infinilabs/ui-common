@@ -79,7 +79,11 @@ export const useChatStore = create<IChatStore>()(
     {
       name: "chat-state",
       // storage: createJSONStorage(() => sessionStorage),
-      partialize: () => ({}),
+      partialize: (state) => ({
+        activeChat: state.activeChat,
+        currentAssistant: state.currentAssistant,
+        messages: state.messages,
+      }),
     }
   )
 );

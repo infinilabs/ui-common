@@ -32,6 +32,10 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "src"),
+        "@infinilabs/chat-message": path.resolve(
+          __dirname,
+          "../ChatMessage/src/components/index.tsx"
+        ),
         react: path.resolve(
           __dirname,
           "../ChatMessage/node_modules/react"

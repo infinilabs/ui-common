@@ -23,6 +23,8 @@ interface DeepResearchDrawerProps {
   reportData?: ResearchReportData;
   reportContent?: string;
   searchHits?: StepSearchHit[];
+  formatUrl?: (data: any) => string;
+  theme?: "light" | "dark";
 }
 
 export const DeepResearchDrawer = ({
@@ -36,6 +38,8 @@ export const DeepResearchDrawer = ({
   reportData,
   reportContent,
   searchHits,
+  formatUrl,
+  theme,
 }: DeepResearchDrawerProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(defaultActiveTab || t("deepResearch.tab.steps"));
@@ -93,15 +97,15 @@ export const DeepResearchDrawer = ({
                   <>
                     <button
                       type="button"
-                      className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#E9F0FE] text-sm text-[#1784FC] hover:bg-[#E0E9FD] border-none outline-none cursor-pointer"
-                      onClick={() => reportData?.url && window.open(reportData.url, '_blank')}
+                      className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#E9F0FE] dark:bg-blue-900/30 text-sm text-[#1784FC] dark:text-blue-400 hover:bg-[#E0E9FD] dark:hover:bg-blue-900/50 border-none outline-none cursor-pointer"
+                      onClick={() => reportData?.url && window.open(formatUrl?.({ url: reportData.url }) || reportData.url, '_blank')}
                     >
                       <Download className="w-4 h-4" />
                       <span>{t("deepResearch.button.download")}</span>
                     </button>
                     <button
                       type="button"
-                      className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#E9F0FE] text-sm text-[#1784FC] hover:bg-[#E0E9FD] border-none outline-none cursor-pointer"
+                      className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#E9F0FE] dark:bg-blue-900/30 text-sm text-[#1784FC] dark:text-blue-400 hover:bg-[#E0E9FD] dark:hover:bg-blue-900/50 border-none outline-none cursor-pointer"
                     >
                       <Share2 className="w-4 h-4" />
                       <span>{t("deepResearch.button.share")}</span>
@@ -123,6 +127,7 @@ export const DeepResearchDrawer = ({
                 <ResearchReportContent
                   content={reportContent}
                   data={reportData}
+                  formatUrl={formatUrl}
                 />
               )}
               {activeTab === t("deepResearch.tab.steps") && (
@@ -134,7 +139,7 @@ export const DeepResearchDrawer = ({
                 />
               )}
               {activeTab === t("deepResearch.tab.searchResults") && (
-                <ResearchSearchResultsContent hits={searchHits} />
+                <ResearchSearchResultsContent hits={searchHits} theme={theme} />
               )}
             </div>
           </motion.div>
