@@ -11,28 +11,21 @@ const Image: FC<DocDetailProps> = (props) => {
   const [failed, setFailed] = useState(false);
 
   const calcHeight = useMemo(() => {
-    const containerWidth = containerSize?.width;
-    const originalWidth = data?.metadata?.width;
-    const originalHeight = data?.metadata?.height;
+    const { width, height } = data.metadata ?? {};
 
-    if (!containerWidth || !originalWidth || !originalHeight) {
-      return void 0;
+    if (!containerSize || !width || !height) {
+      return 0;
     }
 
-    return containerWidth * (originalHeight / originalWidth);
+    return Math.round((containerSize.width * height) / width);
   }, [containerSize?.width, data?.metadata?.width, data?.metadata?.height]);
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full"
-      style={{
-        height: calcHeight,
-      }}
-    >
+    <div ref={containerRef}>
       <AntdImage
         preview={false}
-        rootClassName="size-full"
+        width={containerSize?.width}
+        height={calcHeight}
         placeholder={
           <Skeleton.Node
             active
