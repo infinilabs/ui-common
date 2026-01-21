@@ -649,16 +649,27 @@ const InnerChatMessage = memo(
 
           {(hasDeepResearchPlan || deepResearchReportData) && (
             <DeepResearch
+              // 当前正在执行的步骤标题
               stepTitle={deepResearchStepTitle}
+              // 当前搜索的关键词，如果没有则使用用户的问题
               query={deepResearchQuery || question}
+              // 搜索结果的数量
               resultCount={deepResearchResultCount}
+              // 整体进度 (0-1)
               progress={deepResearchProgress}
+              // 状态描述文本
               statusText={deepResearchStatusText}
+              // 研究步骤列表
               steps={deepResearchSteps}
+              // 规划阶段的状态 (pending/in_progress/done)
               plannerStatus={deepResearchPlannerStatus}
+              // 执行阶段的状态
               executionStatus={deepResearchExecutionStatus}
+              // 报告生成阶段的状态
               reportStatus={deepResearchReportStatus}
+              // 最终的报告数据
               reportData={deepResearchReportData}
+              // 所有的搜索结果
               searchHits={deepResearchAllHits}
               formatUrl={formatUrl}
               theme={resolvedTheme}

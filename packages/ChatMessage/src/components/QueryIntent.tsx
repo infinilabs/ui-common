@@ -50,7 +50,6 @@ export const QueryIntent = ({
           const lastMatch = allMatches[allMatches.length - 1];
           const jsonString = lastMatch.replace(/<JSON>|<\/JSON>/g, "");
           const data = JSON.parse(jsonString);
-          //console.log("QueryIntent", data);
           if (data?.suggestion && getSuggestion) {
             getSuggestion(data?.suggestion);
           }

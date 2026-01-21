@@ -50,7 +50,6 @@ export const FetchSource = ({
 
   useEffect(() => {
     if (!Detail?.payload) return;
-    // console.log("Detail?.payload", Detail?.payload);
     setData(Detail?.payload);
     setTotal(Detail?.payload.length);
   }, [Detail?.payload]);

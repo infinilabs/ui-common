@@ -92,23 +92,26 @@ const InnerChatAI = memo(
               //
             }
 
-            // Existing logic for updating the Chat List / History state
+            // 现有的逻辑：用于更新聊天列表/历史状态
+            // 通过检查消息中是否包含特定关键字来判断是否为历史记录或用户消息回执
             if (
               msg.includes('"user"') &&
               msg.includes("_source") &&
               msg.includes("result")
             ) {
-              // ... (existing parsing logic)
+              // ... (现有的解析逻辑)
               const parsed = JSON.parse(msg) as
                 | ChatMessageItem[]
                 | ChatStreamSingle;
-              // ... (rest of the existing logic)
+              // ... (其余的现有逻辑)
               let nextChat: Chat;
 
               if (Array.isArray(parsed)) {
+                // 如果是数组，说明是批量消息（通常是历史记录）
                 const hits = parsed as ChatMessageItem[];
                 const first = hits[0];
                 if (first) {
+                  // 更新当前消息 ID 和会话 ID
                   curIdRef.current = first._id;
                   const source = first._source as { [key: string]: unknown };
                   const sessionId = source.session_id as string | undefined;
@@ -116,19 +119,23 @@ const InnerChatAI = memo(
                     curSessionIdRef.current = sessionId;
                   }
                 }
+                // 获取当前活动聊天对象或创建一个新的基础对象
                 const baseChat: Chat = activeChat || {
                   _id: first?._id ?? "",
                 };
+                // 合并新消息到消息列表中
                 nextChat = {
                   ...baseChat,
                   messages: [...(baseChat.messages || []), ...hits],
                 };
               } else {
+                // 如果是单个对象，通常是新发送的消息回执
                 const withPayload = parsed as ChatStreamSingle;
                 const payload = withPayload.payload ?? {};
                 const id = payload.id;
                 const sessionId = payload.session_id;
 
+                // 更新当前消息 ID 和会话 ID
                 if (typeof id === "string") {
                   curIdRef.current = id;
                 }
@@ -136,6 +143,7 @@ const InnerChatAI = memo(
                   curSessionIdRef.current = sessionId;
                 }
 
+                // 构造消息项对象
                 const messageItem: ChatMessageItem = {
                   _id:
                     withPayload._id ??
@@ -148,28 +156,28 @@ const InnerChatAI = memo(
                   } as ChatMessageItem["_source"],
                 };
 
+                // 获取当前活动聊天对象或创建一个新的基础对象
                 const baseChat: Chat = activeChat || {
                   _id: messageItem._id,
                 };
 
+                // 将新消息追加到消息列表中
                 nextChat = {
                   ...baseChat,
                   messages: [...(baseChat.messages || []), messageItem],
                 };
               }
 
+              // 更新全局活动聊天状态
               setActiveChat(nextChat);
             }
 
             const chunkData = JSON.parse(msg);
 
             if (chunkData.chunk_type) {
-              console.log(
-                11121212,
-                chunkData,
-                chunkData.chunk_type,
-                activeMessageRef.current?.addChunk,
-              );
+              if (chunkData.chunk_type === "reply_start") {
+                setCurChatEnd(false);
+              }
 
               activeMessageRef.current?.addChunk(chunkData);
 
@@ -195,11 +203,10 @@ const InnerChatAI = memo(
           activeMessageRef.current?.reset();
           setTimedoutShow(false);
           setQuestion(value);
-          setCurChatEnd(false);
           // Wait for a tick to ensure React renders the ActiveChatMessage component (because curChatEnd becomes false)
           await new Promise((resolve) => setTimeout(resolve, 100));
         },
-        [setCurChatEnd],
+        [],
       );
 
       const fetchHistory = useCallback(
@@ -265,6 +272,7 @@ const InnerChatAI = memo(
       );
 
       const sendMessage = useCallback(
+        // eslint-disable-next-line react-hooks/preserve-manual-memoization
         async (chat: Chat, params?: SendMessageParams) => {
           if (!chat?._id || !params) return;
           const text = params.message ?? "";
@@ -274,6 +282,8 @@ const InnerChatAI = memo(
           }
           await prepareChatSession(text);
 
+          await fetchHistory(chat._id);
+          
           const queryParams = {
             search:
               params.search ??
@@ -293,12 +303,8 @@ const InnerChatAI = memo(
             queryParams,
             onMessage: handleStreamMessage,
           });
-
-          if (chat._id) {
-            await fetchHistory(chat._id);
-          }
         },
-        [handleStreamMessage, prepareChatSession, currentAssistant, fetchHistory],
+        [handleStreamMessage, prepareChatSession, currentAssistant],
       );
 
       const handleSendMessage = useCallback(
