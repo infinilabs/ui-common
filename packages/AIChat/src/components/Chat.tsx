@@ -2,6 +2,7 @@ import {
   forwardRef,
   memo,
   useCallback,
+  useEffect,
   useImperativeHandle,
   useRef,
   useState,
@@ -201,6 +202,7 @@ const InnerChatAI = memo(
               }
 
               // 更新全局活动聊天状态，触发 UI 重绘
+              console.log("setActiveChat3", nextChat);
               setActiveChat(nextChat);
             }
 
@@ -233,14 +235,11 @@ const InnerChatAI = memo(
        * 准备新的聊天会话
        * 重置当前消息状态，为新一轮问答做准备
        */
-      const prepareChatSession = useCallback(
-        async (value: string) => {
-          activeMessageRef.current?.reset(); // 重置活跃消息组件状态
-          setTimedoutShow(false);
-          setQuestion(value); // 设置当前问题文本
-        },
-        [],
-      );
+      const prepareChatSession = useCallback(async (value: string) => {
+        activeMessageRef.current?.reset(); // 重置活跃消息组件状态
+        setTimedoutShow(false);
+        setQuestion(value); // 设置当前问题文本
+      }, []);
 
       /**
        * 拉取指定会话的历史记录
@@ -261,6 +260,10 @@ const InnerChatAI = memo(
             // 获取最新状态以确保我们在更新正确的聊天
             const currentActive = useChatStore.getState().activeChat;
             if (currentActive?._id === chatId) {
+              console.log("setActiveChat4", {
+                ...currentActive,
+                messages: hits,
+              });
               setActiveChat({
                 ...currentActive,
                 messages: hits,
@@ -329,7 +332,7 @@ const InnerChatAI = memo(
 
           // 发送前先刷新历史记录（确保上下文最新）
           await fetchHistory(chat._id);
-          
+
           const queryParams = {
             search:
               params.search ??
@@ -351,7 +354,14 @@ const InnerChatAI = memo(
             onMessage: handleStreamMessage,
           });
         },
-        [prepareChatSession, fetchHistory, currentAssistant?._source?.deep_research_enabled, currentAssistant?._source?.deep_think_enabled, currentAssistant?._id, handleStreamMessage],
+        [
+          prepareChatSession,
+          fetchHistory,
+          currentAssistant?._source?.deep_research_enabled,
+          currentAssistant?._source?.deep_think_enabled,
+          currentAssistant?._id,
+          handleStreamMessage,
+        ],
       );
 
       /**
@@ -388,29 +398,51 @@ const InnerChatAI = memo(
       }, [activeChat, setCurChatEnd]);
 
       /**
-       * 清除当前选中的对话（返回初始状态）
-       */
-      const clearChat = useCallback(() => {
-        setTimedoutShow(false);
-        setActiveChat(undefined);
-        setCurChatEnd(true);
-      }, [setActiveChat, setCurChatEnd]);
-
-      /**
        * 切换当前选中的对话
        * 负责重置状态并加载新对话的历史记录
        */
       const onSelectChat = useCallback(
-        async (chat: Chat) => {
-          setActiveChat(chat);
+        async (chat?: Chat) => {
+          activeMessageRef.current?.reset(); // 重置上一条消息的 UI 状态
           setCurChatEnd(true);
           setTimedoutShow(false);
-          activeMessageRef.current?.reset(); // 重置上一条消息的 UI 状态
-          if (chat._id) {
-            await fetchHistory(chat._id); // 加载历史记录
+
+          console.log("setActiveChat5", chat);
+          setActiveChat(chat);
+          if (chat?._id) {
+            await fetchHistory(chat?._id); // 加载历史记录
           }
         },
         [setActiveChat, setCurChatEnd, fetchHistory],
+      );
+
+      /**
+       * 清除当前选中的对话（返回初始状态）
+       */
+      const clearChat = useCallback(() => {
+        onSelectChat(undefined);
+      }, [onSelectChat]);
+
+      // Use a ref to track the last processed active chat ID
+      const lastActiveChatIdRef = useRef<string | undefined>(undefined);
+
+      useEffect(() => {
+        console.log(555555, activeChat?._id, lastActiveChatIdRef.current);
+        // Only trigger onSelectChat if the activeChat ID has actually changed
+        if (activeChat?._id && activeChat._id !== lastActiveChatIdRef.current) {
+          lastActiveChatIdRef.current = activeChat._id;
+          // Use setTimeout to avoid synchronous state updates during render
+          setTimeout(() => {
+            onSelectChat(activeChat);
+          }, 0);
+        }
+      }, [activeChat, onSelectChat]);
+
+      // 生成文件预览 URL 的辅助函数
+      const getFileUrl = useCallback(
+        (path: string) =>
+          `${baseUrl?.replace(/\/$/, "")}/files/${encodeURIComponent(path)}`,
+        [baseUrl],
       );
 
       // 暴露给父组件的方法
@@ -428,13 +460,6 @@ const InnerChatAI = memo(
         clearChat,
         onSelectChat,
       }));
-
-      // 生成文件预览 URL 的辅助函数
-      const getFileUrl = useCallback(
-        (path: string) =>
-          `${baseUrl?.replace(/\/$/, "")}/files/${encodeURIComponent(path)}`,
-        [baseUrl],
-      );
 
       return (
         <div className="flex flex-col rounded-md h-full overflow-hidden relative">

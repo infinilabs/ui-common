@@ -97,15 +97,15 @@ const deriveDeepResearchState = (chunks: IChunkData[]): DeepResearchState => {
           if (planText) {
             state.deepResearchResearcherStarted = true;
             state.deepResearchCurrentStepFinished = false;
-            
+
             let index = state.deepResearchPlans.findIndex(
-              (title) => title === planText
+              (title) => title === planText,
             );
-            
+
             // If plan not found, add it to the list
             if (index === -1) {
-                state.deepResearchPlans.push(planText);
-                index = state.deepResearchPlans.length - 1;
+              state.deepResearchPlans.push(planText);
+              index = state.deepResearchPlans.length - 1;
             }
 
             state.deepResearchCurrentStepIndex = index;
@@ -127,13 +127,14 @@ const deriveDeepResearchState = (chunks: IChunkData[]): DeepResearchState => {
           const planText =
             typeof payload?.plan === "string" ? payload.plan : "";
           const stepQuery = payload?.step?.payload?.query;
-          
+
           // Ensure plan exists in state if not already
           if (planText && !state.deepResearchPlans.includes(planText)) {
-             state.deepResearchPlans.push(planText);
-             if (state.deepResearchCurrentStepIndex === -1) {
-                 state.deepResearchCurrentStepIndex = state.deepResearchPlans.length - 1;
-             }
+            state.deepResearchPlans.push(planText);
+            if (state.deepResearchCurrentStepIndex === -1) {
+              state.deepResearchCurrentStepIndex =
+                state.deepResearchPlans.length - 1;
+            }
           }
 
           if (typeof stepQuery === "string") {
@@ -222,11 +223,8 @@ export const DeepResearch = ({
   const { t } = useTranslation();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [drawerDefaultTab, setDrawerDefaultTab] = useState(
-    t("deepResearch.tab.steps")
+    t("deepResearch.tab.steps"),
   );
-
-
-  console.log(111111111, ChunkData);
 
   const {
     deepResearchPlans,
@@ -376,7 +374,7 @@ export const DeepResearch = ({
     : deepResearchReporterStarted
       ? "in_progress"
       : "pending";
-  
+
   const normalizedProgress = useMemo(() => {
     if (typeof progress !== "number" || Number.isNaN(progress)) return 0;
     if (progress < 0) return 0;
@@ -388,7 +386,9 @@ export const DeepResearch = ({
     if (statusText) return statusText;
     if (normalizedProgress >= 1) {
       if (typeof deepResearchResultCount === "number") {
-        return t("deepResearch.status.completedWithCount", { count: deepResearchResultCount });
+        return t("deepResearch.status.completedWithCount", {
+          count: deepResearchResultCount,
+        });
       }
       return t("deepResearch.status.completed");
     }
@@ -416,7 +416,7 @@ export const DeepResearch = ({
           <div className="flex items-center gap-2 mb-4">
             <Hourglass className="h-4 w-4 text-[#148EFF] cm-hourglass-rotate" />
             <div className="text-sm font-medium text-[#333] dark:text-[#E5E7EB] truncate">
-              {stepTitle || "-"}
+              {stepTitle || "——"}
             </div>
           </div>
 
@@ -428,14 +428,17 @@ export const DeepResearch = ({
                 <Loader className="h-4 w-4 animate-spin text-[#148EFF] shrink-0" />
               )}
               <div className="flex min-w-0 items-center flex-1">
-                <span className="whitespace-nowrap shrink-0">{displayStatus}</span>
+                <span className="whitespace-nowrap shrink-0">
+                  {displayStatus}
+                </span>
                 <span className="text-[#999] dark:text-[#A6A6A6] truncate ml-1">
                   ｜ {deepResearchQuery || question}
                 </span>
               </div>
             </div>
             <div className="ml-2 flex items-center gap-2 shrink-0">
-              {normalizedProgress < 1 && typeof deepResearchResultCount === "number" ? (
+              {normalizedProgress < 1 &&
+              typeof deepResearchResultCount === "number" ? (
                 <div className="flex py-0.5 px-1 items-center justify-center rounded-full border border-[#018AE5] bg-white text-xs font-medium text-[#018AE5] dark:bg-[#020617]">
                   {deepResearchResultCount}
                 </div>
@@ -465,7 +468,7 @@ export const DeepResearch = ({
                 style={{ width: `${normalizedProgress * 100}%` }}
               />
             </div>
-            <div className="flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity">
+            <div className="flex items-center justify-center cursor-not-allowed opacity-50">
               {normalizedProgress >= 1 ? (
                 <Check className="h-4 w-4 text-[#22C55E]" />
               ) : (

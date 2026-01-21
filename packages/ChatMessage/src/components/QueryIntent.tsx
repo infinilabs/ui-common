@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronUp, Loader } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { IChunkData } from "../types/chat";
@@ -32,13 +32,20 @@ export const QueryIntent = ({
 
   const [data, setData] = useState<IQueryData | null>(null);
 
+  // 使用 useRef 来避免 useEffect 依赖变化导致的无限循环
+  const getSuggestionRef = useRef(getSuggestion);
+
+  useEffect(() => {
+    getSuggestionRef.current = getSuggestion;
+  }, [getSuggestion]);
+
   useEffect(() => {
     if (!Detail?.payload) return;
     setData(Detail?.payload);
-    if (Detail?.payload?.suggestion && getSuggestion) {
-      getSuggestion(Detail?.payload?.suggestion);
+    if (Detail?.payload?.suggestion && getSuggestionRef.current) {
+      getSuggestionRef.current(Detail?.payload?.suggestion);
     }
-  }, [Detail?.payload, getSuggestion]);
+  }, [Detail?.payload]);
 
   useEffect(() => {
     if (!ChunkData?.message_chunk) return;
@@ -50,8 +57,8 @@ export const QueryIntent = ({
           const lastMatch = allMatches[allMatches.length - 1];
           const jsonString = lastMatch.replace(/<JSON>|<\/JSON>/g, "");
           const data = JSON.parse(jsonString);
-          if (data?.suggestion && getSuggestion) {
-            getSuggestion(data?.suggestion);
+          if (data?.suggestion && getSuggestionRef.current) {
+            getSuggestionRef.current(data?.suggestion);
           }
           setData(data);
         }
@@ -59,7 +66,7 @@ export const QueryIntent = ({
         console.error("Failed to process message chunk in QueryIntent:", error);
       }
     }
-  }, [ChunkData?.message_chunk, loading, getSuggestion]);
+  }, [ChunkData?.message_chunk, loading]);
 
   // Must be after hooks !!!
   if (!ChunkData && !Detail) return null;
