@@ -6,7 +6,7 @@ import { groupBy, isNil } from "lodash-es";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 
-import type { Chat } from "@/types/chat";
+import type { Chat } from "../../types/chat";
 import NoDataImage from "../NoDataImage";
 import DeleteDialog from "./DeleteDialog";
 import HistoryListItem from "./HistoryListItem";
@@ -19,6 +19,8 @@ interface HistoryListContentProps {
   onSelect: (chat: Chat) => void;
   onRename: (chatId: string, title: string) => void;
   onRemove: (chatId: string) => void;
+  renamingId?: string;
+  deletingId?: string;
   t?: TFunction;
 }
 
@@ -28,6 +30,8 @@ const HistoryListContent: FC<HistoryListContentProps> = ({
   onSelect,
   onRename,
   onRemove,
+  renamingId,
+  deletingId,
   t: tProp,
 }) => {
   const { t: tOriginal } = useTranslation();
@@ -233,6 +237,8 @@ const HistoryListContent: FC<HistoryListContentProps> = ({
                   onMouseEnter={() => setHighlightId(item._id || "")}
                   highlightId={highlightId}
                   handleDelete={handleDelete}
+                  renamingId={renamingId}
+                  deletingId={deletingId}
                   t={t}
                 />
               ))}

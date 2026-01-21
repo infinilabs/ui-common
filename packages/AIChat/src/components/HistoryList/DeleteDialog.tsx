@@ -1,9 +1,8 @@
-import { Dialog } from "../ui/dialog";
-import { Button } from "../ui/button";
+import { Modal, Button } from "antd";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 
-import { type Chat } from "@/types/chat";
+import { type Chat } from "../../types/chat";
 import { type KeyboardEvent } from "react";
 
 interface DeleteDialogProps {
@@ -34,7 +33,7 @@ const DeleteDialog = ({
   };
 
   return (
-    <Dialog
+    <Modal
       open={isOpen}
       onCancel={() => setIsOpen(false)}
       footer={null}
@@ -54,7 +53,6 @@ const DeleteDialog = ({
 
         <div className="flex gap-4 self-end">
           <Button
-              variant="outline"
               autoFocus
               onClick={() => setIsOpen(false)}
               onKeyDown={(event) => {
@@ -67,7 +65,8 @@ const DeleteDialog = ({
             </Button>
 
           <Button
-              variant="destructive"
+              danger
+              type="primary"
               className="text-white"
               onClick={handleRemove}
               onKeyDown={(event) => {
@@ -78,7 +77,7 @@ const DeleteDialog = ({
             </Button>
         </div>
       </div>
-    </Dialog>
+    </Modal>
   );
 };
 

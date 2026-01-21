@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { useBoolean } from "ahooks";
 import {
   useImperativeHandle,
@@ -10,6 +9,8 @@ import {
   useEffect,
 } from "react";
 import { useTranslation } from "react-i18next";
+
+import { cn } from "../lib/utils";
 
 const MAX_HEIGHT = 240;
 

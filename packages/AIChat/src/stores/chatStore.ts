@@ -9,7 +9,7 @@ interface SynthesizeItem {
   content: string;
 }
 
-import type { Chat } from "@/types/chat";
+import type { Chat, ChatMessageSource } from "@/types/chat";
 
 export interface AssistantSource {
   name?: string;
@@ -43,6 +43,7 @@ export type IChatStore = {
   setCurrentAssistant: (assistant?: Assistant) => void;
   assistantList?: Assistant[];
   setAssistantList: (assistantList: Assistant[]) => void;
+  updateLastMessage: (updates: Partial<ChatMessageSource>) => void;
 };
 
 export const useChatStore = create<IChatStore>()(
@@ -75,6 +76,24 @@ export const useChatStore = create<IChatStore>()(
       assistantList: [],
       setAssistantList: (assistantList: Assistant[]) =>
         set(() => ({ assistantList })),
+      updateLastMessage: (updates: Partial<ChatMessageSource>) =>
+        set((state) => {
+          if (!state.activeChat || !state.activeChat.messages) return {};
+          const messages = [...state.activeChat.messages];
+          const lastIndex = messages.length - 1;
+          if (lastIndex < 0) return {};
+
+          const lastMessage = { ...messages[lastIndex] };
+          lastMessage._source = { ...lastMessage._source, ...updates };
+          messages[lastIndex] = lastMessage;
+
+          return {
+            activeChat: {
+              ...state.activeChat,
+              messages,
+            },
+          };
+        }),
     }),
     {
       name: "chat-state",

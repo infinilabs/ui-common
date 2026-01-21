@@ -12,43 +12,88 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+/**
+ * 步骤状态类型定义
+ * done: 已完成
+ * in_progress: 进行中
+ * pending: 等待中
+ */
 export type StepStatus = "done" | "in_progress" | "pending";
 
+/**
+ * 搜索状态类型定义
+ * done: 搜索完成
+ * searching: 正在搜索
+ */
 export type StepSearchStatus = "done" | "searching";
 
+/**
+ * 搜索结果条目接口
+ */
 export interface StepSearchHit {
+  // 来源名称
   source?: string;
+  // 标题
   title: string;
+  // 链接地址
   url?: string;
+  // 内容摘要
   content?: string;
+  // 相关性得分
   score?: number;
 }
 
+/**
+ * 搜索任务接口
+ */
 export interface StepSearch {
+  // 唯一标识
   id: string;
+  // 搜索查询语句
   query: string;
+  // 结果数量
   resultCount?: number;
+  // 状态
   status: StepSearchStatus;
+  // 备注信息
   note?: string;
+  // 搜索结果列表
   hits?: StepSearchHit[];
 }
 
+/**
+ * 研究步骤条目接口
+ */
 export interface StepItem {
+  // 步骤唯一标识
   id: string;
+  // 步骤标题
   title: string;
+  // 步骤描述
   description?: string;
+  // 步骤状态
   status: StepStatus;
+  // 该步骤下的搜索任务
   searches?: StepSearch[];
+  // 是否显示优化计划
   showOptimizePlan?: boolean;
 }
 
 interface ResearchStepsContentProps {
+  // 步骤列表数据
   steps?: StepItem[];
+  // 计划生成状态
   plannerStatus?: StepStatus;
+  // 执行状态
   executionStatus?: StepStatus;
+  // 报告生成状态
   reportStatus?: StepStatus;
 }
 
+/**
+ * 深层研究步骤内容组件
+ * 展示研究计划、执行步骤和报告生成的全过程状态
+ */
 export const ResearchStepsContent = ({
   steps,
   plannerStatus,
@@ -57,9 +102,16 @@ export const ResearchStepsContent = ({
 }: ResearchStepsContentProps) => {
   const { t } = useTranslation();
   const data = steps ?? [];
-  const [expandedSearches, setExpandedSearches] = useState<Set<string>>(new Set());
+  // 控制展开的搜索结果集合
+  const [expandedSearches, setExpandedSearches] = useState<Set<string>>(
+    new Set(),
+  );
+  // 控制计划列表的展开/折叠
   const [plansExpanded, setPlansExpanded] = useState(false);
 
+  /**
+   * 切换搜索结果的展开状态
+   */
   const toggleSearch = (searchId: string) => {
     setExpandedSearches((prev) => {
       const next = new Set(prev);
@@ -72,20 +124,26 @@ export const ResearchStepsContent = ({
     });
   };
 
+  // 找到第一个非 pending 状态的步骤索引，用于连接线的起始位置
   const firstActiveIndex = data.findIndex((step) => step.status !== "pending");
 
+  // 找到最后一个非 pending 状态的步骤索引，用于连接线的结束位置
   const lastActiveIndex = data.reduce(
     (lastIndex, step, index) => (step.status !== "pending" ? index : lastIndex),
-    -1
+    -1,
   );
 
+  // 自动计算执行状态：如果有步骤进行中则为 in_progress，有步骤完成则为 done，否则为 pending
   const autoExecutionStatus: StepStatus = (() => {
     if (!data.length) return "pending";
     if (data.some((step) => step.status === "in_progress")) {
       return "in_progress";
     }
-    if (data.some((step) => step.status === "done")) {
+    if (data.every((step) => step.status === "done")) {
       return "done";
+    }
+    if (data.some((step) => step.status === "done")) {
+      return "in_progress";
     }
     return "pending";
   })();
@@ -100,19 +158,33 @@ export const ResearchStepsContent = ({
         {t("deepResearch.steps.intro")}
       </div>
 
+      {/* 计划生成阶段 */}
       <div className="space-y-4">
         <div
           className={`flex items-center gap-2 text-base font-medium ${
-            planner === "pending" ? "text-[#999] dark:text-[#666]" : "text-[#333] dark:text-[#E5E7EB]"
+            planner === "pending"
+              ? "text-[#999] dark:text-[#666]"
+              : "text-[#333] dark:text-[#E5E7EB]"
           }`}
         >
-          <PencilLine className="w-4 h-4 text-[#1784FC]" />
+          {planner === "in_progress" ? (
+            <div className="w-5 h-5 bg-white dark:bg-[#020817] border-2 border-blue-500 rounded-full flex items-center justify-center">
+              <Loader className="w-3 h-3 text-blue-500 animate-spin" />
+            </div>
+          ) : (
+            <PencilLine
+              className={`w-4 h-4 ${
+                planner === "pending" ? "text-[#999]" : "text-[#1784FC]"
+              }`}
+            />
+          )}
           {t("deepResearch.steps.planTitle")}
         </div>
         <div className=" text-[#999] dark:text-[#A6A6A6] text-sm mb-2">
           {t("deepResearch.steps.planDescription")}
         </div>
 
+        {/* 计划列表展开开关 */}
         <div
           className="border border-[#EEF0F3] dark:border-[#1D3A6F] rounded-lg p-3 bg-white dark:bg-[#020817] flex justify-between items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-[#111827] transition-colors"
           onClick={() => setPlansExpanded((prev) => !prev)}
@@ -128,28 +200,37 @@ export const ResearchStepsContent = ({
           )}
         </div>
 
+        {/* 计划列表详情 */}
         {plansExpanded && data.length > 0 && (
           <div className="mt-2 space-y-1 rounded-lg bg-white dark:bg-[#020817] border border-[#EEF0F3] dark:border-[#1D3A6F] p-3">
             {data.map((step, index) => (
               <div key={step.id} className="flex items-start gap-2 text-sm">
-                <span className="text-[#999] dark:text-[#A6A6A6]">{index + 1}.</span>
-                <span className="text-[#333] dark:text-[#E5E7EB]">{step.title}</span>
+                <span className="text-[#999] dark:text-[#A6A6A6]">
+                  {index + 1}.
+                </span>
+                <span className="text-[#333] dark:text-[#E5E7EB]">
+                  {step.title}
+                </span>
               </div>
             ))}
           </div>
         )}
       </div>
 
+      {/* 执行阶段 */}
       <div className="pt-2">
         <div
           className={`flex items-center gap-2 text-base font-medium mb-4 ${
-            execution === "pending" ? "text-[#999] dark:text-[#666]" : "text-[#333] dark:text-[#E5E7EB]"
+            execution === "pending"
+              ? "text-[#999] dark:text-[#666]"
+              : "text-[#333] dark:text-[#E5E7EB]"
           }`}
         >
           <List className="w-4 h-4 text-[#1784FC]" />
           {t("deepResearch.steps.executeTitle")}
         </div>
 
+        {/* 步骤列表渲染 */}
         {data.map((step, index) => {
           const isActive = step.status !== "pending";
           const isFirstActive = index === firstActiveIndex;
@@ -164,6 +245,7 @@ export const ResearchStepsContent = ({
                 isSimplePending ? "pl-0 pb-4" : "pl-6 pb-8 last:pb-0"
               }`}
             >
+              {/* 步骤之间的连接虚线 */}
               {isActive &&
                 firstActiveIndex !== -1 &&
                 lastActiveIndex !== -1 && (
@@ -176,25 +258,31 @@ export const ResearchStepsContent = ({
                   />
                 )}
 
+              {/* 完成状态图标 */}
               {step.status === "done" && (
                 <div className="absolute left-0 top-0 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
                   <CheckCircle className="w-3 h-3 text-white" />
                 </div>
               )}
 
+              {/* 进行中状态图标 */}
               {step.status === "in_progress" && (
                 <div className="absolute left-0 top-0 w-5 h-5 bg-white dark:bg-[#020817] border-2 border-blue-500 rounded-full flex items-center justify-center">
                   <Loader className="w-3 h-3 text-blue-500 animate-spin" />
                 </div>
               )}
 
+              {/* 等待中的简化展示 */}
               {isSimplePending ? (
                 <div className="flex items-center gap-2">
                   <List className="w-4 h-4 text-[#C8C8C8]" />
-                  <div className="text-sm text-[#999999] dark:text-[#666]">{step.title}</div>
+                  <div className="text-sm text-[#999999] dark:text-[#666]">
+                    {step.title}
+                  </div>
                 </div>
               ) : (
                 <>
+                  {/* 步骤标题 */}
                   <h3
                     className={`text-sm font-bold mb-1 ${
                       step.status === "pending"
@@ -205,16 +293,19 @@ export const ResearchStepsContent = ({
                     {step.title}
                   </h3>
 
+                  {/* 步骤描述 */}
                   {step.description && (
                     <p className="text-[#999] dark:text-[#A6A6A6] text-sm mt-4">
                       {step.description}
                     </p>
                   )}
 
+                  {/* 搜索任务列表 */}
                   {step.searches && (
                     <div className="mt-2 space-y-3">
                       {step.searches.map((search) =>
                         search.status === "searching" ? (
+                          // 正在搜索状态
                           <div
                             key={search.id}
                             className="flex items-center justify-between border border-blue-100 dark:border-blue-900/30 bg-blue-50/30 dark:bg-blue-900/10 rounded-lg p-3"
@@ -230,8 +321,9 @@ export const ResearchStepsContent = ({
                             </div>
                           </div>
                         ) : (
+                          // 搜索完成状态
                           <div key={search.id}>
-                            <div 
+                            <div
                               className="flex items-center justify-between border border-gray-200 dark:border-[#1D3A6F] rounded-lg p-3 bg-gray-50 dark:bg-[#111827] cursor-pointer hover:bg-gray-100 dark:hover:bg-[#1F2937] transition-colors"
                               onClick={() => toggleSearch(search.id)}
                             >
@@ -257,14 +349,17 @@ export const ResearchStepsContent = ({
                                 </div>
                               )}
                             </div>
-                            
+
+                            {/* 展开的搜索结果详情 */}
                             {expandedSearches.has(search.id) && search.hits && (
                               <div className="mt-2 space-y-2 pl-4">
                                 {search.hits.map((hit, idx) => (
-                                  <div 
-                                    key={idx} 
+                                  <div
+                                    key={idx}
                                     className="p-3 bg-white dark:bg-[#020817] border border-gray-100 dark:border-[#1D3A6F] rounded-lg hover:border-blue-200 dark:hover:border-blue-800 transition-colors cursor-pointer group"
-                                    onClick={() => hit.url && window.open(hit.url, '_blank')}
+                                    onClick={() =>
+                                      hit.url && window.open(hit.url, "_blank")
+                                    }
                                   >
                                     <div className="flex items-start gap-2">
                                       <div className="min-w-0 flex-1">
@@ -289,9 +384,10 @@ export const ResearchStepsContent = ({
                               </p>
                             )}
                           </div>
-                        )
+                        ),
                       )}
 
+                      {/* 优化计划提示 */}
                       {step.showOptimizePlan && (
                         <div className="border border-gray-200 dark:border-[#1D3A6F] rounded-lg p-3 bg-white dark:bg-[#020817] flex justify-between items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-[#111827] transition-colors">
                           <div className="flex items-center gap-2 text-sm">
@@ -311,17 +407,26 @@ export const ResearchStepsContent = ({
           );
         })}
 
+        {/* 报告生成阶段 */}
         <div className="pt-2">
           <div
             className={`flex items-center gap-2 text-base font-medium mb-4 ${
-              report === "pending" ? "text-[#999] dark:text-[#666]" : "text-[#333] dark:text-[#E5E7EB]"
+              report === "pending"
+                ? "text-[#999] dark:text-[#666]"
+                : "text-[#333] dark:text-[#E5E7EB]"
             }`}
           >
-            <BookOpenText
-              className={`w-4 h-4 ${
-                report === "pending" ? "text-[#999]" : "text-[#1784FC]"
-              }`}
-            />
+            {report === "in_progress" ? (
+              <div className="w-5 h-5 bg-white dark:bg-[#020817] border-2 border-blue-500 rounded-full flex items-center justify-center">
+                <Loader className="w-3 h-3 text-blue-500 animate-spin" />
+              </div>
+            ) : (
+              <BookOpenText
+                className={`w-4 h-4 ${
+                  report === "pending" ? "text-[#999]" : "text-[#1784FC]"
+                }`}
+              />
+            )}
             {t("deepResearch.steps.reportTitle")}
           </div>
         </div>

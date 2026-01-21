@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 import { ChatMessage } from "@infinilabs/chat-message";
 
-import { useConnectStore } from "@/stores/connectStore";
+import { useConnectStore } from "../stores/connectStore";
 
 type Assistant = {
   _source?: {

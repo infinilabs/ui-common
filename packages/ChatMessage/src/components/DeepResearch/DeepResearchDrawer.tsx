@@ -25,6 +25,7 @@ interface DeepResearchDrawerProps {
   searchHits?: StepSearchHit[];
   formatUrl?: (data: any) => string;
   theme?: "light" | "dark";
+  showReportOnly?: boolean;
 }
 
 export const DeepResearchDrawer = ({
@@ -40,13 +41,18 @@ export const DeepResearchDrawer = ({
   searchHits,
   formatUrl,
   theme,
+  showReportOnly = false,
 }: DeepResearchDrawerProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(defaultActiveTab || t("deepResearch.tab.steps"));
 
   useEffect(() => {
-    if (defaultActiveTab) setActiveTab(defaultActiveTab);
-  }, [defaultActiveTab]);
+    if (showReportOnly) {
+      setActiveTab(t("deepResearch.tab.report"));
+    } else if (defaultActiveTab) {
+      setActiveTab(defaultActiveTab);
+    }
+  }, [defaultActiveTab, showReportOnly, t]);
 
   return (
     <AnimatePresence>
@@ -81,17 +87,23 @@ export const DeepResearchDrawer = ({
             }}
           >
             <div className="flex items-center justify-between">
-              <Segmented
-                className="cm-deep-research-segmented"
-                value={activeTab}
-                style={{ marginBottom: 8 }}
-                onChange={(val) => setActiveTab(val as string)}
-                options={[
-                  t("deepResearch.tab.report"),
-                  t("deepResearch.tab.steps"),
-                  t("deepResearch.tab.searchResults"),
-                ]}
-              />
+              {showReportOnly ? (
+                <div className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                  {t("deepResearch.tab.report")}
+                </div>
+              ) : (
+                <Segmented
+                  className="cm-deep-research-segmented"
+                  value={activeTab}
+                  style={{ marginBottom: 8 }}
+                  onChange={(val) => setActiveTab(val as string)}
+                  options={[
+                    t("deepResearch.tab.report"),
+                    t("deepResearch.tab.steps"),
+                    t("deepResearch.tab.searchResults"),
+                  ]}
+                />
+              )}
               <div className="flex items-center gap-2">
                 {activeTab === t("deepResearch.tab.report") && (
                   <>

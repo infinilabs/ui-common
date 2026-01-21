@@ -5,11 +5,11 @@ import { type TFunction } from "i18next";
 import { ChatMessage, type ChatMessageRef } from "@infinilabs/chat-message";
 
 import { Greetings } from "./Greetings";
-import { useChatScroll } from "@/hooks/useChatScroll";
-import type { Chat, IChunkData } from "@/types/chat";
-import { useConnectStore } from "@/stores/connectStore";
-import ScrollToBottom from "@/components/Common/ScrollToBottom";
-import { useChatStore, type Assistant } from "@/stores/chatStore";
+import { useChatScroll } from "../hooks/useChatScroll";
+import type { Chat, IChunkData } from "../types/chat";
+import { useConnectStore } from "../stores/connectStore";
+import ScrollToBottom from "../components/Common/ScrollToBottom";
+import { useChatStore, type Assistant } from "../stores/chatStore";
 
 export interface ActiveChatMessageProps {
   activeMessageRef?: React.RefObject<ChatMessageRef>;
@@ -18,8 +18,8 @@ export interface ActiveChatMessageProps {
   Question: string;
   handleSendMessage: (content: string, newChat?: Chat) => void;
   formatUrl?: (data: IChunkData) => string;
-  currentAssistant?: Assistant;
   assistantList?: Assistant[];
+  currentAssistant?: Assistant;
 }
 
 export const ActiveChatMessage = ({
@@ -29,12 +29,12 @@ export const ActiveChatMessage = ({
   Question,
   handleSendMessage,
   formatUrl,
-  currentAssistant,
   assistantList,
+  currentAssistant
 }: ActiveChatMessageProps) => {
   const allMessages = activeChat?.messages || [];
 
-  if (curChatEnd || !activeChat?._source?.id) {
+  if (curChatEnd) {
     return null;
   }
 
@@ -55,8 +55,8 @@ export const ActiveChatMessage = ({
       onResend={handleSendMessage}
       isTyping={!curChatEnd}
       formatUrl={formatUrl}
-      currentAssistant={currentAssistant}
       assistantList={assistantList}
+      currentAssistant={currentAssistant}
     />
   );
 };
@@ -82,7 +82,6 @@ export const ChatContent = ({
   handleSendMessage,
   formatUrl,
   t: tProp,
-  currentAssistant,
 }: ChatContentProps) => {
   const { t: tOriginal } = useTranslation();
   const t = tProp || tOriginal;
@@ -93,6 +92,7 @@ export const ChatContent = ({
 
   const curChatEnd = useChatStore((state) => state.curChatEnd);
   const assistantList = useChatStore((state) => state.assistantList);
+  const currentAssistant = useChatStore((state) => state.currentAssistant);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -147,8 +147,6 @@ export const ChatContent = ({
             message={message}
             isTyping={false}
             onResend={handleSendMessage}
-            currentAssistant={currentAssistant}
-            assistantList={assistantList}
             formatUrl={formatUrl}
           />
         ))}
@@ -160,8 +158,8 @@ export const ChatContent = ({
           Question={Question}
           handleSendMessage={handleSendMessage}
           formatUrl={formatUrl}
-          currentAssistant={currentAssistant}
           assistantList={assistantList}
+          currentAssistant={currentAssistant}
         />
 
         {timedoutShow ? (

@@ -3,11 +3,11 @@ import { I18nextProvider, useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 import { message } from "antd";
 
-import type { Chat } from "@/types/chat";
-import { useChatStore } from "@/stores/chatStore";
-import { Get, Put, Delete } from "@/api/axiosRequest";
+import type { Chat } from "../types/chat";
+import { useChatStore } from "../stores/chatStore";
+import { Get, Put, Delete } from "../api/axiosRequest";
 import HistoryList from "./HistoryList";
-import i18n from "@/i18n";
+import i18n from "../i18n";
 
 interface HistoryProps {
   BaseUrl: string;
@@ -28,6 +28,8 @@ function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps)
   const [messageApi, contextHolder] = message.useMessage();
 
   const [keyword, setKeyword] = useState("");
+  const [renamingId, setRenamingId] = useState<string>("");
+  const [deletingId, setDeletingId] = useState<string>("");
 
   useEffect(() => {
     if (locale && i18n.language !== locale) {
@@ -89,11 +91,7 @@ function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps)
     async (chatId: string, title: string) => {
       const key = "rename_message";
       try {
-        messageApi.open({
-          key,
-          type: "loading",
-          content: t("history_list.operate.renaming"),
-        });
+        setRenamingId(chatId);
         const [err] = await Put(`/chat/${chatId}`, { title });
         if (err) {
           messageApi.open({
@@ -103,48 +101,23 @@ function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps)
           });
           return;
         }
-        messageApi.open({
-          key,
-          type: "success",
-          content: t("history_list.operate.rename_success"),
-        });
-        setChats(
-          chats.map((c) =>
-            c._id === chatId
-              ? {
-                  ...c,
-                  _source: { ...(c._source || {}), title },
-                }
-              : c
-          )
-        );
-        if (active?._id === chatId) {
-          setActive({
-            ...active,
-            _source: { ...(active._source || {}), title },
-          });
-        }
+        await fetchChatHistory();
       } catch (e) {
         console.error(e);
-        messageApi.open({
-          key,
-          type: "error",
-          content: t("history_list.operate.rename_error"),
-        });
+      } finally {
+        setRenamingId("");
       }
     },
-    [active, chats, setActive, setChats, messageApi, t]
+    [messageApi, t, fetchChatHistory]
   );
 
   const onRemove = useCallback(
     async (chatId: string) => {
       const key = "delete_message";
+
       try {
-        messageApi.open({
-          key,
-          type: "loading",
-          content: t("history_list.operate.deleting"),
-        });
+        setDeletingId(chatId);
+
         const [err] = await Delete(`/chat/${chatId}`);
         if (err) {
           messageApi.open({
@@ -154,26 +127,23 @@ function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps)
           });
           return;
         }
-        messageApi.open({
-          key,
-          type: "success",
-          content: t("history_list.operate.delete_success"),
-        });
-        const next = chats.filter((c) => c._id !== chatId);
-        setChats(next);
-        if (active?._id === chatId) {
-          setActive(next[0]);
-        }
+
+        // Fetch latest history after successful deletion
+        await fetchChatHistory();
+
       } catch (e) {
         console.error(e);
+
         messageApi.open({
           key,
           type: "error",
           content: t("history_list.operate.delete_error"),
         });
+      } finally {
+        setDeletingId("");
       }
     },
-    [active, chats, setActive, setChats, messageApi, t]
+    [messageApi, t, fetchChatHistory]
   );
 
   return (
@@ -188,6 +158,8 @@ function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps)
         onSelect={onSelect}
         onRename={onRename}
         onRemove={onRemove}
+        renamingId={renamingId}
+        deletingId={deletingId}
         t={t}
       />
     </>
