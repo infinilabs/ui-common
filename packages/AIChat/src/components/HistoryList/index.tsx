@@ -1,14 +1,13 @@
-import { Input, type InputRef } from "@/components/ui/input";
+import { Input, Button, type InputRef } from "antd";
 import { debounce } from "lodash-es";
 import { type FC, useMemo, useRef, useState, type ChangeEvent } from "react";
 import clsx from "clsx";
-import { RefreshCcw, Search } from "lucide-react";
+import { RefreshCw, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 
-import type { Chat } from "@/types/chat";
+import type { Chat } from "../../types/chat";
 import HistoryListContent from "./HistoryListContent";
-import { Button } from "../ui/button";
 
 interface HistoryListProps {
   historyPanelId?: string;
@@ -19,6 +18,8 @@ interface HistoryListProps {
   onSelect: (chat: Chat) => void;
   onRename: (chatId: string, title: string) => void;
   onRemove: (chatId: string) => void;
+  renamingId?: string;
+  deletingId?: string;
   t?: TFunction;
 }
 
@@ -32,6 +33,8 @@ const HistoryList: FC<HistoryListProps> = (props) => {
     onSelect,
     onRename,
     onRemove,
+    renamingId,
+    deletingId,
     t: tProp,
   } = props;
   const { t: tOriginal } = useTranslation();
@@ -88,12 +91,12 @@ const HistoryList: FC<HistoryListProps> = (props) => {
         </div>
 
         <Button
-          variant="outline"
-          size="icon"
-          className="size-8"
+          type="default"
+          className="size-8 p-0 flex items-center justify-center"
           onClick={handleRefresh}
         >
-          <RefreshCcw
+          <RefreshCw
+            strokeWidth={2}
             className={clsx("size-4 text-[#0287FF]", {
               "animate-spin": isRefresh,
             })}
@@ -108,6 +111,8 @@ const HistoryList: FC<HistoryListProps> = (props) => {
           onSelect={onSelect}
           onRename={onRename}
           onRemove={onRemove}
+          renamingId={renamingId}
+          deletingId={deletingId}
           t={t}
         />
       </div>

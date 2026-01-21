@@ -1,4 +1,12 @@
-import { memo, useState, useEffect, forwardRef, useImperativeHandle, useRef, useMemo } from "react";
+import {
+  memo,
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useMemo,
+} from "react";
 import { useTranslation, I18nextProvider } from "react-i18next";
 import clsx from "clsx";
 import i18nInstance from "../i18n/config";
@@ -43,26 +51,9 @@ export interface ChatMessageProps {
   formatUrl?: (data: IChunkData) => string;
   theme?: "light" | "dark" | "system";
   locale?: string;
-  query_intent?: IChunkData;
-  tools?: IChunkData;
-  fetch_source?: IChunkData;
-  pick_source?: IChunkData;
-  deep_read?: IChunkData;
-  think?: IChunkData;
-  response?: IChunkData;
   report_content?: string;
-  currentAssistant?: any;
   assistantList?: any[];
-  loadingStep?: Record<string, boolean>;
-  deepResearchPlans?: string[];
-  deepResearchCurrentStepIndex?: number;
-  deepResearchQuery?: string;
-  deepResearchResultCount?: number;
-  deepResearchResearcherStarted?: boolean;
-  deepResearchReporterStarted?: boolean;
-  deepResearchReporterFinished?: boolean;
-  deepResearchReportData?: ResearchReportData;
-  deepResearchSearchMap?: Record<string, { query?: string; resultCount?: number; hits?: StepSearchHit[] }>;
+  currentAssistant?: any;
 }
 
 export interface ChatMessageRef {
@@ -70,7 +61,9 @@ export interface ChatMessageRef {
   reset: () => void;
 }
 
-function resolveTheme(theme: "light" | "dark" | "system" | undefined): "light" | "dark" | undefined {
+function resolveTheme(
+  theme: "light" | "dark" | "system" | undefined,
+): "light" | "dark" | undefined {
   if (!theme) return undefined;
   if (theme === "light") return "light";
   if (theme === "dark") return "dark";
@@ -84,679 +77,684 @@ function resolveTheme(theme: "light" | "dark" | "system" | undefined): "light" |
   return "light";
 }
 
-const InnerChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>(function InnerChatMessage({
-  message,
-  isTyping,
-  onResend,
-  hide_assistant = false,
-  rootClassName,
-  actionClassName,
-  actionIconSize,
-  copyButtonId,
-  formatUrl,
-  theme,
-  locale,
-  query_intent: prop_query_intent,
-  tools: prop_tools,
-  fetch_source: prop_fetch_source,
-  pick_source: prop_pick_source,
-  deep_read: prop_deep_read,
-  think: prop_think,
-  response: prop_response,
-  currentAssistant,
-  assistantList,
-  loadingStep: externalLoadingStep,
-  deepResearchPlans: prop_deepResearchPlans,
-  deepResearchCurrentStepIndex: prop_deepResearchCurrentStepIndex,
-  deepResearchQuery: prop_deepResearchQuery,
-  deepResearchResultCount: prop_deepResearchResultCount,
-  deepResearchResearcherStarted: prop_deepResearchResearcherStarted,
-  deepResearchReporterStarted: prop_deepResearchReporterStarted,
-  deepResearchReporterFinished: prop_deepResearchReporterFinished,
-  deepResearchReportData: prop_deepResearchReportData,
-  deepResearchSearchMap: prop_deepResearchSearchMap,
-}, ref) {
-  const { t, i18n } = useTranslation();
-  const resolvedTheme = resolveTheme(theme);
-
-  const [assistant, setAssistant] = useState<any>({});
-  const [deepResearchPlans, setDeepResearchPlans] = useState<string[]>([]);
-  const [deepResearchCurrentStepIndex, setDeepResearchCurrentStepIndex] = useState<number>(-1);
-  const [deepResearchQuery, setDeepResearchQuery] = useState<string>("");
-  const [deepResearchResultCount, setDeepResearchResultCount] = useState<number | undefined>(undefined);
-  const [deepResearchResearcherStarted, setDeepResearchResearcherStarted] = useState(false);
-  const [deepResearchReporterStarted, setDeepResearchReporterStarted] = useState(false);
-  const [deepResearchReporterFinished, setDeepResearchReporterFinished] = useState(false);
-  const [deepResearchReportData, setDeepResearchReportData] = useState<ResearchReportData | undefined>(undefined);
-  const [deepResearchSearchMap, setDeepResearchSearchMap] = useState<
-    Record<string, { query?: string; resultCount?: number; hits?: StepSearchHit[] }>
-  >({});
-
-  const {
-    data: {
-      query_intent,
-      tools,
-      fetch_source,
-      pick_source,
-      deep_read,
-      think,
-      response,
+const InnerChatMessage = memo(
+  forwardRef<ChatMessageRef, ChatMessageProps>(function InnerChatMessage(
+    {
+      message,
+      isTyping,
+      onResend,
+      hide_assistant = false,
+      rootClassName,
+      actionClassName,
+      actionIconSize,
+      copyButtonId,
+      formatUrl,
+      theme,
+      locale,
+      assistantList,
+      currentAssistant,
     },
-    handlers,
-    clearAllChunkData,
-  } = useMessageChunkData();
+    ref,
+  ) {
+    const { t, i18n } = useTranslation();
+    const resolvedTheme = resolveTheme(theme);
 
-  useEffect(() => {
-    if (prop_query_intent) handlers.deal_query_intent(prop_query_intent);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prop_query_intent]);
+    const [assistant, setAssistant] = useState<any>({});
+    const [deepResearchPlans, setDeepResearchPlans] = useState<string[]>([]);
+    const [deepResearchCurrentStepIndex, setDeepResearchCurrentStepIndex] =
+      useState<number>(-1);
+    const [
+      deepResearchCurrentStepFinished,
+      setDeepResearchCurrentStepFinished,
+    ] = useState(false);
+    const [deepResearchQuery, setDeepResearchQuery] = useState<string>("");
+    const [deepResearchResultCount, setDeepResearchResultCount] = useState<
+      number | undefined
+    >(undefined);
+    const [deepResearchPlannerStarted, setDeepResearchPlannerStarted] =
+      useState(false);
+    const [deepResearchResearcherStarted, setDeepResearchResearcherStarted] =
+      useState(false);
+    const [deepResearchReporterStarted, setDeepResearchReporterStarted] =
+      useState(false);
+    const [deepResearchReporterFinished, setDeepResearchReporterFinished] =
+      useState(false);
+    const [deepResearchReportData, setDeepResearchReportData] = useState<
+      ResearchReportData | undefined
+    >(undefined);
+    const [deepResearchSearchMap, setDeepResearchSearchMap] = useState<
+      Record<
+        string,
+        { query?: string; resultCount?: number; hits?: StepSearchHit[] }
+      >
+    >({});
 
-  useEffect(() => {
-    if (prop_tools) handlers.deal_tools(prop_tools);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prop_tools]);
+    const {
+      data: {
+        query_intent,
+        tools,
+        fetch_source,
+        pick_source,
+        deep_read,
+        think,
+        response,
+      },
+      handlers,
+      clearAllChunkData,
+    } = useMessageChunkData();
 
-  useEffect(() => {
-    if (prop_fetch_source) handlers.deal_fetch_source(prop_fetch_source);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prop_fetch_source]);
+    const [loadingStep, setLoadingStep] = useState<Record<string, boolean>>({
+      query_intent: false,
+      tools: false,
+      fetch_source: false,
+      pick_source: false,
+      deep_read: false,
+      think: false,
+      response: false,
+      deepResearch: false,
+    });
 
-  useEffect(() => {
-    if (prop_pick_source) handlers.deal_pick_source(prop_pick_source);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prop_pick_source]);
+    const hasDeepResearchPlan =
+      deepResearchPlans.length > 0 &&
+      deepResearchCurrentStepIndex >= 0 &&
+      deepResearchCurrentStepIndex < deepResearchPlans.length;
 
-  useEffect(() => {
-    if (prop_deep_read) handlers.deal_deep_read(prop_deep_read);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prop_deep_read]);
+    const deepResearchStepTitle = hasDeepResearchPlan
+      ? deepResearchPlans[deepResearchCurrentStepIndex]
+      : "";
 
-  useEffect(() => {
-    if (prop_think) handlers.deal_think(prop_think);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prop_think]);
+    const deepResearchPlanningProgress = deepResearchPlans.length > 0 ? 1 : 0;
 
-  useEffect(() => {
-    if (prop_response) handlers.deal_response(prop_response);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prop_response]);
-
-  const [loadingStep, setLoadingStep] = useState<Record<string, boolean>>({
-    query_intent: false,
-    tools: false,
-    fetch_source: false,
-    pick_source: false,
-    deep_read: false,
-    think: false,
-    response: false,
-  });
-
-  const activeLoadingStep = externalLoadingStep || loadingStep;
-
-  const activeDeepResearchPlans = prop_deepResearchPlans ?? deepResearchPlans;
-  const activeDeepResearchCurrentStepIndex = prop_deepResearchCurrentStepIndex ?? deepResearchCurrentStepIndex;
-  const activeDeepResearchQuery = prop_deepResearchQuery ?? deepResearchQuery;
-  const activeDeepResearchResultCount = prop_deepResearchResultCount ?? deepResearchResultCount;
-  const activeDeepResearchResearcherStarted = prop_deepResearchResearcherStarted ?? deepResearchResearcherStarted;
-  const activeDeepResearchReporterStarted = prop_deepResearchReporterStarted ?? deepResearchReporterStarted;
-  const activeDeepResearchReporterFinished = prop_deepResearchReporterFinished ?? deepResearchReporterFinished;
-  const activeDeepResearchReportData = prop_deepResearchReportData ?? deepResearchReportData;
-  const activeDeepResearchSearchMap = prop_deepResearchSearchMap ?? deepResearchSearchMap;
-
-  const hasDeepResearchPlan =
-    activeDeepResearchPlans.length > 0 &&
-    activeDeepResearchCurrentStepIndex >= 0 &&
-    activeDeepResearchCurrentStepIndex < activeDeepResearchPlans.length;
-
-  const deepResearchStepTitle = hasDeepResearchPlan
-    ? activeDeepResearchPlans[activeDeepResearchCurrentStepIndex]
-    : "";
-
-  const deepResearchPlanningProgress = activeDeepResearchPlans.length > 0 ? 1 : 0;
-
-  const deepResearchExecutionProgress = hasDeepResearchPlan
-    ? (activeDeepResearchCurrentStepIndex + 1) / activeDeepResearchPlans.length
-    : 0;
-
-  const deepResearchReportProgress = activeDeepResearchReporterFinished
-    ? 1
-    : activeDeepResearchReporterStarted
-      ? 0.5
+    const deepResearchExecutionProgress = hasDeepResearchPlan
+      ? (deepResearchCurrentStepIndex + 1) / deepResearchPlans.length
       : 0;
 
-  const deepResearchProgress =
-    (deepResearchPlanningProgress +
-      deepResearchExecutionProgress +
-      deepResearchReportProgress) /
-    3;
+    const deepResearchReportProgress = deepResearchReporterFinished
+      ? 1
+      : deepResearchReporterStarted
+        ? 0.5
+        : 0;
 
-  const deepResearchStatusText = useMemo(() => {
-    if (activeDeepResearchReporterFinished) {
-      if (typeof activeDeepResearchResultCount === "number") {
-        return `深度研究完成 · 找到 ${activeDeepResearchResultCount} 条相关结果`;
+    const deepResearchProgress =
+      (deepResearchPlanningProgress +
+        deepResearchExecutionProgress +
+        deepResearchReportProgress) /
+      3;
+
+    const deepResearchStatusText = useMemo(() => {
+      if (deepResearchReporterFinished) {
+        if (typeof deepResearchResultCount === "number") {
+          return `深度研究完成 · 找到 ${deepResearchResultCount} 条相关结果`;
+        }
+        return "深度研究完成";
       }
-      return "深度研究完成";
-    }
-    if (activeDeepResearchReporterStarted) {
-      return "正在编写研究报告";
-    }
-    if (activeDeepResearchResearcherStarted) {
-      return "正在执行研究计划";
-    }
-    if (activeDeepResearchPlans.length > 0) {
-      return "正在规划研究计划";
-    }
-    return undefined;
-  }, [
-    activeDeepResearchReporterFinished,
-    activeDeepResearchResultCount,
-    activeDeepResearchReporterStarted,
-    activeDeepResearchResearcherStarted,
-    activeDeepResearchPlans.length,
-  ]);
+      if (deepResearchReporterStarted) {
+        return "正在编写研究报告";
+      }
+      if (deepResearchResearcherStarted) {
+        return "正在执行研究计划";
+      }
+      if (deepResearchPlans.length > 0) {
+        return "正在规划研究计划";
+      }
+      return undefined;
+    }, [
+      deepResearchReporterFinished,
+      deepResearchResultCount,
+      deepResearchReporterStarted,
+      deepResearchResearcherStarted,
+      deepResearchPlans.length,
+    ]);
 
-  const deepResearchSteps = useMemo<StepItem[]>(() => {
-    if (!activeDeepResearchPlans.length) return [];
+    const deepResearchSteps = useMemo<StepItem[]>(() => {
+      if (!deepResearchPlans.length) return [];
 
-    return activeDeepResearchPlans.map((title, index) => {
-      let status: StepStatus = "pending";
+      return deepResearchPlans.map((title, index) => {
+        let status: StepStatus = "pending";
 
-      if (activeDeepResearchReporterFinished) {
-        status = "done";
-      } else if (activeDeepResearchResearcherStarted) {
-        if (index < activeDeepResearchCurrentStepIndex) {
+        if (deepResearchReporterFinished || deepResearchReporterStarted) {
           status = "done";
-        } else if (index === activeDeepResearchCurrentStepIndex) {
-          status = "in_progress";
-        }
-      }
-
-      const searchInfo = activeDeepResearchSearchMap[title];
-      const searches: StepSearch[] | undefined = searchInfo?.query
-        ? [
-            {
-              id: `step-${index + 1}-search-1`,
-              query: searchInfo.query,
-              resultCount: searchInfo.resultCount,
-              status:
-                typeof searchInfo.resultCount === "number"
-                  ? ("done" as StepSearchStatus)
-                  : ("searching" as StepSearchStatus),
-              hits: searchInfo.hits,
-            },
-          ]
-        : undefined;
-
-      return {
-        id: `step-${index + 1}`,
-        title,
-        status,
-        searches,
-        showOptimizePlan: false,
-      };
-    });
-  }, [
-    activeDeepResearchPlans,
-    activeDeepResearchCurrentStepIndex,
-    activeDeepResearchResearcherStarted,
-    activeDeepResearchReporterFinished,
-    activeDeepResearchSearchMap,
-  ]);
-
-  const deepResearchAllHits = useMemo(() => {
-    const allHits: StepSearchHit[] = [];
-    Object.values(activeDeepResearchSearchMap).forEach((info) => {
-      if (info.hits && Array.isArray(info.hits)) {
-        allHits.push(...info.hits);
-      }
-    });
-    return allHits;
-  }, [activeDeepResearchSearchMap]);
-
-  const deepResearchPlannerStatus: StepStatus = activeDeepResearchPlans.length
-    ? "done"
-    : "pending";
-
-  const deepResearchExecutionStatus: StepStatus = useMemo(() => {
-    if (!deepResearchSteps.length) return "pending";
-    if (deepResearchSteps.some((step) => step.status === "in_progress")) {
-      return "in_progress";
-    }
-    if (deepResearchSteps.some((step) => step.status === "done")) {
-      return "done";
-    }
-    return "pending";
-  }, [deepResearchSteps]);
-
-  const deepResearchReportStatus: StepStatus = deepResearchReporterFinished
-    ? "done"
-    : deepResearchReporterStarted
-      ? "in_progress"
-      : "pending";
-
-  const resetDeepResearchState = () => {
-    setDeepResearchPlans([]);
-    setDeepResearchCurrentStepIndex(-1);
-    setDeepResearchQuery("");
-    setDeepResearchResultCount(undefined);
-    setDeepResearchResearcherStarted(false);
-    setDeepResearchReporterStarted(false);
-    setDeepResearchReporterFinished(false);
-    setDeepResearchReportData(undefined);
-    setDeepResearchSearchMap({});
-  };
-
-  const handleDeepResearchChunk = (chunkData: IChunkData) => {
-    if (chunkData.chunk_type === "research_planner_start") {
-      resetDeepResearchState();
-      return;
-    }
-
-    if (chunkData.chunk_type === "research_planner_end") {
-      if (typeof chunkData.message_chunk === "string") {
-        try {
-          const payload = JSON.parse(chunkData.message_chunk);
-          if (Array.isArray(payload)) {
-            const plans = payload.map((item) => String(item));
-            setDeepResearchPlans(plans);
-            setDeepResearchCurrentStepIndex(plans.length > 0 ? 0 : -1);
+        } else if (deepResearchResearcherStarted) {
+          if (index < deepResearchCurrentStepIndex) {
+            status = "done";
+          } else if (index === deepResearchCurrentStepIndex) {
+            status = deepResearchCurrentStepFinished ? "done" : "in_progress";
           }
-        } catch (error) {
-          console.error(error);
         }
-      }
-      return;
-    }
 
-    if (chunkData.chunk_type === "research_researcher_start") {
-      if (typeof chunkData.message_chunk === "string" && chunkData.message_chunk) {
-        try {
-          const payload = JSON.parse(chunkData.message_chunk);
-          const planText = typeof payload?.plan === "string" ? payload.plan : "";
-          if (planText) {
-            setDeepResearchResearcherStarted(true);
-            setDeepResearchCurrentStepIndex((prevIndex) => {
-              const index = deepResearchPlans.findIndex(
-                (title) => title === planText
-              );
-              if (index !== -1) return index;
-              if (prevIndex >= 0) return prevIndex;
-              return 0;
-            });
-          }
-        } catch (error) {
-          console.error(error);
+        const searchInfo = deepResearchSearchMap[title];
+        const searches: StepSearch[] | undefined = searchInfo?.query
+          ? [
+              {
+                id: `step-${index + 1}-search-1`,
+                query: searchInfo.query,
+                resultCount: searchInfo.resultCount,
+                status:
+                  typeof searchInfo.resultCount === "number"
+                    ? ("done" as StepSearchStatus)
+                    : ("searching" as StepSearchStatus),
+                hits: searchInfo.hits,
+              },
+            ]
+          : undefined;
+
+        return {
+          id: `step-${index + 1}`,
+          title,
+          status,
+          searches,
+          showOptimizePlan: false,
+        };
+      });
+    }, [
+      deepResearchPlans,
+      deepResearchReporterFinished,
+      deepResearchReporterStarted,
+      deepResearchResearcherStarted,
+      deepResearchSearchMap,
+      deepResearchCurrentStepIndex,
+      deepResearchCurrentStepFinished,
+    ]);
+
+    const deepResearchAllHits = useMemo(() => {
+      const allHits: StepSearchHit[] = [];
+      Object.values(deepResearchSearchMap).forEach((info) => {
+        if (info.hits && Array.isArray(info.hits)) {
+          allHits.push(...info.hits);
         }
-      }
-      return;
-    }
+      });
+      return allHits;
+    }, [deepResearchSearchMap]);
 
-    if (chunkData.chunk_type === "research_researcher_step_start") {
-      if (typeof chunkData.message_chunk === "string" && chunkData.message_chunk) {
-        try {
-          const payload = JSON.parse(chunkData.message_chunk);
-          const planText = typeof payload?.plan === "string" ? payload.plan : "";
-          const stepQuery = payload?.step?.payload?.query;
-          if (typeof stepQuery === "string") {
-            setDeepResearchQuery(stepQuery);
+    const deepResearchPlannerStatus: StepStatus = deepResearchPlans.length
+      ? "done"
+      : deepResearchPlannerStarted
+        ? "in_progress"
+        : "pending";
+
+    const deepResearchExecutionStatus: StepStatus = useMemo(() => {
+      if (!deepResearchSteps.length) return "pending";
+      if (deepResearchSteps.some((step) => step.status === "in_progress")) {
+        return "in_progress";
+      }
+      if (deepResearchSteps.some((step) => step.status === "done")) {
+        return "done";
+      }
+      return "pending";
+    }, [deepResearchSteps]);
+
+    const deepResearchReportStatus: StepStatus = deepResearchReporterFinished
+      ? "done"
+      : deepResearchReporterStarted
+        ? "in_progress"
+        : "pending";
+
+    const resetDeepResearchState = () => {
+      setDeepResearchPlans([]);
+      setDeepResearchCurrentStepIndex(-1);
+      setDeepResearchCurrentStepFinished(false);
+      setDeepResearchQuery("");
+      setDeepResearchResultCount(undefined);
+      setDeepResearchPlannerStarted(false);
+      setDeepResearchResearcherStarted(false);
+      setDeepResearchReporterStarted(false);
+      setDeepResearchReporterFinished(false);
+      setDeepResearchReportData(undefined);
+      setDeepResearchSearchMap({});
+    };
+
+    const handleDeepResearchChunk = (chunkData: IChunkData) => {
+      // 规划开始：重置所有状态
+      if (chunkData.chunk_type === "research_planner_start") {
+        resetDeepResearchState();
+        setDeepResearchPlannerStarted(true);
+        return;
+      }
+
+      // 规划结束：解析计划列表并初始化当前步骤索引
+      if (chunkData.chunk_type === "research_planner_end") {
+        if (typeof chunkData.message_chunk === "string") {
+          try {
+            const payload = JSON.parse(chunkData.message_chunk);
+            if (Array.isArray(payload)) {
+              const plans = payload.map((item) => String(item));
+              setDeepResearchPlans(plans);
+              // 如果有计划，设置当前步骤索引为 0，否则为 -1
+              setDeepResearchCurrentStepIndex(plans.length > 0 ? 0 : -1);
+            }
+            setDeepResearchPlannerStarted(false);
+          } catch (error) {
+            console.error(error);
           }
-          setDeepResearchResultCount(undefined);
-          if (planText && typeof stepQuery === "string") {
-            setDeepResearchSearchMap((prev) => {
-              const prevInfo = prev[planText] ?? {};
-              return {
-                ...prev,
-                [planText]: {
-                  ...prevInfo,
-                  query: stepQuery,
-                },
-              };
-            });
-          }
-        } catch (error) {
-          console.error(error);
         }
+        return;
       }
-      return;
-    }
 
-    if (chunkData.chunk_type === "research_researcher_step_end") {
-      if (typeof chunkData.message_chunk === "string" && chunkData.message_chunk) {
-        try {
-          const payload = JSON.parse(chunkData.message_chunk);
-          const planText = typeof payload?.plan === "string" ? payload.plan : "";
-          const hits = payload?.step?.payload?.hits;
-          if (Array.isArray(hits)) {
-            setDeepResearchResultCount(hits.length);
+      // 研究员开始：解析当前计划文本，定位并更新当前步骤索引
+      if (chunkData.chunk_type === "research_researcher_start") {
+        if (
+          typeof chunkData.message_chunk === "string" &&
+          chunkData.message_chunk
+        ) {
+          try {
+            const payload = JSON.parse(chunkData.message_chunk);
+            const planText =
+              typeof payload?.plan === "string" ? payload.plan : "";
             if (planText) {
+              setDeepResearchResearcherStarted(true);
+              setDeepResearchCurrentStepFinished(false);
+              setDeepResearchCurrentStepIndex((prevIndex) => {
+                const index = deepResearchPlans.findIndex(
+                  (title) => title === planText,
+                );
+                // 找到对应计划的索引
+                if (index !== -1) return index;
+                // 没找到则保持原索引或设为 0
+                if (prevIndex >= 0) return prevIndex;
+                return 0;
+              });
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        return;
+      }
+
+      // 研究步骤开始：解析查询语句，更新搜索映射表中的 query 信息
+      if (chunkData.chunk_type === "research_researcher_step_start") {
+        if (
+          typeof chunkData.message_chunk === "string" &&
+          chunkData.message_chunk
+        ) {
+          try {
+            const payload = JSON.parse(chunkData.message_chunk);
+            const planText =
+              typeof payload?.plan === "string" ? payload.plan : "";
+            const stepQuery = payload?.step?.payload?.query;
+            if (typeof stepQuery === "string") {
+              setDeepResearchQuery(stepQuery);
+            }
+            // 清空当前结果计数，等待新结果
+            setDeepResearchResultCount(undefined);
+            if (planText && typeof stepQuery === "string") {
               setDeepResearchSearchMap((prev) => {
                 const prevInfo = prev[planText] ?? {};
                 return {
                   ...prev,
                   [planText]: {
                     ...prevInfo,
-                    resultCount: hits.length,
-                    hits: hits,
+                    query: stepQuery,
                   },
                 };
               });
             }
+          } catch (error) {
+            console.error(error);
           }
-        } catch (error) {
-          console.error(error);
+        }
+        return;
+      }
+
+      // 研究步骤结束：解析搜索结果，更新搜索映射表中的 resultCount 和 hits
+      if (chunkData.chunk_type === "research_researcher_step_end") {
+        if (
+          typeof chunkData.message_chunk === "string" &&
+          chunkData.message_chunk
+        ) {
+          try {
+            const payload = JSON.parse(chunkData.message_chunk);
+            const planText =
+              typeof payload?.plan === "string" ? payload.plan : "";
+            const hits = payload?.step?.payload?.hits;
+            if (Array.isArray(hits)) {
+              setDeepResearchResultCount(hits.length);
+              if (planText) {
+                setDeepResearchSearchMap((prev) => {
+                  const prevInfo = prev[planText] ?? {};
+                  return {
+                    ...prev,
+                    [planText]: {
+                      ...prevInfo,
+                      resultCount: hits.length,
+                      hits: hits,
+                    },
+                  };
+                });
+              }
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        return;
+      }
+
+      // 研究员结束：清空查询语句，标记当前步骤已完成
+      if (chunkData.chunk_type === "research_researcher_end") {
+        setDeepResearchQuery("");
+        setDeepResearchCurrentStepFinished(true);
+        return;
+      }
+
+      // 报告员开始：标记报告员状态已启动
+      if (chunkData.chunk_type === "research_reporter_start") {
+        setDeepResearchReporterStarted(true);
+        return;
+      }
+
+      // 报告员结束：标记报告员已完成，并保存最终报告数据
+      if (chunkData.chunk_type === "research_reporter_end") {
+        setDeepResearchReporterStarted(true);
+        setDeepResearchReporterFinished(true);
+        if (
+          typeof chunkData.message_chunk === "string" &&
+          chunkData.message_chunk
+        ) {
+          try {
+            const payload = JSON.parse(chunkData.message_chunk);
+            setDeepResearchReportData(payload);
+          } catch (error) {
+            console.error(error);
+          }
         }
       }
-      return;
-    }
+    };
 
-    if (chunkData.chunk_type === "research_researcher_end") {
-      setDeepResearchQuery("");
-      return;
-    }
+    const inThinkRef = useRef<boolean>(false);
 
-    if (chunkData.chunk_type === "research_reporter_start") {
-      setDeepResearchReporterStarted(true);
-      return;
-    }
+    useImperativeHandle(ref, () => ({
+      addChunk: (chunkData: IChunkData) => {
+        setLoadingStep(() => ({
+          query_intent: false,
+          tools: false,
+          fetch_source: false,
+          pick_source: false,
+          deep_read: false,
+          think: false,
+          response: false,
+          deepResearch: false,
+          [chunkData.chunk_type || ""]: true,
+        }));
 
-    if (chunkData.chunk_type === "research_reporter_end") {
-      setDeepResearchReporterStarted(true);
-      setDeepResearchReporterFinished(true);
-      if (typeof chunkData.message_chunk === "string" && chunkData.message_chunk) {
-        try {
-          const payload = JSON.parse(chunkData.message_chunk);
-          setDeepResearchReportData(payload);
-        } catch (error) {
-          console.error(error);
+        if (chunkData.chunk_type === "reply_start") {
+          // resetDeepResearchState();
+        } else if (chunkData.chunk_type === "query_intent") {
+          handlers.deal_query_intent(chunkData);
+        } else if (chunkData.chunk_type === "tools") {
+          handlers.deal_tools(chunkData);
+        } else if (chunkData.chunk_type === "fetch_source") {
+          handlers.deal_fetch_source(chunkData);
+        } else if (chunkData.chunk_type === "pick_source") {
+          handlers.deal_pick_source(chunkData);
+        } else if (chunkData.chunk_type === "deep_read") {
+          handlers.deal_deep_read(chunkData);
+        } else if (chunkData.chunk_type === "think") {
+          handlers.deal_think(chunkData);
+        } else if (chunkData.chunk_type === "response") {
+          const message_chunk = chunkData.message_chunk;
+          if (typeof message_chunk === "string") {
+            if (
+              message_chunk.includes("\u003cthink\u003e") ||
+              message_chunk.includes("<think>")
+            ) {
+              inThinkRef.current = true;
+              return;
+            } else if (
+              message_chunk.includes("\u003c/think\u003e") ||
+              message_chunk.includes("</think>")
+            ) {
+              inThinkRef.current = false;
+              return;
+            }
+
+            if (inThinkRef.current) {
+              handlers.deal_think({ ...chunkData, chunk_type: "think" });
+            } else {
+              handlers.deal_response(chunkData);
+            }
+          }
+        } else if (
+          chunkData.chunk_type === "research_planner_start" ||
+          chunkData.chunk_type === "research_planner_end" ||
+          chunkData.chunk_type === "research_researcher_start" ||
+          chunkData.chunk_type === "research_researcher_step_start" ||
+          chunkData.chunk_type === "research_researcher_step_end" ||
+          chunkData.chunk_type === "research_researcher_end" ||
+          chunkData.chunk_type === "research_reporter_start" ||
+          chunkData.chunk_type === "research_reporter_end"
+        ) {
+          handleDeepResearchChunk(chunkData);
         }
-      }
-    }
-  };
-
-  const inThinkRef = useRef<boolean>(false);
-
-  useImperativeHandle(ref, () => ({
-    addChunk: (chunkData: IChunkData) => {
-      setLoadingStep(() => ({
-        query_intent: false,
-        tools: false,
-        fetch_source: false,
-        pick_source: false,
-        deep_read: false,
-        think: false,
-        response: false,
-        [chunkData.chunk_type || '']: true,
-      }));
-
-      if (chunkData.chunk_type === "reply_start") {
+      },
+      reset: () => {
+        clearAllChunkData();
+        setLoadingStep({
+          query_intent: false,
+          tools: false,
+          fetch_source: false,
+          pick_source: false,
+          deep_read: false,
+          think: false,
+          response: false,
+        });
         resetDeepResearchState();
-      } else if (chunkData.chunk_type === "query_intent") {
-        handlers.deal_query_intent(chunkData);
-      } else if (chunkData.chunk_type === "tools") {
-        handlers.deal_tools(chunkData);
-      } else if (chunkData.chunk_type === "fetch_source") {
-        handlers.deal_fetch_source(chunkData);
-      } else if (chunkData.chunk_type === "pick_source") {
-        handlers.deal_pick_source(chunkData);
-      } else if (chunkData.chunk_type === "deep_read") {
-        handlers.deal_deep_read(chunkData);
-      } else if (chunkData.chunk_type === "think") {
-        handlers.deal_think(chunkData);
-      } else if (chunkData.chunk_type === "response") {
-        const message_chunk = chunkData.message_chunk;
-        if (typeof message_chunk === "string") {
-          if (
-            message_chunk.includes("\u003cthink\u003e") ||
-            message_chunk.includes("<think>")
-          ) {
-            inThinkRef.current = true;
-            return;
-          } else if (
-            message_chunk.includes("\u003c/think\u003e") ||
-            message_chunk.includes("</think>")
-          ) {
-            inThinkRef.current = false;
-            return;
-          }
+        inThinkRef.current = false;
+      },
+    }));
 
-          if (inThinkRef.current) {
-            handlers.deal_think({ ...chunkData, chunk_type: "think" });
-          } else {
-            handlers.deal_response(chunkData);
-          }
-        }
-      } else if (
-        chunkData.chunk_type === "research_planner_start" ||
-        chunkData.chunk_type === "research_planner_end" ||
-        chunkData.chunk_type === "research_researcher_start" ||
-        chunkData.chunk_type === "research_researcher_step_start" ||
-        chunkData.chunk_type === "research_researcher_step_end" ||
-        chunkData.chunk_type === "research_researcher_end" ||
-        chunkData.chunk_type === "research_reporter_start" ||
-        chunkData.chunk_type === "research_reporter_end"
-      ) {
-        handleDeepResearchChunk(chunkData);
+    const isAssistant = message?._source?.type === "assistant";
+    const assistant_id = message?._source?.assistant_id;
+    const assistant_item = message?._source?.assistant_item;
+
+    useEffect(() => {
+      if (locale && i18n.language !== locale) {
+        i18n.changeLanguage(locale);
       }
-    },
-    reset: () => {
-      clearAllChunkData();
-      setLoadingStep({
-        query_intent: false,
-        tools: false,
-        fetch_source: false,
-        pick_source: false,
-        deep_read: false,
-        think: false,
-        response: false,
-      });
-      resetDeepResearchState();
-      inThinkRef.current = false;
-    }
-  }));
+    }, [locale, i18n]);
 
-  const isAssistant = message?._source?.type === "assistant";
-  const assistant_id = message?._source?.assistant_id;
-  const assistant_item = message?._source?.assistant_item;
+    useEffect(() => {
+      if (assistant_item) {
+        setAssistant(assistant_item);
+        return;
+      }
 
-  useEffect(() => {
-    if (locale && i18n.language !== locale) {
-      i18n.changeLanguage(locale);
-    }
-  }, [locale, i18n]);
+      if (isAssistant && assistant_id && Array.isArray(assistantList)) {
+        setAssistant(
+          assistantList.find((item) => item._id === assistant_id) ?? {},
+        );
+        return;
+      }
 
-  useEffect(() => {
-    if (assistant_item) {
-      setAssistant(assistant_item);
-      return;
-    }
+      setAssistant(currentAssistant);
+    }, [
+      isAssistant,
+      assistant_item,
+      assistant_id,
+      assistantList,
+      currentAssistant,
+    ]);
 
-    if (isAssistant && assistant_id && Array.isArray(assistantList)) {
-      setAssistant(
-        assistantList.find((item) => item._id === assistant_id) ?? {}
+    const source = message?._source;
+    const messageContent = source?.message || "";
+    const payload = source?.payload;
+
+    const attachments = source?.attachments ?? [];
+    const details = source?.details || [];
+    const question = source?.question || "";
+
+    const showActions =
+      isTyping === false && (messageContent || response?.message_chunk);
+
+    const [suggestion, setSuggestion] = useState<string[]>([]);
+
+    const getSuggestion = (suggestion: string[]) => {
+      setSuggestion(suggestion);
+    };
+
+    const renderContent = () => {
+      if (!isAssistant) {
+        return (
+          <UserMessage message={messageContent} attachments={attachments} />
+        );
+      }
+
+      return (
+        <>
+          <QueryIntent
+            Detail={details.find((item) => item.type === "query_intent")}
+            ChunkData={query_intent}
+            getSuggestion={getSuggestion}
+            loading={loadingStep?.query_intent}
+          />
+
+          <CallTools
+            Detail={details.find((item) => item.type === "tools")}
+            ChunkData={tools}
+            loading={loadingStep?.tools}
+          />
+
+          <FetchSource
+            Detail={details.find((item) => item.type === "fetch_source")}
+            ChunkData={fetch_source}
+            loading={loadingStep?.fetch_source}
+            formatUrl={formatUrl}
+          />
+
+          <PickSource
+            Detail={details.find((item) => item.type === "pick_source")}
+            ChunkData={pick_source}
+            loading={loadingStep?.pick_source}
+          />
+
+          <DeepRead
+            Detail={details.find((item) => item.type === "deep_read")}
+            ChunkData={deep_read}
+            loading={loadingStep?.deep_read}
+          />
+
+          <Think
+            Detail={details.find((item) => item.type === "think")}
+            ChunkData={think}
+            loading={loadingStep?.think}
+          />
+
+          <div className="cm-markdown">
+            <Markdown
+              content={messageContent || response?.message_chunk || ""}
+            />
+          </div>
+
+          <PayloadCard payload={payload as any} formatUrl={formatUrl} />
+
+          {(hasDeepResearchPlan || deepResearchReportData) && (
+            <DeepResearch
+              stepTitle={deepResearchStepTitle}
+              query={deepResearchQuery || question}
+              resultCount={deepResearchResultCount}
+              progress={deepResearchProgress}
+              statusText={deepResearchStatusText}
+              steps={deepResearchSteps}
+              plannerStatus={deepResearchPlannerStatus}
+              executionStatus={deepResearchExecutionStatus}
+              reportStatus={deepResearchReportStatus}
+              reportData={deepResearchReportData}
+              searchHits={deepResearchAllHits}
+              formatUrl={formatUrl}
+              theme={resolvedTheme}
+            />
+          )}
+
+          {JSON.stringify(deepResearchReportData)}
+
+          {isTyping && (
+            <div className="inline-block w-1.5 h-5 ml-0.5 -mb-0.5 bg-[#666666] dark:bg-[#A3A3A3] rounded-sm animate-typing" />
+          )}
+
+          {showActions && (
+            <MessageActions
+              id={message._id ?? ""}
+              content={messageContent || response?.message_chunk || ""}
+              question={question}
+              actionClassName={actionClassName}
+              actionIconSize={actionIconSize}
+              copyButtonId={copyButtonId}
+              onResend={() => {
+                if (onResend) {
+                  onResend(question);
+                }
+              }}
+            />
+          )}
+
+          {!isTyping && (
+            <SuggestionList
+              suggestions={suggestion}
+              onSelect={(text) => onResend && onResend(text)}
+            />
+          )}
+        </>
       );
-      return;
-    }
-
-    setAssistant(currentAssistant);
-  }, [
-    isAssistant,
-    assistant_item,
-    assistant_id,
-    assistantList,
-    currentAssistant,
-  ]);
-
-  const source = message?._source;
-  const messageContent = source?.message || "";
-  const payload = source?.payload;
-
-  const attachments = source?.attachments ?? [];
-  const details = source?.details || [];
-  const question = source?.question || "";
-
-  const showActions =
-    isTyping === false && (messageContent || response?.message_chunk);
-
-  const [suggestion, setSuggestion] = useState<string[]>([]);
-
-  const getSuggestion = (suggestion: string[]) => {
-    setSuggestion(suggestion);
-  };
-
-  const renderContent = () => {
-    if (!isAssistant) {
-      return <UserMessage message={messageContent} attachments={attachments} />;
-    }
+    };
 
     return (
-      <>
-        <QueryIntent
-          Detail={details.find((item) => item.type === "query_intent")}
-          ChunkData={query_intent}
-          getSuggestion={getSuggestion}
-          loading={activeLoadingStep?.query_intent}
-        />
-
-        <CallTools
-          Detail={details.find((item) => item.type === "tools")}
-          ChunkData={tools}
-          loading={activeLoadingStep?.tools}
-        />
-
-        <FetchSource
-          Detail={details.find((item) => item.type === "fetch_source")}
-          ChunkData={fetch_source}
-          loading={activeLoadingStep?.fetch_source}
-          formatUrl={formatUrl}
-        />
-
-        <PickSource
-          Detail={details.find((item) => item.type === "pick_source")}
-          ChunkData={pick_source}
-          loading={activeLoadingStep?.pick_source}
-        />
-
-        <DeepRead
-          Detail={details.find((item) => item.type === "deep_read")}
-          ChunkData={deep_read}
-          loading={activeLoadingStep?.deep_read}
-        />
-
-        <Think
-          Detail={details.find((item) => item.type === "think")}
-          ChunkData={think}
-          loading={activeLoadingStep?.think}
-        />
-
-        <div className="cm-markdown">
-          <Markdown content={messageContent || response?.message_chunk || ""} />
-        </div>
-
-        <PayloadCard payload={payload as any} formatUrl={formatUrl} />
-
-        {hasDeepResearchPlan && (
-          <DeepResearch
-            stepTitle={deepResearchStepTitle}
-            query={activeDeepResearchQuery || question}
-            resultCount={activeDeepResearchResultCount}
-            progress={deepResearchProgress}
-            statusText={deepResearchStatusText}
-            steps={deepResearchSteps}
-            plannerStatus={deepResearchPlannerStatus}
-            executionStatus={deepResearchExecutionStatus}
-            reportStatus={deepResearchReportStatus}
-            reportData={activeDeepResearchReportData}
-            searchHits={deepResearchAllHits}
-            formatUrl={formatUrl}
-            theme={resolvedTheme}
-          />
-        )}
-
-        {isTyping && (
-          <div className="inline-block w-1.5 h-5 ml-0.5 -mb-0.5 bg-[#666666] dark:bg-[#A3A3A3] rounded-sm animate-typing" />
-        )}
-
-        {showActions && (
-          <MessageActions
-            id={message._id ?? ""}
-            content={messageContent || response?.message_chunk || ""}
-            question={question}
-            actionClassName={actionClassName}
-            actionIconSize={actionIconSize}
-            copyButtonId={copyButtonId}
-            onResend={() => {
-              if (onResend) {
-                onResend(question);
-              }
-            }}
-          />
-        )}
-
-        {!isTyping && (
-          <SuggestionList
-            suggestions={suggestion}
-            onSelect={(text) => onResend && onResend(text)}
-          />
-        )}
-      </>
-    );
-  };
-
-  return (
-    <div
-      className={clsx(
-        "w-full py-8 flex",
-        [isAssistant ? "justify-start" : "justify-end"],
-        resolvedTheme === "dark" && "dark",
-        rootClassName
-      )}
-    >
       <div
-        className={`w-full px-4 flex gap-4 ${
-          isAssistant ? "w-full" : "flex-row-reverse"
-        }`}
+        className={clsx(
+          "w-full py-8 flex",
+          [isAssistant ? "justify-start" : "justify-end"],
+          resolvedTheme === "dark" && "dark",
+          rootClassName,
+        )}
       >
         <div
-          className={`w-full space-y-2 ${
-            isAssistant ? "text-left" : "text-right"
+          className={`w-full px-4 flex gap-4 ${
+            isAssistant ? "w-full" : "flex-row-reverse"
           }`}
         >
-          {!hide_assistant && (
-            <div className="w-full flex items-center gap-1 font-semibold text-sm text-[#333] dark:text-white">
-              {isAssistant ? (
-                <div className="w-6 h-6 flex justify-center items-center rounded-full bg-white dark:bg-[#2A2A2A] border border-[#E6E6E6] dark:border-[#3A3A3A]">
-                  {assistant?._source?.icon?.startsWith("font_") ? (
-                    <FontIcon
-                      name={assistant._source.icon}
-                      className="w-4 h-4"
-                    />
-                  ) : (
-                    <img
-                      src={logoImg}
-                      className="w-4 h-4"
-                      alt={t("assistant.message.logo")}
-                    />
-                  )}
-                </div>
-              ) : null}
-              {isAssistant ? assistant?._source?.name || "Coco AI" : ""}
-            </div>
-          )}
-          <div className="w-full prose dark:prose-invert prose-sm max-w-none">
-            <div className="w-full pl-7 text-[#333] dark:text-white leading-relaxed">
-              {renderContent()}
+          <div
+            className={`w-full space-y-2 ${
+              isAssistant ? "text-left" : "text-right"
+            }`}
+          >
+            {!hide_assistant && (
+              <div className="w-full flex items-center gap-1 font-semibold text-sm text-[#333] dark:text-white">
+                {isAssistant ? (
+                  <div className="w-6 h-6 flex justify-center items-center rounded-full bg-white dark:bg-[#2A2A2A] border border-[#E6E6E6] dark:border-[#3A3A3A]">
+                    {assistant?._source?.icon?.startsWith("font_") ? (
+                      <FontIcon
+                        name={assistant._source.icon}
+                        className="w-4 h-4"
+                      />
+                    ) : (
+                      <img
+                        src={logoImg}
+                        className="w-4 h-4"
+                        alt={t("assistant.message.logo")}
+                      />
+                    )}
+                  </div>
+                ) : null}
+                {isAssistant ? assistant?._source?.name || "Coco AI" : ""}
+              </div>
+            )}
+            <div className="w-full prose dark:prose-invert prose-sm max-w-none">
+              <div className="w-full pl-7 text-[#333] dark:text-white leading-relaxed">
+                {renderContent()}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-}));
+    );
+  }),
+);
 
-export const ChatMessage = memo(forwardRef<ChatMessageRef, ChatMessageProps>((props, ref) => {
-  return (
-    <I18nextProvider i18n={i18nInstance}>
-      <InnerChatMessage {...props} ref={ref} />
-    </I18nextProvider>
-  );
-}));
+export const ChatMessage = memo(
+  forwardRef<ChatMessageRef, ChatMessageProps>((props, ref) => {
+    return (
+      <I18nextProvider i18n={i18nInstance}>
+        <InnerChatMessage {...props} ref={ref} />
+      </I18nextProvider>
+    );
+  }),
+);

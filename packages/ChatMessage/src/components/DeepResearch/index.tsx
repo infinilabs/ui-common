@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Loader, Hourglass, CirclePause, Check } from "lucide-react";
+
 import { DeepResearchDrawer } from "./DeepResearchDrawer";
 import type {
   StepItem,
@@ -93,20 +94,20 @@ export const DeepResearch = ({
           ) : null}
 
           <div className="mt-2 flex items-center justify-between rounded-full bg-white px-3 py-2 text-sm text-[#333] dark:bg-[#111827] dark:text-[#D1D5DB]">
-            <div className="flex min-w-0 items-center gap-2">
+            <div className="flex min-w-0 items-center gap-2 flex-1">
               {normalizedProgress >= 1 ? (
-                <Check className="h-3 w-3 text-[#22C55E]" />
+                <Check className="h-4 w-4 text-[#22C55E] shrink-0" />
               ) : (
-                <Loader className="h-3 w-3 animate-spin text-[#148EFF]" />
+                <Loader className="h-4 w-4 animate-spin text-[#148EFF] shrink-0" />
               )}
-              <span className="">
-                {displayStatus}
-                <span className="text-[#999] dark:text-[#A6A6A6] truncate">
+              <div className="flex min-w-0 items-center flex-1">
+                <span className="whitespace-nowrap shrink-0">{displayStatus}</span>
+                <span className="text-[#999] dark:text-[#A6A6A6] truncate ml-1">
                   ｜ {query}
                 </span>
-              </span>
+              </div>
             </div>
-            <div className="ml-2 flex items-center gap-2">
+            <div className="ml-2 flex items-center gap-2 shrink-0">
               {normalizedProgress < 1 && typeof resultCount === "number" ? (
                 <div className="flex py-0.5 px-1 items-center justify-center rounded-full border border-[#018AE5] bg-white text-xs font-medium text-[#018AE5] dark:bg-[#020617]">
                   {resultCount}

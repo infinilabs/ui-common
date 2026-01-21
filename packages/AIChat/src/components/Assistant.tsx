@@ -5,12 +5,12 @@ import { I18nextProvider, useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 import { ChevronDown, RefreshCw, Search, Check } from "lucide-react";
 
-import i18n from "@/i18n";
-import { Input, type InputRef } from "@/components/ui/input";
-import { Post } from "@/api/axiosRequest";
-import { useChatStore } from "@/stores/chatStore";
+import i18n from "../i18n";
+import { Input, type InputRef } from "antd";
+import { Post } from "../api/axiosRequest";
+import { useChatStore } from "../stores/chatStore";
 import FontIcon from "./FontIcon";
-import { useIconfontScript } from "@/hooks/useScript";
+import { useIconfontScript } from "../hooks/useScript";
 
 interface AssistantListProps {
   BaseUrl: string;
@@ -56,7 +56,7 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const pageSize = 100;
+  const pageSize = 10;
   
   const debouncedKeyword = useMemo(
     () => debounce((k: string) => {

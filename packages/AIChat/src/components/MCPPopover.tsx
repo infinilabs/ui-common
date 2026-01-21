@@ -8,7 +8,7 @@ import { Popover } from "antd";
 import Checkbox from "./Common/Checkbox";
 import NoDataImage from "./NoDataImage";
 import Pagination from "./Common/Pagination";
-import { Input, type InputRef } from "./ui/input";
+import { Input, type InputRef } from "antd";
 
 export interface DataSource {
   id: string;

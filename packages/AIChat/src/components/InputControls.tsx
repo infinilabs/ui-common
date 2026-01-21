@@ -13,8 +13,8 @@ interface InputControlsProps {
   setIsDeepResearchActive?: (val: boolean) => void;
 
   // Deep Think
-  isDeepThinkActive: boolean;
-  setIsDeepThinkActive: (val: boolean) => void;
+  isDeepThinkActive?: boolean;
+  setIsDeepThinkActive?: (val: boolean) => void;
   deepThinkingShortcut?: string;
 
   // Datasource
@@ -40,7 +40,7 @@ const InputControls = ({
   isDeepResearchActive = false,
   setIsDeepResearchActive = () => {},
 
-  isDeepThinkActive,
+  isDeepThinkActive = false,
   setIsDeepThinkActive,
 
   datasource,
@@ -76,7 +76,7 @@ const InputControls = ({
   }, [i18n]);
 
   return (
-    <div className="flex items-center pt-2 gap-2">
+    <div className="flex items-center pt-3 gap-2">
       <div
         className={clsx(
           "flex items-center justify-center gap-1 h-6 px-2 rounded-full transition hover:bg-[#EDEDED] dark:hover:bg-[#202126] cursor-pointer"
@@ -111,7 +111,7 @@ const InputControls = ({
             ? "rgba(1,138,229,0.21)"
             : undefined,
         }}
-        onClick={() => setIsDeepThinkActive(!isDeepThinkActive)}
+        onClick={() => setIsDeepThinkActive?.(!isDeepThinkActive)}
         title={t("search.input.deepThink") || "DeepThink"}
       >
         <Brain

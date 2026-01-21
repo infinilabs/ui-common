@@ -66,6 +66,12 @@ export const ResearchReportContent = ({ content, data, formatUrl }: ResearchRepo
           <Markdown content={content} />
         </div>
       )}
+
+      {data?.url && (
+        <div className="cm-markdown">
+          <Markdown url={(formatUrl ? formatUrl({ url: data.url }) : data.url)} />
+        </div>
+      )}
     </div>
   );
 };

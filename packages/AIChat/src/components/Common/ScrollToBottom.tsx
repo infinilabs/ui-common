@@ -2,7 +2,7 @@ import type { RefObject } from "react";
 import clsx from "clsx";
 import { ArrowDown } from "lucide-react";
 
-import { Button } from "../ui/button.tsx";
+import { Button } from "antd";
 
 interface ScrollToBottomProps {
   scrollRef: RefObject<HTMLDivElement>;
@@ -12,8 +12,7 @@ interface ScrollToBottomProps {
 const ScrollToBottom = ({ scrollRef, isAtBottom }: ScrollToBottomProps) => {
   return (
     <Button
-      size="icon"
-      variant="outline"
+      shape="circle"
       className={clsx(
         "absolute right-4 bottom-4 border border-border rounded-full shadow dark:shadow-white/15",
         {

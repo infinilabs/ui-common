@@ -62,7 +62,7 @@ const resources = {
           searching: "Searching",
           searchTitle: "Search sources",
           optimizePlan: "Optimize research plan",
-          reportTitle: "Write research report",
+          reportTitle: "Generate research report",
         },
       },
       sessionFiles: {
@@ -136,7 +136,7 @@ const resources = {
           searching: "正在搜索",
           searchTitle: "搜索资料",
           optimizePlan: "优化研究计划",
-          reportTitle: "编写研究报告",
+          reportTitle: "生成研究报告",
         },
       },
       sessionFiles: {

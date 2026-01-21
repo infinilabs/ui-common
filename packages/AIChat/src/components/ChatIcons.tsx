@@ -11,6 +11,8 @@ import { useTranslation } from "react-i18next";
 export interface SendMessageParams {
   message?: string;
   attachments?: string[];
+  search?: boolean;
+  deep_thinking?: boolean;
 }
 
 interface ChatIconsProps {
@@ -25,7 +27,7 @@ interface ChatIconsProps {
 
 const ChatIcons: React.FC<ChatIconsProps> = ({
   curChatEnd,
-  inputValue,
+  inputValue = "",
   onSend,
   disabledChange,
   // speechSupported = false,
@@ -79,18 +81,18 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
             type="submit"
             onClick={() => {
               onSend({
-                message: inputValue.trim(),
+                message: inputValue?.trim() || "",
               });
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
                 onSend({
-                  message: inputValue.trim(),
+                  message: inputValue?.trim() || "",
                 });
               }
             }}
-            disabled={!inputValue.trim()}
+            disabled={!inputValue?.trim()}
             title={`${t("search.input.send") || "Send"} (Enter)`}
           >
             <Send size={20} />
@@ -101,14 +103,15 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
 
     return (
       <button
-        className={`ml-1 px-1 bg-[#0072FF] rounded-full transition-colors`}
+        className={`ml-1 p-2 bg-[#0072FF] rounded-full transition-colors`}
         type="submit"
         onClick={() => disabledChange?.()}
         title={t("search.input.stop") || "Stop"}
       >
         <Square
-          size={16}
-          className="w-4 h-4 text-white fill-white"
+          size={12}
+          strokeWidth={2}
+          className="w-3 h-3 text-white fill-white"
           aria-label={t("search.input.stop") || "Stop"}
         />
       </button>

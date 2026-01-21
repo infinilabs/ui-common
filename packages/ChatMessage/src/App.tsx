@@ -7,8 +7,13 @@ import "./App.css";
 import { Send, Square } from "lucide-react";
 import SessionFiles from "./components/SessionFiles";
 import { deepResearchMockChunks, mockResearchReportContent } from "./mocks";
+import { realDataChunks, realDataInitialMessages } from "./mockRealData";
 
 const INITIAL_MESSAGES: IChatMessage[] = [
+  ...(realDataInitialMessages as any[]).map((msg) => ({
+    _id: msg._id,
+    _source: msg._source,
+  })),
   ...(demoData?.hits?.hits ?? []).map((hit: any) => ({
     _id: hit?._id ?? String(Math.random()),
     _source: hit?._source ?? {},
@@ -285,6 +290,48 @@ function App() {
     abortControllerRef.current = null;
   };
 
+  const streamRealDataDemo = async (userQuestion: string) => {
+    console.log("Real data demo for:", userQuestion);
+    setIsTyping(true);
+    const newMsgId = Date.now().toString();
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    const assistantMsg: IChatMessage = {
+      _id: newMsgId,
+      _source: {
+        type: "assistant",
+        message: "",
+        assistant_id: "coco-bot",
+        details: [],
+      },
+    };
+
+    setMessages((prev) => [...prev, assistantMsg]);
+
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    if (!activeMessageRef.current) {
+      console.error("Active message ref not attached!");
+      setIsTyping(false);
+      abortControllerRef.current = null;
+      return;
+    }
+
+    activeMessageRef.current.reset();
+
+    for (const chunk of realDataChunks) {
+      if (abortController.signal.aborted) return;
+      activeMessageRef.current.addChunk(chunk);
+      // console.log(chunk);
+      // Simulate network delay
+      await new Promise((r) => setTimeout(r, 100));
+    }
+
+    setIsTyping(false);
+    abortControllerRef.current = null;
+  };
+
   const handleSend = () => {
     if (!inputValue.trim() || isTyping) return;
 
@@ -303,6 +350,8 @@ function App() {
 
     if (question.trim().toLowerCase() === "what is coco ai?") {
       streamDeepResearchDemo(question);
+    } else if (question.trim().toLowerCase() === "coco") {
+      streamRealDataDemo(question);
     } else {
       streamResponse(question);
     }

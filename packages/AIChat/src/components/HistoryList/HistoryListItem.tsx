@@ -7,15 +7,14 @@ import {
   type KeyboardEvent,
   type FocusEvent,
 } from "react";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, Loader2 } from "lucide-react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 import { Pencil, Trash2 } from "lucide-react";
-import { Popover } from "antd";
+import { Popover, Input } from "antd";
 
-import { Input } from "@/components/ui/input";
-import type { Chat } from "@/types/chat";
+import type { Chat } from "../../types/chat";
 
 interface HistoryListItemProps {
   item: Chat;
@@ -25,6 +24,8 @@ interface HistoryListItemProps {
   onMouseEnter: () => void;
   handleDelete: () => void;
   highlightId: string;
+  renamingId?: string;
+  deletingId?: string;
   t?: TFunction;
 }
 
@@ -36,6 +37,8 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
   onMouseEnter,
   highlightId,
   handleDelete,
+  renamingId,
+  deletingId,
   t: tProp,
 }) => {
   const { t: tOriginal } = useTranslation();
@@ -45,6 +48,8 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
   const title = (_source?.title ?? _id) as string;
   const isSelected = item._id === active?._id;
   const isHovered = item._id === highlightId;
+  const isRenaming = renamingId === item._id;
+  const isDeleting = deletingId === item._id;
 
   const [isEdit, setIsEdit] = useState(false);
   const [open, setOpen] = useState(false);
@@ -54,9 +59,11 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
       e.preventDefault();
       e.stopPropagation();
 
-      moreButtonRef.current?.click();
+      if (isSelected) {
+        moreButtonRef.current?.click();
+      }
     },
-    [moreButtonRef]
+    [moreButtonRef, isSelected]
   );
 
   const handleRename = useCallback(() => {
@@ -94,7 +101,7 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
 
   const popoverContent = (
     <div
-      className="flex flex-col gap-1"
+      className="flex flex-col gap-2"
       onClick={(event) => {
         event.stopPropagation();
       }}
@@ -153,12 +160,21 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
       />
 
       <div className="flex-1 flex items-center justify-between gap-2 px-2 overflow-hidden">
-        {isEdit && isSelected ? (
+        {(isEdit && isSelected) || isRenaming ? (
           <Input
             autoFocus
+            disabled={isRenaming}
             defaultValue={title}
             className="flex-1 -mx-px h-7"
+            suffix={
+              <span
+                className={clsx("flex items-center", !isRenaming && "hidden")}
+              >
+                <Loader2 className="size-4 animate-spin" />
+              </span>
+            }
             onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
+              if (isRenaming) return;
               if (event.key !== "Enter") return;
 
               event.stopPropagation();
@@ -170,6 +186,7 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
               setIsEdit(false);
             }}
             onBlur={(event: FocusEvent<HTMLInputElement>) => {
+              if (isRenaming) return;
               const value = event.currentTarget.value;
 
               onRename(item._id || "", value);
@@ -187,32 +204,36 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
             e.stopPropagation();
           }}
         >
-          <Popover
-            open={open}
-            onOpenChange={setOpen}
-            content={popoverContent}
-            trigger="click"
-            placement="bottomRight"
-            arrow={false}
-            getPopupContainer={(trigger) => trigger.closest("li") || document.body}
-          >
-            <button
-              ref={moreButtonRef}
-              className={clsx(
-                "flex gap-2 bg-transparent border-none p-0 cursor-pointer outline-none",
-                {
-                  "opacity-100 pointer-events-auto":
-                    open || (!isEdit && (isSelected || isHovered)),
-                  "opacity-0 pointer-events-none": !(
-                    open ||
-                    (!isEdit && (isSelected || isHovered))
-                  ),
-                }
-              )}
+          {isDeleting ? (
+            <Loader2 className="size-4 animate-spin text-muted-foreground" />
+          ) : (
+            <Popover
+              open={open}
+              onOpenChange={setOpen}
+              content={popoverContent}
+              trigger="click"
+              placement="bottomRight"
+              arrow={false}
+              getPopupContainer={(trigger) => trigger.closest("li") || document.body}
             >
-              <Ellipsis className="size-4 text-[#979797]" />
-            </button>
-          </Popover>
+              <button
+                ref={moreButtonRef}
+                className={clsx(
+                  "flex gap-2 bg-transparent border-none p-0 cursor-pointer outline-none",
+                  {
+                    "opacity-100 pointer-events-auto":
+                      open || (!isEdit && isSelected),
+                    "opacity-0 pointer-events-none": !(
+                      open ||
+                      (!isEdit && isSelected)
+                    ),
+                  }
+                )}
+              >
+                <Ellipsis className="size-4 text-[#979797]" />
+              </button>
+            </Popover>
+          )}
         </div>
       </div>
     </li>

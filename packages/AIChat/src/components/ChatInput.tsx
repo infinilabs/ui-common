@@ -1,58 +1,39 @@
 import { useCallback, useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { resources } from "../i18n";
 import { useSize } from "ahooks";
 import clsx from "clsx";
 
+import { resources } from "../i18n";
 import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
 import AutoResizeTextarea from "./AutoResizeTextarea";
 import ChatIcons, { type SendMessageParams } from "./ChatIcons";
 import InputControls from "./InputControls";
-import { useChatStore } from "@/stores/chatStore";
+import { useChatStore } from "../stores/chatStore";
 
 interface ChatInputProps {
   onSend: (params: SendMessageParams) => void;
   disabled: boolean;
   inputValue: string;
   changeInput: (val: string) => void;
-  isDeepThinkActive: boolean;
-  setIsDeepThinkActive: (val: boolean) => void;
-  isDeepResearchActive?: boolean;
-  setIsDeepResearchActive?: (val: boolean) => void;
   chatPlaceholder?: string;
-  searchPlaceholder?: string;
-  returnToInputShortcut?: string;
 }
 
 export default function ChatInput({
   onSend,
-  disabled,
+  disabled = false,
   inputValue,
   changeInput,
-  isDeepThinkActive,
-  setIsDeepThinkActive,
-  isDeepResearchActive,
-  setIsDeepResearchActive,
   chatPlaceholder,
 }: ChatInputProps) {
   const { i18n } = useTranslation("ai_chat");
 
-  const [internalDeepResearchActive, setInternalDeepResearchActive] = useState(
-    isDeepResearchActive || false
-  );
+  const curChatEnd = useChatStore((state) => state.curChatEnd);
+  const currentAssistant = useChatStore((state) => state.currentAssistant);
 
-  const deepResearchActive =
-    typeof setIsDeepResearchActive === "function"
-      ? (isDeepResearchActive ?? false)
-      : internalDeepResearchActive;
-
-  const handleDeepResearchChange = (val: boolean) => {
-    if (typeof setIsDeepResearchActive === "function") {
-      setIsDeepResearchActive(val);
-    } else {
-      setInternalDeepResearchActive(val);
-    }
-  };
+  // TODO: Check if the assistant supports deep thinking and deep research
+  // Currently defaulting to true as per requirements
+  const isDeepThinkActive = !!(currentAssistant?._source?.deep_think_enabled ?? true);
+  const deepResearchActive = !!(currentAssistant?._source?.deep_research_enabled ?? true);
 
   useEffect(() => {
     (Object.keys(resources) as Array<keyof typeof resources>).forEach((lng) => {
@@ -68,13 +49,11 @@ export default function ChatInput({
     });
   }, [i18n]);
 
-  const textareaRef = useRef<{ reset: () => void; focus: () => void }>(null);
+const textareaRef = useRef<{ reset: () => void; focus: () => void }>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const containerSize = useSize(containerRef);
 
-  const { curChatEnd } = useChatStore();
   const [lineCount, setLineCount] = useState(1);
-
   const committedRef = useRef("");
   const {
     supported: speechSupported,
@@ -113,9 +92,13 @@ export default function ChatInput({
     const trimmedValue = inputValue.trim();
     if (trimmedValue) {
       changeInput("");
-      onSend({ message: trimmedValue });
+      onSend({
+        message: trimmedValue,
+        deep_thinking: isDeepThinkActive,
+        search: deepResearchActive,
+      });
     }
-  }, [inputValue, onSend, changeInput]);
+  }, [inputValue, onSend, changeInput, isDeepThinkActive, deepResearchActive]);
 
   const handleInputChange = useCallback(
     (value: string) => {
@@ -153,7 +136,11 @@ export default function ChatInput({
   const handleIconSend = (params: SendMessageParams) => {
     if (params.message) {
       changeInput("");
-      onSend(params);
+      onSend({
+        ...params,
+        deep_thinking: isDeepThinkActive,
+        search: deepResearchActive,
+      });
     }
   };
 
@@ -199,9 +186,7 @@ export default function ChatInput({
       <div className="pb-3">
         <InputControls
           isDeepThinkActive={isDeepThinkActive}
-          setIsDeepThinkActive={setIsDeepThinkActive}
           isDeepResearchActive={deepResearchActive}
-          setIsDeepResearchActive={handleDeepResearchChange}
         />
       </div>
     </div>
