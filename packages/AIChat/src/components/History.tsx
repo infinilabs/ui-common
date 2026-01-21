@@ -16,15 +16,20 @@ interface HistoryProps {
   t?: TFunction;
 }
 
-function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps) {
+function InnerHistory({
+  BaseUrl,
+  Token,
+  locale = "en",
+  t: tProp,
+}: HistoryProps) {
   const { t: tOriginal } = useTranslation();
   const t = tProp || tOriginal;
 
   const chats = useChatStore((state) => state.chats);
   const setChats = useChatStore((state) => state.setChats);
-  const active = useChatStore((state) => state.activeChat);
-  const setActive = useChatStore((state) => state.setActiveChat);
-  
+  const activeChat = useChatStore((state) => state.activeChat);
+  const setActiveChat = useChatStore((state) => state.setActiveChat);
+
   const [messageApi, contextHolder] = message.useMessage();
 
   const [keyword, setKeyword] = useState("");
@@ -65,16 +70,15 @@ function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps)
       const hits = (res?.hits?.hits as Chat[] | undefined) || [];
       setChats(hits);
 
+      // 历史列表更新了，设置第一个为 activeChat
       if (hits.length > 0) {
-        const currentActive = useChatStore.getState().activeChat;
-        if (!currentActive) {
-          setActive(hits[0]);
-        }
+        console.log("setActiveChat1", hits[0]);
+        setActiveChat(hits[0]);
       }
     } catch (e) {
       console.error(e);
     }
-  }, [keyword, setChats, setActive]);
+  }, [keyword, setChats, setActiveChat]);
 
   useEffect(() => {
     fetchChatHistory();
@@ -82,9 +86,10 @@ function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps)
 
   const onSelect = useCallback(
     async (chat: Chat) => {
-      setActive(chat);
+      console.log("setActiveChat2", chat);
+      setActiveChat(chat);
     },
-    [setActive]
+    [setActiveChat],
   );
 
   const onRename = useCallback(
@@ -108,7 +113,7 @@ function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps)
         setRenamingId("");
       }
     },
-    [messageApi, t, fetchChatHistory]
+    [messageApi, t, fetchChatHistory],
   );
 
   const onRemove = useCallback(
@@ -130,7 +135,6 @@ function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps)
 
         // Fetch latest history after successful deletion
         await fetchChatHistory();
-
       } catch (e) {
         console.error(e);
 
@@ -143,7 +147,7 @@ function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps)
         setDeletingId("");
       }
     },
-    [messageApi, t, fetchChatHistory]
+    [messageApi, t, fetchChatHistory],
   );
 
   return (
@@ -152,7 +156,7 @@ function InnerHistory({ BaseUrl, Token, locale = "en", t: tProp }: HistoryProps)
       <HistoryList
         historyPanelId="history-panel"
         chats={chats}
-        active={active}
+        active={activeChat}
         onSearch={setKeyword}
         onRefresh={fetchChatHistory}
         onSelect={onSelect}

@@ -168,9 +168,7 @@ export const ResearchStepsContent = ({
           }`}
         >
           {planner === "in_progress" ? (
-            <div className="w-5 h-5 bg-white dark:bg-[#020817] border-2 border-blue-500 rounded-full flex items-center justify-center">
-              <Loader className="w-3 h-3 text-blue-500 animate-spin" />
-            </div>
+            <Loader className="w-5 h-5 text-[#1784FC] animate-spin" />
           ) : (
             <PencilLine
               className={`w-4 h-4 ${
@@ -250,26 +248,22 @@ export const ResearchStepsContent = ({
                 firstActiveIndex !== -1 &&
                 lastActiveIndex !== -1 && (
                   <div
-                    className="absolute left-2.5 border-l border-dashed border-gray-200 dark:border-gray-700"
+                    className="absolute left-2 border-l border-dashed border-[#018AE5]/20 dark:border-gray-700"
                     style={{
-                      top: isFirstActive ? 10 : 0,
-                      bottom: isLastActive ? 10 : 0,
+                      top: isFirstActive ? 10 : 16,
+                      bottom: isLastActive ? 10 : -12,
                     }}
                   />
                 )}
 
               {/* 完成状态图标 */}
               {step.status === "done" && (
-                <div className="absolute left-0 top-0 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-3 h-3 text-white" />
-                </div>
+                <CheckCircle className="absolute left-0 top-0 w-4 h-4 text-[#1784FC]" />
               )}
 
               {/* 进行中状态图标 */}
               {step.status === "in_progress" && (
-                <div className="absolute left-0 top-0 w-5 h-5 bg-white dark:bg-[#020817] border-2 border-blue-500 rounded-full flex items-center justify-center">
-                  <Loader className="w-3 h-3 text-blue-500 animate-spin" />
-                </div>
+                <Loader className="absolute left-0 top-0 w-4 h-4 text-[#1784FC] animate-spin" />
               )}
 
               {/* 等待中的简化展示 */}
@@ -417,9 +411,7 @@ export const ResearchStepsContent = ({
             }`}
           >
             {report === "in_progress" ? (
-              <div className="w-5 h-5 bg-white dark:bg-[#020817] border-2 border-blue-500 rounded-full flex items-center justify-center">
-                <Loader className="w-3 h-3 text-blue-500 animate-spin" />
-              </div>
+             <Loader className="w-5 h-5 text-blue-500 animate-spin" />
             ) : (
               <BookOpenText
                 className={`w-4 h-4 ${

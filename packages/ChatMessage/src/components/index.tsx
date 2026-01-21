@@ -367,7 +367,7 @@ const InnerChatMessage = memo(
               isAssistant ? "text-left" : "text-right"
             }`}
           >
-            {!hide_assistant && (
+            {!hide_assistant && (renderContent() || response || think) && (
               <div className="w-full flex items-center gap-1 font-semibold text-sm text-[#333] dark:text-white">
                 {isAssistant ? (
                   <div className="w-6 h-6 flex justify-center items-center rounded-full bg-white dark:bg-[#2A2A2A] border border-[#E6E6E6] dark:border-[#3A3A3A]">
@@ -389,7 +389,12 @@ const InnerChatMessage = memo(
               </div>
             )}
             <div className="w-full prose dark:prose-invert prose-sm max-w-none">
-              <div className="w-full pl-7 text-[#333] dark:text-white leading-relaxed">
+              <div
+                className={clsx(
+                  "w-full text-[#333] dark:text-white leading-relaxed",
+                  isAssistant && "pl-7",
+                )}
+              >
                 {renderContent()}
               </div>
             </div>

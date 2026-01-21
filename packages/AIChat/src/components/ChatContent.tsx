@@ -34,10 +34,6 @@ export const ActiveChatMessage = ({
 }: ActiveChatMessageProps) => {
   const allMessages = activeChat?.messages || [];
 
-  if (curChatEnd) {
-    return null;
-  }
-
   return (
     <ChatMessage
       key={"current"}
