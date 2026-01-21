@@ -10,7 +10,7 @@ export default function useMessageChunkData() {
   const [deep_read, setDeep_read] = useState<IChunkData>();
   const [think, setThink] = useState<IChunkData>();
   const [response, setResponse] = useState<IChunkData>();
-  const [deepResearch, setDeepResearch] = useState<IChunkData>();
+  const [deepResearch, setDeepResearch] = useState<IChunkData[]>([]);
 
   const handlers = {
     deal_query_intent: useCallback((data: IChunkData) => {
@@ -77,13 +77,7 @@ export default function useMessageChunkData() {
       });
     }, []),
     deal_deep_research: useCallback((data: IChunkData) => {
-      setDeepResearch((prev: IChunkData | undefined): IChunkData => {
-        if (!prev) return data;
-        return {
-          ...prev,
-          message_chunk: (prev.message_chunk || "") + (data.message_chunk || ""),
-        };
-      });
+      setDeepResearch((prev) => [...prev, data]);
     }, []),
   };
 
@@ -96,7 +90,7 @@ export default function useMessageChunkData() {
       setDeep_read(undefined);
       setThink(undefined);
       setResponse(undefined);
-      setDeepResearch(undefined);
+      setDeepResearch([]);
       setTimeout(resolve, 0);
     });
   };

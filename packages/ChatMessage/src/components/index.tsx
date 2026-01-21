@@ -5,7 +5,6 @@ import {
   forwardRef,
   useImperativeHandle,
   useRef,
-  useMemo,
 } from "react";
 import { useTranslation, I18nextProvider } from "react-i18next";
 import clsx from "clsx";
@@ -28,16 +27,20 @@ import FontIcon from "./Common/Icons/FontIcon";
 import useMessageChunkData from "../hooks/useMessageChunkData";
 import { DeepResearch } from "./DeepResearch";
 import { PayloadCard } from "./PayloadCard";
-import type {
-  StepItem,
-  StepStatus,
-  StepSearch,
-  StepSearchStatus,
-  StepSearchHit,
-} from "./DeepResearch/ResearchStepsContent";
-import type { ResearchReportData } from "./DeepResearch/ResearchReportContent";
 
 import "./index.css";
+
+const DEEP_RESEARCH_CHUNK_TYPES = [
+  "research_planner_start",
+  "research_planner_progress",
+  "research_planner_end",
+  "research_researcher_start",
+  "research_researcher_step_start",
+  "research_researcher_step_end",
+  "research_researcher_end",
+  "research_reporter_start",
+  "research_reporter_end",
+];
 
 export interface ChatMessageProps {
   message: IChatMessage;
@@ -100,34 +103,6 @@ const InnerChatMessage = memo(
     const resolvedTheme = resolveTheme(theme);
 
     const [assistant, setAssistant] = useState<any>({});
-    const [deepResearchPlans, setDeepResearchPlans] = useState<string[]>([]);
-    const [deepResearchCurrentStepIndex, setDeepResearchCurrentStepIndex] =
-      useState<number>(-1);
-    const [
-      deepResearchCurrentStepFinished,
-      setDeepResearchCurrentStepFinished,
-    ] = useState(false);
-    const [deepResearchQuery, setDeepResearchQuery] = useState<string>("");
-    const [deepResearchResultCount, setDeepResearchResultCount] = useState<
-      number | undefined
-    >(undefined);
-    const [deepResearchPlannerStarted, setDeepResearchPlannerStarted] =
-      useState(false);
-    const [deepResearchResearcherStarted, setDeepResearchResearcherStarted] =
-      useState(false);
-    const [deepResearchReporterStarted, setDeepResearchReporterStarted] =
-      useState(false);
-    const [deepResearchReporterFinished, setDeepResearchReporterFinished] =
-      useState(false);
-    const [deepResearchReportData, setDeepResearchReportData] = useState<
-      ResearchReportData | undefined
-    >(undefined);
-    const [deepResearchSearchMap, setDeepResearchSearchMap] = useState<
-      Record<
-        string,
-        { query?: string; resultCount?: number; hits?: StepSearchHit[] }
-      >
-    >({});
 
     const {
       data: {
@@ -138,6 +113,7 @@ const InnerChatMessage = memo(
         deep_read,
         think,
         response,
+        deepResearch,
       },
       handlers,
       clearAllChunkData,
@@ -153,313 +129,6 @@ const InnerChatMessage = memo(
       response: false,
       deepResearch: false,
     });
-
-    const hasDeepResearchPlan =
-      deepResearchPlans.length > 0 &&
-      deepResearchCurrentStepIndex >= 0 &&
-      deepResearchCurrentStepIndex < deepResearchPlans.length;
-
-    const deepResearchStepTitle = hasDeepResearchPlan
-      ? deepResearchPlans[deepResearchCurrentStepIndex]
-      : "";
-
-    const deepResearchPlanningProgress = deepResearchPlans.length > 0 ? 1 : 0;
-
-    const deepResearchExecutionProgress = hasDeepResearchPlan
-      ? (deepResearchCurrentStepIndex + 1) / deepResearchPlans.length
-      : 0;
-
-    const deepResearchReportProgress = deepResearchReporterFinished
-      ? 1
-      : deepResearchReporterStarted
-        ? 0.5
-        : 0;
-
-    const deepResearchProgress =
-      (deepResearchPlanningProgress +
-        deepResearchExecutionProgress +
-        deepResearchReportProgress) /
-      3;
-
-    const deepResearchStatusText = useMemo(() => {
-      if (deepResearchReporterFinished) {
-        if (typeof deepResearchResultCount === "number") {
-          return `深度研究完成 · 找到 ${deepResearchResultCount} 条相关结果`;
-        }
-        return "深度研究完成";
-      }
-      if (deepResearchReporterStarted) {
-        return "正在编写研究报告";
-      }
-      if (deepResearchResearcherStarted) {
-        return "正在执行研究计划";
-      }
-      if (deepResearchPlans.length > 0) {
-        return "正在规划研究计划";
-      }
-      return undefined;
-    }, [
-      deepResearchReporterFinished,
-      deepResearchResultCount,
-      deepResearchReporterStarted,
-      deepResearchResearcherStarted,
-      deepResearchPlans.length,
-    ]);
-
-    const deepResearchSteps = useMemo<StepItem[]>(() => {
-      if (!deepResearchPlans.length) return [];
-
-      return deepResearchPlans.map((title, index) => {
-        let status: StepStatus = "pending";
-
-        if (deepResearchReporterFinished || deepResearchReporterStarted) {
-          status = "done";
-        } else if (deepResearchResearcherStarted) {
-          if (index < deepResearchCurrentStepIndex) {
-            status = "done";
-          } else if (index === deepResearchCurrentStepIndex) {
-            status = deepResearchCurrentStepFinished ? "done" : "in_progress";
-          }
-        }
-
-        const searchInfo = deepResearchSearchMap[title];
-        const searches: StepSearch[] | undefined = searchInfo?.query
-          ? [
-              {
-                id: `step-${index + 1}-search-1`,
-                query: searchInfo.query,
-                resultCount: searchInfo.resultCount,
-                status:
-                  typeof searchInfo.resultCount === "number"
-                    ? ("done" as StepSearchStatus)
-                    : ("searching" as StepSearchStatus),
-                hits: searchInfo.hits,
-              },
-            ]
-          : undefined;
-
-        return {
-          id: `step-${index + 1}`,
-          title,
-          status,
-          searches,
-          showOptimizePlan: false,
-        };
-      });
-    }, [
-      deepResearchPlans,
-      deepResearchReporterFinished,
-      deepResearchReporterStarted,
-      deepResearchResearcherStarted,
-      deepResearchSearchMap,
-      deepResearchCurrentStepIndex,
-      deepResearchCurrentStepFinished,
-    ]);
-
-    const deepResearchAllHits = useMemo(() => {
-      const allHits: StepSearchHit[] = [];
-      Object.values(deepResearchSearchMap).forEach((info) => {
-        if (info.hits && Array.isArray(info.hits)) {
-          allHits.push(...info.hits);
-        }
-      });
-      return allHits;
-    }, [deepResearchSearchMap]);
-
-    const deepResearchPlannerStatus: StepStatus = deepResearchPlans.length
-      ? "done"
-      : deepResearchPlannerStarted
-        ? "in_progress"
-        : "pending";
-
-    const deepResearchExecutionStatus: StepStatus = useMemo(() => {
-      if (!deepResearchSteps.length) return "pending";
-      if (deepResearchSteps.some((step) => step.status === "in_progress")) {
-        return "in_progress";
-      }
-      if (deepResearchSteps.some((step) => step.status === "done")) {
-        return "done";
-      }
-      return "pending";
-    }, [deepResearchSteps]);
-
-    const deepResearchReportStatus: StepStatus = deepResearchReporterFinished
-      ? "done"
-      : deepResearchReporterStarted
-        ? "in_progress"
-        : "pending";
-
-    const resetDeepResearchState = () => {
-      setDeepResearchPlans([]);
-      setDeepResearchCurrentStepIndex(-1);
-      setDeepResearchCurrentStepFinished(false);
-      setDeepResearchQuery("");
-      setDeepResearchResultCount(undefined);
-      setDeepResearchPlannerStarted(false);
-      setDeepResearchResearcherStarted(false);
-      setDeepResearchReporterStarted(false);
-      setDeepResearchReporterFinished(false);
-      setDeepResearchReportData(undefined);
-      setDeepResearchSearchMap({});
-    };
-
-    const handleDeepResearchChunk = (chunkData: IChunkData) => {
-      // 规划开始：重置所有状态
-      if (chunkData.chunk_type === "research_planner_start") {
-        resetDeepResearchState();
-        setDeepResearchPlannerStarted(true);
-        return;
-      }
-
-      // 规划结束：解析计划列表并初始化当前步骤索引
-      if (chunkData.chunk_type === "research_planner_end") {
-        if (typeof chunkData.message_chunk === "string") {
-          try {
-            const payload = JSON.parse(chunkData.message_chunk);
-            if (Array.isArray(payload)) {
-              const plans = payload.map((item) => String(item));
-              setDeepResearchPlans(plans);
-              // 如果有计划，设置当前步骤索引为 0，否则为 -1
-              setDeepResearchCurrentStepIndex(plans.length > 0 ? 0 : -1);
-            }
-            setDeepResearchPlannerStarted(false);
-          } catch (error) {
-            console.error(error);
-          }
-        }
-        return;
-      }
-
-      // 研究员开始：解析当前计划文本，定位并更新当前步骤索引
-      if (chunkData.chunk_type === "research_researcher_start") {
-        if (
-          typeof chunkData.message_chunk === "string" &&
-          chunkData.message_chunk
-        ) {
-          try {
-            const payload = JSON.parse(chunkData.message_chunk);
-            const planText =
-              typeof payload?.plan === "string" ? payload.plan : "";
-            if (planText) {
-              setDeepResearchResearcherStarted(true);
-              setDeepResearchCurrentStepFinished(false);
-              setDeepResearchCurrentStepIndex((prevIndex) => {
-                const index = deepResearchPlans.findIndex(
-                  (title) => title === planText,
-                );
-                // 找到对应计划的索引
-                if (index !== -1) return index;
-                // 没找到则保持原索引或设为 0
-                if (prevIndex >= 0) return prevIndex;
-                return 0;
-              });
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        }
-        return;
-      }
-
-      // 研究步骤开始：解析查询语句，更新搜索映射表中的 query 信息
-      if (chunkData.chunk_type === "research_researcher_step_start") {
-        if (
-          typeof chunkData.message_chunk === "string" &&
-          chunkData.message_chunk
-        ) {
-          try {
-            const payload = JSON.parse(chunkData.message_chunk);
-            const planText =
-              typeof payload?.plan === "string" ? payload.plan : "";
-            const stepQuery = payload?.step?.payload?.query;
-            if (typeof stepQuery === "string") {
-              setDeepResearchQuery(stepQuery);
-            }
-            // 清空当前结果计数，等待新结果
-            setDeepResearchResultCount(undefined);
-            if (planText && typeof stepQuery === "string") {
-              setDeepResearchSearchMap((prev) => {
-                const prevInfo = prev[planText] ?? {};
-                return {
-                  ...prev,
-                  [planText]: {
-                    ...prevInfo,
-                    query: stepQuery,
-                  },
-                };
-              });
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        }
-        return;
-      }
-
-      // 研究步骤结束：解析搜索结果，更新搜索映射表中的 resultCount 和 hits
-      if (chunkData.chunk_type === "research_researcher_step_end") {
-        if (
-          typeof chunkData.message_chunk === "string" &&
-          chunkData.message_chunk
-        ) {
-          try {
-            const payload = JSON.parse(chunkData.message_chunk);
-            const planText =
-              typeof payload?.plan === "string" ? payload.plan : "";
-            const hits = payload?.step?.payload?.hits;
-            if (Array.isArray(hits)) {
-              setDeepResearchResultCount(hits.length);
-              if (planText) {
-                setDeepResearchSearchMap((prev) => {
-                  const prevInfo = prev[planText] ?? {};
-                  return {
-                    ...prev,
-                    [planText]: {
-                      ...prevInfo,
-                      resultCount: hits.length,
-                      hits: hits,
-                    },
-                  };
-                });
-              }
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        }
-        return;
-      }
-
-      // 研究员结束：清空查询语句，标记当前步骤已完成
-      if (chunkData.chunk_type === "research_researcher_end") {
-        setDeepResearchQuery("");
-        setDeepResearchCurrentStepFinished(true);
-        return;
-      }
-
-      // 报告员开始：标记报告员状态已启动
-      if (chunkData.chunk_type === "research_reporter_start") {
-        setDeepResearchReporterStarted(true);
-        return;
-      }
-
-      // 报告员结束：标记报告员已完成，并保存最终报告数据
-      if (chunkData.chunk_type === "research_reporter_end") {
-        setDeepResearchReporterStarted(true);
-        setDeepResearchReporterFinished(true);
-        if (
-          typeof chunkData.message_chunk === "string" &&
-          chunkData.message_chunk
-        ) {
-          try {
-            const payload = JSON.parse(chunkData.message_chunk);
-            setDeepResearchReportData(payload);
-          } catch (error) {
-            console.error(error);
-          }
-        }
-      }
-    };
 
     const inThinkRef = useRef<boolean>(false);
 
@@ -478,7 +147,7 @@ const InnerChatMessage = memo(
         }));
 
         if (chunkData.chunk_type === "reply_start") {
-          // resetDeepResearchState();
+          //
         } else if (chunkData.chunk_type === "query_intent") {
           handlers.deal_query_intent(chunkData);
         } else if (chunkData.chunk_type === "tools") {
@@ -515,16 +184,11 @@ const InnerChatMessage = memo(
             }
           }
         } else if (
-          chunkData.chunk_type === "research_planner_start" ||
-          chunkData.chunk_type === "research_planner_end" ||
-          chunkData.chunk_type === "research_researcher_start" ||
-          chunkData.chunk_type === "research_researcher_step_start" ||
-          chunkData.chunk_type === "research_researcher_step_end" ||
-          chunkData.chunk_type === "research_researcher_end" ||
-          chunkData.chunk_type === "research_reporter_start" ||
-          chunkData.chunk_type === "research_reporter_end"
+          DEEP_RESEARCH_CHUNK_TYPES.includes(chunkData.chunk_type || "")
         ) {
-          handleDeepResearchChunk(chunkData);
+          handlers.deal_deep_research(chunkData);
+        } else if (chunkData.chunk_type === "reply_end") {
+          //
         }
       },
       reset: () => {
@@ -537,8 +201,8 @@ const InnerChatMessage = memo(
           deep_read: false,
           think: false,
           response: false,
+          deepResearch: false,
         });
-        resetDeepResearchState();
         inThinkRef.current = false;
       },
     }));
@@ -647,36 +311,12 @@ const InnerChatMessage = memo(
 
           <PayloadCard payload={payload as any} formatUrl={formatUrl} />
 
-          {(hasDeepResearchPlan || deepResearchReportData) && (
-            <DeepResearch
-              // 当前正在执行的步骤标题
-              stepTitle={deepResearchStepTitle}
-              // 当前搜索的关键词，如果没有则使用用户的问题
-              query={deepResearchQuery || question}
-              // 搜索结果的数量
-              resultCount={deepResearchResultCount}
-              // 整体进度 (0-1)
-              progress={deepResearchProgress}
-              // 状态描述文本
-              statusText={deepResearchStatusText}
-              // 研究步骤列表
-              steps={deepResearchSteps}
-              // 规划阶段的状态 (pending/in_progress/done)
-              plannerStatus={deepResearchPlannerStatus}
-              // 执行阶段的状态
-              executionStatus={deepResearchExecutionStatus}
-              // 报告生成阶段的状态
-              reportStatus={deepResearchReportStatus}
-              // 最终的报告数据
-              reportData={deepResearchReportData}
-              // 所有的搜索结果
-              searchHits={deepResearchAllHits}
-              formatUrl={formatUrl}
-              theme={resolvedTheme}
-            />
-          )}
-
-          {JSON.stringify(deepResearchReportData)}
+          <DeepResearch
+            ChunkData={deepResearch}
+            question={question}
+            formatUrl={formatUrl}
+            theme={resolvedTheme}
+          />
 
           {isTyping && (
             <div className="inline-block w-1.5 h-5 ml-0.5 -mb-0.5 bg-[#666666] dark:bg-[#A3A3A3] rounded-sm animate-typing" />

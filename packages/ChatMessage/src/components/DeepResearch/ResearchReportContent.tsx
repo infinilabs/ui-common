@@ -23,6 +23,7 @@ export const ResearchReportContent = ({
   formatUrl,
 }: ResearchReportContentProps) => {
   const { t } = useTranslation();
+
   if (!content && !data) {
     return (
       <div className="px-6 pb-8 max-w-[730px] h-full flex flex-col items-center justify-center text-center">

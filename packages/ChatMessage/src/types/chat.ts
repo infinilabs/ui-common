@@ -12,6 +12,7 @@ export interface ISource {
   details?: any[] | null;
   assistant_id?: string;
   assistant_item?: any;
+  deep_research_chunks?: IChunkData[];
   [key: string]: any;
 }
 
