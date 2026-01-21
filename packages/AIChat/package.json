@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@emotion/is-prop-valid": "^1.4.0",
-    "@infinilabs/chat-message": "workspace:*",
+    "@infinilabs/chat-message": "^0.0.7",
     "ahooks": "^3.9.6",
     "axios": "^1.13.2",
     "clsx": "^2.1.1",
