@@ -2,6 +2,7 @@ import { FileText, ExternalLink } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Markdown from "@infinilabs/markdown";
 
+import { formatDate } from "../../utils";
 
 export interface ResearchReportData {
   title?: string;
@@ -16,8 +17,13 @@ export interface ResearchReportContentProps {
   formatUrl?: (data: any) => string;
 }
 
-export const ResearchReportContent = ({ content, data, formatUrl }: ResearchReportContentProps) => {
+export const ResearchReportContent = ({
+  content,
+  data,
+  formatUrl,
+}: ResearchReportContentProps) => {
   const { t } = useTranslation();
+
   if (!content && !data) {
     return (
       <div className="px-6 pb-8 max-w-[730px] h-full flex flex-col items-center justify-center text-center">
@@ -44,13 +50,13 @@ export const ResearchReportContent = ({ content, data, formatUrl }: ResearchRepo
                 {data.title || t("deepResearch.report.defaultTitle")}
               </div>
               <div className="text-xs text-gray-500">
-                {data.created ? new Date(data.created).toLocaleString() : ""}
+                {data.created ? formatDate(data.created) : ""}
               </div>
             </div>
           </div>
           {data.url && (
             <a
-              href={(formatUrl ? formatUrl({ url: data.url }) : data.url)}
+              href={formatUrl ? formatUrl({ url: data.url }) : data.url}
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
@@ -69,7 +75,7 @@ export const ResearchReportContent = ({ content, data, formatUrl }: ResearchRepo
 
       {data?.url && (
         <div className="cm-markdown">
-          <Markdown url={(formatUrl ? formatUrl({ url: data.url }) : data.url)} />
+          <Markdown url={formatUrl ? formatUrl({ url: data.url }) : data.url} />
         </div>
       )}
     </div>

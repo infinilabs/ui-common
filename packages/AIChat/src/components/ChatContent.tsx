@@ -148,6 +148,7 @@ export const ChatContent = ({
             isTyping={false}
             onResend={handleSendMessage}
             formatUrl={formatUrl}
+            assistantList={assistantList}
           />
         ))}
 

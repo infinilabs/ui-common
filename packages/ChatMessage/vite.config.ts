@@ -14,6 +14,7 @@ const packageJson = JSON.parse(
 );
 const globals = {
   ...(packageJson?.dependencies || {}),
+  ...(packageJson?.peerDependencies || {}),
 };
 
 function resolve(str: string) {

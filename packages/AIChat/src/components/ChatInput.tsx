@@ -183,7 +183,7 @@ const textareaRef = useRef<{ reset: () => void; focus: () => void }>(null);
         </div>
       </div>
 
-      <div className="pb-3">
+      <div className="pb-2">
         <InputControls
           isDeepThinkActive={isDeepThinkActive}
           isDeepResearchActive={deepResearchActive}

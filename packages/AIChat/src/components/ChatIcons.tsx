@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
+import { useChatStore } from "../stores/chatStore";
 
 export interface SendMessageParams {
   message?: string;
@@ -35,6 +36,7 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
   // onVoiceToggle,
 }) => {
   const { t } = useTranslation("ai_chat");
+  const setCurChatEnd = useChatStore((state) => state.setCurChatEnd);
 
   const renderSendButton = () => {
     if (curChatEnd) {
@@ -105,7 +107,10 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
       <button
         className={`ml-1 p-2 bg-[#0072FF] rounded-full transition-colors`}
         type="submit"
-        onClick={() => disabledChange?.()}
+        onClick={() => {
+          disabledChange?.();
+          setCurChatEnd(true);
+        }}
         title={t("search.input.stop") || "Stop"}
       >
         <Square

@@ -33,8 +33,6 @@ export type IChatStore = {
   setMessages: (value: string | ((prev: string) => string)) => void;
   synthesizeItem?: SynthesizeItem;
   setSynthesizeItem: (synthesizeItem?: SynthesizeItem) => void;
-  hasActiveChat?: boolean;
-  setHasActiveChat: (hasActiveChat?: boolean) => void;
   chats: Chat[];
   setChats: (chats: Chat[]) => void;
   activeChat?: Chat;
@@ -62,9 +60,6 @@ export const useChatStore = create<IChatStore>()(
         })),
       setSynthesizeItem: (synthesizeItem?: SynthesizeItem) => {
         return set(() => ({ synthesizeItem }));
-      },
-      setHasActiveChat(hasActiveChat) {
-        return set(() => ({ hasActiveChat }));
       },
       chats: [],
       setChats: (chats: Chat[]) => set(() => ({ chats })),
