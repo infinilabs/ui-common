@@ -202,7 +202,7 @@ const InnerChatAI = memo(
               }
 
               // 更新全局活动聊天状态，触发 UI 重绘
-              console.log("setActiveChat3", nextChat);
+              // console.log("setActiveChat3", nextChat);
               setActiveChat(nextChat);
             }
 
@@ -260,10 +260,10 @@ const InnerChatAI = memo(
             // 获取最新状态以确保我们在更新正确的聊天
             const currentActive = useChatStore.getState().activeChat;
             if (currentActive?._id === chatId) {
-              console.log("setActiveChat4", {
-                ...currentActive,
-                messages: hits,
-              });
+              // console.log("setActiveChat4", {
+              //   ...currentActive,
+              //   messages: hits,
+              // });
               setActiveChat({
                 ...currentActive,
                 messages: hits,
@@ -407,7 +407,7 @@ const InnerChatAI = memo(
           setCurChatEnd(true);
           setTimedoutShow(false);
 
-          console.log("setActiveChat5", chat);
+          // console.log("setActiveChat5", chat);
           setActiveChat(chat);
           if (chat?._id) {
             await fetchHistory(chat?._id); // 加载历史记录
@@ -427,7 +427,7 @@ const InnerChatAI = memo(
       const lastActiveChatIdRef = useRef<string | undefined>(undefined);
 
       useEffect(() => {
-        console.log(555555, activeChat?._id, lastActiveChatIdRef.current);
+        // console.log(555555, activeChat?._id, lastActiveChatIdRef.current);
         // Only trigger onSelectChat if the activeChat ID has actually changed
         if (activeChat?._id && activeChat._id !== lastActiveChatIdRef.current) {
           lastActiveChatIdRef.current = activeChat._id;

@@ -32,8 +32,6 @@ const DeleteDialog = ({
     cb();
   };
 
-  console.log("active", active);
-
   return (
     <Modal
       open={isOpen}
