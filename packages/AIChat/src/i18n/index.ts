@@ -20,7 +20,7 @@ export const resources = {
         },
         delete_modal: {
           title: "Delete Chat",
-          description: "Are you sure you want to delete '{{replace}}'?",
+          description: "Are you sure you want to delete '{{item}}'?",
           button: {
             cancel: "Cancel",
             delete: "Delete",
@@ -100,7 +100,7 @@ export const resources = {
         },
         delete_modal: {
           title: "删除对话",
-          description: "确定要删除 '{{replace}}' 吗？",
+          description: "确定要删除 '{{item}}' 吗？",
           button: {
             cancel: "取消",
             delete: "删除",

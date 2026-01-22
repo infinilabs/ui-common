@@ -43,11 +43,10 @@ const DeleteDialog = ({
       <div className="flex flex-col justify-between">
         <div className="text-sm mb-4">
           {t("history_list.delete_modal.description", {
-            replace: [
-              active?._source?.title ||
-                active?._source?.message ||
-                active?._id,
-            ],
+            item:
+              (active?._source?.title as string) ||
+              (active?._source?.message as string) ||
+              active?._id,
           })}
         </div>
 

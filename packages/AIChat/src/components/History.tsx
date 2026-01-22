@@ -72,7 +72,7 @@ function InnerHistory({
 
       // 历史列表更新了，设置第一个为 activeChat
       if (hits.length > 0) {
-        console.log("setActiveChat1", hits[0]);
+        // console.log("setActiveChat1", hits[0]);
         setActiveChat(hits[0]);
       }
     } catch (e) {
@@ -86,7 +86,7 @@ function InnerHistory({
 
   const onSelect = useCallback(
     async (chat: Chat) => {
-      console.log("setActiveChat2", chat);
+      // console.log("setActiveChat2", chat);
       setActiveChat(chat);
     },
     [setActiveChat],
