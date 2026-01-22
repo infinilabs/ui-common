@@ -221,7 +221,7 @@ export const DeepResearch = ({
   theme,
 }: DeepResearchProps) => {
   const { t } = useTranslation();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
   const [drawerDefaultTab, setDrawerDefaultTab] = useState(
     t("deepResearch.tab.steps"),
   );

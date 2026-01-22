@@ -256,6 +256,22 @@ const InnerChatMessage = memo(
       setSuggestion(suggestion);
     };
 
+    const hasContent =
+      !isAssistant ||
+      (details && details.length > 0) ||
+      !!query_intent ||
+      !!tools ||
+      !!fetch_source ||
+      !!pick_source ||
+      !!deep_read ||
+      !!think ||
+      (deepResearch && deepResearch.length > 0) ||
+      !!messageContent ||
+      !!response?.message_chunk ||
+      !!payload ||
+      isTyping ||
+      (suggestion && suggestion.length > 0);
+
     const renderContent = () => {
       if (!isAssistant) {
         return (
@@ -367,7 +383,7 @@ const InnerChatMessage = memo(
               isAssistant ? "text-left" : "text-right"
             }`}
           >
-            {!hide_assistant && (renderContent() || response || think) && (
+            {!hide_assistant && hasContent && (
               <div className="w-full flex items-center gap-1 font-semibold text-sm text-[#333] dark:text-white">
                 {isAssistant ? (
                   <div className="w-6 h-6 flex justify-center items-center rounded-full bg-white dark:bg-[#2A2A2A] border border-[#E6E6E6] dark:border-[#3A3A3A]">
