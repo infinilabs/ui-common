@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "jsx": "react-jsx",
+    "lib": ["ESNext", "DOM"],
+    "useDefineForClassFields": true,
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "paths": {
+      "@/*": ["./src/*"],
+      "~/*": ["./*"]
+    },
+    "resolveJsonModule": true,
+    "types": ["vite/client", "node"],
+    "allowImportingTsExtensions": true,
+    /* Linting */
+    "skipLibCheck": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": false,
+    "noEmit": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true
+  },
+  "include": ["./**/*.ts", "./**/*.tsx"],
+  "exclude": ["node_modules", "dist", "src/components/vendor/**"]
+}
