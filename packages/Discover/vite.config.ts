@@ -3,18 +3,11 @@ import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import UnoCSS from '@unocss/vite'
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
-import dynamicImportVars from '@rollup/plugin-dynamic-import-vars';
 import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-     dynamicImportVars({
-      include: [
-        'node_modules/@elastic/eui/**'
-      ],
-      warnOnError: true 
-    }),
     react(), 
     dts({
       insertTypesEntry: true,
@@ -26,10 +19,9 @@ export default defineConfig({
   ],
   server: {
     watch: {
-      // 忽略不需要监听的文件夹，减轻句柄压力
       ignored: ['**/node_modules/**', '**/dist/**']
     },
-    open: true, // 启动后自动打开浏览器
+    open: false,
     proxy: {
       // 配置接口代理规则：匹配以 /api 开头的请求（自定义前缀，避免和前端路由冲突）
       '/api': {
@@ -51,7 +43,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         quietDeps: true, 
-        silenceDeprecations: ['import', 'legacy-js-api']
+        silenceDeprecations: ['import', 'legacy-js-api', 'color-functions'],
       }
     }
   },
@@ -71,7 +63,8 @@ export default defineConfig({
         "antd",
         "@ant-design/icons",
         /^@elastic\/eui(\/.*)?$/, 
-        /^@ant-design\/icons(\/.*)?$/
+        /^@ant-design\/icons(\/.*)?$/,
+        "dayjs"
       ]
     }
   },

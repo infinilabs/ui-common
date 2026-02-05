@@ -154,7 +154,7 @@ export class DiscoverNoResults extends Component {
         <EuiSpacer size="xl" />
 
         <EuiFlexGroup justifyContent="center">
-          <EuiFlexItem grow={true} className="dscNoResults px-8px">
+          <EuiFlexItem grow={true} className="dscNoResults p-8px">
             {/* <EuiCallOut
                 title={
                   "当前查询条件没有匹配的数据"
@@ -164,7 +164,6 @@ export class DiscoverNoResults extends Component {
                 data-test-subj="discoverNoResults"
               /> */}
               
-            <EuiSpacer size="xl" />
             <Alert
               // message="Warning Text"
               description={"Nothing found."}
