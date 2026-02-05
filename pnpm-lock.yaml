@@ -600,6 +600,9 @@ importers:
       '@elastic/charts':
         specifier: 60.0.0
         version: 60.0.0(moment-timezone@0.5.45)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@elastic/datemath':
+        specifier: ^5.0.3
+        version: 5.0.3(moment@2.30.1)
       '@elastic/numeral':
         specifier: ^2.5.1
         version: 2.5.1
@@ -612,6 +615,9 @@ importers:
       deep-freeze-strict:
         specifier: ^1.1.1
         version: 1.1.1
+      fast-deep-equal:
+        specifier: ^3.1.3
+        version: 3.1.3
       history:
         specifier: ^5.3.0
         version: 5.3.0
@@ -630,6 +636,9 @@ importers:
       monaco-editor:
         specifier: ^0.52.2
         version: 0.52.2
+      prop-types:
+        specifier: ^15.5.10
+        version: 15.8.1
       query-string:
         specifier: 5.1.1
         version: 5.1.1
@@ -645,6 +654,9 @@ importers:
       rison-node:
         specifier: ^2.1.1
         version: 2.1.1
+      rxjs:
+        specifier: ^7.2.0
+        version: 7.8.2
       styled-components:
         specifier: 6.1.19
         version: 6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -658,12 +670,12 @@ importers:
       '@elastic/eui':
         specifier: 88.3.0
         version: 88.3.0(@elastic/datemath@5.0.3(moment@2.30.1))(@emotion/css@11.13.5)(@emotion/react@11.14.0(@types/react@18.3.3)(react@18.3.1))(@types/react-dom@18.3.0)(@types/react@18.3.3)(moment@2.30.1)(prop-types@15.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)
-      '@rollup/plugin-dynamic-import-vars':
-        specifier: ^2.1.5
-        version: 2.1.5(rollup@4.52.4)
       '@types/less':
         specifier: ^3.0.8
         version: 3.0.8
+      '@types/lodash':
+        specifier: ^4.17.23
+        version: 4.17.23
       '@types/node':
         specifier: ^25.1.0
         version: 25.2.0
@@ -681,19 +693,22 @@ importers:
         version: 7.18.0(eslint@8.57.1)(typescript@5.8.3)
       '@unocss/vite':
         specifier: ^66.6.0
-        version: 66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.3.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 4.3.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
       antd:
         specifier: 6.1.3
         version: 6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      dayjs:
+        specifier: 1.11.13
+        version: 1.11.13
       esbuild-plugin-less:
         specifier: ^1.3.35
         version: 1.3.35(esbuild@0.27.2)
       esbuild-sass-plugin:
         specifier: ^3.2.0
-        version: 3.6.0(esbuild@0.27.2)(sass-embedded@1.97.3)
+        version: 3.3.0(esbuild@0.27.2)(sass-embedded@1.97.3)
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
@@ -722,8 +737,8 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
       sass:
-        specifier: ^1.72.0
-        version: 1.97.3
+        specifier: 1.69.5
+        version: 1.69.5
       tsup:
         specifier: ^8.5.1
         version: 8.5.1(@microsoft/api-extractor@7.55.2(@types/node@25.2.0))(jiti@2.6.1)(postcss@8.5.6)(typescript@5.8.3)
@@ -732,16 +747,16 @@ importers:
         version: 5.8.3
       unocss:
         specifier: ^66.6.0
-        version: 66.6.0(postcss@8.5.6)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 66.6.0(postcss@8.5.6)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
       vite:
         specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.2
-        version: 3.5.2(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 3.5.2(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.8.3)
+        version: 4.5.4(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))(rollup@4.52.4)(typescript@5.8.3)
 
   packages/DocDetail:
     dependencies:
@@ -3253,15 +3268,6 @@ packages:
   '@rolldown/pluginutils@1.0.0-beta.53':
     resolution: {integrity: sha512-vENRlFU4YbrwVqNDZ7fLvy+JR1CRkyr01jhSiDpE1u6py3OMzQfztQU2jxykW3ALNxO4kSlqIDeYyD0Y9RcQeQ==}
 
-  '@rollup/plugin-dynamic-import-vars@2.1.5':
-    resolution: {integrity: sha512-Mymi24fd9hlRifdZV/jYIFj1dn99F34imiYu3KzlAcgBcRi3i9SucgW/VRo5SQ9K4NuQ7dCep6pFWgNyhRdFHQ==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-
   '@rollup/pluginutils@5.3.0':
     resolution: {integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==}
     engines: {node: '>=14.0.0'}
@@ -4297,10 +4303,6 @@ packages:
     resolution: {integrity: sha512-bMxMKAjg13EBSVscxTaYA4mRc5t1UAXa2kXiGTNfZ079HIWXEkKmkgFrh/nJqamaLSrXO5H4WFFkPEaLJWbs3A==}
     engines: {node: '>= 0.4'}
 
-  astring@1.9.0:
-    resolution: {integrity: sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==}
-    hasBin: true
-
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
@@ -4806,6 +4808,9 @@ packages:
     resolution: {integrity: sha512-t/Ygsytq+R995EJ5PZlD4Cu56sWa8InXySaViRzw9apusqsOO2bQP+SbYzAhR0pFKoB+43lYy8rWban9JSuXnA==}
     engines: {node: '>= 0.4'}
 
+  dayjs@1.11.13:
+    resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
+
   dayjs@1.11.18:
     resolution: {integrity: sha512-zFBQ7WFRvVRhKcWoUh+ZA1g2HVgUbsZm9sbddh8EC5iv93sui8DVVz1Npvz+r6meo9VKfa8NyLWBsQK1VvIKPA==}
 
@@ -5005,11 +5010,11 @@ packages:
     peerDependencies:
       esbuild: '>=0.14.0 <=0.27.2'
 
-  esbuild-sass-plugin@3.6.0:
-    resolution: {integrity: sha512-lzPJQSEXcnj5amBPPib5lBjsDNPzvdMnX+1Rf7eha9BIpLSM5Ad2pi+Rqg5CAlWMduCgLntS2hLAqG7v1fxWGw==}
+  esbuild-sass-plugin@3.3.0:
+    resolution: {integrity: sha512-btH77lGkASp1VHyji0dAanomatCwq1dmfrjAIjhv+GgR9LK2m1hbRr+t4kbjveyqCwmdBfRkboj+Pfaruok1Mg==}
     peerDependencies:
-      esbuild: '>=0.27.2'
-      sass-embedded: ^1.97.2
+      esbuild: '>=0.20.1'
+      sass-embedded: ^1.71.1
 
   esbuild@0.25.10:
     resolution: {integrity: sha512-9RiGKvCwaqxO2owP61uQ4BgNborAQskMR6QusfWzQqv7AZOg5oGehdY2pRJMTKuwxd1IDBP4rSbI5lHzU7SMsQ==}
@@ -5367,7 +5372,7 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+    deprecated: Glob versions prior to v9 are no longer supported
 
   globals@11.12.0:
     resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==}
@@ -5568,6 +5573,9 @@ packages:
 
   immer@11.1.3:
     resolution: {integrity: sha512-6jQTc5z0KJFtr1UgFpIL3N9XSC3saRaI9PwWtzM2pSqkNGtiNkYY2OSwkOGDK2XcTRcLb1pi/aNkKZz0nxVH4Q==}
+
+  immutable@4.3.7:
+    resolution: {integrity: sha512-1hqclzwYwjRDFLjcFxOM5AYkkG0rpFPpr1RLPMEuGczoS7YA8gLhy8SWXYRAA/XwfEHpfo3cw5JGioS32fnMRw==}
 
   immutable@5.1.4:
     resolution: {integrity: sha512-p6u1bG3YSnINT5RQmx/yRZBpenIl30kVxkTLDyHLIMk0gict704Q9n+thfDI7lTRm9vXdDYutVzXhzcThxTnXA==}
@@ -6383,9 +6391,6 @@ packages:
 
   perfect-debounce@2.1.0:
     resolution: {integrity: sha512-LjgdTytVFXeUgtHZr9WYViYSM/g8MkcTPYDlPa3cDqMirHjKiSZPYd6DoL7pK8AJQr+uWkQvCjHNdiMqsrJs+g==}
-
-  picocolors@1.1.0:
-    resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -7259,6 +7264,11 @@ packages:
   sass-embedded@1.97.3:
     resolution: {integrity: sha512-eKzFy13Nk+IRHhlAwP3sfuv+PzOrvzUkwJK2hdoCKYcWGSdmwFpeGpWmyewdw8EgBnsKaSBtgf/0b2K635ecSA==}
     engines: {node: '>=16.0.0'}
+    hasBin: true
+
+  sass@1.69.5:
+    resolution: {integrity: sha512-qg2+UCJibLr2LCVOt3OlPhr/dqVHWOa9XtZf2OjbLs/T4VPSJ00udtgJxH3neXZm+QqX8B+3cU7RaLqp1iVfcQ==}
+    engines: {node: '>=14.0.0'}
     hasBin: true
 
   sass@1.97.3:
@@ -8327,7 +8337,7 @@ snapshots:
   '@babel/code-frame@7.24.7':
     dependencies:
       '@babel/highlight': 7.24.7
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   '@babel/code-frame@7.27.1':
     dependencies:
@@ -10968,16 +10978,6 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.0-beta.53': {}
 
-  '@rollup/plugin-dynamic-import-vars@2.1.5(rollup@4.52.4)':
-    dependencies:
-      '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
-      astring: 1.9.0
-      estree-walker: 2.0.2
-      fast-glob: 3.3.3
-      magic-string: 0.30.21
-    optionalDependencies:
-      rollup: 4.52.4
-
   '@rollup/pluginutils@5.3.0(rollup@4.52.4)':
     dependencies:
       '@types/estree': 1.0.8
@@ -11852,13 +11852,13 @@ snapshots:
     optionalDependencies:
       vite: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
 
-  '@unocss/astro@66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))':
+  '@unocss/astro@66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))':
     dependencies:
       '@unocss/core': 66.6.0
       '@unocss/reset': 66.6.0
-      '@unocss/vite': 66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))
+      '@unocss/vite': 66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
     optionalDependencies:
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
 
   '@unocss/cli@66.5.10':
     dependencies:
@@ -12129,7 +12129,7 @@ snapshots:
       unplugin-utils: 0.3.1
       vite: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
 
-  '@unocss/vite@66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))':
+  '@unocss/vite@66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))':
     dependencies:
       '@jridgewell/remapping': 2.3.5
       '@unocss/config': 66.6.0
@@ -12140,7 +12140,7 @@ snapshots:
       pathe: 2.0.3
       tinyglobby: 0.2.15
       unplugin-utils: 0.3.1
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
 
   '@vitejs/plugin-react@4.3.1(rolldown-vite@7.2.5(@types/node@22.5.5)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))':
     dependencies:
@@ -12175,14 +12175,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.3.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))':
+  '@vitejs/plugin-react@4.3.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.25.2)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
     transitivePeerDependencies:
       - supports-color
 
@@ -12827,8 +12827,6 @@ snapshots:
       is-array-buffer: 3.0.4
       is-shared-array-buffer: 1.0.3
 
-  astring@1.9.0: {}
-
   asynckit@0.4.0: {}
 
   attr-accept@2.2.5: {}
@@ -13375,6 +13373,8 @@ snapshots:
       es-errors: 1.3.0
       is-data-view: 1.0.1
 
+  dayjs@1.11.13: {}
+
   dayjs@1.11.18: {}
 
   dayjs@1.11.19: {}
@@ -13621,7 +13621,7 @@ snapshots:
       esbuild: 0.27.2
       less: 4.5.1
 
-  esbuild-sass-plugin@3.6.0(esbuild@0.27.2)(sass-embedded@1.97.3):
+  esbuild-sass-plugin@3.3.0(esbuild@0.27.2)(sass-embedded@1.97.3):
     dependencies:
       esbuild: 0.27.2
       resolve: 1.22.11
@@ -14450,6 +14450,8 @@ snapshots:
 
   immer@11.1.3: {}
 
+  immutable@4.3.7: {}
+
   immutable@5.1.4: {}
 
   import-fresh@3.3.0:
@@ -15224,8 +15226,6 @@ snapshots:
   perfect-debounce@1.0.0: {}
 
   perfect-debounce@2.1.0: {}
-
-  picocolors@1.1.0: {}
 
   picocolors@1.1.1: {}
 
@@ -16433,7 +16433,7 @@ snapshots:
       sass: 1.97.3
       sass-embedded: 1.97.3
 
-  rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3):
+  rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5):
     dependencies:
       '@oxc-project/runtime': 0.97.0
       fdir: 6.5.0(picomatch@4.0.3)
@@ -16448,7 +16448,7 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.6.1
       less: 4.2.0
-      sass: 1.97.3
+      sass: 1.69.5
       sass-embedded: 1.97.3
 
   rolldown@1.0.0-beta.50:
@@ -16623,6 +16623,12 @@ snapshots:
       sass-embedded-unknown-all: 1.97.3
       sass-embedded-win32-arm64: 1.97.3
       sass-embedded-win32-x64: 1.97.3
+
+  sass@1.69.5:
+    dependencies:
+      chokidar: 3.6.0
+      immutable: 4.3.7
+      source-map-js: 1.2.1
 
   sass@1.97.3:
     dependencies:
@@ -17193,9 +17199,9 @@ snapshots:
       - postcss
       - supports-color
 
-  unocss@66.6.0(postcss@8.5.6)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)):
+  unocss@66.6.0(postcss@8.5.6)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)):
     dependencies:
-      '@unocss/astro': 66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))
+      '@unocss/astro': 66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
       '@unocss/cli': 66.6.0
       '@unocss/core': 66.6.0
       '@unocss/postcss': 66.6.0(postcss@8.5.6)
@@ -17213,9 +17219,9 @@ snapshots:
       '@unocss/transformer-compile-class': 66.6.0
       '@unocss/transformer-directives': 66.6.0
       '@unocss/transformer-variant-group': 66.6.0
-      '@unocss/vite': 66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))
+      '@unocss/vite': 66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
     optionalDependencies:
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
     transitivePeerDependencies:
       - postcss
       - supports-color
@@ -17340,9 +17346,9 @@ snapshots:
     dependencies:
       vite: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
 
-  vite-plugin-css-injected-by-js@3.5.2(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)):
+  vite-plugin-css-injected-by-js@3.5.2(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)):
     dependencies:
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
 
   vite-plugin-dts@3.9.1(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.8.3):
     dependencies:
@@ -17435,7 +17441,7 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-plugin-dts@4.5.4(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.8.3):
+  vite-plugin-dts@4.5.4(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))(rollup@4.52.4)(typescript@5.8.3):
     dependencies:
       '@microsoft/api-extractor': 7.55.2(@types/node@25.2.0)
       '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
@@ -17448,7 +17454,7 @@ snapshots:
       magic-string: 0.30.21
       typescript: 5.8.3
     optionalDependencies:
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
