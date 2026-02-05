@@ -4,6 +4,7 @@ import { resolve } from 'path';
 import UnoCSS from '@unocss/vite'
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 import dynamicImportVars from '@rollup/plugin-dynamic-import-vars';
+import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,6 +16,9 @@ export default defineConfig({
       warnOnError: true 
     }),
     react(), 
+    dts({
+      insertTypesEntry: true,
+    }),
     UnoCSS({
       inspector: false
     }), 
