@@ -1,0 +1,311 @@
+import { AutocompleteService } from "./vendor/data/public/autocomplete";
+import { FilterManager } from "./vendor/data/public/query/filter_manager/filter_manager";
+import { QueryStringManager } from "./vendor/data/public/query/query_string/query_string_manager";
+import {
+  Timefilter,
+  TimeHistory,
+} from "./vendor/data/public/query/timefilter";
+import { buildEsQuery } from "./vendor/data/common/es_query/es_query/build_es_query";
+import { intervalOptions } from "./vendor/data/common/search/aggs/buckets/_interval_options";
+import { TimeBuckets } from "./vendor/data/common/search/aggs/buckets/lib/time_buckets/time_buckets";
+import { Fetch } from "./vendor/core/public/http/fetch";
+import { SavedObjectsClient } from "./vendor/core/public/saved_objects/saved_objects_client";
+import {
+  getIndexPatterns,
+  setIndexPatterns,
+} from "./vendor/data/public/services";
+import {
+  IndexPatternsService,
+  onRedirectNoIndexPattern,
+  onUnsupportedTimePattern,
+  IndexPatternsApiClient,
+  SavedObjectsClientPublicToCommon,
+} from "./vendor/data/public/index_patterns";
+import { FieldFormatsRegistry } from "./vendor/data/common/field_formats";
+import { baseFormattersPublic } from "./vendor/data/public/field_formats";
+import { deserializeFieldFormat } from "./vendor/data/public/field_formats/utils/deserialize";
+
+const timeBucketConfig = {
+  "histogram:maxBars": 100,
+  "histogram:barTarget": 50,
+  dateFormat: "YYYY-MM-DD",
+  "dateFormat:scaled": [
+    ["", "HH:mm:ss.SSS"],
+    ["PT1S", "HH:mm:ss"],
+    ["PT1M", "HH:mm"],
+    ["PT1H", "YYYY-MM-DD HH:mm"],
+    ["P1DT", "YYYY-MM-DD"],
+    ["P1YT", "YYYY"],
+  ],
+};
+
+const basePath = {
+  get: () => {
+    return "";
+  },
+  prepend: (path) => {
+    return path;
+  },
+  remove: (url) => {
+    return url;
+  },
+  serverBasePath: "/api/",
+};
+const http = new Fetch({
+  basePath,
+});
+const savedObjects = new SavedObjectsClient(http);
+const savedObjectsClient = new SavedObjectsClientPublicToCommon(savedObjects);
+const getFieldFormatsConfig = (key) => {
+  return {
+    ["format:defaultTypeMap"]: {
+      ip: { id: "ip", params: {} },
+      date: { id: "date", params: {} },
+      date_nanos: { id: "date_nanos", params: {}, es: true },
+      number: { id: "number", params: {} },
+      boolean: { id: "boolean", params: {} },
+      histogram: { id: "histogram", params: {} },
+      _source: { id: "_source", params: {} },
+      _default_: { id: "string", params: {} },
+    },
+    "format:number:defaultPattern": "0,0.[000]",
+    "format:percent:defaultPattern": "0,0.[000]%",
+    "format:bytes:defaultPattern": "0,0.[0]b",
+    "format:currency:defaultPattern": "($0,0.[00])",
+  }[key];
+};
+
+const fieldFormats = new FieldFormatsRegistry();
+fieldFormats.init(
+  getFieldFormatsConfig,
+  {
+    parsedUrl: {
+      origin: window.location.origin,
+      pathname: window.location.pathname,
+      basePath: basePath.get(),
+    },
+  },
+  baseFormattersPublic
+);
+fieldFormats.deserialize = deserializeFieldFormat.bind(fieldFormats);
+
+const indexPatternsApiClient = new IndexPatternsApiClient(http);
+const uiconfigs = {
+  ["metaFields"]: ["_source", "_id", "_type", "_index"], //'_score'
+  defaultIndex: "",
+};
+const uiSettings = {
+  get: (key) => {
+    return uiconfigs[key];
+  },
+  set: (key, val) => {
+    return (uiconfigs[key] = val);
+  },
+  getAll: () => {
+    return uiconfigs;
+  },
+};
+const indexPatternService = new IndexPatternsService({
+  uiSettings,
+  savedObjectsClient,
+  apiClient: indexPatternsApiClient,
+  fieldFormats,
+  onNotification: () => {},
+  onError: () => {},
+  onUnsupportedTimePattern,
+  onRedirectNoIndexPattern,
+});
+
+export class Storage {
+  store;
+
+  constructor(store) {
+    this.store = store;
+  }
+
+  get = (key) => {
+    if (!this.store) {
+      return null;
+    }
+
+    const storageItem = this.store.getItem(key);
+    if (storageItem === null) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(storageItem);
+    } catch (error) {
+      return null;
+    }
+  };
+
+  set = (key, value) => {
+    try {
+      return this.store.setItem(key, JSON.stringify(value));
+    } catch (e) {
+      return false;
+    }
+  };
+
+  remove = (key) => {
+    return this.store.removeItem(key);
+  };
+
+  clear = () => {
+    return this.store.clear();
+  };
+}
+
+const filterManager = new FilterManager();
+const storage = new Storage(localStorage);
+const queryStringManager = new QueryStringManager(storage);
+const timefilterConfig = {
+  timeDefaults: { from: "now-15m", to: "now" },
+  refreshIntervalDefaults: { pause: true, value: 10000 },
+};
+const timeHistory = new TimeHistory(storage);
+const timefilter = new Timefilter(timefilterConfig, timeHistory);
+
+const getTimeBuckets = (interval) => {
+  const timeBuckets = new TimeBuckets(timeBucketConfig);
+  const bounds = timefilter.getBounds();
+  // {
+  //     min: moment(timefilter.getAbsoluteTime().from),
+  //     max: moment(timefilter.getAbsoluteTime().to),
+  // };
+  timeBuckets.setBounds(bounds);
+  timeBuckets.setInterval(interval);
+  return timeBuckets; //.getInterval(true);
+};
+
+const defaultFiltersUpdated = () => {
+  return (filters) => {
+    filterManager.setFilters(filters);
+  };
+};
+
+export const getContext = () => {
+  return {
+    filterManager,
+    defaultFiltersUpdated,
+    // useFilterManager,
+    getIndexPatterns,
+    setIndexPatterns,
+    queryStringManager,
+    storage,
+    timefilter,
+    getEsQuery,
+    //calculateAutoTimeExpression,
+    getSearchParams,
+    intervalOptions,
+    //createAggConfigs,
+    getTimeBuckets,
+    fetchESRequest,
+    services: {
+      savedObjects: {
+        client: savedObjects,
+        savedObjectsClient,
+      },
+      data: {
+        autocomplete: new AutocompleteService({
+          querySuggestions: {
+            enabled: true,
+          },
+          valueSuggestions: {
+            enabled: true,
+          }
+        })
+      },
+      indexPatternService,
+    },
+    http,
+  };
+};
+
+const getEsQuery = (indexPattern) => {
+  const timeFilter = timefilter.createFilter(indexPattern);
+  return buildEsQuery(
+    indexPattern,
+    queryStringManager.getQuery(),
+    [...filterManager.getFilters(), ...(timeFilter ? [timeFilter] : [])]
+    // getEsQueryConfig(getUiSettings())
+  );
+};
+
+const getSearchParams = (
+  indexPattern,
+  internal,
+  sort,
+  inputAggs,
+  distinctParams,
+  queryFrom,
+  trackTotalHits,
+  size = 20,
+) => {
+  // const timeExp = calculateAutoTimeExpression(timefilter.getTime());
+  const timeExp = getTimeBuckets(internal).getInterval(true).expression;
+  // console.log(timeExp, internal)
+  let esSort = indexPattern.timeFieldName
+    ? [{ [indexPattern.timeFieldName]: { order: "desc" } }]
+    : [];
+  if (sort) {
+    esSort = sort.reduce((sorts, s) => {
+      const [sortField, sortDeriction] = s;
+      sorts.push({
+        [sortField]: { order: sortDeriction },
+      });
+      return sorts;
+    }, []);
+  }
+  const isCalendarInterval =
+    timeExp.includes("w") ||
+    timeExp.includes("d") ||
+    timeExp.includes("y") ||
+    timeExp.includes("M");
+
+  const aggs = {
+    counts: {
+      date_histogram: {
+        //calendar_interval:
+        [isCalendarInterval ? "calendar_interval" : "fixed_interval"]: timeExp,
+        field: indexPattern.timeFieldName,
+        min_doc_count: 1,
+        time_zone: "Asia/Shanghai",
+      },
+    },
+  };
+  let esRequest = {
+    index: indexPattern.index || indexPattern.title,
+    body: {
+      query: getEsQuery(indexPattern),
+      from: queryFrom || 0,
+      size: size,
+
+      highlight: {
+        pre_tags: ["@highlighted-field@"],
+        post_tags: ["@/highlighted-field@"],
+        fields: {"*": {}}
+      },
+      sort: esSort, //
+    },
+  };
+  if (indexPattern.timeFieldName) {
+    esRequest.body["aggs"] = aggs;
+  }
+  if (inputAggs) {
+    esRequest.body["aggs"] = inputAggs;
+  }
+  if (distinctParams?.field && distinctParams?.enabled) {
+    esRequest["distinct_by_field"] = distinctParams;
+  }
+  if (trackTotalHits) {
+    esRequest.body["track_total_hits"] = trackTotalHits;
+  }
+
+  return esRequest;
+};
+
+const fetchESRequest = (params, clusterID, option) => {
+  
+};

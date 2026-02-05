@@ -1,0 +1,26 @@
+*:focus:focus-visible {
+    outline-style: none !important;
+}
+
+.eui-textNoWrap {
+    white-space: nowrap !important;
+}
+
+.dscTimechart {
+  display: block;
+  position: relative;
+
+  .series > rect {
+    fill-opacity: 0.5;
+    stroke-width: 1;
+  }
+}
+
+.kbnDocViewer .eui-textTruncate{
+  text-align: left;
+    max-width: 100%;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    word-wrap: normal !important;
+}
