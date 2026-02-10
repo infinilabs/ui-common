@@ -1,30 +1,4 @@
-/*
- * Licensed to Elasticsearch B.V. under one or more contributor
- * license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership. Elasticsearch B.V. licenses this file to you under
- * the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 import React, { useState, useCallback, useContext } from "react";
-import {
-  EuiPopover,
-  EuiPopoverTitle,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiButtonIcon,
-  EuiToolTip,
-} from "@elastic/eui";
 import { DiscoverFieldDetails } from "./discover_field_details";
 import { FieldIcon, FieldButton } from "../../../../../react/public";
 import { FieldDetails } from "./types";
@@ -32,9 +6,7 @@ import { IndexPatternField, IndexPattern } from "../../../../../data/public";
 import { shortenDottedString } from "../../helpers";
 import { getFieldTypeName } from "./lib/get_field_type_name";
 import "./discover_field.scss";
-import Spin from "antd/lib/spin";
-import { LeftOutlined } from "@ant-design/icons";
-import { Button, Popover, Tooltip } from "antd";
+import { Button, Empty, Popover, Spin, Tooltip } from "antd";
 import { CirclePlus, CircleX, Zap } from "lucide-react";
 import { GlobalConfigContext } from "@/components";
 
@@ -260,10 +232,10 @@ export function DiscoverField({
       title={(
         <div className="!flex !items-center !justify-between">
           <div className="!uppercase">
-            Top {details?.buckets?.length || 5} values
+            {`${i18nField['top'] || "Top"} ${details?.buckets?.length || 5} ${i18nField['top_values'] || "values"}`}
           </div>
           {whetherToSample || whetherToSample === undefined ? (
-            <Tooltip title={`Toggle ${lightningToggleLocal ? "remote" : "local"} top values`}>
+            <Tooltip title={lightningToggleLocal ? i18nField['top_remote'] || `Toggle remote top values` : i18nField['top_local'] || `Toggle local top values`}>
               <Button
                 size="small"
                 className="!flex !items-center !justify-center"
@@ -296,7 +268,7 @@ export function DiscoverField({
               onAddFilter={onAddFilter}
             />
           ) : (
-            `No field data found for field ${field.displayName}`
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
           )}
         </Spin>
       }
