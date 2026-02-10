@@ -1,4 +1,6 @@
 import { EuiIcon } from "@elastic/eui";
+import { Button } from "antd";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -9,21 +11,22 @@ interface Props {
 export function Open({open, onClick}: Props) {
   return (
     <td
-      onClick={onClick}
-      data-test-subj="docTableExpandToggleColumn"
-      className="kbnDocTableCell__toggleDetails"
+      className="kbnDocTableCell__toggleDetails !pt-4px"
     >
-      <button
-        className={`!h-20px !leading-none !mt-0px ${open ? "euiButtonIcon euiButtonIcon--text": "euiButtonIcon euiButtonIcon--text euiButtonIcon--empty"}`}
-        aria-expanded={!!open}
-        aria-label="Toggle row details"
-      >
-        {open ? (
-          <EuiIcon type="arrowDown" size="s" />
-        ) : (
-          <EuiIcon type="arrowRight" size="s" />
-        )}
-      </button>
+      <Button
+        type="text"
+        size="small"
+        className="flex items-center justify-center"
+        classNames={{ icon: '!h-14px !leading-14px' }}
+        onClick={onClick} 
+        icon={
+          open ? (
+            <ChevronDown size={14} />
+          ) : (
+            <ChevronRight size={14} />
+          )
+        }
+      />
     </td>
   );
 };

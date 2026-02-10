@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import {
   EuiPopover,
   EuiPopoverTitle,
@@ -34,6 +34,9 @@ import { getFieldTypeName } from "./lib/get_field_type_name";
 import "./discover_field.scss";
 import Spin from "antd/lib/spin";
 import { LeftOutlined } from "@ant-design/icons";
+import { Button, Popover, Tooltip } from "antd";
+import { CirclePlus, CircleX, Zap } from "lucide-react";
+import { GlobalConfigContext } from "@/components";
 
 export interface DiscoverFieldProps {
   /**
@@ -98,7 +101,10 @@ export function DiscoverField({
   const addLabelAria = `Add ${field.name} to table`;
   const removeLabelAria = `Remove ${field.name} to table`;
 
-  const [infoIsOpen, setOpen] = useState(false);
+  const { i18n } = useContext(GlobalConfigContext)
+  const i18nField = i18n?.field || {}
+
+  const [open, setOpen] = useState(false);
   const [details, setDetails] = useState({ buckets: [], columns: columns });
   const [loading, setLoading] = useState(false);
   const [lightningToggleLocal, setLightningToggleLocal] = useState(true); //true:local, false:remote
@@ -150,42 +156,44 @@ export function DiscoverField({
   let actionButton;
   if (field.name !== "_source" && !selected) {
     actionButton = (
-      <EuiToolTip delay="long" content={"Add field as column"}>
-        <EuiButtonIcon
-          iconType="plusInCircleFilled"
-          className="dscSidebarItem__action"
+      <Tooltip
+        title={i18nField['add_field_to_column'] || "Add field as column"}
+      >
+        <Button
+          size="small"
+          className="dscSidebarItem__action !flex !items-center !justify-center"
+          classNames={{ icon: '!h-14px !leading-14px' }}
+          icon={<CirclePlus className="w-14px h-14px" />}
           onClick={(ev: React.MouseEvent<HTMLButtonElement>) => {
-            if (ev.type === "click") {
-              ev.currentTarget.focus();
-            }
             ev.preventDefault();
             ev.stopPropagation();
             toggleDisplay(field);
           }}
-          data-test-subj={`fieldToggle-${field.name}`}
-          aria-label={addLabelAria}
+          color="primary"
+          variant="text"
         />
-      </EuiToolTip>
+      </Tooltip>
     );
   } else if (field.name !== "_source" && selected) {
     actionButton = (
-      <EuiToolTip delay="long" content={"Remove field from table"}>
-        <EuiButtonIcon
+      <Tooltip
+        title={i18nField['remove_field_from_column'] || "Remove field from table"}
+      >
+        <Button
           color="danger"
-          iconType="cross"
-          className="dscSidebarItem__action"
+          variant="text"
+          size="small"
+          className="dscSidebarItem__action !flex !items-center !justify-center"
+          classNames={{ icon: '!h-14px !leading-14px' }}
+          // cross 对应 Antd 的 CloseOutlined
+          icon={<CircleX className="w-14px h-14px" />}
           onClick={(ev: React.MouseEvent<HTMLButtonElement>) => {
-            if (ev.type === "click") {
-              ev.currentTarget.focus();
-            }
             ev.preventDefault();
             ev.stopPropagation();
             toggleDisplay(field);
           }}
-          data-test-subj={`fieldToggle-${field.name}`}
-          aria-label={removeLabelAria}
         />
-      </EuiToolTip>
+      </Tooltip>
     );
   }
 
@@ -242,62 +250,43 @@ export function DiscoverField({
   };
 
   return (
-    <EuiPopover
-      ownFocus
-      display="block"
-      button={
-        <FieldButton
-          size="s"
-          className="dscSidebarItem"
-          isActive={infoIsOpen && lastPopoverField == field.name}
-          onClick={() => {
-            setLastPopoverField(field.name);
-            togglePopover();
-            !infoIsOpen && fetchFieldAgg(lightningToggleLocal, field);
-          }}
-          dataTestSubj={`field-${field.name}-showDetails`}
-          fieldIcon={dscFieldIcon}
-          fieldAction={actionButton}
-          fieldName={fieldName}
-        />
-      }
-      isOpen={infoIsOpen && lastPopoverField == field.name}
-      closePopover={() => setOpen(false)}
-      anchorPosition="rightUp"
-      panelClassName="dscSidebarItem__fieldPopoverPanel"
-    >
-      <EuiPopoverTitle>
-        <EuiFlexGroup alignItems="baseline" responsive={false}>
-          <EuiFlexItem>Top { details?.buckets?.length || 5 } values</EuiFlexItem>
-          { whetherToSample || whetherToSample === undefined ? <EuiFlexItem
-            style={{
-              display: "flex",
-              justifyContent: "right",
-              flexDirection: "row",
-            }}
-          >
-           <EuiToolTip
-              content={`Toggle ${
-                lightningToggleLocal ? "remote" : "local"
-              } top values`}
-            >
-              <LeftOutlined 
-                style={{
-                  fontSize: 18,
-                  cursor: "pointer",
-                }}
+    <Popover
+      classNames={{
+        container: "!p-0 !overflow-hidden !min-w-260px !max-w-300px",
+        title: "!p-12px !mb-0 !border-b-1px !border-b-solid !border-[var(--ant-color-border)]"
+      }}
+      placement="rightTop"
+      trigger="click"
+      title={(
+        <div className="!flex !items-center !justify-between">
+          <div className="!uppercase">
+            Top {details?.buckets?.length || 5} values
+          </div>
+          {whetherToSample || whetherToSample === undefined ? (
+            <Tooltip title={`Toggle ${lightningToggleLocal ? "remote" : "local"} top values`}>
+              <Button
+                size="small"
+                className="!flex !items-center !justify-center"
+                classNames={{ icon: '!h-14px !leading-14px' }}
+                icon={<Zap className="w-14px h-14px" />}
                 onClick={() => {
                   setLightningToggleLocal((state) => {
                     fetchFieldAgg(!state, field);
                     return !state;
                   });
                 }}
+                variant="text"
+                color="default"
               />
-            </EuiToolTip> 
-          </EuiFlexItem> : null }
-        </EuiFlexGroup>
-      </EuiPopoverTitle>
-      {infoIsOpen && (
+            </Tooltip>
+          ): null}
+        </div>
+      )}
+      open={open}
+      onOpenChange={(visible) => {
+        if (!visible) setOpen(false);
+      }}
+      content={
         <Spin spinning={loading}>
           {field.isMulti || field.spec?.aggregatable === true ? (
             <DiscoverFieldDetails
@@ -310,7 +299,25 @@ export function DiscoverField({
             `No field data found for field ${field.displayName}`
           )}
         </Spin>
-      )}
-    </EuiPopover>
+      }
+      destroyOnHidden
+    >
+      <div onClick={() => {
+        setLastPopoverField(field.name);
+        togglePopover();
+        !open && fetchFieldAgg(lightningToggleLocal, field);
+      }}>
+
+        <FieldButton
+          size="s"
+          className="dscSidebarItem"
+          isActive={open && lastPopoverField == field.name}
+          dataTestSubj={`field-${field.name}-showDetails`}
+          fieldIcon={dscFieldIcon}
+          fieldAction={actionButton}
+          fieldName={fieldName}
+        />
+      </div>
+    </Popover>
   );
 }

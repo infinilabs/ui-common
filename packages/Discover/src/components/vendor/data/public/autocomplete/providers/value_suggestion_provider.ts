@@ -42,12 +42,37 @@ export const getEmptyValueSuggestions = (() => Promise.resolve([])) as ValueSugg
 
 export const setupValueSuggestionProvider = (core: CoreSetup): ValueSuggestionsGetFn => {
   const requestSuggestions = memoize(
-    (index: string, field: IFieldType, query: string, boolFilter: any = [], signal?: AbortSignal) =>     
-      core.http.fetch(`${core.http.getServerBasePath()}/suggestions/values/${index}`, {
-        method: 'POST',
-        body: JSON.stringify({ query, field: field.name, boolFilter }),
-        signal,
-      }),
+    (index: string, field: IFieldType, query: string, boolFilter: any = [], signal?: AbortSignal) => {
+      const { onSuggestions } = core
+      const body = {
+            "size": 0, 
+            "query": {
+                "bool": {
+                    "filter": boolFilter
+                }
+            },
+            "aggs": {
+                "suggestions": {
+                    "terms": {
+                        "field":          field.name,
+                        "include":        query + ".*",
+                        "execution_hint": "map",
+                        "shard_size":     10,
+                    }
+                }
+            }
+        }
+      return onSuggestions(index, body).then((res) => {
+            const values: any[] = [];
+            const suggestionsAgg = res?.aggregations?.suggestions;
+            if (suggestionsAgg?.buckets && Array.isArray(suggestionsAgg.buckets)) {
+              suggestionsAgg.buckets.forEach(bucket => {
+                values.push(bucket.key); 
+              });
+            }
+            return values
+      })
+    } ,  
     resolver
   );
 

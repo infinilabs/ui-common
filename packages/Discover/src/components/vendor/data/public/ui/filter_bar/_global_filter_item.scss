@@ -5,7 +5,7 @@
 .globalFilterItem {
   line-height: $euiSize;
   border: none;
-  color: $euiTextColor;
+  // color: $euiTextColor;
   padding-top: 6;
   padding-bottom: 6;
   white-space: normal; /* 1 */
@@ -16,7 +16,7 @@
 
   &:not(.globalFilterItem-isDisabled) {
     @include euiFormControlDefaultShadow;
-    box-shadow: #{$euiFormControlBoxShadow}, inset 0 0 0 1px $kbnGlobalFilterItemBorderColor; // Make the actual border more visible
+    box-shadow: none;  // Make the actual border more visible
   }
 
   &:focus-within {
@@ -70,7 +70,6 @@
 
 .globalFilterItem-isExcluded {
   &:not(.globalFilterItem-isDisabled) {
-    box-shadow: #{$euiFormControlBoxShadow}, inset 0 0 0 1px $kbnGlobalFilterItemBorderColorExcluded;
 
     &::before {
       background-color: $kbnGlobalFilterItemPinnedColorExcluded;

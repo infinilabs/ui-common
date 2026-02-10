@@ -1,23 +1,7 @@
-/*
- * Licensed to Elasticsearch B.V. under one or more contributor
- * license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership. Elasticsearch B.V. licenses this file to you under
- * the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-import React from 'react';
-import { EuiToolTip, EuiButtonIcon } from '@elastic/eui';
+import React, { useContext } from 'react';
+import { Button, Tooltip } from 'antd';
+import { ZoomOut } from 'lucide-react';
+import { GlobalConfigContext } from '@/components';
 
 export interface Props {
   onClick: () => void;
@@ -25,23 +9,27 @@ export interface Props {
 }
 
 export function DocViewTableRowBtnFilterRemove({ onClick, disabled = false }: Props) {
+  const { i18n } = useContext(GlobalConfigContext)
+  const i18nField = i18n?.field || {}
+
   const tooltipContent = disabled ? (
-    "Unindexed fields can not be searched"
+    i18nField['unindexed_field_warning'] || "Unindexed fields can not be searched"
   ) : (
-    "Filter out value"
+    i18nField['filter_out_value'] || "Filter out value"
   );
 
   return (
-    <EuiToolTip content={tooltipContent}>
-      <EuiButtonIcon
-        aria-label= 'Filter out value'
-        className="kbnDocViewer__actionButton"
-        data-test-subj="removeInclusiveFilterButton"
-        disabled={disabled}
+    <Tooltip title={tooltipContent}>
+      <Button
+        size="small"
+        className="kbnDocViewer__actionButton !flex-inline !items-center !justify-center"
+        classNames={{ icon: '!h-14px !leading-14px' }}
+        icon={<ZoomOut className="w-14px h-14px" />}
         onClick={onClick}
-        iconType={'magnifyWithMinus'}
-        iconSize={'s'}
+        color="primary"
+        variant="text"
+        disabled={disabled}
       />
-    </EuiToolTip>
+    </Tooltip>
   );
 }

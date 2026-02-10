@@ -3,7 +3,7 @@
   margin-top: $euiSizeS;
   font-size: 12px;
   .kbnDocViewer__buttons {
-    padding-top: 0px !important;
+    padding-top: 3px !important;
   }
 }
 
@@ -14,7 +14,7 @@
     word-break: break-all;
     word-wrap: break-word;
     white-space: pre-wrap;
-    color: $euiColorFullShade;
+    color: var(--ant-color-text-secondary);
     vertical-align: top;
     padding-top: 2px;
   }

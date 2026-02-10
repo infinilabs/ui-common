@@ -19,18 +19,12 @@
  */
 
 .kbnDocTableRowFilterButton {
-  appearance: none;
-  background-color: #fff;
-  border: none;
   padding: 0 4px;
   font-size: 14px;
   line-height: 1; /* 1 */
   display: inline-block;
   opacity: 0; /* 2 */
 
-  &:focus {
-    opacity: 1; /* 3 */
-  }
 }
 
 .truncate-by-height {

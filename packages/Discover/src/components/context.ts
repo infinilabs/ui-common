@@ -161,34 +161,25 @@ const filterManager = new FilterManager();
 const storage = new Storage(localStorage);
 const queryStringManager = new QueryStringManager(storage);
 const timefilterConfig = {
-  timeDefaults: { from: "now-15m", to: "now" },
+  timeDefaults: { from: "", to: "" },
   refreshIntervalDefaults: { pause: true, value: 10000 },
 };
 const timeHistory = new TimeHistory(storage);
 const timefilter = new Timefilter(timefilterConfig, timeHistory);
 
 const getTimeBuckets = (interval) => {
-  const timeBuckets = new TimeBuckets(timeBucketConfig);
   const bounds = timefilter.getBounds();
-  // {
-  //     min: moment(timefilter.getAbsoluteTime().from),
-  //     max: moment(timefilter.getAbsoluteTime().to),
-  // };
-  timeBuckets.setBounds(bounds);
-  timeBuckets.setInterval(interval);
-  return timeBuckets; //.getInterval(true);
-};
-
-const defaultFiltersUpdated = () => {
-  return (filters) => {
-    filterManager.setFilters(filters);
-  };
+  if (bounds.max && bounds.min) {
+    const timeBuckets = new TimeBuckets(timeBucketConfig);
+    timeBuckets.setBounds(bounds);
+    timeBuckets.setInterval(interval);
+    return timeBuckets;
+  }
 };
 
 export const getContext = () => {
   return {
     filterManager,
-    defaultFiltersUpdated,
     // useFilterManager,
     getIndexPatterns,
     setIndexPatterns,
@@ -244,7 +235,7 @@ const getSearchParams = (
   size = 20,
 ) => {
   // const timeExp = calculateAutoTimeExpression(timefilter.getTime());
-  const timeExp = getTimeBuckets(internal).getInterval(true).expression;
+  const timeExp = getTimeBuckets(internal)?.getInterval(true).expression;
   // console.log(timeExp, internal)
   let esSort = indexPattern.timeFieldName
     ? [{ [indexPattern.timeFieldName]: { order: "desc" } }]
@@ -258,14 +249,16 @@ const getSearchParams = (
       return sorts;
     }, []);
   }
-  const isCalendarInterval =
-    timeExp.includes("w") ||
-    timeExp.includes("d") ||
-    timeExp.includes("y") ||
-    timeExp.includes("M");
 
-  const aggs = {
-    counts: {
+  const aggs: any = {}
+
+  if (timeExp) {
+    const isCalendarInterval =
+      timeExp.includes("w") ||
+      timeExp.includes("d") ||
+      timeExp.includes("y") ||
+      timeExp.includes("M");
+    aggs['counts'] = {
       date_histogram: {
         //calendar_interval:
         [isCalendarInterval ? "calendar_interval" : "fixed_interval"]: timeExp,
@@ -273,8 +266,9 @@ const getSearchParams = (
         min_doc_count: 1,
         time_zone: "Asia/Shanghai",
       },
-    },
-  };
+    }
+  }
+
   let esRequest = {
     index: indexPattern.index || indexPattern.title,
     body: {

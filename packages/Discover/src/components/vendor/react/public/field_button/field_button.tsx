@@ -93,7 +93,7 @@ export function FieldButton({
   const classes = classNames(
     'kbnFieldButton',
     size ? sizeToClassNameMap[size] : null,
-    { 'kbnFieldButton-isActive': isActive },
+    { 'shadow-[0_0_0_2px_var(--ant-color-primary-active)]': isActive },
     { 'kbnFieldButton--isDraggable': isDraggable },
     className
   );
@@ -113,9 +113,6 @@ export function FieldButton({
       {onClick ? (
         <button
           onClick={(e) => {
-            if (e.type === 'click') {
-              e.currentTarget.focus();
-            }
             onClick();
           }}
           data-test-subj={dataTestSubj}

@@ -1,26 +1,3 @@
-/*
- * Licensed to Elasticsearch B.V. under one or more contributor
- * license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership. Elasticsearch B.V. licenses this file to you under
- * the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
-import {
-  EuiFlexGroup,
-  EuiFlexItem,
-} from "@elastic/eui";
 import classNames from "classnames";
 
 import { FilterItem } from "./filter_item";
@@ -28,6 +5,7 @@ import { IIndexPattern } from "../..";
 import {
   Filter,
 } from "../../../common";
+import { Flex } from "antd";
 
 interface Props {
   filters: Filter[];
@@ -47,7 +25,7 @@ function FilterBarUI(props: Props) {
 
   function renderItems() {
     return props.filters.map((filter, i) => (
-      <EuiFlexItem key={i} grow={false} className="globalFilterBar__flexItem">
+      <div key={i} className="globalFilterBar__flexItem" style={{ flex: '0 0 auto' }}>
         <FilterItem
           id={`${i}`}
           intl={props.intl}
@@ -57,8 +35,9 @@ function FilterBarUI(props: Props) {
           indexPatterns={props.indexPatterns}
           // uiSettings={uiSettings!}
           services={props.services}
+          theme={props.theme}
         />
-      </EuiFlexItem>
+      </div>
     ));
   }
 
@@ -77,24 +56,23 @@ function FilterBarUI(props: Props) {
   const classes = classNames("globalFilterBar", props.className);
 
   return (
-    <EuiFlexGroup
+    <Flex
       className="globalFilterGroup"
-      gutterSize="none"
-      alignItems="flexStart"
-      responsive={false}
+      vertical={false} 
+      align="flex-start" 
+      gap={0}
     >
-      <EuiFlexItem className="globalFilterGroup__filterFlexItem">
-        <EuiFlexGroup
+      <div className="globalFilterGroup__filterFlexItem" style={{ flex: 1 }}>
+        <Flex
           className={classes}
-          wrap={true}
-          responsive={false}
-          gutterSize="xs"
-          alignItems="center"
+          wrap="wrap" 
+          gap={8} 
+          align="center" 
         >
           {renderItems()}
-        </EuiFlexGroup>
-      </EuiFlexItem>
-    </EuiFlexGroup>
+        </Flex>
+      </div>
+    </Flex>
   );
 }
 

@@ -16,27 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { Fragment, OptionHTMLAttributes, ReactNode, useState } from 'react';
-import {
-  EuiFacetButton,
-  EuiFieldSearch,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiIcon,
-  EuiPopover,
-  EuiPopoverFooter,
-  EuiPopoverTitle,
-  EuiSelect,
-  EuiSwitch,
-  EuiSwitchEvent,
-  EuiForm,
-  EuiFormRow,
-  EuiButtonGroup,
-  EuiOutsideClickDetector,
-  EuiNotificationBadge,
-} from '@elastic/eui';
-import { Button, Input, Popover, Space, Switch } from 'antd';
+import React, { Fragment, OptionHTMLAttributes, ReactNode, useContext, useState } from 'react';
+import { Badge, Button, Form, Input, Popover, Radio, Select, Space, Switch } from 'antd';
 import { ListFilter, PanelRightOpen, Search } from 'lucide-react';
+import { GlobalConfigContext } from '@/components';
 
 export interface State {
   searchable: string;
@@ -69,15 +52,17 @@ export interface Props {
  * Additionally there's a button displayed that allows the user to show/hide more filter fields
  */
 export function DiscoverFieldSearch({ onChange, value, types, onCollapseToggle }: Props) {
-  const searchPlaceholder = 'Search field names';
-  const aggregatableLabel = 'Aggregatable';
-  const searchableLabel = 'Searchable';
-  const typeLabel = 'Type';
+  const { i18n } = useContext(GlobalConfigContext)
+  const i18nFieldSearch = i18n?.field?.search || {}
+  const searchPlaceholder = i18nFieldSearch['placeholder'] || 'Search field names';
+  const aggregatableLabel = i18nFieldSearch['aggregatable'] || 'Aggregatable';
+  const searchableLabel = i18nFieldSearch['searchable'] || 'Searchable';
+  const typeLabel = i18nFieldSearch['type'] || 'Type';
   const typeOptions = types
     ? types.map((type) => {
-        return { value: type, text: type };
-      })
-    : [{ value: 'any', text: 'any' }];
+      return { value: type, text: i18nFieldSearch[type] || type };
+    })
+    : [{ value: 'any', text: i18nFieldSearch['any'] || 'any' }];
 
   const [activeFiltersCount, setActiveFiltersCount] = useState(0);
   const [values, setValues] = useState<State>({
@@ -142,119 +127,155 @@ export function DiscoverFieldSearch({ onChange, value, types, onCollapseToggle }
   };
 
   const select = (
-    id: string,
-    selectOptions: Array<{ text: ReactNode } & OptionHTMLAttributes<HTMLOptionElement>>,
-    selectValue: string
-  ) => {
-    return (
-      <EuiSelect
-        id={`${id}-select`}
-        options={selectOptions}
-        value={selectValue}
-        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-          handleValueChange(id, e.target.value)
-        }
-        aria-label={ `Selection of ${id} filter options`}
-        data-test-subj={`${id}Select`}
-        compressed
-      />
-    );
-  };
+  id: string,
+  selectOptions: Array<{ text: ReactNode } & OptionHTMLAttributes<HTMLOptionElement>>,
+  selectValue: string
+) => {
+  const options = selectOptions.map(({ text, value, ...rest }) => ({
+    label: text,
+    value: value as string,
+    ...rest,
+  }));
+
+  return (
+    <Select
+      id={`${id}-select`}
+      options={options}
+      value={selectValue}
+      onChange={(value: string) => handleValueChange(id, value)}
+      aria-label={`Selection of ${id} filter options`}
+      data-test-subj={`${id}Select`}
+      className="w-full" 
+    />
+  );
+};
 
   const toggleButtons = (id: string) => {
     return [
       {
         id: `${id}-any`,
-        label: 'any',
+        label: i18nFieldSearch['any'] || 'any',
       },
       {
         id: `${id}-true`,
-        label: 'yes',
+        label: i18nFieldSearch['yes'] || 'yes',
       },
       {
         id: `${id}-false`,
-        label: 'no',
+        label: i18nFieldSearch['no'] || 'no',
       },
     ];
   };
 
   const buttonGroup = (id: string, legend: string) => {
+    const options = toggleButtons(id).map(opt => ({
+      label: opt.label,
+      value: opt.id.replace(`${id}-`, '')
+    }));
+
     return (
-      <EuiButtonGroup
-        legend={legend}
-        options={toggleButtons(id)}
-        idSelected={`${id}-${values[id]}`}
-        onChange={(optionId) => handleValueChange(id, optionId.replace(`${id}-`, ''))}
-        buttonSize="compressed"
-        isFullWidth
-        data-test-subj={`${id}ButtonGroup`}
-      />
+      <Radio.Group
+        block
+        optionType="button"
+        buttonStyle="solid"
+        value={values[id]}
+        onChange={(e) => handleValueChange(id, e.target.value)}
+      >
+        {options.map((opt) => (
+          <Radio.Button 
+            key={opt.value} 
+            value={opt.value}
+          >
+            {opt.label}
+          </Radio.Button>
+        ))}
+      </Radio.Group>
     );
   };
 
   const selectionPanel = (
     <div className="dscFieldSearch__formWrapper">
-      <EuiForm data-test-subj="filterSelectionPanel">
-        <EuiFormRow fullWidth label={aggregatableLabel} display="columnCompressed">
+      <Form
+        layout="vertical"
+        requiredMark={false}
+      >
+        <Form.Item
+          label={aggregatableLabel}
+          className='!mb-12px'
+        >
           {buttonGroup('aggregatable', aggregatableLabel)}
-        </EuiFormRow>
-        <EuiFormRow fullWidth label={searchableLabel} display="columnCompressed">
+        </Form.Item>
+        <Form.Item
+          label={searchableLabel}
+          className='!mb-12px'
+        >
           {buttonGroup('searchable', searchableLabel)}
-        </EuiFormRow>
-        <EuiFormRow fullWidth label={typeLabel} display="columnCompressed">
+        </Form.Item>
+        <Form.Item
+          label={typeLabel}
+          className='!mb-12px'
+        >
           {select('type', typeOptions, values.type)}
-        </EuiFormRow>
-      </EuiForm>
+        </Form.Item>
+      </Form>
     </div>
   );
 
   return (
     <Fragment>
       <div className="flex items-center gap-8px mb-8px">
-          <Button 
-              onClick={() => onCollapseToggle()} 
-              className="flex-shrink-0" 
-              icon={<PanelRightOpen className="w-14px h-14px"/>}
+        <Button
+          onClick={() => onCollapseToggle()}
+          className="flex-shrink-0"
+          icon={<PanelRightOpen className="w-14px h-14px" />}
+        />
+        <Space.Compact className="flex-1" >
+          <Input
+            prefix={<Search className="w-14px h-14px" />}
+            placeholder={searchPlaceholder}
+            onChange={(event) => onChange('name', event.currentTarget.value)}
+            value={value}
           />
-          <Space.Compact className="flex-1" >
-              <Input 
-                prefix={<Search className="w-14px h-14px"/>}
-                placeholder={searchPlaceholder}
-                onChange={(event) => onChange('name', event.currentTarget.value)}
-                value={value}
-              />
-              <Popover
+          <Popover
+            classNames={{
+              container: "!p-0 !overflow-hidden w-300px",
+              title: "!p-12px !uppercase !mb-0 !border-b-1px !border-b-solid !border-[var(--ant-color-border)]"
+            }}
+            placement="bottom"
+            content={(
+              <>
+                {selectionPanel}
+                <div className="!p-12px !border-t-1px !border-t-solid !border-[var(--ant-color-border)] flex items-center gap-8px">
+                  <Switch
+                    size='small'
+                    id="filterEditorCustomLabelSwitch"
+                    checked={values.missing}
+                    onChange={handleMissingChange}
+                  />
+                  <span >{i18nFieldSearch['hide_missing_fields'] || "Hide missing fields"}</span>
+                </div>
+              </>
+            )}
+            title={i18nFieldSearch['title'] || 'Filter by type'}
+            trigger="click"
+            destroyOnHidden
+            arrow={false}
+          >
+            <Button className="flex-shrink-0 p-0 w-56px" icon={<ListFilter className="w-14px h-14px" />}>
+              <Badge
+                key={activeFiltersCount}
+                count={activeFiltersCount}
+                size='small'
+                showZero
+                status={activeFiltersCount > 0 ? 'error' : 'default'}
                 classNames={{
-                  container: "!p-0 !overflow-hidden w-300px",
-                  title: "!p-12px !uppercase !mb-0 !border-b-1px !border-b-solid !border-[var(--ant-color-border)]"
+                  root: `${activeFiltersCount > 0 ? '' : '!text-inherit'}`,
+                  indicator: `!rounded-4px ${activeFiltersCount > 0 ? '!text-10px !leading-12px' : '!bg-transparent !text-inherit'}`
                 }}
-                placement="bottom"
-                content={(
-                  <>
-                    {selectionPanel}
-                    <div className="!p-12px !border-t-1px !border-t-solid !border-[var(--ant-color-border)] flex items-center gap-8px">
-                      <Switch
-                        size='small' 
-                        id="filterEditorCustomLabelSwitch"
-                        checked={values.missing}
-                        onChange={handleMissingChange}
-                      />
-                      <span >Hide missing fields</span>
-                    </div>
-                  </>
-                )}
-                title={'Filter by type'}
-                trigger="click"
-                destroyOnHidden
-                arrow={false}
-              >
-                <Button className="flex-shrink-0 p-0 w-56px" icon={<ListFilter className="w-14px h-14px"/>}>
-                  <EuiNotificationBadge size='s' color={activeFiltersCount > 0 ? 'accent' : 'subdued'} className={activeFiltersCount > 0 ? '' : '!bg-transparent'}>
-                    {activeFiltersCount}
-                  </EuiNotificationBadge>
-                </Button>
-              </Popover>
-          </Space.Compact>
+              />
+            </Button>
+          </Popover>
+        </Space.Compact>
       </div>
     </Fragment>
   );

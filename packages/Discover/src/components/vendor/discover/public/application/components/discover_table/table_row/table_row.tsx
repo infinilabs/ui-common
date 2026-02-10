@@ -18,6 +18,7 @@ interface Props {
   document: any;
   formatHit?: (name: string, hit: Record<string, any>) => Record<string, any>
   filterIconRender?: (children: any, params: { field: any, values: any, operation: any }) => any;
+  theme?: string;
 }
 
 export function TableRow({
@@ -31,7 +32,8 @@ export function TableRow({
   row,
   document,
   formatHit,
-  filterIconRender
+  filterIconRender,
+  theme
 }: Props) {
   const mapping = indexPattern.fields.getByName;
   const [open, setOpen] = useState(false);
@@ -92,6 +94,7 @@ export function TableRow({
             onAddColumn={onAddColumn}
             onRemoveColumn={onRemoveColumn}
             filterIconRender={filterIconRender}
+            theme={theme}
           />
         </tr>
       )}

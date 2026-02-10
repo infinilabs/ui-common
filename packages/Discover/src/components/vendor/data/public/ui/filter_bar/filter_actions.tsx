@@ -21,7 +21,7 @@ import {
   EuiFlexItem,
   EuiPopover,
 } from "@elastic/eui";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import { FilterEditor } from "./filter_editor";
 import { FilterOptions } from "./filter_options";
@@ -38,6 +38,7 @@ import {
 } from "../../../common";
 import { Button, Popover, Space } from "antd";
 import { CirclePlus, Plus } from "lucide-react";
+import { GlobalConfigContext } from "@/components";
 
 interface Props {
   filters: Filter[];
@@ -49,6 +50,9 @@ interface Props {
 
 export default function FilterActions(props: Props) {
   const [isAddFilterPopoverOpen, setIsAddFilterPopoverOpen] = useState(false);
+
+  const { i18n } = useContext(GlobalConfigContext)
+  const i18nFilterItem = i18n?.filter?.item || {}
 
   function renderAddFilter() {
     const isPinned = true; //uiSettings!.get(UI_SETTINGS.FILTERS_PINNED_BY_DEFAULT);
@@ -76,6 +80,8 @@ export default function FilterActions(props: Props) {
             dateRangeFrom={props.dateRangeFrom}
             dateRangeTo={props.dateRangeTo}
             timeField={props.timeField}
+            theme={props.theme}
+            title={i18nFilterItem.create || "Add filter"}
           />
         )}
         title={null}

@@ -32,6 +32,7 @@ import { icon as EuiIconMagnifyWithMinus } from '@elastic/eui/es/components/icon
 import { icon as EuiIconTableOfContents } from '@elastic/eui/es/components/icon/assets/tableOfContents';
 import { icon as EuiIconTokenNumber } from '@elastic/eui/es/components/icon/assets/tokenNumber';
 import { icon as EuiIconTokenBoolean } from '@elastic/eui/es/components/icon/assets/tokenBoolean';
+import { icon as EuiIconSortRight } from '@elastic/eui/es/components/icon/assets/sortRight';
 
 // One or more icons are passed in as an object of iconKey (string): IconComponent
 appendIconComponentCache({
@@ -45,6 +46,7 @@ appendIconComponentCache({
     arrowRight: EuiIconArrowRight,
     sortDown: EuiIconSortDown,
     sortUp: EuiIconSortUp,
+    sortRight: EuiIconSortRight,
     plusInCircle: EuiIconPlusInCircle,
     plusInCircleFilled: EuiIconPlusInCircleFilled,
     minusInCircle: EuiIconMinusInCircle,

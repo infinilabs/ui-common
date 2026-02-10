@@ -21,6 +21,8 @@ import { EuiIcon } from '@elastic/eui';
 import classNames from 'classnames';
 import React from 'react';
 import { QuerySuggestion } from '../../autocomplete';
+import { theme } from 'antd';
+const { useToken } = theme;
 
 function getEuiIconType(type: string) {
   switch (type) {
@@ -50,14 +52,19 @@ interface Props {
 }
 
 export function SuggestionComponent(props: Props) {
+  const { token } = useToken();
+  const style = {
+    color: token.colorText,
+    backgroundColor: props.selected ? token.controlItemBgActive : undefined
+  }
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus
     <div
       className={classNames({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         kbnTypeahead__item: true,
-        active: props.selected,
       })}
+      style={style}
       role="option"
       onClick={() => props.onClick(props.suggestion)}
       onMouseEnter={props.onMouseEnter}

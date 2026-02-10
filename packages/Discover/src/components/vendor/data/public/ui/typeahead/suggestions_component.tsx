@@ -39,6 +39,7 @@ export interface SuggestionsComponentProps {
   loadMore: () => void;
   queryBarRect?: DOMRect;
   size?: SuggestionsListSize;
+  style?: any;
 }
 
 export type SuggestionsListSize = "s" | "l";
@@ -101,11 +102,11 @@ export default class SuggestionsComponent extends Component<
           })}
         >
           <div
-            className={classNames("kbnTypeahead__popover rounded-6px", {
+            className={classNames('kbnTypeahead__popover', {
               ["kbnTypeahead__popover--bottom"]: isSuggestionsListFittable,
               ["kbnTypeahead__popover--top"]: !isSuggestionsListFittable,
             })}
-            style={{ border: 0, boxShadow: '0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05)'}}
+            style={this.props.style || {}}
           >
             <div
               id="kbnTypeahead__items"
@@ -168,7 +169,7 @@ export default class SuggestionsComponent extends Component<
 const StyledSuggestionsListDiv = styled.div`
   ${(props: { queryBarRect: DOMRect; verticalListPosition: string }) => `
       position: absolute;
-      z-index: 4001;
+      z-index: 999;
       left: ${props.queryBarRect.left}px;
       width: ${props.queryBarRect.width}px;
       ${props.verticalListPosition}`}

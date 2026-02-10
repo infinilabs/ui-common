@@ -19,7 +19,7 @@
 
 import { InjectedIntl } from "@kbn/i18n/react";
 import classNames from "classnames";
-import React, { MouseEvent, useState, useEffect } from "react";
+import React, { MouseEvent, useState, useEffect, useContext } from "react";
 import { IUiSettingsClient } from "src/core/public";
 import { FilterEditor } from "./filter_editor";
 import { FilterView } from "./filter_view";
@@ -36,6 +36,7 @@ import {
 import { getIndexPatterns } from "../../services";
 import { Button, Menu, Popover } from "antd";
 import { CircleMinus, CirclePlus, Eye, EyeOff, Pencil, Pin, Trash2 } from "lucide-react";
+import { GlobalConfigContext } from "@/components";
 
 interface Props {
   id: string;
@@ -70,6 +71,9 @@ export function FilterItem(props: Props) {
     boolean | undefined
   >(undefined);
   const { id, filter, indexPatterns } = props;
+
+  const { i18n } = useContext(GlobalConfigContext)
+  const i18nFilterItem = i18n?.filter?.item || {}
 
   useEffect(() => {
     const index = props.filter.meta.index;
@@ -159,29 +163,6 @@ export function FilterItem(props: Props) {
     return `filter ${dataTestSubjDisabled} ${dataTestSubjKey} ${dataTestSubjValue} ${dataTestSubjPinned} ${dataTestSubjNegated}`;
   }
 
-  function getPanels() {
-    const { negate, disabled } = filter.meta;
-    return [
-      {
-        id: 1,
-        width: 420,
-        content: (
-          <div>
-            <FilterEditor
-              filter={filter}
-              indexPatterns={indexPatterns}
-              onSubmit={onSubmit}
-              onCancel={() => {
-                setIsPopoverOpen(false);
-              }}
-              services={props.services}
-            />
-          </div>
-        ),
-      },
-    ];
-  }
-
   /**
    * Checks if filter field exists in any of the index patterns provided,
    * Because if so, a filter for the wrong index pattern may still be applied.
@@ -251,7 +232,6 @@ export function FilterItem(props: Props) {
       className={getClasses(filter.meta.negate, valueLabelConfig)}
       iconOnClick={() => props.onRemove()}
       onClick={() => {}}
-      data-test-subj={getDataTestSubj(valueLabelConfig)}
     />
   );
   
@@ -279,6 +259,8 @@ export function FilterItem(props: Props) {
             setIsPopoverOpen(false);
           }}
           services={props.services}
+          theme={props.theme}
+          title={i18nFilterItem['edit'] || "Edit filter"}
         />
       ) : (
         <Menu
@@ -288,27 +270,27 @@ export function FilterItem(props: Props) {
           }}
           mode="vertical"
           items={[
-            {
-              key: 'pin',
-              label: isFilterPinned(filter) ? "Unpin" : "Pin across all apps",
-              icon: <Pin className="w-14px h-14px" />,
-              onClick: () => {
-                setIsPopoverOpen(false);
-                onTogglePinned();
-              },
-            },
+            // {
+            //   key: 'pin',
+            //   label: isFilterPinned(filter) ? "Unpin" : "Pin across all apps",
+            //   icon: <Pin className="w-14px h-14px" />,
+            //   onClick: () => {
+            //     setIsPopoverOpen(false);
+            //     onTogglePinned();
+            //   },
+            // },
             index && {
               key: 'edit',
-              label: "Edit filter",
+              label: i18nFilterItem['edit'] || "Edit filter",
               icon: <Pencil className="w-14px h-14px" />,
               onClick: () => {
                 setIsFilterEdit(true);
-                onTogglePinned();
+                // onTogglePinned();
               },
             },
             {
               key: 'include_exclude',
-              label: negate ? "Include results" : "Exclude results",
+              label: negate ? i18nFilterItem['include_results'] || "Include results" : i18nFilterItem['exclude_results'] || "Exclude results",
               icon: negate ? <CirclePlus className="w-14px h-14px" /> : <CircleMinus className="w-14px h-14px" />,
               onClick: () => {
                 setIsPopoverOpen(false);
@@ -317,7 +299,7 @@ export function FilterItem(props: Props) {
             },
             {
               key: 'enable_disabled',
-              label: disabled ? "Re-enable" : "Temporarily disable",
+              label: disabled ? i18nFilterItem['re_enable'] || "Re-enable" : i18nFilterItem['temporarily_disable'] || "Temporarily disable",
               icon: disabled ? <Eye className="w-14px h-14px" /> : <EyeOff className="w-14px h-14px"/>,
               onClick: () => {
                 setIsPopoverOpen(false);
@@ -326,7 +308,7 @@ export function FilterItem(props: Props) {
             },
             {
               key: 'delete',
-              label: "Delete",
+              label: i18nFilterItem['delete'] || "Delete",
               icon: <Trash2 className="w-14px h-14px"/>,
               onClick: () => {
                 setIsPopoverOpen(false);
@@ -341,7 +323,7 @@ export function FilterItem(props: Props) {
       destroyOnHidden
       arrow={false}
     >
-      <Button className="!p-0 !border-0 !outline-0 !shadow-none">{badge}</Button>
+      <Button className="px-8px">{badge}</Button>
     </Popover>
   )
 }

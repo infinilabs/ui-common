@@ -159,6 +159,8 @@ export function createSearchBar() {
         timefilterUpdateHandler={props.timefilterUpdateHandler}
         histogramOpts={props.histogramOpts}
         timeSetting={props.timeSetting}
+        locale={props.locale}
+        theme={props.theme}
       />
     );
   };

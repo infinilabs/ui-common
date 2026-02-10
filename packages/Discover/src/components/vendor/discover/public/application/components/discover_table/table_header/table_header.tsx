@@ -51,7 +51,7 @@ export function TableHeader({
   const displayedColumns = getDisplayedColumns(columns, indexPattern, hideTimeColumn, isShortDots, formatDisplayName);
   return (
     <tr data-test-subj="docTableHeader" className="kbnDocTableHeader">
-      <th style={{ width: '24px' }} />
+      <th className='!w-24px'/>
       {displayedColumns.map((col, index) => {
         return (
           <TableHeaderColumn

@@ -18,6 +18,7 @@
  */
 import React from 'react';
 import { EuiProgress } from '@elastic/eui';
+import { Progress } from 'antd';
 
 interface Props {
   percent: number;
@@ -29,6 +30,12 @@ export function StringFieldProgressBar({ value, percent, count }: Props) {
   const ariaLabel = `${value}: ${count} (${percent}%)`;
 
   return (
-    <EuiProgress value={percent} max={100} color="secondary" aria-label={ariaLabel} size="s" />
+    <Progress
+      percent={percent} 
+      size="small"      
+      showInfo={false} 
+      className='block leading-1'
+      status="normal"
+    />
   );
 }

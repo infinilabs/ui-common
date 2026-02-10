@@ -16,8 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { EuiToolTip, EuiButtonIcon } from '@elastic/eui';
+import { Button, Tooltip } from 'antd';
+import { Columns3 } from 'lucide-react';
+import { GlobalConfigContext } from '@/components';
 
 export interface Props {
   active: boolean;
@@ -26,31 +29,23 @@ export interface Props {
 }
 
 export function DocViewTableRowBtnToggleColumn({ onClick, active, disabled = false }: Props) {
-  if (disabled) {
-    return (
-      <EuiButtonIcon
-        aria-label= 'Toggle column in table'
-        className="kbnDocViewer__actionButton"
-        data-test-subj="toggleColumnButton"
-        disabled
-        iconType={'tableOfContents'}
-        iconSize={'s'}
-      />
-    );
-  }
+  const { i18n } = useContext(GlobalConfigContext)
+  const i18nField = i18n?.field || {}
+  const tooltipContent = disabled ? null : (
+    i18nField['toggle_column_in_table'] || "Toggle column in table"
+  );
   return (
-    <EuiToolTip
-      content="Toggle column in table"
-    >
-      <EuiButtonIcon
-        aria-label= 'Toggle column in table'
-        aria-pressed={active}
+    <Tooltip title={tooltipContent}>
+      <Button
+        size="small"
+        className={`kbnDocViewer__actionButton !flex-inline !items-center !justify-center ${active ? '!bg-[var(--ant-btn-bg-color-hover)]' : ''}`}
+        classNames={{ icon: '!h-14px !leading-14px' }}
+        icon={<Columns3 className="w-14px h-14px" />}
         onClick={onClick}
-        className="kbnDocViewer__actionButton"
-        data-test-subj="toggleColumnButton"
-        iconType={'tableOfContents'}
-        iconSize={'s'}
+        color="primary"
+        variant="text"
+        disabled={disabled}
       />
-    </EuiToolTip>
+    </Tooltip>
   );
 }

@@ -232,6 +232,7 @@ const DatePicker = (props) => {
             className={`${styles.iconBtn} common-ui-datepicker-backward`}
             icon={<LeftOutlined />}
             onClick={stepBackward}
+            disabled={!start}
           />
         )}
         <Range
@@ -261,7 +262,7 @@ const DatePicker = (props) => {
         />
         {!isMinimum && (
           <Button
-            disabled={isNextDisabled}
+            disabled={!end || isNextDisabled}
             className={`${styles.iconBtn} common-ui-datepicker-Forward`}
             icon={<RightOutlined />}
             onClick={stepForward}
@@ -269,7 +270,7 @@ const DatePicker = (props) => {
         )}
       </Space.Compact>
       <Space.Compact className={styles.refreshBtn}>
-        <Button className={styles.play} onClick={onPlayClick}>
+        <Button color="primary" variant="outlined" className={styles.play} onClick={onPlayClick}>
           {isRefreshPaused ? (
             <CaretRightOutlined />
           ) : (

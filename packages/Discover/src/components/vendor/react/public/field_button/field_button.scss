@@ -48,6 +48,13 @@
   margin-right: $euiSizeS;
 }
 
+.kbnFieldButton__fieldIcon .kbnFieldIcon {
+  background-color: var(--ant-color-primary-bg);
+  color: var(--ant-color-text-tertiary);
+  box-shadow: none;
+}
+
+
 .kbnFieldButton__name {
   flex-grow: 1;
   word-break: break-word;

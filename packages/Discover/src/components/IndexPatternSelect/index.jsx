@@ -2,6 +2,7 @@ import DropdownList from "@/common/src/DropdownList";
 import { useMemo, useState } from "react";
 import styles from "./index.module.less";
 import { TableOutlined } from "@ant-design/icons";
+import { Tag } from "antd";
 
 export default (props) => {
 
@@ -12,10 +13,11 @@ export default (props) => {
 
     const formatData = useMemo(() => {
       const formatIndices = indices?.map((item) => ({
-        id: item,
-        title: item,
-        name: item,
-        type: item.startsWith(".") ? 'specialIndex' : 'index',
+        id: item.name,
+        title: item.name,
+        name: item.name,
+        type: item.name?.startsWith(".") ? 'specialIndex' : 'index',
+        _source: item,
       })) || []
       return formatIndices
     }, [indices])
@@ -58,6 +60,9 @@ export default (props) => {
               <TableOutlined className="mr-4px"/>
               {item.name}
             </>
+          )}
+          renderTag={(item) => (
+            item._source?.docs ? <Tag>{item._source.docs}</Tag> : null
           )}
           renderLabel={(item) => item.name}
           renderEmptyList={() => {

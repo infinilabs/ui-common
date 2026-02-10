@@ -1,5 +1,5 @@
 import { Button, Popover, Spin } from "antd";
-import { CalendarOutlined, ClockCircleOutlined, DownOutlined, GlobalOutlined, RightOutlined, SettingOutlined, ThunderboltOutlined } from "@ant-design/icons";
+import { CalendarOutlined, ClockCircleOutlined, CloseCircleFilled, CloseOutlined, DownOutlined, GlobalOutlined, RightOutlined, SettingOutlined, ThunderboltOutlined } from "@ant-design/icons";
 
 import {
   useEffect,
@@ -195,14 +195,12 @@ const Range = (props) => {
           ).map((item) => (
             <div
               key={item.key}
-              className={`${styles.item} ${
-                selectedItem?.key === item.key ? styles.selected : ""
-              } ${
-                isMinimum &&
-                ![TIME_ZONE_KEY, TIME_SETTING_KEY].includes(item.key)
+              className={`${styles.item} ${selectedItem?.key === item.key ? styles.selected : ""
+                } ${isMinimum &&
+                  ![TIME_ZONE_KEY, TIME_SETTING_KEY].includes(item.key)
                   ? styles.disabled
                   : ""
-              }`}
+                }`}
               onClick={() => handleSettingClick(item)}
             >
               <div>
@@ -255,8 +253,8 @@ const Range = (props) => {
     const yearString = now.format("YYYY");
     return typeof fullRangeText === "string"
       ? fullRangeText
-          .replaceAll(`${dateString}`, "")
-          .replaceAll(`${yearString}-`, "")
+        .replaceAll(`${dateString}`, "")
+        .replaceAll(`${yearString}-`, "")
       : "";
   }, [fullRangeText, timeZone]);
 
@@ -267,17 +265,22 @@ const Range = (props) => {
       placement={popoverPlacement}
       content={content}
       trigger={"click"}
-      overlayClassName={`${styles.popover} ${popoverClassName}`}
+      classNames={{ root: `${styles.popover} ${popoverClassName}` }}
     >
       <Button
         title={fullRangeText}
-        className={`${styles.rangeBtn} ${
-          isMinimum ? styles.minimum : ""
-        } common-ui-datepicker-range`}
+        className={`${styles.rangeBtn} ${isMinimum ? styles.minimum : ""
+          } common-ui-datepicker-range`}
       >
-        <div className={styles.rangeContent}>
+        <div className={`${styles.rangeContent} ${rangeText ? styles.hasRange : ''}`}>
           <ClockCircleOutlined className={styles.clock} />
-          <span className={styles.label}>{rangeText}</span>
+          {
+            rangeText && <span className={styles.label}>{rangeText}</span>
+          }
+          <CloseCircleFilled className={styles.close} onClick={(e) => {
+            e.stopPropagation()
+            onRangeChange({ start: '', end: '' });
+          }} />
           <DownOutlined className={styles.down} />
         </div>
       </Button>

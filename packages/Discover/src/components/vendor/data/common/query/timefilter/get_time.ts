@@ -64,7 +64,7 @@ function createTimeRangeFilter(
   }
 
   const bounds = calculateBounds(timeRange, { forceNow });
-  if (!bounds) {
+  if (!bounds || (!bounds.min && !bounds.max)) {
     return;
   }
   return buildRangeFilter(

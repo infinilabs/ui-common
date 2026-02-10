@@ -8,14 +8,14 @@ import dts from 'vite-plugin-dts';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react(), 
+    react(),
     dts({
       insertTypesEntry: true,
     }),
     UnoCSS({
       inspector: false
-    }), 
-    cssInjectedByJsPlugin()
+    }),
+    cssInjectedByJsPlugin(),
   ],
   server: {
     watch: {
@@ -23,12 +23,11 @@ export default defineConfig({
     },
     open: false,
     proxy: {
-      // 配置接口代理规则：匹配以 /api 开头的请求（自定义前缀，避免和前端路由冲突）
       '/api': {
-        target: 'https://localhost:19200', 
-        changeOrigin: true, 
-        rewrite: (path) => path.replace(/^\/api/, ''), 
-        secure: false 
+        target: 'https://localhost:9200',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        secure: false
       }
     }
   },
@@ -42,7 +41,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        quietDeps: true, 
+        quietDeps: true,
         silenceDeprecations: ['import', 'legacy-js-api', 'color-functions'],
       }
     }
@@ -60,11 +59,12 @@ export default defineConfig({
       external: [
         "react",
         "react-dom",
+        "react/jsx-runtime",
         "antd",
-        "@ant-design/icons",
-        /^@elastic\/eui(\/.*)?$/, 
-        /^@ant-design\/icons(\/.*)?$/,
-        "dayjs"
+        "dayjs",
+        /^antd/,
+        /^@ant-design\/icons/,
+        /^@elastic/,
       ]
     }
   },

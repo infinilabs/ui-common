@@ -1,6 +1,8 @@
 // SASSTODO: Probably not the right file for this selector, but temporary until the files get re-organized
 .globalFilterGroup__filterBar {
-  margin-top: $euiSizeXS;
+  margin-top: 8px !important;
+  max-height: 72px;
+  overflow-y: auto;
 }
 
 .globalFilterBar__addButton {

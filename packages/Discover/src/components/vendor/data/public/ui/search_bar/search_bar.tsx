@@ -79,6 +79,7 @@ export interface SearchBarOwnProps {
   // User has saved the current state as a saved query
   onRefresh?: (payload: { dateRange: TimeRange }) => void;
   indicateNoData?: boolean;
+  theme?: string;
 }
 
 export type SearchBarProps = SearchBarOwnProps & SearchBarInjectedDeps;
@@ -175,8 +176,8 @@ class SearchBarUI extends Component<SearchBarProps, State> {
     showSaveNewQueryModal: false,
     currentProps: this.props,
     query: this.props.query ? { ...this.props.query } : undefined,
-    dateRangeFrom: get(this.props, "dateRangeFrom", "now-15m"),
-    dateRangeTo: get(this.props, "dateRangeTo", "now"),
+    dateRangeFrom: get(this.props, "dateRangeFrom", ""),
+    dateRangeTo: get(this.props, "dateRangeTo", ""),
   };
 
   public isDirty = () => {
@@ -327,54 +328,38 @@ class SearchBarUI extends Component<SearchBarProps, State> {
           renderTimeField={this.props.renderTimeField}
           timefilterUpdateHandler={this.props.timefilterUpdateHandler}
           timeSetting={this.props.timeSetting}
+          locale={this.props.locale}
         />
       );
     }
 
     let filterBar;
     if (this.shouldRenderFilterBar()) {
-      const filterGroupClasses = classNames("globalFilterGroup__wrapper", {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        "globalFilterGroup__wrapper-isVisible": this.state.isFiltersVisible,
-      });
       filterBar = (
-        <div
-          id="GlobalFilterGroup"
-          ref={(node) => {
-            this.filterBarWrapperRef = node;
-          }}
-          className={filterGroupClasses}
-        >
-          <div
-            ref={(node) => {
-              this.filterBarRef = node;
-            }}
-          >
-            <FilterBar
-              className="globalFilterGroup__filterBar"
-              filters={this.props.filters!}
-              onFiltersUpdated={this.props.onFiltersUpdated}
-              indexPatterns={this.props.indexPatterns!}
-              dateRangeFrom={this.state.dateRangeFrom}
-              dateRangeTo={this.state.dateRangeTo}
-              timeField={this.props.timeSetting?.timeField}
-              services={this.props.services}
-            />
-          </div>
-        </div>
+        <FilterBar
+          className="globalFilterGroup__filterBar"
+          filters={this.props.filters!}
+          onFiltersUpdated={this.props.onFiltersUpdated}
+          indexPatterns={this.props.indexPatterns!}
+          dateRangeFrom={this.state.dateRangeFrom}
+          dateRangeTo={this.state.dateRangeTo}
+          timeField={this.props.timeSetting?.timeField}
+          services={this.props.services}
+          theme={this.props.theme}
+        />
       );
     }
     
     return (
       <div className="p-8px">
-        <div className="flex items-center gap-8px">
+        <div className="flex items-center gap-8px flex-wrap">
           <IndexPatternSelect
             selectedIndexPattern={this.props.selectedIndexPattern}
             onIndexPatternChange={this.props.setIndexPattern}
             indices={this.props.indices}
+            locale={this.props.locale}
           />
           <FilterActions
-            className="globalFilterGroup__filterBar"
             filters={this.props.filters!}
             onFiltersUpdated={this.props.onFiltersUpdated}
             indexPatterns={this.props.indexPatterns!}
@@ -382,8 +367,9 @@ class SearchBarUI extends Component<SearchBarProps, State> {
             dateRangeTo={this.state.dateRangeTo}
             timeField={this.props.selectedIndexPattern.timeFieldName}
             services={this.props.services}
+            theme={this.props.theme}
           />
-          <div className="flex-1" >{queryBar}</div>
+          {queryBar}
         </div>
         {filterBar}
       </div>

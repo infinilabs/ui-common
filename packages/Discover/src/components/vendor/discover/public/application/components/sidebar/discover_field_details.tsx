@@ -35,6 +35,7 @@ import {
 import { Bucket, FieldDetails } from "./types";
 import { IndexPatternField, IndexPattern } from "../../../../../data/public";
 import "./discover_field_details.scss";
+import { Typography } from "antd";
 
 interface DiscoverFieldDetailsProps {
   field: IndexPatternField;
@@ -86,10 +87,14 @@ export function DiscoverFieldDetails({
   };
   return (
     <>
-      <div className="dscFieldDetails">
-        {details.error && <EuiText size="xs">{details.error}</EuiText>}
+      <div className="dscFieldDetails !p-12px">
+        {details.error && (
+          <Typography.Text className="text-xs mb-12px" type="danger">
+            {details.error}
+          </Typography.Text>
+        )}
         {!details.error && (
-          <div style={{ marginTop: "4px" }}>
+          <>
             {details?.buckets?.map((bucket: Bucket, idx: number) => (
               <DiscoverFieldBucket
                 key={`bucket${idx}`}
@@ -98,8 +103,10 @@ export function DiscoverFieldDetails({
                 onAddFilter={onAddFilter}
               />
             ))}
-            <div>Calculated from {details.total} sample records</div>
-          </div>
+            <Typography.Text>
+              Calculated from {details.total} sample records
+            </Typography.Text>
+          </>
         )}
 
         {showVisualizeLink && (

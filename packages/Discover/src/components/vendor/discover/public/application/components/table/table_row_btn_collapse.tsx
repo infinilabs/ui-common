@@ -18,6 +18,8 @@
  */
 import React from 'react';
 import { EuiToolTip, EuiButtonIcon } from '@elastic/eui';
+import { Button, Tooltip } from 'antd';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
 export interface Props {
   onClick: () => void;
@@ -27,15 +29,16 @@ export interface Props {
 export function DocViewTableRowBtnCollapse({ onClick, isCollapsed }: Props) {
   const label = 'Toggle field details';
   return (
-    <EuiToolTip content={label}>
-      <EuiButtonIcon
-        aria-expanded={!isCollapsed}
-        aria-label={label}
-        data-test-subj="collapseBtn"
+    <Tooltip title={label}>
+      <Button
+        size="small"
+        className="!flex-inline !items-center !justify-center !h-20px !w-20px"
+        classNames={{ icon: '!h-14px !leading-14px' }}
+        icon={isCollapsed ? <ChevronRight className="w-14px h-14px" /> : <ChevronDown className="w-14px h-14px" />}
         onClick={() => onClick()}
-        iconType={isCollapsed ? 'arrowRight' : 'arrowDown'}
-        iconSize={'s'}
+        color="primary"
+        variant="link"
       />
-    </EuiToolTip>
+    </Tooltip>
   );
 }

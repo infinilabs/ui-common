@@ -145,7 +145,7 @@ $kbnTypeaheadTypes: (
   overflow: hidden;
   text-overflow: ellipsis;
   padding: $euiSizeXS $euiSizeS;
-  color: $euiTextColor;
+  color: inherit;
 }
 
 .kbnSuggestionItem__description {

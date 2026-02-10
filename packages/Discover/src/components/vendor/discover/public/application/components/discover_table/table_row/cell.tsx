@@ -1,7 +1,10 @@
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { EuiIcon } from "@elastic/eui";
+import { Button, Space, Tooltip } from "antd";
+import { CircleMinus, CirclePlus } from "lucide-react";
+import { GlobalConfigContext } from "@/components";
 
-interface Props{
+interface Props {
   timefield: boolean;
   sourcefield?: boolean;
   formatted: any;
@@ -23,14 +26,17 @@ export function Cell({
   row,
   indexPattern,
   filterIconRender
-}:Props){
+}: Props) {
+
+  const { i18n } = useContext(GlobalConfigContext)
+  const i18nField = i18n?.field || {}
 
   const renderFilterIcon = (children: any, operation: any) => {
     if (filterIconRender) {
       const flattened = indexPattern.flattenHit(row);
       if (flattened) {
         inlineFilter(column, flattened[column], operation);
-        return filterIconRender(children, { field: column, values: flattened[column], operation})
+        return filterIconRender(children, { field: column, values: flattened[column], operation })
       }
       return children;
     } else {
@@ -63,49 +69,51 @@ export function Cell({
       {formatted}
       <span className="kbnDocTableCell__filter">
         {filterable ? (
-          <>
+          <Space.Compact>
             {renderFilterIcon((
-              <button
-                onClick={() => {
-                  const flattened = indexPattern.flattenHit(row);
-                  if (flattened) {
-                    inlineFilter(column, flattened[column], '+');
-                  }
-                }}
-                className="kbnDocTableRowFilterButton"
-                data-column={column}
-                tooltip-append-to-body="1"
-                data-test-subj="docTableCellFilter"
-                // tooltip="Filter for value"
-                tooltip-placement="bottom"
-                aria-label="Filter for value"
-              >
-                <EuiIcon type="plusInCircle" size="s" color="primary"></EuiIcon>
-              </button>
-            ), '+')}
-            {
-              renderFilterIcon((
-                <button
+              <Tooltip title={i18nField['filter_for_value'] || "Filter for value"} placement="bottom">
+                <Button
+                  color="primary"
+                  variant="filled"
+                  size="small"
+                  className="kbnDocTableRowFilterButton !w-24px !h-24px"
+                  classNames={{ icon: '!h-14px !leading-14px' }}
+                  icon={<CirclePlus className="w-14px h-14px" />}
                   onClick={() => {
                     const flattened = indexPattern.flattenHit(row);
                     if (flattened) {
-                      inlineFilter(column, flattened[column], '-');
+                      inlineFilter(column, flattened[column], '+');
                     }
                   }}
-                  className="kbnDocTableRowFilterButton"
-                  data-column="<%- column %>"
-                  data-test-subj="docTableCellFilterNegate"
-                  // tooltip="Filter out value"
-                  aria-label="Filter out value"
-                  tooltip-append-to-body="1"
-                  tooltip-placement="bottom"
-                >
-                  <EuiIcon type="minusInCircle" size="s" color="primary" />
-                </button>
-              ), '-' )
+                  data-column={column}
+                />
+              </Tooltip>
+            ), '+')}
+            {
+              renderFilterIcon((
+                <Tooltip title={i18nField['filter_out_value'] || "Filter out value"} placement="bottom">
+                  <Button
+                    color="primary"
+                    variant="filled"
+                    size="small"
+                    className="kbnDocTableRowFilterButton !w-24px !h-24px"
+                    classNames={{ icon: '!h-14px !leading-14px' }}
+                    icon={<CircleMinus className="w-14px h-14px" />}
+                    onClick={() => {
+                      const flattened = indexPattern.flattenHit(row);
+                      if (flattened) {
+                        // 注意這裡傳入的是 '-'
+                        inlineFilter(column, flattened[column], '-');
+                      }
+                    }}
+                    data-column={column}
+                    aria-label="Filter out value"
+                  />
+                </Tooltip>
+              ), '-')
             }
-          </>
-        ):null}
+          </Space.Compact>
+        ) : null}
       </span>
     </td>
   );

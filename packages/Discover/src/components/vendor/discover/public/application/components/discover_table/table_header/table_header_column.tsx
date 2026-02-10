@@ -1,29 +1,12 @@
-/*
- * Licensed to Elasticsearch B.V. under one or more contributor
- * license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership. Elasticsearch B.V. licenses this file to you under
- * the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-import React from "react";
-import { EuiToolTip } from "@elastic/eui";
+import React, { useContext } from "react";
+import { Tooltip, Button } from "antd";
 import { SortOrder } from "./helpers";
-import { EuiIcon } from "@elastic/eui";
+import { MoveDown, MoveLeft, MoveRight, MoveUp, X } from "lucide-react";
+import { GlobalConfigContext } from "@/components";
 
 interface Props {
-  colLeftIdx: number; // idx of the column to the left, -1 if moving is not possible
-  colRightIdx: number; // idx of the column to the right, -1 if moving is not possible
+  colLeftIdx: number;
+  colRightIdx: number;
   displayName: string;
   isRemoveable: boolean;
   isSortable: boolean;
@@ -33,23 +16,6 @@ interface Props {
   onRemoveColumn?: (name: string) => void;
   sortOrder: SortOrder[];
 }
-
-function getSortIconType(className: string):string {
-  if(className.includes('fa-sort-down')){
-    return 'sortDown';
-  }else if(className.includes('fa-sort-up')){
-    return 'sortUp';
-  }else if(className.includes('fa-sort')){
-    return 'sortUp';
-  }
-  return ''
-}
-
-const sortDirectionToIcon: Record<string, string> = {
-  desc: "fa fa-sort-down",
-  asc: "fa fa-sort-up",
-  "": "fa fa-sort",
-};
 
 export function TableHeaderColumn({
   colLeftIdx,
@@ -63,6 +29,8 @@ export function TableHeaderColumn({
   onRemoveColumn,
   sortOrder,
 }: Props) {
+  const { i18n } = useContext(GlobalConfigContext)
+  const i18nField = i18n?.field || {}
   const [, sortDirection = ""] =
     sortOrder.find((sortPair) => name === sortPair[0]) || [];
   const currentSortWithoutColumn = sortOrder.filter((pair) => pair[0] !== name);
@@ -70,26 +38,13 @@ export function TableHeaderColumn({
   const currentColumnSortDirection =
     (currentColumnSort && currentColumnSort[1]) || "";
 
-  const btnSortIcon = sortDirectionToIcon[sortDirection];
-  const btnSortClassName =
-    sortDirection !== ""
-      ? btnSortIcon
-      : `kbnDocTableHeader__sortChange ${btnSortIcon}`;
-
   const handleChangeSortOrder = () => {
     if (!onChangeSortOrder) return;
-
-    // Cycle goes Unsorted -> Asc -> Desc -> Unsorted
     if (currentColumnSort === undefined) {
       onChangeSortOrder([...currentSortWithoutColumn, [name, "asc"]]);
     } else if (currentColumnSortDirection === "asc") {
       onChangeSortOrder([...currentSortWithoutColumn, [name, "desc"]]);
-    } else if (
-      currentColumnSortDirection === "desc" &&
-      currentSortWithoutColumn.length === 0
-    ) {
-      // If we're at the end of the cycle and this is the only existing sort, we switch
-      // back to ascending sort instead of removing it.
+    } else if (currentColumnSortDirection === "desc" && currentSortWithoutColumn.length === 0) {
       onChangeSortOrder([[name, "asc"]]);
     } else {
       onChangeSortOrder(currentSortWithoutColumn);
@@ -97,89 +52,72 @@ export function TableHeaderColumn({
   };
 
   const getSortButtonAriaLabel = () => {
-    const sortAscendingMessage = `Sort ${name} ascending`;
-    const sortDescendingMessage = `Sort ${name} descending`;
-    const stopSortingMessage = `Stop sorting on ${name}`;
-
-    if (currentColumnSort === undefined) {
-      return sortAscendingMessage;
-    } else if (sortDirection === "asc") {
-      return sortDescendingMessage;
-    } else if (
-      sortDirection === "desc" &&
-      currentSortWithoutColumn.length === 0
-    ) {
-      return sortAscendingMessage;
-    } else {
-      return stopSortingMessage;
-    }
+    if (currentColumnSort === undefined) return i18nField['ascending'] || `Sort ${name} ascending`;
+    if (sortDirection === "asc") return i18nField['descending'] || `Sort ${name} descending`;
+    if (sortDirection === "desc" && currentSortWithoutColumn.length === 0) return i18nField['ascending'] || `Sort ${name} ascending`;
+    return i18nField['stop_sorting'] || `Stop sorting on ${name}`;
   };
 
-  // action buttons displayed on the right side of the column name
+  const getSortIcon = () => {
+    if (sortDirection === "asc") return <MoveUp className="w-12px h-12px" />;
+    if (sortDirection === "desc") return <MoveDown className="w-12px h-12px" />;
+    return <MoveUp className="w-12px h-12px" />;
+  };
+
   const buttons = [
-    // Sort Button
     {
       active: isSortable && typeof onChangeSortOrder === "function",
       ariaLabel: getSortButtonAriaLabel(),
-      className: btnSortClassName,
       onClick: handleChangeSortOrder,
       testSubject: `docTableHeaderFieldSort_${name}`,
       tooltip: getSortButtonAriaLabel(),
-      iconType: getSortIconType(btnSortClassName),
+      icon: getSortIcon(),
     },
-    // Remove Button
     {
       active: isRemoveable && typeof onRemoveColumn === "function",
-      ariaLabel: `Remove ${name} column`,
-      className: "fa fa-remove kbnDocTableHeader__move",
+      ariaLabel: i18nField['remove_column'] || `Remove ${name} column`,
       onClick: () => onRemoveColumn && onRemoveColumn(name),
       testSubject: `docTableRemoveHeader-${name}`,
-      tooltip: "Remove Column",
-      iconType: 'cross',
+      tooltip: i18nField['remove_column'] || "Remove Column",
+      icon: <X className="w-12px h-12px" />,
     },
-    // Move Left Button
     {
       active: colLeftIdx >= 0 && typeof onMoveColumn === "function",
-      ariaLabel: `Move ${name} column to the left`,
-      className: "fa fa-angle-double-left kbnDocTableHeader__move",
+      ariaLabel: i18nField['move_to_left'] || `Move ${name} column to the left`,
       onClick: () => onMoveColumn && onMoveColumn(name, colLeftIdx),
       testSubject: `docTableMoveLeftHeader-${name}`,
-      tooltip: `Move ${name} column to the left`,
-      iconType: 'sortLeft',
+      tooltip: i18nField['move_to_left'] || `Move ${name} column to the left`,
+      icon: <MoveLeft className="w-12px h-12px" />,
     },
-    // Move Right Button
     {
       active: colRightIdx >= 0 && typeof onMoveColumn === "function",
-      ariaLabel: `Move ${name} column to the right`,
-      className: "fa fa-angle-double-right kbnDocTableHeader__move",
+      ariaLabel: i18nField['move_to_right'] || `Move ${name} column to the right`,
       onClick: () => onMoveColumn && onMoveColumn(name, colRightIdx),
       testSubject: `docTableMoveRightHeader-${name}`,
-      tooltip: `Move ${name} column to the right`,
-      iconType: 'sortRight',
+      tooltip: i18nField['move_to_right'] || `Move ${name} column to the right`,
+      icon: <MoveRight className="w-12px h-12px" />,
     },
   ];
 
   return (
-    <th data-test-subj="docTableHeaderField">
+    <th data-test-subj="docTableHeaderField" style={{ whiteSpace: 'nowrap' }}>
       <span data-test-subj={`docTableHeader-${name}`}>
         {displayName}
         {buttons
           .filter((button) => button.active)
           .map((button, idx) => (
-            <EuiToolTip
-              id={`docTableHeader-${name}-tt`}
-              content={button.tooltip}
-              key={`button-${idx}`}
-            >
-              <button
-                aria-label={button.ariaLabel}
-                className={button.className}
-                data-test-subj={button.testSubject}
+            <Tooltip title={button.tooltip} key={`button-${idx}`}>
+              <Button
+                type="text"
+                size="small"
+                classNames={{ icon: '!w-12px !h-12px !leading-12px' }}
+                icon={button.icon}
                 onClick={button.onClick}
-              >
-                {button.iconType ? <EuiIcon type={button.iconType} size="s" color="black" />:null}
-              </button>
-            </EuiToolTip>
+                aria-label={button.ariaLabel}
+                data-test-subj={button.testSubject}
+                className="!w-20px !h-20px ml-4px"
+              />
+            </Tooltip>
           ))}
       </span>
     </th>

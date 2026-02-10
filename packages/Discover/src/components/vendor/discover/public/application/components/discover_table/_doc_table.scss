@@ -55,8 +55,8 @@ doc-table {
     }
 
     dt {
-      background-color: rgba(0, 86, 144, 0.1);
-      color: #343741;
+      background-color: var(--ant-color-primary-bg);
+      color: var(--ant-color-text);
       padding: 2px 4px;
       margin-right: 4px;
       word-break: normal;
@@ -112,7 +112,7 @@ doc-table {
 .table {
   // Nesting
   .table {
-    background-color: #fff;
+    background-color: transparent;
   }
 }
 
@@ -164,16 +164,15 @@ table {
 .table > thead > tr > th {
   padding: 5px;
   vertical-align: bottom;
-  border-bottom: 1px solid #D3DAE6;
+  border-bottom: 1px solid var(--ant-color-border);
   padding-left: 0px;
 }
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-  padding-top: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  line-height: 120%;
+  padding-top: 6px;
+  padding-left: 6px;
+  padding-right: 6px;
   vertical-align: top;
-  border-top: 1px solid #D3DAE6;
+  border-top: 1px solid var(--ant-color-border);
 }
 doc-table th {
   text-align: left;

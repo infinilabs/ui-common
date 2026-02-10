@@ -30,7 +30,7 @@ import {
 } from '@elastic/eui';
 import Editor from '@monaco-editor/react';
 import { get } from 'lodash';
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import { GenericComboBox, GenericComboBoxProps } from './generic_combo_box';
 import {
   getFieldFromFilter,
@@ -53,14 +53,16 @@ import {
   cleanFilter,
   getFilterParams,
 } from '../../../../common';
-import { Button, Switch } from 'antd';
+import { Button, Form, Input, Select, Switch } from 'antd';
+import { GlobalConfigContext, II18nProps } from '@/components';
 
 interface Props {
   filter: Filter;
   indexPatterns: IIndexPattern[];
   onSubmit: (filter: Filter) => void;
   onCancel: () => void;
-  intl: InjectedIntl;
+  title: string;
+  i18n: II18nProps
 }
 
 interface State {
@@ -90,56 +92,51 @@ class FilterEditorUI extends Component<Props, State> {
   }
 
   public render() {
+
+    const i18nFilterItem = this.props.i18n?.filter?.item || {}
+
     return (
       <div>
         <div className='ant-popover-title !p-12px !uppercase !mb-0 !border-b-1px !border-b-solid !border-[var(--ant-color-border)] flex items-center justify-between'>
-          <div>Edit filter</div>
+          <div>{this.props.title}</div>
           <Button className='h-auto px-0' type="link" onClick={this.toggleCustomEditor}>
             {this.state.isCustomEditorOpen ? (
-              "Edit filter values"
+              i18nFilterItem['edit_values'] || "Edit filter values"
             ) : (
-              "Edit as Query DSL"
+              i18nFilterItem['edit_dsl'] || "Edit as Query DSL"
             )}
           </Button>
         </div>
 
         <div className="globalFilterItem__editorForm">
-          <EuiForm>
+          <Form layout="vertical">
             {this.renderIndexPatternInput()}
 
             {this.state.isCustomEditorOpen ? this.renderCustomEditor() : this.renderRegularEditor()}
 
-            <EuiSpacer size="m" />
-
-            <div className="flex items-center gap-8px">
-              <Switch
-                size='small' 
-                id="filterEditorCustomLabelSwitch"
-                checked={this.state.useCustomLabel}
-                onChange={this.onCustomLabelSwitchChange}
-              />
-              <span >Create custom label?</span>
-            </div>
+            <Form.Item className="!mb-12px">
+              <div className="flex items-center gap-8px">
+                <Switch
+                  size='small'
+                  id="filterEditorCustomLabelSwitch"
+                  checked={this.state.useCustomLabel}
+                  onChange={this.onCustomLabelSwitchChange}
+                />
+                <span className="text-[var(--ant-form-label-color)] text-[var(--ant-form-label-font-size)]">{i18nFilterItem['create_label'] || "Create custom label?"}</span>
+              </div>
+            </Form.Item>
 
             {this.state.useCustomLabel && (
-              <div>
-                <EuiSpacer size="m" />
-                <EuiFormRow
-                  label={ 'Custom label'}
-                >
-                  <EuiFieldText
-                    value={`${this.state.customLabel}`}
-                    onChange={this.onCustomLabelChange}
-                  />
-                </EuiFormRow>
-              </div>
+              <Form.Item className="!mb-12px" label={i18nFilterItem['custom_label'] || 'Custom label'}>
+                <Input value={`${this.state.customLabel}`} onChange={this.onCustomLabelChange} />
+              </Form.Item>
             )}
 
-            <div className="mt-16px text-right">
-              <Button className="w-80px" size="large" type="text" onClick={this.props.onCancel}>Cancel</Button>
-              <Button className="w-80px" size="large" type="primary" onClick={this.onSubmit} disabled={!this.isFilterValid()}>Save</Button>
+            <div className="text-right">
+              <Button className="w-80px" type="text" onClick={this.props.onCancel}>{i18nFilterItem['cancel'] || "Cancel"}</Button>
+              <Button className="w-80px" type="primary" onClick={this.onSubmit} disabled={!this.isFilterValid()}>{i18nFilterItem['save'] || "Save"}</Button>
             </div>
-          </EuiForm>
+          </Form>
         </div>
       </div>
     );
@@ -164,10 +161,10 @@ class FilterEditorUI extends Component<Props, State> {
       <EuiFlexGroup>
         <EuiFlexItem>
           <EuiFormRow
-            label={ 'Index Pattern'}
+            label={'Index Pattern'}
           >
             <IndexPatternComboBox
-              placeholder={ 'Select an index pattern'}
+              placeholder={'Select an index pattern'}
               options={this.props.indexPatterns}
               selectedOptions={selectedIndexPattern ? [selectedIndexPattern] : []}
               getLabel={(indexPattern) => indexPattern.title}
@@ -184,84 +181,88 @@ class FilterEditorUI extends Component<Props, State> {
 
   private renderRegularEditor() {
     return (
-      <div>
-        <EuiFlexGroup responsive={false} gutterSize="s">
-          <EuiFlexItem grow={2}>{this.renderFieldInput()}</EuiFlexItem>
-          <EuiFlexItem grow={false} style={{ flexBasis: 160 }}>
-            {this.renderOperatorInput()}
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiSpacer size="s" />
-        <div data-test-subj="filterParams">{this.renderParamsEditor()}</div>
-      </div>
+      <>
+        {this.renderFieldInput()}
+        {this.renderOperatorInput()}
+        {this.renderParamsEditor()}
+      </>
     );
   }
 
   private renderFieldInput() {
     const { selectedIndexPattern, selectedField } = this.state;
     const fields = selectedIndexPattern ? getFilterableFields(selectedIndexPattern) : [];
+    const i18nFilterItem = this.props.i18n?.filter?.item || {}
 
     return (
-      <EuiFormRow
-        label={ 'Field'}
+      <Form.Item
+        label={i18nFilterItem['field'] || "Field"}
+        className="!mb-12px"
       >
-        <FieldComboBox
+        <Select
           id="fieldInput"
-          isDisabled={!selectedIndexPattern}
-          placeholder={'Select a field first'}
-          options={fields}
-          selectedOptions={selectedField ? [selectedField] : []}
-          getLabel={(field) => field.name}
-          onChange={this.onFieldChange}
-          singleSelection={{ asPlainText: true }}
-          isClearable={false}
-          className="globalFilterEditor__fieldInput"
-          data-test-subj="filterFieldSuggestionList"
+          showSearch
+          disabled={!selectedIndexPattern}
+          value={selectedField?.name}
+          onChange={(value) => {
+            const field = fields.find(f => f.name === value);
+            this.onFieldChange([field]);
+          }}
+          options={fields.map(field => ({
+            label: field.name,
+            value: field.name,
+          }))}
+          allowClear={false}
+          style={{ width: '100%' }}
         />
-      </EuiFormRow>
+      </Form.Item>
     );
   }
 
   private renderOperatorInput() {
     const { selectedField, selectedOperator } = this.state;
     const operators = selectedField ? getOperatorOptions(selectedField) : [];
+    const i18nFilterItem = this.props.i18n?.filter?.item || {}
+    const i18nFilterOperators = this.props.i18n?.filter?.operators || {}
     return (
-      <EuiFormRow
-        label={ 'Operator'}
+      <Form.Item
+        label={i18nFilterItem['operator'] || "Operator"}
+        className="!mb-12px"
       >
-        <OperatorComboBox
-          isDisabled={!selectedField}
-          placeholder={
-            selectedField
-              ? 'Select'
-              : 'Waiting'
-          }
-          options={operators}
-          selectedOptions={selectedOperator ? [selectedOperator] : []}
-          getLabel={({ message }) => message}
-          onChange={this.onOperatorChange}
-          singleSelection={{ asPlainText: true }}
-          isClearable={false}
-          data-test-subj="filterOperatorList"
+        <Select
+          id="fieldInput"
+          showSearch
+          disabled={!selectedField}
+          value={selectedOperator?.message}
+          onChange={(value) => {
+            const operator = operators.find(f => f.message === value);
+            this.onOperatorChange([operator]);
+          }}
+          options={operators.map(field => ({
+            label: i18nFilterOperators[`${field.type}${field.negate ? '_false' : '_true'}`] || field.message,
+            value: field.message,
+          }))}
+          allowClear={false}
+          style={{ width: '100%' }}
         />
-      </EuiFormRow>
+      </Form.Item>
     );
   }
 
   private renderCustomEditor() {
+    const i18nFilterItem = this.props.i18n?.filter?.item || {}
     return (
-      <EuiFormRow
-        label={ 'Query DSL'}
-      >
+      <Form.Item label={i18nFilterItem['dsl'] || 'Query DSL'} className="!mb-12px">
         <Editor
           value={this.state.queryDsl}
           onChange={(value) => this.onQueryDslChange(value || '')}
           language="json"
           width="100%"
           height="250px"
+          theme={this.props.theme === 'dark' ? 'vs-dark' : 'light'}
+          className="border border-solid border-[var(--ant-color-border)] rounded-6px overflow-hidden"
         />
-        
-      </EuiFormRow>
+      </Form.Item>
     );
   }
 
@@ -270,6 +271,8 @@ class FilterEditorUI extends Component<Props, State> {
     if (!indexPattern || !this.state.selectedOperator) {
       return '';
     }
+
+    const i18nFilterItem = this.props.i18n?.filter?.item || {}
 
     switch (this.state.selectedOperator.type) {
       case 'exists':
@@ -286,6 +289,7 @@ class FilterEditorUI extends Component<Props, State> {
             dateRangeFrom={this.props.dateRangeFrom}
             dateRangeTo={this.props.dateRangeTo}
             timeField={this.props.timeField}
+            label={i18nFilterItem['value'] || 'Value'}
           />
         );
       case 'phrases':
@@ -299,6 +303,7 @@ class FilterEditorUI extends Component<Props, State> {
             dateRangeFrom={this.props.dateRangeFrom}
             dateRangeTo={this.props.dateRangeTo}
             timeField={this.props.timeField}
+            label={i18nFilterItem['values'] || 'Values'}
           />
         );
       case 'range':
@@ -307,6 +312,11 @@ class FilterEditorUI extends Component<Props, State> {
             field={this.state.selectedField}
             value={this.state.params}
             onChange={this.onParamsChange}
+            services={this.props.services}
+            dateRangeFrom={this.props.dateRangeFrom}
+            dateRangeTo={this.props.dateRangeTo}
+            timeField={this.props.timeField}
+            label={i18nFilterItem['range'] || 'Range'}
           />
         );
     }
@@ -449,4 +459,9 @@ function OperatorComboBox(props: GenericComboBoxProps<Operator>) {
   return GenericComboBox(props);
 }
 
-export const FilterEditor = FilterEditorUI;
+export const FilterEditor = (props: Props) => {
+
+  const { i18n } = useContext(GlobalConfigContext)
+
+  return <FilterEditorUI {...props} i18n={i18n}/>
+};

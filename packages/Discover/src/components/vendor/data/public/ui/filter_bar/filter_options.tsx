@@ -17,9 +17,10 @@
  * under the License.
  */
 
+import { GlobalConfigContext, II18nProps } from '@/components';
 import { Button, Menu, Popover } from 'antd';
 import { Eye, EyeOff, ListFilter, Pin, PinOff, SquaresExclude, Trash2 } from 'lucide-react';
-import { Component } from 'react';
+import { Component, useContext } from 'react';
 
 interface Props {
   onEnableAll: () => void;
@@ -29,6 +30,7 @@ interface Props {
   onToggleAllNegated: () => void;
   onToggleAllDisabled: () => void;
   onRemoveAll: () => void;
+  i18n?: II18nProps;
 }
 
 interface State {
@@ -51,6 +53,9 @@ class FilterOptionsUI extends Component<Props, State> {
   };
 
   public render() {
+
+    const i18nFilterAll = this.props.i18n?.filter?.all || {}
+
     return (
       <Popover
         classNames={{
@@ -75,7 +80,7 @@ class FilterOptionsUI extends Component<Props, State> {
             items={[
               {
                 key: 'enable',
-                label: 'Enable all',
+                label: i18nFilterAll['enable'] || 'Enable all',
                 icon: <Eye className="w-14px h-14px" />,
                 onClick: () => {
                   this.closePopover();
@@ -84,34 +89,34 @@ class FilterOptionsUI extends Component<Props, State> {
               },
               {
                 key: 'disable',
-                label: 'Disable all',
+                label: i18nFilterAll['disable'] || 'Disable all',
                 icon: <EyeOff className="w-14px h-14px" />,
                 onClick: () => {
                   this.closePopover();
                   this.props.onDisableAll();
                 },
               },
-              {
-                key: 'pin',
-                label: 'Pin all',
-                icon: <Pin className="w-14px h-14px" />,
-                onClick: () => {
-                  this.closePopover();
-                  this.props.onPinAll();
-                },
-              },
-              {
-                key: 'unpin',
-                label: 'Unpin all',
-                icon: <PinOff className="w-14px h-14px" />,
-                onClick: () => {
-                  this.closePopover();
-                  this.props.onUnpinAll();
-                },
-              },
+              // {
+              //   key: 'pin',
+              //   label: 'Pin all',
+              //   icon: <Pin className="w-14px h-14px" />,
+              //   onClick: () => {
+              //     this.closePopover();
+              //     this.props.onPinAll();
+              //   },
+              // },
+              // {
+              //   key: 'unpin',
+              //   label: 'Unpin all',
+              //   icon: <PinOff className="w-14px h-14px" />,
+              //   onClick: () => {
+              //     this.closePopover();
+              //     this.props.onUnpinAll();
+              //   },
+              // },
               {
                 key: 'invert_inclusion',
-                label: 'Invert inclusion',
+                label: i18nFilterAll['invert_inclusion'] || 'Invert inclusion',
                 icon: <SquaresExclude className="w-14px h-14px" />,
                 onClick: () => {
                   this.closePopover();
@@ -119,8 +124,8 @@ class FilterOptionsUI extends Component<Props, State> {
                 },
               },
               {
-                key: 'invert_enabled_disabled',
-                label: 'Invert enabled/disabled',
+                key: 'invert_enable_disable',
+                label: i18nFilterAll['invert_enable_disable'] || 'Invert enabled/disabled',
                 icon: <Eye className="w-14px h-14px" />,
                 onClick: () => {
                   this.closePopover();
@@ -129,7 +134,7 @@ class FilterOptionsUI extends Component<Props, State> {
               },
               {
                 key: 'remove_all',
-                label: 'Remove all',
+                label: i18nFilterAll['remove_all'] || 'Remove all',
                 icon: <Trash2 className="w-14px h-14px" />,
                 onClick: () => {
                   this.closePopover();
@@ -139,7 +144,7 @@ class FilterOptionsUI extends Component<Props, State> {
             ]}
           />
         )}
-        title="Change all filters"
+        title={i18nFilterAll.title || "Change all filters"}
         trigger="click"
         destroyOnHidden
         arrow={false}
@@ -150,4 +155,9 @@ class FilterOptionsUI extends Component<Props, State> {
   }
 }
 
-export const FilterOptions = (FilterOptionsUI);
+export const FilterOptions = (props: Props) => {
+
+  const { i18n } = useContext(GlobalConfigContext)
+
+  return <FilterOptionsUI {...props} i18n={i18n}/>
+};

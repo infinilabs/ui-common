@@ -666,7 +666,7 @@ export default class QueryStringInputUI extends Component<Props, State> {
           >
             <div
               role="search"
-              className="euiFormControlLayout__childrenWrapper kbnQueryBar__textareaWrap z-4001"
+              className="euiFormControlLayout__childrenWrapper kbnQueryBar__textareaWrap z-999"
               ref={this.queryBarInputDivRefInstance}
             >
               {/* <Input.TextArea

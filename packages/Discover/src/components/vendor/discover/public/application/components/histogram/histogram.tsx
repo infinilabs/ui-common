@@ -15,10 +15,9 @@ import {
   BrushEndListener,
   Theme,
   LIGHT_THEME,
+  DARK_THEME,
 } from "@elastic/charts";
-import lightEuiTheme from "@elastic/eui/dist/eui_theme_light.json";
-import darkEuiTheme from "@elastic/eui/dist/eui_theme_dark.json";
-import "@elastic/charts/dist/theme_light.css";
+import "./theme_light.css";
 
 import { Subscription, combineLatest } from "rxjs";
 import { CurrentTime } from "./current_time";
@@ -155,7 +154,7 @@ export class DiscoverHistogram extends Component {
           onBrushEnd={this.onBrushEnd}
           onElementClick={this.onElementClick(xInterval)}
           tooltip={tooltipProps}
-          theme={LIGHT_THEME}
+          theme={this.props.theme === 'dark' ? DARK_THEME : LIGHT_THEME}
           // baseTheme={chartsBaseTheme}
         />
         <Axis

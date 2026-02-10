@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import moment from "moment";
+import { GlobalConfigContext } from "..";
 
 export interface IProps {
   /**
@@ -38,6 +39,9 @@ export default ({
   total,
   took,
 }: IProps) => {
+  const { i18n } = useContext(GlobalConfigContext)
+  const i18nResult = i18n?.result || {}
+
   const [interval, setInterval] = useState(stateInterval);
   const toMoment = useCallback(
     (datetime: string) => {
@@ -58,17 +62,17 @@ export default ({
 
   return (
     <div className="whitespace-nowrap overflow-hidden text-ellipsis" style={{ fontSize: 12 }}>
-      Found <span style={{ fontWeight: "bold" }}>{total}</span>{" "}
-      records {took && (
+      {i18nResult['found'] || "Found"} <span style={{ fontWeight: "bold" }}>{total}</span>{" "}
+      {i18nResult['records'] || "records"} {took && (
         <span style={{ marginLeft: 5 }}>
-          ({took} milliscond)
+          ({took} {i18nResult['milliscond'] || "milliscond"})
         </span>
       )}
       {timeRange && (
         <span style={{ marginLeft: 5 }}>
-          {`between ${toMoment(timeRange.from)} and ${toMoment(
+          {`${i18nResult['between'] || 'between'} ${toMoment(timeRange.from)} ~ ${toMoment(
             timeRange.to
-          )} ${interval !== "auto" ? "" : "" //per
+          )} ${interval !== "auto" ? "" : "" 
             }`}
         </span>
       )}

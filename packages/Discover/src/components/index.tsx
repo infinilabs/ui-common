@@ -7,7 +7,7 @@ import React, {
 } from "react";
 
 import "@elastic/eui/dist/eui_theme_light.min.css";
-import { Card } from "antd";
+import { Card, Empty, Spin } from "antd";
 import { getStateColumnActions } from "./vendor/discover/public/application/angular/doc_table/actions/columns";
 import { DiscoverSidebar } from "./vendor/discover/public/application/components/sidebar/discover_sidebar";
 import { DiscoverHistogram } from "./vendor/discover/public/application/components/histogram/histogram";
@@ -18,17 +18,18 @@ import { DiscoverNoResults } from "./vendor/discover/public/application/angular/
 import { buildPointSeriesData } from "./vendor/discover/public/application/angular/helpers/";
 import { generateFilters } from "./vendor/data/public/query/filter_manager/lib/generate_filters";
 import Table from "./vendor/discover/public/application/components/discover_table/table";
+import { LoadingSpinner } from "./vendor/discover/public/application/components/loading_spinner/loading_spinner";
 import { cloneDeep } from "lodash";
+import ResultHeader from "./ResultHeader";
+import { FilterStateStore, IndexPattern } from "./vendor/data/common";
+import { loader } from '@monaco-editor/react';
+import * as monaco from 'monaco-editor';
+import { getTimezone } from "@/utils/utils";
 
 import 'uno.css'
 import './index.scss'
 import './euiicons'
-import ResultHeader from "./ResultHeader";
-import { IndexPattern } from "./vendor/data/common";
 
-import { loader } from '@monaco-editor/react';
-import * as monaco from 'monaco-editor';
-import { getTimezone } from "@/utils/utils";
 loader.config({ monaco });
 
 const SidebarMemoized = React.memo(DiscoverSidebar);
@@ -51,12 +52,16 @@ const SearchBar = createSearchBar();
 let isFrist = true;
 
 const Discover = (props: {
-  indices: string[];
+  indices: { [key:string] : any}[];
   indexPattern: IndexPattern;
   setIndexPattern: React.Dispatch<React.SetStateAction<IndexPattern | undefined>>
   onIndexPatternChange: (index: string) => void;
   onSearch?: (index: string, body: any) => Promise<any> | undefined
-  params: any;
+  scrollableTarget?: string;
+  queryParams: any;
+  setQueryParams: (queryParams: any) => void;
+  locale?: string;
+  theme?: string;
 }) => {
 
   const {
@@ -64,18 +69,12 @@ const Discover = (props: {
     setIndexPattern,
     onIndexPatternChange,
     onSearch,
-    params,
+    scrollableTarget,
+    queryParams = {},
+    setQueryParams,
+    locale,
+    theme
   } = props;
-
-  const {
-    queryParam, setQueryParam,
-    columnsParam, setColumnsParam,
-    timeParam, setTimeParam,
-    whetherToSample, setWhetherToSample,
-    sampleSize, setSampleSize,
-    topNumber, setTopNumber,
-    sampleRecords, setSampleRecords
-  } = params || {};
 
   const [collapseState, setCollapseState] = useState({
     sideBar: false,
@@ -92,21 +91,29 @@ const Discover = (props: {
     aggregations: { counts: { buckets: [] } },
   });
 
-  // refactor
-
   const rangeCacheRef = useRef();
 
   useEffect(() => {
-    timefilter.setTime({
-      from: timeParam && timeParam[0] || "now-15m",
-      to: timeParam && timeParam[1] || "now",
-    });
+    if (queryParams.range && queryParams.range[0] && queryParams.range[1]) {
+      timefilter.setTime({
+        from: queryParams.range[0],
+        to: queryParams.range[1],
+      });
+    }
+    if (Array.isArray(queryParams.filters) && queryParams.filters.length > 0) {
+      filterManager.setFilters(queryParams.filters.filter((item: any) => !!item.meta).map((item: any) => {
+          return {
+            ...item,
+            store: FilterStateStore.APP_STATE
+          }
+      }))
+    }
   }, [])
 
   const [state, setState] = useState<any>({
-    columns: columnsParam || ["_source"], //['name', 'address'],
+    columns: queryParams.columns || ["_source"], //['name', 'address'],
     interval: "15s",
-    sort: [],
+    sort: queryParams.sort || [],
   });
 
   const distinctParamsDefault = {
@@ -147,8 +154,10 @@ const Discover = (props: {
         setQueryFrom(0);
       }
 
+      const sort = _payload?.sort || state.sort
+
       const params = getSearchParams(
-        _payload?.indexPattern || indexPattern,
+        indexPattern,
         _payload?.interval || state.interval,
         _payload?.sort || state.sort,
         _payload?.aggs || aggs,
@@ -158,7 +167,7 @@ const Discover = (props: {
       );
 
       const filters = cloneDeep(params?.body?.query?.bool?.filter || [])
-
+      
       if (filters.length > 0) {
         const rangeFilter = filters[filters.length - 1];
         if (rangeFilter?.hasOwnProperty("range")) {
@@ -172,19 +181,30 @@ const Discover = (props: {
       }
       const { index, body } = params
       const res = await onSearch(index, body);
-      if (!res?.hits || res?.error) {
+      if (!res || !res.hits) {
         res.hits = {
           hits: [],
         };
       }
-      res.hits.hits = res.hits.hits || [];
       setSearchResult(res);
 
       const { query } = queryStringManager.getQuery();
-      if (query != queryParam) {
-        setQueryParam?.(query);
-      }
-      setTimeParam?.([timefilter._time?.from, timefilter._time?.to]);
+      const allFilters = filterManager.getFilters();
+      setQueryParams((prev: any) => ({
+        ...prev,
+        query: query != queryParams.query ? query : queryParams.query,
+        range: [timefilter._time?.from, timefilter._time?.to],
+        sort: sort,
+        timeField: indexPattern.timeFieldName,
+        filters: allFilters.map((item) => {
+          const { meta, query } = item
+          const { value, ...rest } = meta || {}
+          return {
+            meta: rest,
+            query
+          }
+        })
+      }))
     },
     [
       state.interval,
@@ -193,6 +213,7 @@ const Discover = (props: {
       distinctParams,
       queryFrom,
       indexPattern?.timeFieldName,
+      queryParams
     ]
   );
 
@@ -302,7 +323,10 @@ const Discover = (props: {
   }, [searchResult, indexPattern, indexPattern?.timeFieldName, state.interval]);
 
   useEffect(() => {
-    setColumnsParam?.(state.columns);
+    setQueryParams((prev: any) => ({
+      ...prev,
+      columns: state.columns
+    }))
   }, [state.columns]);
 
   useEffect(() => {
@@ -431,19 +455,19 @@ const Discover = (props: {
       beforeFuc()
     }
 
-    const dsl_json = sampleRecords === 'all'
+    const dsl_json = queryParams.sampleRecords === 'all'
       ? {
         "top5": {
           "terms": {
             "field": name,
-            "size": topNumber || 5,
+            "size": queryParams.topNumber || 5,
           }
         }
       }
       : {
         "sample": {
           "sampler": {
-            "shard_size": sampleSize || 5000
+            "shard_size": queryParams.sampleSize || 5000
           },
           "aggs": {
             "sample_count": {
@@ -454,7 +478,7 @@ const Discover = (props: {
             "top5": {
               "terms": {
                 "field": name,
-                "size": topNumber || 5,
+                "size": queryParams.topNumber || 5,
                 "shard_size": 25
               }
             }
@@ -463,7 +487,7 @@ const Discover = (props: {
         "top5": {
           "terms": {
             "field": name,
-            "size": topNumber || 5,
+            "size": queryParams.topNumber || 5,
             "shard_size": 25
           }
         }
@@ -501,10 +525,10 @@ const Discover = (props: {
     const res = await onSearch(index, body);
 
     if (afterFuc) {
-      const buckets = sampleRecords === 'all'
+      const buckets = queryParams.sampleRecords === 'all'
         ? res?.aggregations?.['top5']?.buckets
         : res?.aggregations?.sample?.['top5']?.buckets;
-      const count = sampleRecords === 'all'
+      const count = queryParams.sampleRecords === 'all'
         ? res?.aggregations?.['top5']?.sum_other_doc_count
         : res?.aggregations?.sample?.sample_count?.value;
       afterFuc(buckets || [], count || 0);
@@ -524,69 +548,72 @@ const Discover = (props: {
   };
 
   return (
-    <Card className={`min-h-full h-auto flex flex-col`} classNames={{ body: '!p-0 flex-1 flex flex-col' }}>
-      <>
-        <SearchBar
-          {...{
-            showSearchBar: false,
-            showQueryBar: true,
-            showQueryInput: true,
-            showDatePicker: showDatePicker,
-            showFilterBar: true,
-            useDefaultBehaviors: true,
-            screenTitle: "",
-            // filters: filters,
-            onFiltersUpdated: getContext().defaultFiltersUpdated(),
-            indexPatterns: [indexPattern],
-            filterManager,
-            query: {
-              language: "kuery",
-              query: queryParam || "",
+    <Card className={`min-h-full h-auto flex flex-col infini_discover`} classNames={{ body: '!p-0 flex-1 flex flex-col' }}>
+      <SearchBar
+        {...{
+          showSearchBar: false,
+          showQueryBar: true,
+          showQueryInput: true,
+          showDatePicker: showDatePicker,
+          showFilterBar: true,
+          useDefaultBehaviors: true,
+          screenTitle: "",
+          // filters: filters,
+          onFiltersUpdated: (filters) => {
+            filterManager.setFilters(filters);
+          },
+          indexPatterns: [indexPattern],
+          filterManager,
+          query: {
+            language: "kuery",
+            query: queryParams.query || "",
+          },
+          queryStringManager,
+          queryString: queryStringManager,
+          timefilter,
+          storage,
+          onQuerySubmit: updateQuery,
+          services,
+          dateRangeFrom: queryParams.range && queryParams.range[0], 
+          dateRangeTo: queryParams.range && queryParams.range[1],
+          selectedIndexPattern: indexPattern,
+          setIndexPattern: onIndexPatternChange,
+          indices: props.indices,
+          histogramData,
+          timefilterUpdateHandler,
+          histogramOpts: opts,
+          timeSetting: {
+            ...(timeChartProps || {}),
+            showTimeSetting: true,
+            showTimeField: true,
+            timeField: indexPattern.timeFieldName,
+            timeFields: indexPattern.fields.filter((field) => field.spec.type === "date").map((field) => field.displayName),
+            showTimeInterval: false,
+            timeInterval: timeChartProps?.stateInterval,
+            timeIntervals: intervalOptions?.map(({ display, val }) => ({ label: display, value: val })),
+            onTimeSettingChange: ({ timeField, timeInterval }) => {
+              if (indexPattern.timeFieldName !== timeField) {
+                onTimeFieldChange(timeField)
+              }
+              if (timeChartProps?.stateInterval !== timeInterval) {
+                onIntervalChange(timeInterval)
+              }
             },
-            queryStringManager,
-            queryString: queryStringManager,
-            timefilter,
-            storage,
-            onQuerySubmit: updateQuery,
-            services,
-            dateRangeFrom: timeParam && timeParam[0] || "now-15m", // change by hardy
-            dateRangeTo: timeParam && timeParam[1] || "now",
-            selectedIndexPattern: indexPattern,
-            setIndexPattern: onIndexPatternChange,
-            indices: props.indices,
-            histogramData,
-            timefilterUpdateHandler,
-            histogramOpts: opts,
-            timeSetting: {
-              ...(timeChartProps || {}),
-              showTimeSetting: true,
-              showTimeField: true,
-              timeField: indexPattern.timeFieldName,
-              timeFields: indexPattern.fields.filter((field) => field.spec.type === "date").map((field) => field.displayName),
-              showTimeInterval: !!histogramData,
-              timeInterval: timeChartProps?.stateInterval,
-              timeIntervals: intervalOptions?.map(({ display, val }) => ({ label: display, value: val })),
-              onTimeSettingChange: ({ timeField, timeInterval }) => {
-                if (indexPattern.timeFieldName !== timeField) {
-                  onTimeFieldChange(timeField)
-                }
-                if (timeChartProps?.stateInterval !== timeInterval) {
-                  onIntervalChange(timeInterval)
-                }
-              },
-              timeZone,
-              onTimeZoneChange: setTimeZone,
-              recentlyUsedRanges: []
-            },
-          }}
-        />
-      </>
+            timeZone,
+            onTimeZoneChange: setTimeZone,
+            recentlyUsedRanges: []
+          },
+          locale,
+          theme
+        }}
+      />
       <div className="flex flex-1 min-h-0 border-t border-t-solid border-[var(--ant-color-border)]">
         {resultState === "none" && queryFrom === 0 ? (
           <>
             <DiscoverNoResults
               timeFieldName={opts.timefield}
               queryLanguage={state.query?.language || ""}
+              range={queryParams.range}
             />
           </>
         ) : (
@@ -609,14 +636,13 @@ const Discover = (props: {
                     state={state}
                     //unmappedFieldsConfig={unmappedFieldsConfig}
                     //useNewFieldsApi={useNewFieldsApi}
-                    indices={props.indices}
                     distinctParams={distinctParams}
                     onDistinctParamsChange={onDistinctParamsChange}
                     total={total}
                     onFieldAgg={onFieldAgg}
-                    whetherToSample={whetherToSample}
-                    sampleSize={sampleSize}
-                    topNumber={topNumber}
+                    whetherToSample={queryParams.whetherToSample}
+                    sampleSize={queryParams.sampleSize}
+                    topNumber={queryParams.topNumber}
                     onCollapseToggle={() => {
                       setCollapseState((prev) => ({
                         ...prev,
@@ -627,9 +653,22 @@ const Discover = (props: {
                 </div>
               )
             }
-            <div className="flex-1 min-h-0 overflow-x-auto">
+            <div className="flex-1 min-h-0 overflow-x-auto relative">
+              <div
+                style={{
+                  display: resultState !== "loading" ? "none" : "",
+                }}
+              >
+                <div className="dscOverlay">
+                  <LoadingSpinner />
+                </div>
+              </div>
               {
                 <ResultHeader
+                  showCollapse={{
+                    sideBar: true,
+                    histogram: !!histogramData,
+                  }}
                   collapseState={collapseState}
                   setCollapseState={setCollapseState}
                   took={searchResult.took || 1}
@@ -646,32 +685,31 @@ const Discover = (props: {
                         timefilterUpdateHandler={
                           timefilterUpdateHandler
                         }
+                        theme={theme}
                       />
                     </div>
                   </div>
                 )
               }
-              <div>
                 {records && records.length > 0 ? (
-                  <div>
-                    <Table
-                      columns={columns}
-                      sortOrder={state.sort || []}
-                      indexPattern={indexPattern}
-                      onFilter={onAddFilter}
-                      onRemoveColumn={onRemoveColumn}
-                      onMoveColumn={onMoveColumn}
-                      onAddColumn={onAddColumn}
-                      onChangeSortOrder={onSort}
-                      document={document}
-                      hits={records}
-                      hitsTotal={total}
-                      queryFrom={queryFrom}
-                      setQueryFrom={setQueryFrom}
-                    />
-                  </div>
+                  <Table
+                    columns={columns}
+                    sortOrder={state.sort || []}
+                    indexPattern={indexPattern}
+                    onFilter={onAddFilter}
+                    onRemoveColumn={onRemoveColumn}
+                    onMoveColumn={onMoveColumn}
+                    onAddColumn={onAddColumn}
+                    onChangeSortOrder={onSort}
+                    document={document}
+                    hits={records}
+                    hitsTotal={total}
+                    queryFrom={queryFrom}
+                    setQueryFrom={setQueryFrom}
+                    scrollableTarget={scrollableTarget}
+                    theme={theme}
+                  />
                 ) : null}
-              </div>
             </div>
           </>
         )}
@@ -680,34 +718,166 @@ const Discover = (props: {
   )
 };
 
-export interface IDiscoverProps {
-  indices: string[];
-  getIndexPattern?: (index: string) => Promise<any> | undefined
-  onSuggestions?: (index: string, body: any) => Promise<string[]> | undefined
-  onSearch?: (index: string, body: any) => Promise<string[]> | undefined
+const Container = ({ children }: { children: any }) => {
+  return (
+    <Card className={`min-h-full h-auto flex flex-col`} classNames={{ body: '!p-0 flex-1 items-center justify-center flex w-full' }}>
+      {children}
+    </Card>
+  )
 }
+
+export interface IIndexProps {
+  type: string;
+  name: string;
+  tag?: string;
+  _source: any;
+}
+
+export interface II18nProps {
+  filter?: {
+    all?: {
+      title?: string;
+      enable?: string;
+      disable?: string;
+      invert_inclusion?: string;
+      invert_enable_disable?: string;
+      remove_all?: string;
+    };
+    item?: {
+      create?: string;
+      edit?: string;
+      edit_values?: string;
+      edit_dsl?: string;
+      field?: string;
+      operator: string;
+      create_label?: string;
+      value?: string;
+      values?: string;
+      range?: string;
+      dsl?: string;
+      custom_label?: string;
+      cancel?: string;
+      save?: string;
+      include_results?: string;
+      exclude_results?: string;
+      re_enable?: string;
+      temporarily_disable?: string;
+      delete?: string;
+    };
+    operators?: {
+      phrase_true?: string;
+      phrase_false?: string;
+      phrases_true?: string;
+      phrases_false?: string;
+      range_true?: string;
+      range_false?: string;
+      exists_true?: string;
+      exists_false?: string;
+    };
+  };
+  search?: {
+    placeholder?: string;
+    refresh?: string;
+    update?: string;
+  };
+  field?: {
+    search?: {
+      placeholder?: string;
+      aggregatable?: string;
+      searchable?: string;
+      type?: string;
+      title?: string;
+      any?: string;
+      yes?: string;
+      no?: string;
+      hide_missing_fields?: string;
+    };
+    distinct_label?: string;
+    distinct_type?: string;
+    distinct_field?: string;
+    selected_label?: string;
+    available_label?: string;
+    add_field_to_column?: string;
+    remove_field_from_column?: string;
+    unindexed_field_warning?: string;
+    filter_for_value?: string;
+    filter_out_value?: string;
+    filter_for_field_present?: string;
+    scripted_field_presence_error?: string;
+    meta_field_presence_error?: string;
+    toggle_column_in_table?: string;
+    stop_sorting?: string;
+    ascending?: string;
+    descending?: string;
+    remove_column?: string;
+    move_to_left?: string;
+    move_to_right?: string;
+  };
+  empty?: {
+    title?: string;
+    desc?: string;
+  };
+  result?: {
+    found?: string;
+    records?: string;
+    milliscond?: string;
+    between?: string;
+  };
+}
+
+export interface IDiscoverProps {
+  loading?: boolean;
+  indices: IIndexProps[];
+  getIndexPattern?: (index: string) => Promise<any> | undefined;
+  onSuggestions?: (index: string, body: any) => Promise<string[]> | undefined;
+  onSearch?: (index: string, body: any) => Promise<string[]> | undefined;
+  scrollableTarget?: string;
+  queryParams: any;
+  setQueryParams: (queryParams: any) => void,
+  locale?: string;
+  theme?: string;
+  i18n?: II18nProps
+}
+
+export const GlobalConfigContext = React.createContext<any>({});
 
 export default (props: IDiscoverProps) => {
 
   const {
+    loading = false,
     indices = [],
     getIndexPattern,
     onSearch,
-    onSuggestions
+    onSuggestions,
+    scrollableTarget,
+    queryParams,
+    setQueryParams,
+    locale,
+    theme = 'light',
+    i18n = {}
   } = props;
 
-  const [queryParam, setQueryParam] = useState();
-  const [columnsParam, setColumnsParam] = useState();
-  const [timeParam, setTimeParam] = useState();
-  const [whetherToSample, setWhetherToSample] = useState();
-  const [sampleSize, setSampleSize] = useState();
-  const [topNumber, setTopNumber] = useState();
-  const [sampleRecords, setSampleRecords] = useState();
-
   const [indexPattern, setIndexPattern] = useState<IndexPattern>()
+  const requestRef = useRef<{
+    pendingIndex: string | null; 
+    loadedIndex: string | null;  
+  }>({
+    pendingIndex: null,
+    loadedIndex: null,
+  });
 
-  const fetchIndexPattern = async (index: string) => {
+  const fetchIndexPattern = async (index: string, timeField?: string) => {
     if (!index) return;
+    if (requestRef.current.pendingIndex === index) {
+      return;
+    }
+    
+    if (requestRef.current.loadedIndex === index) {
+      return;
+    }
+
+    requestRef.current.pendingIndex = index;
+
     const newIndexPattern = await services.indexPatternService.get(
       index,
       "index",
@@ -716,15 +886,24 @@ export default (props: IDiscoverProps) => {
     const timeFields: string[] = [];
     newIndexPattern.fields.forEach((field) => {
       if (field.spec.type === "date") {
-        timeFields.push(field.displayName);
+        timeFields.push(field.spec.name);
       }
     });
     if (
       timeFields &&
-      timeFields.length == 1 &&
-      newIndexPattern.timeFieldName == ""
+      timeFields.length >= 1
     ) {
-      newIndexPattern.timeFieldName = timeFields[0];
+      if (timeField && timeFields.includes(timeField)) {
+        newIndexPattern.timeFieldName = timeField
+      } else if (newIndexPattern.timeFieldName === "") {
+        newIndexPattern.timeFieldName = timeFields[0];
+      }
+    }
+    if (newIndexPattern.id !== queryParams?.index) {
+      setQueryParams((prev) => ({
+        ...prev,
+        index: newIndexPattern.id
+      }));
     }
     setIndexPattern(newIndexPattern)
     const indexPatterns = [newIndexPattern];
@@ -732,6 +911,9 @@ export default (props: IDiscoverProps) => {
       return Promise.resolve(indexPatterns.find((ip) => ip.id == id));
     };
     setIndexPatterns(indexPatterns);
+
+    requestRef.current.loadedIndex = index;
+    requestRef.current.pendingIndex = null;
   }
 
   useEffect(() => {
@@ -749,29 +931,42 @@ export default (props: IDiscoverProps) => {
 
   useEffect(() => {
     if (!Array.isArray(indices) || indices.length === 0) return;
-    fetchIndexPattern(indices[0])
-  }, [indices])
+    const index = indices.find((item) => item.name === queryParams?.index)
+    fetchIndexPattern(index?.name || indices[0].name, queryParams?.timeField)
+  }, [indices, queryParams?.index, queryParams?.timeField])
 
-  const params = {
-    queryParam, setQueryParam,
-    columnsParam, setColumnsParam,
-    timeParam, setTimeParam,
-    whetherToSample, setWhetherToSample,
-    sampleSize, setSampleSize,
-    topNumber, setTopNumber,
-    sampleRecords, setSampleRecords
-  }
+  useEffect(() => {
+    requestRef.current = { pendingIndex: null, loadedIndex: null };
+  }, [indices]);
+
+  if (loading) return (
+    <Container>
+      <Spin spinning={loading} />
+    </Container>
+  )
+
+  if (!indices || indices.length === 0) return (
+    <Container>
+      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+    </Container>
+  )
 
   if (!indexPattern) return null;
 
   return (
-    <Discover
-      indices={indices}
-      params={params}
-      indexPattern={indexPattern}
-      setIndexPattern={setIndexPattern}
-      onIndexPatternChange={fetchIndexPattern}
-      onSearch={onSearch}
-    />
+    <GlobalConfigContext.Provider value={{ i18n }}>
+      <Discover
+        indices={indices}
+        indexPattern={indexPattern}
+        setIndexPattern={setIndexPattern}
+        onIndexPatternChange={fetchIndexPattern}
+        onSearch={onSearch}
+        scrollableTarget={scrollableTarget}
+        queryParams={queryParams}
+        setQueryParams={setQueryParams}
+        locale={locale}
+        theme={theme}
+      />
+    </GlobalConfigContext.Provider>
   )
 };

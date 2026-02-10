@@ -33,6 +33,7 @@ interface Props {
   onRemoveColumn?: (name: string) => void;
   document: any;
   filterIconRender?: (children: any, params: { field: any, values: any, operation: any }) => any;
+  theme?: string;
 }
 
 export function Detail({
@@ -43,7 +44,8 @@ export function Detail({
   onAddColumn,
   onRemoveColumn,
   document,
-  filterIconRender
+  filterIconRender,
+  theme
 }: Props) {
   const [editorVisible, setEditorVisble] = useState(false);
   const editorRef = useRef(null);
@@ -216,6 +218,7 @@ export function Detail({
           onAddColumn={onAddColumn}
           onRemoveColumn={onRemoveColumn}
           filterIconRender={filterIconRender}
+          theme={theme}
         />
       </div>
     </td>

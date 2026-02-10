@@ -17,11 +17,12 @@
  * under the License.
  */
 import React from 'react';
-import { EuiText, EuiButtonIcon, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
 import { StringFieldProgressBar } from './string_progress_bar';
 import { Bucket } from './types';
 import { IndexPatternField } from '../../../../../data/public';
 import './discover_field_bucket.scss';
+import { Button, Tooltip, Typography } from 'antd';
+import { CircleMinus, CirclePlus } from 'lucide-react';
 
 interface Props {
   bucket: Bucket;
@@ -35,73 +36,55 @@ export function DiscoverFieldBucket({ field, bucket, onAddFilter }: Props) {
   const removeLabel = `Filter out ${field.name}: "${bucket.value}"`;
 
   return (
-    <>
-      <EuiFlexGroup justifyContent="spaceBetween" responsive={false} gutterSize="s">
-        <EuiFlexItem className="dscFieldDetails__barContainer" grow={1}>
-          <EuiFlexGroup justifyContent="spaceBetween" gutterSize="xs" responsive={false}>
-            <EuiFlexItem grow={1} className="eui-textTruncate">
-              <EuiText
-                title={
-                  bucket.display === ''
-                    ? emptyTxt
-                    : `${bucket.display}: ${bucket.count} (${bucket.percent}%)`
-                }
-                size="xs"
-                className="eui-textTruncate"
-              >
-                {bucket.display === '' ? emptyTxt : bucket.display}
-              </EuiText>
-            </EuiFlexItem>
-            <EuiFlexItem grow={false} className="eui-textTruncate">
-              <EuiText color="secondary" size="xs" className="eui-textTruncate">
-                {bucket.percent}%
-              </EuiText>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-          <StringFieldProgressBar
-            value={bucket.value}
-            percent={bucket.percent}
-            count={bucket.count}
+    <div className='flex justify-between gap-8px mb-12px'>
+      <div className='flex-1 max-w-[calc(100%-48px-8px)]'>
+        <div className="flex items-center justify-between gap-1 w-full min-w-0">
+          <div className="flex-1 min-w-0">
+            <Typography.Text
+              className="text-xs truncate block"
+              aria-label={bucket.display}
+            >
+              {bucket.display === '' ? emptyTxt : bucket.display}
+            </Typography.Text>
+          </div>
+
+          <div className="flex-none">
+            <Typography.Text
+              type="secondary"
+              className="text-xs whitespace-nowrap"
+            >
+              {bucket.percent}%
+            </Typography.Text>
+          </div>
+        </div>
+        <StringFieldProgressBar
+          value={bucket.value}
+          percent={bucket.percent}
+          count={bucket.count}
+        />
+      </div>
+      {field.filterable && (
+        <div>
+          <Button
+            color="primary"
+            variant="text"
+            size="small"
+            className="!w-24px !h-24px"
+            classNames={{ icon: '!h-14px !leading-14px' }}
+            icon={<CirclePlus className="w-14px h-14px" />}
+            onClick={() => onAddFilter(field, bucket.value, '+')}
           />
-        </EuiFlexItem>
-        {field.filterable && (
-          <EuiFlexItem grow={false}>
-            <div>
-              <EuiButtonIcon
-                iconSize="s"
-                iconType="plusInCircle"
-                onClick={() => onAddFilter(field, bucket.value, '+')}
-                aria-label={addLabel}
-                data-test-subj={`plus-${field.name}-${bucket.value}`}
-                style={{
-                  minHeight: 'auto',
-                  minWidth: 'auto',
-                  paddingRight: 2,
-                  paddingLeft: 2,
-                  paddingTop: 0,
-                  paddingBottom: 0,
-                }}
-              />
-              <EuiButtonIcon
-                iconSize="s"
-                iconType="minusInCircle"
-                onClick={() => onAddFilter(field, bucket.value, '-')}
-                aria-label={removeLabel}
-                data-test-subj={`minus-${field.name}-${bucket.value}`}
-                style={{
-                  minHeight: 'auto',
-                  minWidth: 'auto',
-                  paddingTop: 0,
-                  paddingBottom: 0,
-                  paddingRight: 2,
-                  paddingLeft: 2,
-                }}
-              />
-            </div>
-          </EuiFlexItem>
-        )}
-      </EuiFlexGroup>
-      <EuiSpacer size="s" />
-    </>
+          <Button
+            color="primary"
+            variant="text"
+            size="small"
+            className="!w-24px !h-24px"
+            classNames={{ icon: '!h-14px !leading-14px' }}
+            icon={<CircleMinus className="w-14px h-14px" />}
+            onClick={() => onAddFilter(field, bucket.value, '-')}
+          />
+        </div>
+      )}
+    </div>
   );
 }

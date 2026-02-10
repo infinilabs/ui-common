@@ -18,7 +18,7 @@
  */
 
 import dateMath from "@elastic/datemath";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import { IIndexPattern, TimeRange, TimeHistoryContract, Query } from "../..";
 import { withKibana } from "../../../../react/public";
@@ -27,6 +27,7 @@ import DatePicker from "@/common/src/DatePicker";
 import styles from "./query_bar_top_row.module.less";
 import { ArrowRightToLine, RefreshCw } from "lucide-react";
 import { Button } from "antd";
+import { GlobalConfigContext } from "@/components";
 
 const QueryStringInput = withKibana(QueryStringInputUI);
 
@@ -79,6 +80,10 @@ export default function QueryBarTopRow(props: QueryBarTopRowProps) {
   //       : undefined,
   //   [appName, queryLanguage, uiSettings, storage]
   // );
+
+  
+  const { i18n } = useContext(GlobalConfigContext)
+  const i18nSearch = i18n?.search || {}
 
   function onClickSubmitButton(event: React.MouseEvent<HTMLButtonElement>) {
     // if (persistedLog && props.query) {
@@ -183,6 +188,7 @@ export default function QueryBarTopRow(props: QueryBarTopRowProps) {
         // persistedLog={persistedLog}
         dataTestSubj={props.dataTestSubj}
         services={props.services}
+        placeholder={i18nSearch['placeholder']}
       />
     );
   }
@@ -203,7 +209,7 @@ export default function QueryBarTopRow(props: QueryBarTopRowProps) {
         color={props.isDirty ? "cyan" : "primary"}
         variant="solid"
       >
-          {props.isDirty ? 'Update' : 'Refresh'}
+          {props.isDirty ? i18nSearch['update'] || 'Update'  : i18nSearch['refresh'] || 'Refresh'}
       </Button>
     );
   }
@@ -231,19 +237,18 @@ export default function QueryBarTopRow(props: QueryBarTopRowProps) {
         showTimeSetting={true}
         {...(props.timeSetting || {})}
         recentlyUsedRangesKey={"discover"}
+        locale={props.locale}
       />
     );
   }
 
   return (
-    <div
-      className={`flex items-center gap-2 justify-end w-full ${showDatePicker ? 'flex-wrap' : ''}`}
-    >
+    <>
       <div className="flex-1">
         {renderQueryInput()}
       </div>
       <div className="flex-grow-0">{renderDatePicker()}</div>
       <div className="flex-grow-0">{renderUpdateButton()}</div>
-    </div>
+    </>
   );
 }

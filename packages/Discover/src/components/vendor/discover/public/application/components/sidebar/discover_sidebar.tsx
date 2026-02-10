@@ -17,7 +17,7 @@
  * under the License.
  */
 import "./discover_sidebar.scss";
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState, useMemo, useContext } from "react";
 import {
   EuiTitle,
   EuiHideFor,
@@ -37,8 +37,9 @@ import { getDetails } from "./lib/get_details";
 import { getDefaultFieldFilter, setFieldFilterProp } from "./lib/field_filter";
 import { getIndexPatternFieldList } from "./lib/get_index_pattern_field_list";
 // import { getServices } from '../../../kibana_services';
-import { Input, Select, Space, Switch, Tree } from "antd";
+import { Input, Select, Space, Switch, Tree, Typography } from "antd";
 import { CarryOutOutlined } from "@ant-design/icons";
+import { GlobalConfigContext } from "@/components";
 
 export interface DiscoverSidebarProps {
   /**
@@ -83,7 +84,6 @@ export interface DiscoverSidebarProps {
    */
   setIndexPattern: (id: string) => void;
   isClosed: boolean;
-  indices: string[];
   distinctParams: any;
   onDistinctParamsChange: any;
   whetherToSample?: boolean;
@@ -101,7 +101,6 @@ export function DiscoverSidebar({
   onRemoveField,
   selectedIndexPattern,
   setIndexPattern,
-  indices,
   distinctParams,
   onDistinctParamsChange,
   onFieldAgg,
@@ -110,6 +109,8 @@ export function DiscoverSidebar({
   topNumber,
   onCollapseToggle
 }: DiscoverSidebarProps) {
+  const { i18n } = useContext(GlobalConfigContext)
+  const i18nField = i18n?.field || {}
   const [showFields, setShowFields] = useState(false);
   const [fields, setFields] = useState<IndexPatternField[] | null>(null);
   const [fieldFilterState, setFieldFilterState] = useState(
@@ -169,16 +170,24 @@ export function DiscoverSidebar({
     groupedFields.unpopular.forEach((field) => {
       const keys = field.displayName.split(".");
       let currentObj = fieldsTree;
-      keys.forEach((key: string, i: number) => {
-        if (!currentObj[key]) {
-          currentObj[key] = {};
+
+      keys.forEach((key, i) => {
+        const isLast = i === keys.length - 1;
+
+        if (isLast) {
+          const fieldInstance = Object.create(Object.getPrototypeOf(field));
+
+          Object.assign(fieldInstance, field);
+
+          fieldInstance.isLeaf = true;
+
+          currentObj[key] = fieldInstance;
+        } else {
+          if (!currentObj[key] || currentObj[key] instanceof field.constructor) {
+            currentObj[key] = {};
+          }
+          currentObj = currentObj[key];
         }
-        if (keys.length == i + 1) {
-          field.isLeaf = true;
-          currentObj[key] = field;
-          return;
-        }
-        currentObj = currentObj[key];
       });
     });
     return {
@@ -204,42 +213,46 @@ export function DiscoverSidebar({
     return null;
   }
 
-  const buildTree = (treeObj: any) => {
-    return Object.keys(treeObj).map((key) => {
-      if (treeObj[key].isLeaf) {
-        return {
-          key,
-          selectable: false,
-          icon: <CarryOutOutlined />,
-          title: (
-            <DiscoverField
-              field={treeObj[key]}
-              indexPattern={selectedIndexPattern}
-              onAddField={onAddField}
-              onRemoveField={onRemoveField}
-              onAddFilter={onAddFilter}
-              getDetails={getDetailsByField}
-              useShortDots={true}
-              setLastPopoverField={setLastPopoverField}
-              lastPopoverField={lastPopoverField}
-              onFieldAgg={onFieldAgg}
-              columns={columns}
-              whetherToSample={whetherToSample}
-              sampleSize={sampleSize}
-              topNumber={topNumber}
-            />
-          )
-        }
-      }
+  const buildTree = (treeObj: any, prefix = "") => {
+  return Object.keys(treeObj).map((key) => {
+    const fullKey = prefix ? `${prefix}.${key}` : key;
+    const node = treeObj[key];
+
+    if (node.isLeaf) {
       return {
-        key,
+        key: fullKey, 
         selectable: false,
         icon: <CarryOutOutlined />,
-        title: key,
-        children: buildTree(treeObj[key])
+        title: (
+          <DiscoverField
+            field={node}
+            indexPattern={selectedIndexPattern}
+            onAddField={onAddField}
+            onRemoveField={onRemoveField}
+            onAddFilter={onAddFilter}
+            getDetails={getDetailsByField}
+            useShortDots={true}
+            setLastPopoverField={setLastPopoverField}
+            lastPopoverField={lastPopoverField}
+            onFieldAgg={onFieldAgg}
+            columns={columns}
+            whetherToSample={whetherToSample}
+            sampleSize={sampleSize}
+            topNumber={topNumber}
+          />
+        )
       };
-    });
-  };
+    }
+
+    return {
+      key: fullKey,
+      selectable: false,
+      icon: <CarryOutOutlined />,
+      title: key,
+      children: buildTree(node, fullKey)
+    };
+  });
+};
 
   return (
     <EuiHideFor sizes={["xs", "s"]}>
@@ -255,32 +268,23 @@ export function DiscoverSidebar({
           </form>
         </div>
         <div className="sidebar-list">
-          <EuiTitle size="xxxs" id="distinct_by_field">
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 5,
-                marginBottom: 8,
+          <div className="flex items-center gap-8px mb-8px">
+            <Typography.Title className="!text-12px !mb-0px" level={5}>{i18nField['distinct_label'] || "Distinct by field"}</Typography.Title>
+            <Switch
+              size="small"
+              checked={distinctParams.enabled}
+              onChange={(checked) => {
+                onDistinctParamsChange({
+                  ...distinctParams,
+                  enabled: checked,
+                });
               }}
-            >
-              <span>Distinct by field</span>
-              <Switch 
-                size="small" 
-                checked={distinctParams.enabled} 
-                onChange={(checked) => {
-                  onDistinctParamsChange({
-                    ...distinctParams,
-                    enabled: checked,
-                  });
-                }}
-              />
-            </div>
-          </EuiTitle>
+            />
+          </div>
           <div style={{ display: distinctParams.enabled ? "block" : "none" }}>
             <Space.Compact className="w-full mb-8px">
-              <Space.Addon>Type</Space.Addon>
-              <Select 
+              <Space.Addon className="flex-shrink-0">{i18nField['distinct_type'] || "Type"}</Space.Addon>
+              <Select
                 className="w-full"
                 placeholder={"Field type"}
                 value={distinctParams?.type}
@@ -297,10 +301,9 @@ export function DiscoverSidebar({
               />
             </Space.Compact>
             <Space.Compact className="w-full mb-8px">
-              <Space.Addon>Field</Space.Addon>
-              <Input 
+              <Space.Addon className="flex-shrink-0">{i18nField['distinct_field'] || "Field"}</Space.Addon>
+              <Input
                 className="w-full"
-                placeholder={"Field name"}
                 value={distinctParams?.field}
                 onChange={(e) => {
                   onDistinctParamsChange({
@@ -315,13 +318,10 @@ export function DiscoverSidebar({
         <div className="sidebar-list">
           {fields.length > 0 && (
             <>
-              <EuiTitle className="!mb-8px" size="xxxs" id="selected_fields">
-                <h3>Selected fields</h3>
-              </EuiTitle>
+              <Typography.Title className="!text-12px !mb-8px" level={5}>{i18nField['selected_label'] || "Selected fields"}</Typography.Title>
               <ul
                 className="dscSidebarList dscFieldList--selected mb-8px"
                 aria-labelledby="selected_fields"
-                data-test-subj={`fieldList-selected`}
               >
                 {selectedFields.map((field: IndexPatternField) => {
                   return (
@@ -352,13 +352,7 @@ export function DiscoverSidebar({
                 })}
               </ul>
               <div className="euiFlexGroup euiFlexGroup--gutterMedium">
-                <EuiTitle
-                  size="xxxs"
-                  id="available_fields"
-                  className="euiFlexItem mb-8px"
-                >
-                  <h3>Available fields</h3>
-                </EuiTitle>
+                <Typography.Title className="!text-12px !mb-8px" level={5}>{i18nField['available_label'] || "Available fields"}</Typography.Title>
               </div>
             </>
           )}

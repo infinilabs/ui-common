@@ -114,7 +114,7 @@ export function DocViewTableRow({
           useShortDots={true}
         />
       </td>
-      <td>
+      <td className='flex items-start'>
         {isCollapsible && (
           <DocViewTableRowBtnCollapse onClick={onToggleCollapse} isCollapsed={isCollapsed} />
         )}

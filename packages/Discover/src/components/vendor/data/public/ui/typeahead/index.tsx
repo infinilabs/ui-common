@@ -19,12 +19,22 @@
 
 import React from 'react';
 import type { SuggestionsComponentProps } from './suggestions_component';
-
+import { theme } from 'antd';
+const { useToken } = theme;
 const Fallback = () => <div />;
 
 const LazySuggestionsComponent = React.lazy(() => import('./suggestions_component'));
-export const SuggestionsComponent = (props: SuggestionsComponentProps) => (
-  <React.Suspense fallback={<Fallback />}>
-    <LazySuggestionsComponent {...props} />
-  </React.Suspense>
-);
+export const SuggestionsComponent = (props: SuggestionsComponentProps) => {
+  const { token } = useToken();
+  const style = {
+    border: 0,
+    background: token.colorBgElevated,
+    boxShadow: token.boxShadowSecondary,
+    borderRadius: token.borderRadiusLG
+  }
+  return (
+    <React.Suspense fallback={<Fallback />}>
+      <LazySuggestionsComponent {...props} style={style}/>
+    </React.Suspense>
+  );
+}
