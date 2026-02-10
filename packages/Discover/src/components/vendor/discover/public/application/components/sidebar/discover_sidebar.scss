@@ -99,6 +99,12 @@
 #fields-tree-wrapper {
   overflow-x: auto;
   overflow-y: hidden;
+  .ant-tree-switcher {
+    margin-right: 0px;
+    width: 20px;
+    height: 20px;
+    padding-left: 4px;
+  }
   .ant-tree-switcher-noop {
     display: none;
   }
