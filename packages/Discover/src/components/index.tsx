@@ -812,6 +812,12 @@ export interface II18nProps {
     remove_column?: string;
     move_to_left?: string;
     move_to_right?: string;
+    top?: string;
+    top_values?: string;
+    top_remote?: string;
+    top_local?: string;
+    top_result_prefix?: string
+    top_result_suffix?: string
   };
   empty?: {
     title?: string;
