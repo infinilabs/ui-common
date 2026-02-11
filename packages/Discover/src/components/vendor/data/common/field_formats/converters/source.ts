@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { template, escape, keys } from 'lodash';
+import { escape, keys } from 'lodash';
 import { shortenDottedString } from '../../utils';
 import { KBN_FIELD_TYPES } from '../../kbn_field_types/types';
 import { FieldFormat } from '../field_format';
@@ -37,20 +37,22 @@ import { UI_SETTINGS } from '../../constants';
  * @param  {string} html - the html to modify
  * @return {string} - modified html
  */
-function noWhiteSpace(html: string) {
-  const TAGS_WITH_WS = />\s+</g;
-  return html.replace(TAGS_WITH_WS, '><');
-}
+const escape = (str: any) => {
+  const map: Record<string, string> = { 
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' 
+  };
+  return String(str || '').replace(/[&<>"']/g, (m) => map[m]);
+};
 
-const templateHtml = `
-  <dl class="source truncate-by-height">
-    <% defPairs.forEach(function (def) { %>
-      <dt><%- def[0] %>:</dt>
-      <dd><%= def[1] %></dd>
-      <%= ' ' %>
-    <% }); %>
-  </dl>`;
-const doTemplate = template(noWhiteSpace(templateHtml));
+const doTemplate = (data: { defPairs: [string, string][] }) => {
+  const items = data.defPairs.map((def) => {
+    return `<dt>${escape(def[0])}:</dt><dd>${def[1]}</dd> `;
+  }).join('');
+
+  const html = `<dl class="source truncate-by-height">${items}</dl>`;
+  
+  return html;
+};
 
 export class SourceFormat extends FieldFormat {
   static id = FIELD_FORMAT_IDS._SOURCE;
