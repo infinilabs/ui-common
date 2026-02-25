@@ -24,21 +24,6 @@ export default (props: any) => {
       return
     }
 
-    const formatType = (item: any) => {
-      return item.type === 'index' ? (item.name?.startsWith(".") ? 'specialIndex' : 'index') : item.type
-    }
-
-    const formatData = useMemo(() => {
-      const formatIndices = indices?.map((item: any) => ({
-        title: item.name,
-        name: item.name,
-        type: formatType(item),
-        tag: item.tag,
-        _source: item,
-      })) || []
-      return formatIndices
-    }, [indices])
-
     const filterOptions = useMemo(() => {
       return [{ 
         label: "Type", 
@@ -65,19 +50,13 @@ export default (props: any) => {
           className={styles.indexPatternSelect}
           width={282}
           locale={locale}
-          value={{
-            name: selectedIndexPattern.viewName || selectedIndexPattern.title,
-            type: formatType({
-              name: selectedIndexPattern.viewName || selectedIndexPattern.title,
-              type: selectedIndexPattern.type
-            })
-          }}
+          value={selectedIndexPattern}
           onChange={(item) => {
             onIndexPatternChange(item.name, item.type)
           }}
           placeholder="Please select"
           rowKey="name"
-          data={formatData}
+          data={indices}
           renderItem={(item) => (
             <>
               {getIcon(item.type)}

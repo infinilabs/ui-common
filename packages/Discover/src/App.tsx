@@ -11,28 +11,54 @@ const App = () => {
         const result = await res.json() as any;
         const resAliases = await fetch(`/api/_aliases`)
         const aliasesResult = await resAliases.json() as any;
-        const aliasMap: any = {};
-        Object.entries(aliasesResult || {}).forEach(([indexName, { aliases = {} }]: any) => {
-            if (!Object.keys(aliases).length) return;
-            Object.entries(aliases).forEach(([aliasName, aliasConfig]: any) => {
-                const config = { is_write_index: false, ...aliasConfig };
-                aliasMap[aliasName] ||= { alias: aliasName, indices: [], writeIndex: undefined };
-                aliasMap[aliasName].indices.push({ alias: aliasName, index: indexName, ...config });
-                config.is_write_index && (aliasMap[aliasName].writeIndex = indexName);
-            });
-        });
-        setIndices(Object.values(aliasMap).map((item: any) => ({
-            type: 'alias',
-            name: item.alias,
-            _source: item
-        })).concat(
-            result.map((item: any) => ({
-                type: 'index',
+
+        const disabledIndices: string[] = []
+
+        const formatIndices = result.map((item: any) => {
+            const disabled = item.health === 'red' || item.status === 'close'
+            if (disabled) {
+                disabledIndices.push(item.index)
+            }
+            return {
+                type: item.name?.startsWith(".") ? 'specialIndex' : 'index',
                 name: item.index,
                 tag: item['docs.count'] ? item['docs.count'] : undefined,
+                disabled: disabled,
                 _source: item
-            }))
-        ))
+            }
+        })
+
+        const formatAliases: any[] = [];
+        const aliasIndexMap: Record<string, number> = {};
+
+        Object.entries(aliasesResult || {}).forEach(([indexName, { aliases = {} }]: any) => {
+            if (!Object.keys(aliases).length) return;
+
+            Object.entries(aliases).forEach(([aliasName]: any) => {
+                const existingIndex = aliasIndexMap[aliasName];
+
+                if (!existingIndex) {
+                    const newAliasItem = {
+                        type: 'alias',
+                        name: aliasName,
+                        disabled: disabledIndices.includes(indexName), 
+                        _source: {
+                            alias: aliasName,
+                            indices: [indexName] 
+                        }
+                    };
+                    aliasIndexMap[aliasName] = formatAliases.push(newAliasItem) - 1;
+                } else {
+                    const existingItem = formatAliases[existingIndex];
+                    existingItem._source.indices.push(indexName);
+                    if (disabledIndices.includes(indexName)) {
+                        existingItem.disabled = true;
+                    }
+                }
+            });
+        });
+
+        setIndices(formatAliases.concat(formatIndices))
     }
 
     const getIndexPattern = async (index: string) => {

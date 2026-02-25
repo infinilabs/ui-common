@@ -730,6 +730,7 @@ export interface IIndexProps {
   type: string;
   name: string;
   tag?: string;
+  disabled?: boolean;
   _source: any;
 }
 
@@ -937,8 +938,13 @@ export default (props: IDiscoverProps) => {
 
   useEffect(() => {
     if (!Array.isArray(indices) || indices.length === 0) return;
-    const index = indices.find((item) => item.name === queryParams?.index)
-    fetchIndexPattern(index?.name || indices[0].name, queryParams?.timeField)
+    let index = indices.find((item) => item.name === queryParams?.index)
+    if (!index || index.disabled) {
+      index = indices.find((item) => !item.disabled)
+    }
+    if (index) {
+      fetchIndexPattern(index.name, queryParams?.timeField)
+    }
   }, [indices, queryParams?.index, queryParams?.timeField])
 
   useEffect(() => {
@@ -951,13 +957,11 @@ export default (props: IDiscoverProps) => {
     </Container>
   )
 
-  if (!indices || indices.length === 0) return (
+  if (!indices || indices.length === 0 || !indexPattern) return (
     <Container>
       <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
     </Container>
   )
-
-  if (!indexPattern) return null;
 
   return (
     <GlobalConfigContext.Provider value={{ i18n }}>
