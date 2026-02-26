@@ -1,3 +1,7 @@
+.infini-discover-table {
+  scrollbar-width: thin;
+}
+
 *:focus:focus-visible {
     outline-style: none !important;
 }
@@ -36,10 +40,10 @@
   bottom: 0;
   left: 0;
   z-index: 20;
-  padding-top: 80px;
-
-  opacity: 0.75;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0;
   background-color: transparent;
 }
 

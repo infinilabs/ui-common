@@ -349,12 +349,16 @@ class SearchBarUI extends Component<SearchBarProps, State> {
         />
       );
     }
+
+    const selectedIndexPattern = this.props.selectedIndexPattern ? {
+      name: this.props.selectedIndexPattern.viewName || this.props.selectedIndexPattern.title,
+    } : undefined
     
     return (
       <div className="p-8px">
         <div className="flex items-center gap-8px flex-wrap">
           <IndexPatternSelect
-            selectedIndexPattern={this.props.selectedIndexPattern}
+            selectedIndexPattern={selectedIndexPattern}
             onIndexPatternChange={this.props.setIndexPattern}
             indices={this.props.indices}
             locale={this.props.locale}
