@@ -6,6 +6,7 @@ import React, {
   useRef,
 } from "react";
 
+import { Subscription } from "rxjs";
 import "@elastic/eui/dist/eui_theme_light.min.css";
 import { Card, Empty, Spin } from "antd";
 import { getStateColumnActions } from "./vendor/discover/public/application/angular/doc_table/actions/columns";
@@ -52,7 +53,7 @@ const SearchBar = createSearchBar();
 let isFrist = true;
 
 const Discover = (props: {
-  indices: { [key:string] : any}[];
+  indices: { [key: string]: any }[];
   indexPattern: IndexPattern;
   setIndexPattern: React.Dispatch<React.SetStateAction<IndexPattern | undefined>>
   onIndexPatternChange: (index: string) => void;
@@ -102,10 +103,10 @@ const Discover = (props: {
     }
     if (Array.isArray(queryParams.filters) && queryParams.filters.length > 0) {
       filterManager.setFilters(queryParams.filters.filter((item: any) => !!item.meta).map((item: any) => {
-          return {
-            ...item,
-            store: FilterStateStore.APP_STATE
-          }
+        return {
+          ...item,
+          store: FilterStateStore.APP_STATE
+        }
       }))
     }
   }, [])
@@ -139,6 +140,18 @@ const Discover = (props: {
     resetDistinctParams();
   }, [indexPattern]);
 
+  const subscriptions = useMemo(() => {
+    const subscriptions = new Subscription();
+    subscriptions.add(
+      timefilter.getAutoRefreshFetch$().subscribe({
+        next: () => {
+          updateQuery();
+        },
+      })
+    );
+    return subscriptions;
+  }, [indexPattern]);
+
   const [queryFrom, setQueryFrom] = React.useState(0);
 
   const columns = state.columns;
@@ -167,7 +180,7 @@ const Discover = (props: {
       );
 
       const filters = cloneDeep(params?.body?.query?.bool?.filter || [])
-      
+
       if (filters.length > 0) {
         const rangeFilter = filters[filters.length - 1];
         if (rangeFilter?.hasOwnProperty("range")) {
@@ -399,7 +412,7 @@ const Discover = (props: {
   useMemo(() => {
     if (rows.length > 0) {
       if (queryFrom > 0) {
-        setRecords([...records, ...rows]);
+        setRecords((rs) => [...rs, ...rows]);
       } else {
         setRecords(rows);
       }
@@ -536,6 +549,7 @@ const Discover = (props: {
   }
 
   const onTimeFieldChange = async (timeField: string) => {
+    subscriptions.unsubscribe();
     indexPattern.timeFieldName = timeField;
     setIndexPattern(indexPattern)
     const newSort = [[timeField, 'desc']]
@@ -547,8 +561,35 @@ const Discover = (props: {
     updateQuery({ sort: newSort });
   };
 
+  const onDownloadQuery = async (from: number, size: number, callback?: (hits: any[], columns: string[], timeField?: string) => void) => {
+    if (!onSearch) return;
+    setResultState('downloading')
+    const params = getSearchParams(
+      indexPattern,
+      state.interval,
+      state.sort,
+      null,
+      distinctParams || {},
+      from,
+      false,
+      size
+    );
+
+    const { index, body } = params
+
+    const res = await onSearch(index, body);
+
+    const hits = Array.isArray(res?.hits?.hits) ? res?.hits?.hits : []
+
+    const timeField = indexPattern.timeFieldName
+
+    callback?.(hits, columns, timeField)
+
+    setResultState('none')
+  }
+
   return (
-    <Card className={`min-h-full h-auto flex flex-col infini_discover`} classNames={{ body: '!p-0 flex-1 flex flex-col' }}>
+    <Card className={`h-full flex flex-col`} classNames={{ body: '!p-0 h-full flex-1 flex flex-col' }}>
       <SearchBar
         {...{
           showSearchBar: false,
@@ -574,10 +615,13 @@ const Discover = (props: {
           storage,
           onQuerySubmit: updateQuery,
           services,
-          dateRangeFrom: queryParams.range && queryParams.range[0], 
+          dateRangeFrom: queryParams.range && queryParams.range[0],
           dateRangeTo: queryParams.range && queryParams.range[1],
           selectedIndexPattern: indexPattern,
-          setIndexPattern: onIndexPatternChange,
+          setIndexPattern: (index: string) => {
+            subscriptions.unsubscribe()
+            onIndexPatternChange(index)
+          },
           indices: props.indices,
           histogramData,
           timefilterUpdateHandler,
@@ -653,10 +697,10 @@ const Discover = (props: {
                 </div>
               )
             }
-            <div className="flex-1 min-h-0 overflow-x-auto relative">
+            <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
               <div
                 style={{
-                  display: resultState !== "loading" ? "none" : "",
+                  display: resultState !== "loading" && resultState !== "downloading" ? "none" : "",
                 }}
               >
                 <div className="dscOverlay">
@@ -674,6 +718,8 @@ const Discover = (props: {
                   took={searchResult.took || 1}
                   total={total}
                   timeChartProps={timeChartProps}
+                  onDownloadQuery={onDownloadQuery}
+                  downloading={resultState === "downloading"}
                 />
               }
               {
@@ -691,25 +737,25 @@ const Discover = (props: {
                   </div>
                 )
               }
-                {records && records.length > 0 ? (
-                  <Table
-                    columns={columns}
-                    sortOrder={state.sort || []}
-                    indexPattern={indexPattern}
-                    onFilter={onAddFilter}
-                    onRemoveColumn={onRemoveColumn}
-                    onMoveColumn={onMoveColumn}
-                    onAddColumn={onAddColumn}
-                    onChangeSortOrder={onSort}
-                    document={document}
-                    hits={records}
-                    hitsTotal={total}
-                    queryFrom={queryFrom}
-                    setQueryFrom={setQueryFrom}
-                    scrollableTarget={scrollableTarget}
-                    theme={theme}
-                  />
-                ) : null}
+              {records && records.length > 0 ? (
+                <Table
+                  columns={columns}
+                  sortOrder={state.sort || []}
+                  indexPattern={indexPattern}
+                  onFilter={onAddFilter}
+                  onRemoveColumn={onRemoveColumn}
+                  onMoveColumn={onMoveColumn}
+                  onAddColumn={onAddColumn}
+                  onChangeSortOrder={onSort}
+                  document={document}
+                  hits={records}
+                  hitsTotal={total}
+                  queryFrom={queryFrom}
+                  setQueryFrom={setQueryFrom}
+                  scrollableTarget={scrollableTarget}
+                  theme={theme}
+                />
+              ) : null}
             </div>
           </>
         )}
@@ -830,6 +876,11 @@ export interface II18nProps {
     milliscond?: string;
     between?: string;
   };
+  download?: {
+    title?: string;
+    from?: string;
+    size?: string;
+  }
 }
 
 export interface IDiscoverProps {
@@ -866,8 +917,8 @@ export default (props: IDiscoverProps) => {
 
   const [indexPattern, setIndexPattern] = useState<IndexPattern>()
   const requestRef = useRef<{
-    pendingIndex: string | null; 
-    loadedIndex: string | null;  
+    pendingIndex: string | null;
+    loadedIndex: string | null;
   }>({
     pendingIndex: null,
     loadedIndex: null,
@@ -878,7 +929,7 @@ export default (props: IDiscoverProps) => {
     if (requestRef.current.pendingIndex === index) {
       return;
     }
-    
+
     if (requestRef.current.loadedIndex === index) {
       return;
     }

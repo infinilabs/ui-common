@@ -52,7 +52,7 @@ export default (props: any) => {
           locale={locale}
           value={selectedIndexPattern}
           onChange={(item) => {
-            onIndexPatternChange(item.name, item.type)
+            onIndexPatternChange(item.name)
           }}
           placeholder="Please select"
           rowKey="name"
