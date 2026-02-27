@@ -18,10 +18,11 @@ interface IProps {
     timeChartProps: any;
     onDownloadQuery?: (from: number, size: number, handleDownload?: (hits: any[], columns: string[], timeField?: string) => void) => void;
     downloading?: boolean;
+    exportMaxSize?: number;
 }
 
 export default function ResultHeader(props: IProps) {
-    const { showCollapse, collapseState, setCollapseState, took, total, timeChartProps, onDownloadQuery, downloading = false } = props;
+    const { showCollapse, collapseState, setCollapseState, took, total, timeChartProps, onDownloadQuery, downloading = false, exportMaxSize = 10000 } = props;
 
     const showSideBar = showCollapse.sideBar && collapseState.sideBar
     const showHistogram = showCollapse.histogram
@@ -155,8 +156,8 @@ export default function ResultHeader(props: IProps) {
                     <Form.Item label={i18nDownload['from'] || "From"} name="from" required>
                         <InputNumber className="w-full" min={1} max={total} />
                     </Form.Item>
-                    <Form.Item label={i18nDownload['size'] || "Size"} name="size" required>
-                        <InputNumber className="w-full" min={1} />
+                    <Form.Item label={`${i18nDownload['size'] || "Size"} (<=${exportMaxSize})`} name="size" required>
+                        <InputNumber className="w-full" min={1} max={exportMaxSize}/>
                     </Form.Item>
                 </Form>
             </Modal>
