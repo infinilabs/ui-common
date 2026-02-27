@@ -32,25 +32,30 @@ const App = () => {
         const aliasIndexMap: Record<string, number> = {};
 
         Object.entries(aliasesResult || {}).forEach(([indexName, { aliases = {} }]: any) => {
-            if (!Object.keys(aliases).length) return;
+            const aliasEntries = Object.entries(aliases);
+            if (!aliasEntries.length) return;
 
-            Object.entries(aliases).forEach(([aliasName]: any) => {
-                const existingIndex = aliasIndexMap[aliasName];
-
-                if (!existingIndex) {
+            aliasEntries.forEach(([aliasName]: any) => {
+                if (!(aliasName in aliasIndexMap)) {
                     const newAliasItem = {
                         type: 'alias',
                         name: aliasName,
-                        disabled: disabledIndices.includes(indexName), 
+                        disabled: disabledIndices.includes(indexName),
                         _source: {
                             alias: aliasName,
-                            indices: [indexName] 
+                            indices: [indexName]
                         }
                     };
-                    aliasIndexMap[aliasName] = formatAliases.push(newAliasItem) - 1;
+                    const newIndex = formatAliases.push(newAliasItem) - 1;
+                    aliasIndexMap[aliasName] = newIndex;
                 } else {
+                    const existingIndex = aliasIndexMap[aliasName];
                     const existingItem = formatAliases[existingIndex];
-                    existingItem._source.indices.push(indexName);
+
+                    if (!existingItem._source.indices.includes(indexName)) {
+                        existingItem._source.indices.push(indexName);
+                    }
+
                     if (disabledIndices.includes(indexName)) {
                         existingItem.disabled = true;
                     }
@@ -100,19 +105,19 @@ const App = () => {
     }, [])
 
     return (
-        <div style={{ height: '100%', padding: '24px', margin: '0 auto' }}>
-            <Discover
-                indices={indices}
-                getIndexPattern={getIndexPattern}
-                onSuggestions={onSuggestions}
-                onSearch={onSearch}
-                queryParams={queryParams}
-                setQueryParams={setQueryParams}
-                locale='zh-CN'
-                theme='light'
-                exportMaxSize={10000}
-            />
-        </div>
+        // <div style={{ height: '100%', padding: '24px', margin: '0 auto' }}>
+        <Discover
+            indices={indices}
+            getIndexPattern={getIndexPattern}
+            onSuggestions={onSuggestions}
+            onSearch={onSearch}
+            queryParams={queryParams}
+            setQueryParams={setQueryParams}
+            locale='zh-CN'
+            theme='light'
+            exportMaxSize={10000}
+        />
+        // </div>
     );
 };
 
