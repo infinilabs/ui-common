@@ -587,7 +587,7 @@ const Discover = (props: {
 
     callback?.(hits, columns, timeField)
 
-    setResultState('none')
+    setResultState('ready')
   }
 
   return (
@@ -881,8 +881,6 @@ export interface II18nProps {
   };
   download?: {
     title?: string;
-    from?: string;
-    size?: string;
   }
 }
 

@@ -85,8 +85,19 @@ export default function ResultHeader(props: IProps) {
 
     const handleOk = async () => {
         const params = await form.validateFields();
-        const { from, size } = params
-        onDownloadQuery?.(from - 1, size, handleDownload)
+        let { from, size } = params;
+
+        if (size > exportMaxSize) {
+            size = exportMaxSize;
+        }
+
+        if (from + size > total) {
+            size = total - from;
+        }
+
+        size = Math.max(1, size);
+
+        onDownloadQuery?.(from, size, handleDownload);
     };
 
     const handleCancel = () => {
@@ -142,7 +153,7 @@ export default function ResultHeader(props: IProps) {
             />
 
             <Modal
-                title={i18nDownload.title || "Export search as CSV"}
+                title={i18nDownload.title || `Export search as CSV (max: ${exportMaxSize})`}
                 closable
                 open={isModalOpen}
                 onOk={handleOk}
@@ -152,12 +163,12 @@ export default function ResultHeader(props: IProps) {
                     loading: downloading
                 }}
             >
-                <Form form={form} layout="vertical" className="mt-24px" initialValues={{ from: 1, size: 20 }}>
-                    <Form.Item label={i18nDownload['from'] || "From"} name="from" required>
-                        <InputNumber className="w-full" min={1} max={total} />
+                <Form form={form} layout="vertical" className="mt-24px" initialValues={{ from: 0, size: 20 }}>
+                    <Form.Item label={`From`} name="from" required>
+                        <InputNumber className="w-full" min={0} max={total - 1} />
                     </Form.Item>
-                    <Form.Item label={`${i18nDownload['size'] || "Size"} (<=${exportMaxSize})`} name="size" required>
-                        <InputNumber className="w-full" min={1} max={exportMaxSize}/>
+                    <Form.Item label={`Size`} name="size" required>
+                        <InputNumber className="w-full" min={1} />
                     </Form.Item>
                 </Form>
             </Modal>
