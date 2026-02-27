@@ -63,6 +63,7 @@ const Discover = (props: {
   setQueryParams: (queryParams: any) => void;
   locale?: string;
   theme?: string;
+  exportMaxSize?: number;
 }) => {
 
   const {
@@ -74,7 +75,8 @@ const Discover = (props: {
     queryParams = {},
     setQueryParams,
     locale,
-    theme
+    theme,
+    exportMaxSize = 10000
   } = props;
 
   const [collapseState, setCollapseState] = useState({
@@ -720,6 +722,7 @@ const Discover = (props: {
                   timeChartProps={timeChartProps}
                   onDownloadQuery={onDownloadQuery}
                   downloading={resultState === "downloading"}
+                  exportMaxSize={exportMaxSize}
                 />
               }
               {
@@ -894,7 +897,8 @@ export interface IDiscoverProps {
   setQueryParams: (queryParams: any) => void,
   locale?: string;
   theme?: string;
-  i18n?: II18nProps
+  i18n?: II18nProps;
+  exportMaxSize?: number;
 }
 
 export const GlobalConfigContext = React.createContext<any>({});
@@ -912,7 +916,8 @@ export default (props: IDiscoverProps) => {
     setQueryParams,
     locale,
     theme = 'light',
-    i18n = {}
+    i18n = {},
+    exportMaxSize = 10000
   } = props;
 
   const [indexPattern, setIndexPattern] = useState<IndexPattern>()
@@ -1027,6 +1032,7 @@ export default (props: IDiscoverProps) => {
         setQueryParams={setQueryParams}
         locale={locale}
         theme={theme}
+        exportMaxSize={exportMaxSize}
       />
     </GlobalConfigContext.Provider>
   )

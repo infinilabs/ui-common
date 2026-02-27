@@ -110,6 +110,7 @@ const App = () => {
                 setQueryParams={setQueryParams}
                 locale='zh-CN'
                 theme='light'
+                exportMaxSize={10000}
             />
         </div>
     );
