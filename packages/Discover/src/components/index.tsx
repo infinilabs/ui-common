@@ -58,7 +58,6 @@ const Discover = (props: {
   setIndexPattern: React.Dispatch<React.SetStateAction<IndexPattern | undefined>>
   onIndexPatternChange: (index: string) => void;
   onSearch?: (index: string, body: any) => Promise<any> | undefined
-  scrollableTarget?: string;
   queryParams: any;
   setQueryParams: (queryParams: any) => void;
   locale?: string;
@@ -71,7 +70,6 @@ const Discover = (props: {
     setIndexPattern,
     onIndexPatternChange,
     onSearch,
-    scrollableTarget,
     queryParams = {},
     setQueryParams,
     locale,
@@ -163,7 +161,10 @@ const Discover = (props: {
       if (!indexPattern || !onSearch) {
         return;
       }
-      setResultState("loading");
+      setResultState((prev) => {
+        if (prev === 'next') return prev;
+        return "loading"
+      });
       let aggs = null;
       if (!_payload?.isScrollLoad) {
         setQueryFrom(0);
@@ -587,11 +588,11 @@ const Discover = (props: {
 
     callback?.(hits, columns, timeField)
 
-    setResultState('none')
+    setResultState('ready')
   }
 
   return (
-    <Card className={`h-full flex flex-col`} classNames={{ body: '!p-0 h-full flex-1 flex flex-col' }}>
+    <Card className={`h-full`} classNames={{ body: '!p-0 h-full flex flex-col' }}>
       <SearchBar
         {...{
           showSearchBar: false,
@@ -653,115 +654,119 @@ const Discover = (props: {
           theme
         }}
       />
-      <div className="flex flex-1 min-h-0 border-t border-t-solid border-[var(--ant-color-border)]">
-        {resultState === "none" && queryFrom === 0 ? (
-          <>
-            <DiscoverNoResults
-              timeFieldName={opts.timefield}
-              queryLanguage={state.query?.language || ""}
-              range={queryParams.range}
-            />
-          </>
-        ) : (
-          <>
-            {
-              !collapseState.sideBar && (
-                <div className="min-h-0 w-300px p-8px border-r border-r-solid border-[var(--ant-color-border)]">
-                  <SidebarMemoized
-                    config={{}}
-                    columns={columns}
-                    fieldCounts={fieldCounts}
-                    hits={records}
-                    indexPatterns={[indexPattern]}
-                    onAddField={onAddColumn}
-                    onAddFilter={onAddFilter}
-                    onRemoveField={onRemoveColumn}
-                    selectedIndexPattern={indexPattern}
-                    setIndexPattern={() => { }}
-                    setAppState={setState}
-                    state={state}
-                    //unmappedFieldsConfig={unmappedFieldsConfig}
-                    //useNewFieldsApi={useNewFieldsApi}
-                    distinctParams={distinctParams}
-                    onDistinctParamsChange={onDistinctParamsChange}
-                    total={total}
-                    onFieldAgg={onFieldAgg}
-                    whetherToSample={queryParams.whetherToSample}
-                    sampleSize={queryParams.sampleSize}
-                    topNumber={queryParams.topNumber}
-                    onCollapseToggle={() => {
-                      setCollapseState((prev) => ({
-                        ...prev,
-                        sideBar: !prev.sideBar
-                      }))
-                    }}
-                  />
-                </div>
-              )
-            }
-            <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
-              <div
-                style={{
-                  display: resultState !== "loading" && resultState !== "downloading" ? "none" : "",
-                }}
-              >
-                <div className="dscOverlay">
-                  <LoadingSpinner />
-                </div>
-              </div>
+      <div className="flex-1 min-h-0 relative">
+        <div className="absolute inset-0 flex border-t border-t-solid border-[var(--ant-color-border)]">
+          {resultState === "none" && queryFrom === 0 ? (
+            <>
+              <DiscoverNoResults
+                timeFieldName={opts.timefield}
+                queryLanguage={state.query?.language || ""}
+                range={queryParams.range}
+              />
+            </>
+          ) : (
+            <>
               {
-                <ResultHeader
-                  showCollapse={{
-                    sideBar: true,
-                    histogram: !!histogramData,
-                  }}
-                  collapseState={collapseState}
-                  setCollapseState={setCollapseState}
-                  took={searchResult.took || 1}
-                  total={total}
-                  timeChartProps={timeChartProps}
-                  onDownloadQuery={onDownloadQuery}
-                  downloading={resultState === "downloading"}
-                  exportMaxSize={exportMaxSize}
-                />
-              }
-              {
-                !collapseState.histogram && opts.chartAggConfigs && histogramData && records.length !== 0 && (
-                  <div className="dscTimechart">
-                    <div className="h-100px dscHistogramGrid">
-                      <DiscoverHistogram
-                        chartData={histogramData}
-                        timefilterUpdateHandler={
-                          timefilterUpdateHandler
-                        }
-                        theme={theme}
-                      />
-                    </div>
+                !collapseState.sideBar && (
+                  <div className="h-full w-300px p-8px border-r border-r-solid border-[var(--ant-color-border)] overflow-y-auto infini-discover-side">
+                    <SidebarMemoized
+                      config={{}}
+                      columns={columns}
+                      fieldCounts={fieldCounts}
+                      hits={records}
+                      indexPatterns={[indexPattern]}
+                      onAddField={onAddColumn}
+                      onAddFilter={onAddFilter}
+                      onRemoveField={onRemoveColumn}
+                      selectedIndexPattern={indexPattern}
+                      setIndexPattern={() => { }}
+                      setAppState={setState}
+                      state={state}
+                      //unmappedFieldsConfig={unmappedFieldsConfig}
+                      //useNewFieldsApi={useNewFieldsApi}
+                      distinctParams={distinctParams}
+                      onDistinctParamsChange={onDistinctParamsChange}
+                      total={total}
+                      onFieldAgg={onFieldAgg}
+                      whetherToSample={queryParams.whetherToSample}
+                      sampleSize={queryParams.sampleSize}
+                      topNumber={queryParams.topNumber}
+                      onCollapseToggle={() => {
+                        setCollapseState((prev) => ({
+                          ...prev,
+                          sideBar: !prev.sideBar
+                        }))
+                      }}
+                    />
                   </div>
                 )
               }
-              {records && records.length > 0 ? (
-                <Table
-                  columns={columns}
-                  sortOrder={state.sort || []}
-                  indexPattern={indexPattern}
-                  onFilter={onAddFilter}
-                  onRemoveColumn={onRemoveColumn}
-                  onMoveColumn={onMoveColumn}
-                  onAddColumn={onAddColumn}
-                  onChangeSortOrder={onSort}
-                  document={document}
-                  hits={records}
-                  hitsTotal={total}
-                  queryFrom={queryFrom}
-                  setQueryFrom={setQueryFrom}
-                  scrollableTarget={scrollableTarget}
-                  theme={theme}
-                />
-              ) : null}
-            </div>
-          </>
-        )}
+              <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+                <div
+                  style={{
+                    display: resultState !== "loading" && resultState !== "downloading" ? "none" : "",
+                  }}
+                >
+                  <div className="dscOverlay">
+                    <LoadingSpinner />
+                  </div>
+                </div>
+                {
+                  <ResultHeader
+                    showCollapse={{
+                      sideBar: true,
+                      histogram: !!histogramData,
+                    }}
+                    collapseState={collapseState}
+                    setCollapseState={setCollapseState}
+                    took={searchResult.took || 1}
+                    total={total}
+                    timeChartProps={timeChartProps}
+                    onDownloadQuery={onDownloadQuery}
+                    downloading={resultState === "downloading"}
+                    exportMaxSize={exportMaxSize}
+                  />
+                }
+                {
+                  !collapseState.histogram && opts.chartAggConfigs && histogramData && records.length !== 0 && (
+                    <div className="dscTimechart">
+                      <div className="h-100px dscHistogramGrid">
+                        <DiscoverHistogram
+                          chartData={histogramData}
+                          timefilterUpdateHandler={
+                            timefilterUpdateHandler
+                          }
+                          theme={theme}
+                        />
+                      </div>
+                    </div>
+                  )
+                }
+                {records && records.length > 0 ? (
+                  <Table
+                    columns={columns}
+                    sortOrder={state.sort || []}
+                    indexPattern={indexPattern}
+                    onFilter={onAddFilter}
+                    onRemoveColumn={onRemoveColumn}
+                    onMoveColumn={onMoveColumn}
+                    onAddColumn={onAddColumn}
+                    onChangeSortOrder={onSort}
+                    document={document}
+                    hits={records}
+                    hitsTotal={total}
+                    queryFrom={queryFrom}
+                    setQueryFrom={(from) => {
+                      setResultState('next')
+                      setQueryFrom(from)
+                    }}
+                    theme={theme}
+                  />
+                ) : null}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </Card>
   )
@@ -881,8 +886,6 @@ export interface II18nProps {
   };
   download?: {
     title?: string;
-    from?: string;
-    size?: string;
   }
 }
 
@@ -892,7 +895,6 @@ export interface IDiscoverProps {
   getIndexPattern?: (index: string) => Promise<any> | undefined;
   onSuggestions?: (index: string, body: any) => Promise<string[]> | undefined;
   onSearch?: (index: string, body: any) => Promise<string[]> | undefined;
-  scrollableTarget?: string;
   queryParams: any;
   setQueryParams: (queryParams: any) => void,
   locale?: string;
@@ -911,7 +913,6 @@ export default (props: IDiscoverProps) => {
     getIndexPattern,
     onSearch,
     onSuggestions,
-    scrollableTarget,
     queryParams,
     setQueryParams,
     locale,
@@ -1027,7 +1028,6 @@ export default (props: IDiscoverProps) => {
         setIndexPattern={setIndexPattern}
         onIndexPatternChange={fetchIndexPattern}
         onSearch={onSearch}
-        scrollableTarget={scrollableTarget}
         queryParams={queryParams}
         setQueryParams={setQueryParams}
         locale={locale}
