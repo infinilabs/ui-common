@@ -129,15 +129,39 @@ const Discover = (props: {
   const onDistinctParamsChange = (obj) => {
     setDistinctParams({ ...distinctParams, ...obj });
   };
-  const resetDistinctParams = () => {
+
+  useMemo(() => {
     setDistinctParams({
       ...distinctParams,
       type: distinctParamsDefault.type,
       field: distinctParamsDefault.field,
     });
-  };
-  useMemo(() => {
-    resetDistinctParams();
+  }, [indexPattern]);
+
+  useEffect(() => {
+    if (indexPattern) {
+      setDistinctParams({
+        ...distinctParams,
+        type: distinctParamsDefault.type,
+        field: distinctParamsDefault.field,
+      });
+      if (indexPattern?.timeFieldName) {
+        const newSort = [[indexPattern?.timeFieldName, 'desc']]
+        setState({
+          ...state,
+          columns: ['_source'],
+          sort: newSort
+        });
+        updateQuery({ sort: newSort });
+      } else {
+        setState({
+          ...state,
+          columns: ['_source'],
+          sort: []
+        });
+        updateQuery({ sort: [] });
+      }
+    }
   }, [indexPattern]);
 
   const subscriptions = useMemo(() => {
@@ -206,7 +230,8 @@ const Discover = (props: {
 
       const { query } = queryStringManager.getQuery();
       const allFilters = filterManager.getFilters();
-      setQueryParams((prev: any) => ({
+      setQueryParams((prev: any) => {
+        return ({
         ...prev,
         query: query != queryParams.query ? query : queryParams.query,
         range: [timefilter._time?.from, timefilter._time?.to],
@@ -220,7 +245,8 @@ const Discover = (props: {
             query
           }
         })
-      }))
+      })
+      })
     },
     [
       state.interval,
@@ -344,25 +370,6 @@ const Discover = (props: {
       columns: state.columns
     }))
   }, [state.columns]);
-
-  useEffect(() => {
-    if (indexPattern) {
-      if (indexPattern?.timeFieldName) {
-        const newSort = [[indexPattern?.timeFieldName, 'desc']]
-        setState({
-          ...state,
-          sort: newSort
-        });
-        updateQuery({ sort: newSort });
-      } else {
-        setState({
-          ...state,
-          sort: []
-        });
-        updateQuery({ sort: [] });
-      }
-    }
-  }, [indexPattern]);
 
   const { onAddColumn, onRemoveColumn, onMoveColumn, onSetColumns } = useMemo(
     () =>
@@ -964,10 +971,17 @@ export default (props: IDiscoverProps) => {
       }
     }
     if (newIndexPattern.id !== queryParams?.index) {
-      setQueryParams((prev) => ({
-        ...prev,
-        index: newIndexPattern.id
-      }));
+      setQueryParams({
+        index: newIndexPattern.id,
+        columns: ["_source"],
+        sort: [],
+      });
+      queryStringManager.setQuery({
+        query: "",
+        language: "kuery",
+      });
+      filterManager.removeAll();
+      timefilter.setTime({ from: '', to: ''})
     }
     setIndexPattern(newIndexPattern)
     const indexPatterns = [newIndexPattern];
