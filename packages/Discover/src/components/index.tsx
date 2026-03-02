@@ -554,7 +554,7 @@ const Discover = (props: {
       const count = queryParams.sampleRecords === 'all'
         ? res?.aggregations?.['top5']?.sum_other_doc_count
         : res?.aggregations?.sample?.sample_count?.value;
-      afterFuc(buckets || [], count || 0);
+      afterFuc(buckets || [], count || 0, res?.error);
     }
   }
 

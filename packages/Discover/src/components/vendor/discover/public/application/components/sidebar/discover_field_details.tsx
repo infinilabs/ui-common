@@ -4,7 +4,7 @@ import { getWarnings } from "./lib/get_warnings";
 import { Bucket, FieldDetails } from "./types";
 import { IndexPatternField, IndexPattern } from "../../../../../data/public";
 import "./discover_field_details.scss";
-import { Typography } from "antd";
+import { Empty, Typography } from "antd";
 import { GlobalConfigContext } from "@/components";
 
 interface DiscoverFieldDetailsProps {
@@ -27,29 +27,31 @@ export function DiscoverFieldDetails({
 
   const { i18n } = useContext(GlobalConfigContext)
   const i18nField = i18n?.field || {}
+  console.log('error', details.error)
 
   return (
     <>
       <div className="dscFieldDetails !p-12px">
-        {details.error && (
+        {details.error?.root_cause ? (
           <Typography.Text className="text-xs mb-12px" type="danger">
-            {details.error}
+            {JSON.stringify(details.error?.root_cause)}
           </Typography.Text>
-        )}
-        {!details.error && (
-          <>
-            {details?.buckets?.map((bucket: Bucket, idx: number) => (
-              <DiscoverFieldBucket
-                key={`bucket${idx}`}
-                bucket={bucket}
-                field={field}
-                onAddFilter={onAddFilter}
-              />
-            ))}
-            <Typography.Text>
-              {`${i18nField['top_result_prefix'] || "Calculated from"} ${details.total} ${i18nField['top_result_suffix'] || "sample records"}`}
-            </Typography.Text>
-          </>
+        ) : (
+          Number.isInteger(details.total) ? (
+            <>
+              {details?.buckets?.map((bucket: Bucket, idx: number) => (
+                <DiscoverFieldBucket
+                  key={`bucket${idx}`}
+                  bucket={bucket}
+                  field={field}
+                  onAddFilter={onAddFilter}
+                />
+              ))}
+              <Typography.Text>
+                {`${i18nField['top_result_prefix'] || "Calculated from"} ${details.total} ${i18nField['top_result_suffix'] || "sample records"}`}
+              </Typography.Text>
+            </>
+          ) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
         )}
       </div>
     </>
