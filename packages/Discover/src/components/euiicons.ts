@@ -14,8 +14,6 @@ import { icon as EuiIconPlusInCircle } from '@elastic/eui/es/components/icon/ass
 import { icon as EuiIconPlusInCircleFilled } from '@elastic/eui/es/components/icon/assets/plus_in_circle_filled';
 import { icon as EuiIconMinusInCircle } from '@elastic/eui/es/components/icon/assets/minus_in_circle';
 import { icon as EuiIconEditorCodeBlock } from '@elastic/eui/es/components/icon/assets/editor_code_block';
-import { icon as EuiIconTokenString } from '@elastic/eui/es/components/icon/assets/tokenString';
-import { icon as EuiIconTokenDate } from '@elastic/eui/es/components/icon/assets/tokenDate';
 import { icon as EuiIconFolderOpen } from '@elastic/eui/es/components/icon/assets/folder_open';
 import { icon as EuiIconQuestionInCircle } from '@elastic/eui/es/components/icon/assets/question_in_circle';
 import { icon as EuiIconKqlField } from '@elastic/eui/es/components/icon/assets/kql_field';
@@ -30,8 +28,15 @@ import { icon as EuiIconReturnKey } from '@elastic/eui/es/components/icon/assets
 import { icon as EuiIconMagnifyWithPlus } from '@elastic/eui/es/components/icon/assets/magnifyWithPlus';
 import { icon as EuiIconMagnifyWithMinus } from '@elastic/eui/es/components/icon/assets/magnifyWithMinus';
 import { icon as EuiIconTableOfContents } from '@elastic/eui/es/components/icon/assets/tableOfContents';
+import { icon as EuiIconTokenString } from '@elastic/eui/es/components/icon/assets/tokenString';
 import { icon as EuiIconTokenNumber } from '@elastic/eui/es/components/icon/assets/tokenNumber';
+import { icon as EuiIconTokenDate } from '@elastic/eui/es/components/icon/assets/tokenDate';
+import { icon as EuiIconTokenIP } from '@elastic/eui/es/components/icon/assets/tokenIP';
 import { icon as EuiIconTokenBoolean } from '@elastic/eui/es/components/icon/assets/tokenBoolean';
+import { icon as EuiIconTokenObject } from '@elastic/eui/es/components/icon/assets/tokenObject';
+import { icon as EuiIconTokenNested } from '@elastic/eui/es/components/icon/assets/tokenNested';
+import { icon as EuiIconTokenGeo } from '@elastic/eui/es/components/icon/assets/tokenGEO';
+import { icon as EuiIconTokenHistogram } from '@elastic/eui/es/components/icon/assets/tokenHistogram';
 import { icon as EuiIconSortRight } from '@elastic/eui/es/components/icon/assets/sortRight';
 
 // One or more icons are passed in as an object of iconKey (string): IconComponent
@@ -51,8 +56,6 @@ appendIconComponentCache({
     plusInCircleFilled: EuiIconPlusInCircleFilled,
     minusInCircle: EuiIconMinusInCircle,
     editorCodeBlock: EuiIconEditorCodeBlock,
-    tokenString: EuiIconTokenString,
-    tokenDate: EuiIconTokenDate,
     folderOpen: EuiIconFolderOpen,
     questionInCircle: EuiIconQuestionInCircle,
     kqlField: EuiIconKqlField,
@@ -67,6 +70,13 @@ appendIconComponentCache({
     magnifyWithPlus: EuiIconMagnifyWithPlus,
     magnifyWithMinus: EuiIconMagnifyWithMinus,
     tableOfContents: EuiIconTableOfContents,
+    tokenString: EuiIconTokenString,
     tokenNumber: EuiIconTokenNumber,
-    tokenBoolean: EuiIconTokenBoolean
+    tokenBoolean: EuiIconTokenBoolean,
+    tokenDate: EuiIconTokenDate,
+    tokenIP: EuiIconTokenIP,
+    tokenGeo: EuiIconTokenGeo,
+    tokenObject: EuiIconTokenObject,
+    tokenNested: EuiIconTokenNested,
+    tokenHistogram: EuiIconTokenHistogram
 });
