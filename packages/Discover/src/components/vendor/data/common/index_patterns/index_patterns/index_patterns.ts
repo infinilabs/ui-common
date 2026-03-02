@@ -436,7 +436,7 @@ export class IndexPatternsService {
         "_source": "string",
         "_id": "string"
       };
-
+      
       return Object.entries(originalMapping).map(([fieldName, fieldDetail]) => {
         const [esType, config] = Object.entries(fieldDetail)[0];
         return {
@@ -445,7 +445,7 @@ export class IndexPatternsService {
           name: fieldName, 
           readFromDocValues: false, 
           searchable: config.searchable, 
-          type: typeMap[esType] || "string" 
+          type: esType
         };
       });
     }
