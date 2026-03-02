@@ -198,7 +198,7 @@ export function DiscoverField({
         () => {
           setLoading(true);
         },
-        (buckets, total) => {
+        (buckets, total, error) => {
           setDetails({
             ...details,
             buckets: (buckets || []).map((item) => ({
@@ -211,9 +211,9 @@ export function DiscoverField({
             })),
             exists: (buckets || [])
               .map((item) => item.doc_count)
-              .reduce((a, b) => a + b),
+              .reduce((a, b) => a + b, 0),
             total,
-            columns,
+            error
           });
           setLoading(false);
         }
