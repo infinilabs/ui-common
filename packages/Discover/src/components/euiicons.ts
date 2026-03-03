@@ -37,7 +37,9 @@ import { icon as EuiIconTokenObject } from '@elastic/eui/es/components/icon/asse
 import { icon as EuiIconTokenNested } from '@elastic/eui/es/components/icon/assets/tokenNested';
 import { icon as EuiIconTokenGeo } from '@elastic/eui/es/components/icon/assets/tokenGEO';
 import { icon as EuiIconTokenHistogram } from '@elastic/eui/es/components/icon/assets/tokenHistogram';
+import { icon as EuiIconTokenFile } from '@elastic/eui/es/components/icon/assets/tokenFile';
 import { icon as EuiIconSortRight } from '@elastic/eui/es/components/icon/assets/sortRight';
+import { icon as EuiIconAlert } from '@elastic/eui/es/components/icon/assets/alert';
 
 // One or more icons are passed in as an object of iconKey (string): IconComponent
 appendIconComponentCache({
@@ -78,5 +80,8 @@ appendIconComponentCache({
     tokenGeo: EuiIconTokenGeo,
     tokenObject: EuiIconTokenObject,
     tokenNested: EuiIconTokenNested,
-    tokenHistogram: EuiIconTokenHistogram
+    tokenFile: EuiIconTokenFile,
+    tokenHistogram: EuiIconTokenHistogram,
+
+    alert: EuiIconAlert
 });
