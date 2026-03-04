@@ -33,7 +33,7 @@ export interface IProps {
 
 export default ({
   bucketInterval,
-  dateFormat = 'YYYY-MM-DD H:mm',
+  dateFormat = 'YYYY-MM-DD HH:mm:ss',
   timeRange,
   stateInterval,
   total,

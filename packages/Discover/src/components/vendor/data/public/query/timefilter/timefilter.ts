@@ -114,7 +114,7 @@ export class Timefilter {
         from: newTime.from,
         to: newTime.to,
       };
-      this._history.add(this._time);
+      this._history?.add?.(this._time);
       this.timeUpdate$.next();
       this.fetch$.next();
     }

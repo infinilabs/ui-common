@@ -13,7 +13,7 @@ import { getStateColumnActions } from "./vendor/discover/public/application/angu
 import { DiscoverSidebar } from "./vendor/discover/public/application/components/sidebar/discover_sidebar";
 import { DiscoverHistogram } from "./vendor/discover/public/application/components/histogram/histogram";
 import moment from "moment";
-import { getContext } from "./context";
+import { getContext, Storage, timeBucketConfig, timefilterConfig } from "./context";
 import { createSearchBar } from "./vendor/data/public/ui/search_bar/create_search_bar";
 import { DiscoverNoResults } from "./vendor/discover/public/application/angular/directives/no_results";
 import { buildPointSeriesData } from "./vendor/discover/public/application/angular/helpers/";
@@ -30,6 +30,8 @@ import { getTimezone } from "@/utils/utils";
 import 'uno.css'
 import './index.scss'
 import './euiicons'
+import { TimeBuckets } from "./vendor/data/common/search/aggs/buckets/lib/time_buckets";
+import { Timefilter } from "./vendor/data/public/query";
 
 loader.config({ monaco });
 
@@ -203,7 +205,9 @@ const Discover = (props: {
         _payload?.aggs || aggs,
         distinctParams || {},
         _payload?.isScrollLoad ? queryFrom : 0,
-        false
+        false,
+        20,
+        timeZone
       );
 
       const filters = cloneDeep(params?.body?.query?.bool?.filter || [])
@@ -230,9 +234,8 @@ const Discover = (props: {
 
       const { query } = queryStringManager.getQuery();
       const allFilters = filterManager.getFilters();
-      setQueryParams((prev: any) => {
-        return ({
-        ...prev,
+      setQueryParams({
+        ...queryParams,
         query: query != queryParams.query ? query : queryParams.query,
         range: [timefilter._time?.from, timefilter._time?.to],
         sort: sort,
@@ -246,7 +249,6 @@ const Discover = (props: {
           }
         })
       })
-      })
     },
     [
       state.interval,
@@ -255,7 +257,8 @@ const Discover = (props: {
       distinctParams,
       queryFrom,
       indexPattern?.timeFieldName,
-      queryParams
+      queryParams,
+      timeZone
     ]
   );
 
@@ -273,15 +276,11 @@ const Discover = (props: {
     }
   }, [props.indices]);
 
-  const onIntervalChange = useCallback(
-    (interval) => {
-      if (interval) {
-        //console.log(calculateInterval(interval))
-        setState({ ...state, interval });
-      }
-    },
-    [setState, indexPattern]
-  );
+  const onIntervalChange = (interval) => {
+    if (interval) {
+      setState({ ...state, interval });
+    }
+  };
 
   const [resultState, setResultState] = useState("loading");
   const { histogramData, timeChartProps } = useMemo(() => {
@@ -297,7 +296,36 @@ const Discover = (props: {
       setResultState("ready");
       return { histogramData: null, timeChartProps: null };
     }
-    const buckets = getTimeBuckets(state.interval);
+    const rows: any[] = [];
+    searchResult.aggregations["counts"].buckets.forEach((bk) => {
+      rows.push(bk);
+    });
+    let tf;
+    let buckets = getTimeBuckets(state.interval);
+    if (!buckets) {
+      const from = rows[0]?.key
+      const to = rows[rows.length - 1]?.key
+      if (from && to) {
+        const storage = new Storage(localStorage);
+        tf = new Timefilter(timefilterConfig, storage);
+        tf.setTime({
+          from: moment(from).toISOString(),
+          to: moment(to).toISOString(),
+          mode: "absolute",
+        })
+        const bounds = tf.getBounds();
+        const timeBuckets = new TimeBuckets(timeBucketConfig);
+        timeBuckets.setBounds(bounds);
+        timeBuckets.setInterval(searchResult.aggregations["counts"].interval);
+        buckets = timeBuckets
+      }
+    } else {
+      tf = timefilter
+    }
+    if (!buckets) {
+      setResultState("ready");
+      return { histogramData: null, timeChartProps: null };
+    }
     const interval = buckets.getInterval(true);
     const chartTable = {
       columns: [
@@ -308,15 +336,9 @@ const Discover = (props: {
         },
         { id: "doc_count", name: "count" },
       ],
-      rows: [],
+      rows,
     };
-    let aggregations = searchResult.aggregations;
 
-    aggregations["counts"].buckets.forEach((bk) => {
-      chartTable.rows.push(bk);
-    });
-
-    //console.log(interval, moment.duration('1', 'd'))
     const dimensions = {
       x: {
         accessor: 0,
@@ -346,10 +368,10 @@ const Discover = (props: {
     setResultState("ready");
     const timeChartProps = {
       timeRange: {
-        from: timefilter.getBounds().min,
-        to: timefilter.getBounds().max,
+        from: tf?.getBounds().min,
+        to: tf?.getBounds().max,
       },
-      stateInterval: state.interval || '15s',
+      stateInterval: state.interval || searchResult.aggregations["counts"].interval || '15s',
       options: intervalOptions,
       onIntervalChange, //(interval)=>{console.log(interval)},
       bucketInterval: {
@@ -406,17 +428,14 @@ const Discover = (props: {
     [indexPattern, updateQuery]
   );
 
-  const timefilterUpdateHandler = useCallback(
-    (ranges) => {
-      timefilter.setTime({
-        from: moment(ranges.from).toISOString(),
-        to: moment(ranges.to).toISOString(),
-        mode: "absolute",
-      });
-      updateQuery();
-    },
-    [timefilter]
-  );
+  const timefilterUpdateHandler = (ranges) => {
+    timefilter.setTime({
+      from: moment(ranges.from).toISOString(),
+      to: moment(ranges.to).toISOString(),
+      mode: "absolute",
+    });
+    updateQuery();
+  };
   const rows = searchResult.hits.hits || [];
   const [records, setRecords] = useState([]);
   useMemo(() => {
@@ -524,7 +543,8 @@ const Discover = (props: {
       distinctParams || {},
       0,
       true,
-      0
+      0,
+      timeZone
     );
 
     const filters = params?.body?.query?.bool?.filter || []
@@ -582,7 +602,8 @@ const Discover = (props: {
       distinctParams || {},
       from,
       false,
-      size
+      size,
+      timeZone
     );
 
     const { index, body } = params
@@ -740,9 +761,7 @@ const Discover = (props: {
                       <div className="h-100px dscHistogramGrid">
                         <DiscoverHistogram
                           chartData={histogramData}
-                          timefilterUpdateHandler={
-                            timefilterUpdateHandler
-                          }
+                          timefilterUpdateHandler={timefilterUpdateHandler}
                           theme={theme}
                         />
                       </div>
@@ -981,7 +1000,7 @@ export default (props: IDiscoverProps) => {
         language: "kuery",
       });
       filterManager.removeAll();
-      timefilter.setTime({ from: '', to: ''})
+      timefilter.setTime({ from: '', to: '' })
     }
     setIndexPattern(newIndexPattern)
     const indexPatterns = [newIndexPattern];

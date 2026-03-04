@@ -30,4 +30,8 @@
 .truncate-by-height {
   max-height: 115px !important;
   display: inline-block;
+
+  dl {
+    vertical-align: top;
+  }
 }
