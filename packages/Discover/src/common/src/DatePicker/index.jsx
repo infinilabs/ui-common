@@ -15,11 +15,15 @@ import dayjs from "dayjs";
 import duration from 'dayjs/plugin/duration'
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import weekday from 'dayjs/plugin/weekday';
+import localeData from 'dayjs/plugin/localeData';
 import { Space } from "antd";
 
 dayjs.extend(duration)
 dayjs.extend(utc)
 dayjs.extend(timezone)
+dayjs.extend(weekday);
+dayjs.extend(localeData);
 
 const DEFAULT_COMMONLY_USED_RANGES = [
   {

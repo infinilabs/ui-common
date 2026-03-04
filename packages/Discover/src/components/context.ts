@@ -25,7 +25,7 @@ import { FieldFormatsRegistry } from "./vendor/data/common/field_formats";
 import { baseFormattersPublic } from "./vendor/data/public/field_formats";
 import { deserializeFieldFormat } from "./vendor/data/public/field_formats/utils/deserialize";
 
-const timeBucketConfig = {
+export const timeBucketConfig = {
   "histogram:maxBars": 100,
   "histogram:barTarget": 50,
   dateFormat: "YYYY-MM-DD",
@@ -160,7 +160,7 @@ export class Storage {
 const filterManager = new FilterManager();
 const storage = new Storage(localStorage);
 const queryStringManager = new QueryStringManager(storage);
-const timefilterConfig = {
+export const timefilterConfig = {
   timeDefaults: { from: "", to: "" },
   refreshIntervalDefaults: { pause: true, value: 10000 },
 };
@@ -233,6 +233,7 @@ const getSearchParams = (
   queryFrom,
   trackTotalHits,
   size = 20,
+  timeZone
 ) => {
   // const timeExp = calculateAutoTimeExpression(timefilter.getTime());
   const timeExp = getTimeBuckets(internal)?.getInterval(true).expression;
@@ -252,20 +253,30 @@ const getSearchParams = (
 
   const aggs: any = {}
 
-  if (timeExp) {
-    const isCalendarInterval =
-      timeExp.includes("w") ||
-      timeExp.includes("d") ||
-      timeExp.includes("y") ||
-      timeExp.includes("M");
-    aggs['counts'] = {
-      date_histogram: {
-        //calendar_interval:
-        [isCalendarInterval ? "calendar_interval" : "fixed_interval"]: timeExp,
-        field: indexPattern.timeFieldName,
-        min_doc_count: 1,
-        time_zone: "Asia/Shanghai",
-      },
+  if (indexPattern.timeFieldName) {
+    if (timeExp) {
+      const isCalendarInterval =
+        timeExp.includes("w") ||
+        timeExp.includes("d") ||
+        timeExp.includes("y") ||
+        timeExp.includes("M");
+      aggs['counts'] = {
+        date_histogram: {
+          //calendar_interval:
+          [isCalendarInterval ? "calendar_interval" : "fixed_interval"]: timeExp,
+          field: indexPattern.timeFieldName,
+          min_doc_count: 1,
+          time_zone: timeZone,
+        },
+      }
+    } else {
+      aggs['counts'] = {
+        auto_date_histogram: {
+          field: indexPattern.timeFieldName,
+          buckets: 10,
+          time_zone: timeZone,
+        },
+      }
     }
   }
 

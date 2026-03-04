@@ -320,7 +320,7 @@ export function DiscoverSidebar({
             <>
               <Typography.Title className="!text-12px !mb-8px" level={5}>{i18nField['selected_label'] || "Selected fields"}</Typography.Title>
               <ul
-                className="dscSidebarList dscFieldList--selected mb-8px"
+                className="dscSidebarList dscFieldList--selected mb-8px py-2px"
                 aria-labelledby="selected_fields"
               >
                 {selectedFields.map((field: IndexPatternField) => {
@@ -436,7 +436,7 @@ export function DiscoverSidebar({
               );
             })}
           </ul> */}
-          <div id="fields-tree-wrapper">
+          <div id="fields-tree-wrapper" className="py-2px">
             <Tree
               showLine={false}
               showIcon={false}
