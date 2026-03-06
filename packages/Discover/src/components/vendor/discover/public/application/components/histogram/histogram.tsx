@@ -1,7 +1,6 @@
-import moment, { unitOfTime } from "moment-timezone";
-import React, { Component } from "react";
+import moment from "moment-timezone";
+import React, { Component, createRef } from "react";
 import PropTypes from "prop-types";
-
 import {
   Axis,
   Chart,
@@ -9,61 +8,88 @@ import {
   Position,
   ScaleType,
   Settings,
-  TooltipType,
-  ElementClickListener,
-  XYChartElementEvent,
-  BrushEndListener,
-  Theme,
   LIGHT_THEME,
   DARK_THEME,
+  Tooltip,
 } from "@elastic/charts";
+
 import "./theme_light.css";
 
-import { Subscription, combineLatest } from "rxjs";
 import { CurrentTime } from "./current_time";
 import {
   Endzones,
   getAdjustedInterval,
-  renderEndzoneTooltip,
 } from "./endzones";
-
-function getTimezone() {
-  const detectedTimezone = moment.tz.guess();
-  if (detectedTimezone) return detectedTimezone;
-  else return moment().format("Z");
-}
 
 export class DiscoverHistogram extends Component {
   static propTypes = {
     chartData: PropTypes.object,
     timefilterUpdateHandler: PropTypes.func,
+    theme: PropTypes.string,
+    timeZone: PropTypes.string,
   };
 
-  subscription;
+  containerRef = createRef();
+  tooltipCloseTimer = null;
+  TOOLTIP_DELAY = 200;
+
   state = {
-    // chartsTheme: getServices().theme.chartsDefaultTheme,
-    // chartsBaseTheme: getServices().theme.chartsDefaultBaseTheme,
+    tooltipVisible: false,
+    tooltipPos: { x: 0, y: 0 },
+    pointerEvent: null,
   };
-
-  componentDidMount() {
-    // this.subscription = combineLatest([
-    //   getServices().theme.chartsTheme$,
-    //   getServices().theme.chartsBaseTheme$,
-    // ]).subscribe(([chartsTheme, chartsBaseTheme]) =>
-    //   this.setState({ chartsTheme, chartsBaseTheme })
-    // );
-  }
 
   componentWillUnmount() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+    if (this.tooltipCloseTimer) {
+      clearTimeout(this.tooltipCloseTimer);
     }
   }
 
-  onBrushEnd = ({ x }) => {
-    if (!x) {
-      return;
+  handleMouseMove = (e) => {
+    if (!this.containerRef.current) return;
+    const rect = this.containerRef.current.getBoundingClientRect();
+    this.setState({
+      tooltipPos: {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      }
+    });
+  };
+
+  handlePointerUpdate = (event) => {
+    const { chartData } = this.props;
+
+    if (this.tooltipCloseTimer) {
+      clearTimeout(this.tooltipCloseTimer);
     }
+
+    if (event.type === 'Over' && event.x && chartData?.values) {
+      const originalDatum = chartData.values.find(d => d.x === event.x);
+
+      if (originalDatum) {
+        const enrichedEvent = {
+          ...event,
+          yValue: originalDatum.y
+        };
+
+        this.setState({
+          pointerEvent: enrichedEvent,
+          tooltipVisible: true
+        });
+      } else {
+        this.tooltipCloseTimer = setTimeout(() => {
+          this.setState({ tooltipVisible: false });
+        }, this.TOOLTIP_DELAY);
+      }
+    } else {
+      this.tooltipCloseTimer = setTimeout(() => {
+        this.setState({ tooltipVisible: false });
+      }, this.TOOLTIP_DELAY);
+    }
+  };
+
+  onBrushEnd = ({ x }) => {
+    if (!x) return;
     const [from, to] = x;
     this.props.timefilterUpdateHandler({ from, to });
   };
@@ -80,125 +106,146 @@ export class DiscoverHistogram extends Component {
   };
 
   formatXValue = (val) => {
-    const xAxisFormat = this.props.chartData.xAxisFormat.params?.pattern;
-
-    return moment(val).format(xAxisFormat);
+    return moment(val).format(this.props.chartData.xAxisFormat.params?.pattern);
   };
 
-  render() {
-    const timeZone = getTimezone();
-    const { chartData, height = 100 } = this.props;
-    
-    const { chartsTheme, chartsBaseTheme } = this.state;
+  renderCustomTooltip() {
+    const { tooltipVisible, tooltipPos, pointerEvent } = this.state;
+    if (!tooltipVisible || !pointerEvent) return null;
 
-    if (!chartData) {
-      return null;
-    }
+    const containerWidth = this.containerRef.current?.clientWidth || 0;
+    const containerHeight = this.containerRef.current?.clientHeight || 0;
+    const isTooRight = tooltipPos.x + 180 > containerWidth;
+    const isTooBottom = tooltipPos.y + 80 > containerHeight;
+
+    const translateX = isTooRight ? "-100% - 12px" : "12px";
+    const translateY = isTooBottom ? "-100% - 12px" : "12px";
+
+    return (
+      <div
+        className="absolute z-100 pointer-events-none p-2 rounded-md  
+                   bg-white/98 shadow-[0_6px_16px_0_rgba(0,0,0,0.08),0_3px_6px_-4px_rgba(0,0,0,0.12)] 
+                   w-max min-w-100px dark:bg-[#1f1f1f]"
+        style={{
+          left: `${tooltipPos.x}px`,
+          top: `${tooltipPos.y}px`,
+          transform: `translate(calc(${translateX}), calc(${translateY}))`,
+          transition: 'transform 0.1s cubic-bezier(0.23, 1, 0.32, 1)'
+        }}
+      >
+        <div className="text-[12px] text-black/45 dark:text-white/45 mb-2 leading-none">
+          {this.formatXValue(pointerEvent.x)}
+        </div>
+
+        <div className="flex justify-between items-center gap-8">
+          <div className="flex items-center">
+            <span className="text-[12px] text-black/85 dark:text-white/85">
+              {this.props.chartData.yAxisLabel}
+            </span>
+          </div>
+
+          <span className="text-[12px] font-600 text-black/85 dark:text-white/85">
+            {pointerEvent.yValue?.toLocaleString()}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    const { timeZone, theme, chartData, height = 100 } = this.props;
+    if (!chartData) return null;
 
     const data = chartData.values;
-    const isDarkMode = false;
-
-    /*
-     * Deprecation: [interval] on [date_histogram] is deprecated, use [fixed_interval] or [calendar_interval].
-     * see https://github.com/elastic/kibana/issues/27410
-     * TODO: Once the Discover query has been update, we should change the below to use the new field
-     */
-    const { intervalESValue, intervalESUnit, interval } = chartData.ordered;
+    const isDarkMode = theme === 'dark';
+    const { interval } = chartData.ordered;
     const xInterval = interval.asMilliseconds();
-    //console.log(interval,intervalESUnit,intervalESValue)
-    //const xInterval = interval * 1000;
-
-    const xValues = chartData.xAxisOrderedValues;
-    const lastXValue = xValues[xValues.length - 1];
-
     const domain = chartData.ordered;
     const domainStart = domain.min.valueOf();
     const domainEnd = domain.max.valueOf();
 
-    const domainMin = Math.min(data[0]?.x, domainStart);
-    const domainMax = Math.max(domainEnd - xInterval, lastXValue);
-
     const xDomain = {
-      min: domainMin,
-      max: domainMax,
-      minInterval: getAdjustedInterval(
-        xValues,
-        intervalESValue,
-        intervalESUnit,
-        timeZone
-      ),
+      min: Math.min(data[0]?.x, domainStart),
+      max: Math.max(domainEnd - xInterval, chartData.xAxisOrderedValues[chartData.xAxisOrderedValues.length - 1]),
+      minInterval: getAdjustedInterval(chartData.xAxisOrderedValues, chartData.ordered.intervalESValue, chartData.ordered.intervalESUnit, timeZone),
     };
-    const tooltipProps = {
-      headerFormatter: renderEndzoneTooltip(
-        xInterval,
-        domainStart,
-        domainEnd,
-        this.formatXValue
-      ),
-      type: TooltipType.VerticalCursor,
-    };
-    // const xAxisFormatter = getServices().data.fieldFormats.deserialize(
-    //   this.props.chartData.yAxisFormat
-    // );
+
     const xAxisFormatter = {
       convert: (value) => {
         return value;
       },
     };
-    //console.log(data)
+
+    const delayHideTooltip = () => {
+      if (this.tooltipCloseTimer) {
+        clearTimeout(this.tooltipCloseTimer);
+      }
+      this.tooltipCloseTimer = setTimeout(() => {
+        this.setState({ tooltipVisible: false });
+      }, this.TOOLTIP_DELAY);
+    };
 
     return (
-      <Chart size={{ height }}>
-        <Settings
-          xDomain={xDomain}
-          onBrushEnd={this.onBrushEnd}
-          onElementClick={this.onElementClick(xInterval)}
-          tooltip={tooltipProps}
-          theme={this.props.theme === 'dark' ? DARK_THEME : LIGHT_THEME}
-          // baseTheme={chartsBaseTheme}
-        />
-        <Axis
-          id="discover-histogram-left-axis"
-          position={Position.Left}
-          ticks={5}
-          title={chartData.yAxisLabel}
-          integersOnly
-          tickFormat={(value) => {
-            return xAxisFormatter.convert(value);
-          }}
-          showGridLines
-          hide={true}
-        />
-        <Axis
-          id="discover-histogram-bottom-axis"
-          position={Position.Bottom}
-          // title={chartData.xAxisLabel}
-          tickFormat={this.formatXValue}
-          ticks={10}
-          //showGridLines
-          hide={true}
-        />
-        <CurrentTime isDarkMode={isDarkMode} domainEnd={domainEnd} />
-        <Endzones
-          isDarkMode={isDarkMode}
-          domainStart={domainStart}
-          domainEnd={domainEnd}
-          interval={xDomain.minInterval}
-          domainMin={xDomain.min}
-          domainMax={xDomain.max}
-        />
-        <HistogramBarSeries
-          id="discover-histogram"
-          minBarHeight={2}
-          xScaleType={ScaleType.Time}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={["y"]}
-          data={data}
-          timeZone={timeZone}
-          name={chartData.yAxisLabel}
-        />
-      </Chart>
+      <div
+        ref={this.containerRef}
+        className="relative w-full h-full"
+        onMouseMove={this.handleMouseMove}
+        onMouseLeave={delayHideTooltip}
+      >
+        {this.renderCustomTooltip(domainStart, domainEnd, xInterval)}
+
+        <Chart size={{ height }}>
+          <Settings
+            xDomain={xDomain}
+            onBrushEnd={this.onBrushEnd}
+            onElementClick={this.onElementClick(xInterval)}
+            theme={isDarkMode ? DARK_THEME : LIGHT_THEME}
+            onPointerUpdate={this.handlePointerUpdate}
+          />
+          <Tooltip customTooltip={() => null} />
+          <Axis
+            id="discover-histogram-left-axis"
+            position={Position.Left}
+            ticks={5}
+            title={chartData.yAxisLabel}
+            integersOnly
+            tickFormat={(value) => {
+              return xAxisFormatter.convert(value);
+            }}
+            showGridLines
+            hide={true}
+          />
+          <Axis
+            id="discover-histogram-bottom-axis"
+            position={Position.Bottom}
+            // title={chartData.xAxisLabel}
+            tickFormat={this.formatXValue}
+            ticks={10}
+            //showGridLines
+            hide={true}
+          />
+          <CurrentTime isDarkMode={isDarkMode} domainEnd={domainEnd} />
+          <Endzones
+            isDarkMode={isDarkMode}
+            domainStart={domainStart}
+            domainEnd={domainEnd}
+            interval={xDomain.minInterval}
+            domainMin={xDomain.min}
+            domainMax={xDomain.max}
+          />
+          <HistogramBarSeries
+            id="discover-histogram"
+            minBarHeight={2}
+            xScaleType={ScaleType.Time}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={["y"]}
+            data={data}
+            timeZone={timeZone}
+            name={chartData.yAxisLabel}
+          />
+        </Chart>
+      </div>
     );
   }
 }

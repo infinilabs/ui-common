@@ -763,6 +763,7 @@ const Discover = (props: {
                           chartData={histogramData}
                           timefilterUpdateHandler={timefilterUpdateHandler}
                           theme={theme}
+                          timeZone={timeZone}
                         />
                       </div>
                     </div>
@@ -1001,6 +1002,7 @@ export default (props: IDiscoverProps) => {
       });
       filterManager.removeAll();
       timefilter.setTime({ from: '', to: '' })
+      timefilter.setRefreshInterval({ pause: true })
     }
     setIndexPattern(newIndexPattern)
     const indexPatterns = [newIndexPattern];
