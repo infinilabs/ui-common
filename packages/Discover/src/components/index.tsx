@@ -1019,6 +1019,7 @@ export default (props: IDiscoverProps) => {
     if (onSuggestions) {
       services.data.autocomplete.setup(
         {
+          autocomplete: services.data.autocomplete,
           onSuggestions
         },
       );

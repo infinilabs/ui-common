@@ -44,6 +44,7 @@ import { SavedObjectNotFound } from "../../../../utils/common";
 import { IndexPatternMissingIndices } from "../lib";
 import { findByTitle } from "../utils";
 import { DuplicateIndexPatternError } from "../errors";
+import { createKbnFieldTypes } from "../../kbn_field_types/kbn_field_types_factory";
 
 const indexPatternCache = createIndexPatternCache();
 const MAX_ATTEMPTS_TO_RESOLVE_CONFLICTS = 3;
@@ -417,35 +418,25 @@ export class IndexPatternsService {
     }
 
     function convertEsMapping(originalMapping: any) {
-      const typeMap = {
-        "_index": "string",
-        "_feature": "string",
-        "keyword": "string",
-        "long": "number",
-        "_ignored": "string",
-        "text": "string",
-        "boolean": "boolean",
-        "_data_stream_timestamp": "string",
-        "integer": "number",
-        "_version": "string",
-        "_routing": "string",
-        "_type": "string",
-        "_seq_no": "string",
-        "date": "date",
-        "_field_names": "string",
-        "_source": "string",
-        "_id": "string"
-      };
+      const kbnFieldTypes = createKbnFieldTypes();
+      const esTypeToKbnNameMap: any = {};
+
+      kbnFieldTypes.forEach(type => {
+        type.esTypes?.forEach(esType => {
+          esTypeToKbnNameMap[esType] = type.name;
+        });
+      });
       
       return Object.entries(originalMapping).map(([fieldName, fieldDetail]) => {
         const [esType, config] = Object.entries(fieldDetail)[0];
+        const kbnTypeName = esTypeToKbnNameMap[esType] || esType;
         return {
           aggregatable: config.aggregatable, 
           esTypes: [esType], 
           name: fieldName, 
           readFromDocValues: false, 
           searchable: config.searchable, 
-          type: esType
+          type: kbnTypeName
         };
       });
     }
