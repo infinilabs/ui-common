@@ -23,7 +23,7 @@ export const setupGetValueSuggestions: KqlQuerySuggestionProvider = (
   // const autoCompleteServicePromise = core
   //   .getStartServices()
   //   .then(([_, __, dataStart]) => dataStart.autocomplete);
-  const { onSuggestions } = core
+  const autoCompleteServicePromise = Promise.resolve(core.autocomplete)
   //console.log(core, autoCompleteServicePromise)
   return async (
     { indexPatterns, boolFilter, useTimeRange, signal },
@@ -39,42 +39,25 @@ export const setupGetValueSuggestions: KqlQuerySuggestionProvider = (
     });
 
     const query = `${prefix}${suffix}`.trim();
+    const { getValueSuggestions } = await autoCompleteServicePromise;
 
     const data = await Promise.all(
-      indexPatternFieldEntries.map(([indexPattern, field]) => {
-        const body = {
-            "size": 0, 
-            "query": {
-                "bool": {
-                    "filter": boolFilter
-                }
-            },
-            "aggs": {
-                "suggestions": {
-                    "terms": {
-                        "field":          field.name,
-                        "include":        query + ".*",
-                        "execution_hint": "map",
-                        "shard_size":     10,
-                    }
-                }
-            }
-        }
-        return onSuggestions(indexPattern.title, body).then((res) => {
-          const values: any[] = [];
-          const suggestionsAgg = res?.aggregations?.suggestions;
-          if (suggestionsAgg?.buckets && Array.isArray(suggestionsAgg.buckets)) {
-            suggestionsAgg.buckets.forEach(bucket => {
-              values.push(bucket.key); 
-            });
-          }
-          const quotedValues = values?.map((value) =>
+      indexPatternFieldEntries.map(([indexPattern, field]) =>
+        getValueSuggestions({
+          indexPattern,
+          field,
+          query,
+          boolFilter,
+          useTimeRange,
+          signal,
+        }).then((valueSuggestions) => {
+          const quotedValues = valueSuggestions?.map((value) =>
             typeof value === 'string' ? `"${escapeQuotes(value)}"` : `${value}`
           );
 
           return wrapAsSuggestions(start, end, query, quotedValues);
         })
-      })
+      )
     );
 
     return flatten(data);
