@@ -41,7 +41,10 @@ const Markdown: FC<MarkdownProps> = (props) => {
   return (
     <XMarkdown
       {...rest}
-      className={clsx("[&_h1,h2,h3,h4,h5,h6,ul,ol,p]:[all:revert]", className)}
+      className={clsx(
+        "[&_:is(h1,h2,h3,h4,h5,h6,ul,ol,p)]:[all:revert]",
+        className,
+      )}
       content={content}
       components={{
         code: Code,
