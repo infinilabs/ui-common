@@ -95,6 +95,9 @@ const Discover = (props: {
   });
 
   const rangeCacheRef = useRef();
+  const updateQueryRef = useRef<any>();
+  const queryParamsRef = useRef(queryParams);
+  queryParamsRef.current = queryParams;
 
   useEffect(() => {
     if (queryParams.range && queryParams.range[0] && queryParams.range[1]) {
@@ -154,14 +157,14 @@ const Discover = (props: {
           columns: ['_source'],
           sort: newSort
         });
-        updateQuery({ sort: newSort });
+        updateQueryRef.current?.({ sort: newSort });
       } else {
         setState({
           ...state,
           columns: ['_source'],
           sort: []
         });
-        updateQuery({ sort: [] });
+        updateQueryRef.current?.({ sort: [] });
       }
     }
   }, [indexPattern]);
@@ -171,7 +174,7 @@ const Discover = (props: {
     subscriptions.add(
       timefilter.getAutoRefreshFetch$().subscribe({
         next: () => {
-          updateQuery();
+          updateQueryRef.current?.();
         },
       })
     );
@@ -234,9 +237,10 @@ const Discover = (props: {
 
       const { query } = queryStringManager.getQuery();
       const allFilters = filterManager.getFilters();
+      const currentQueryParams = queryParamsRef.current;
       setQueryParams({
-        ...queryParams,
-        query: query != queryParams.query ? query : queryParams.query,
+        ...currentQueryParams,
+        query: query != currentQueryParams.query ? query : currentQueryParams.query,
         range: [timefilter._time?.from, timefilter._time?.to],
         sort: sort,
         timeField: indexPattern.timeFieldName,
@@ -257,20 +261,21 @@ const Discover = (props: {
       distinctParams,
       queryFrom,
       indexPattern?.timeFieldName,
-      queryParams,
       timeZone
     ]
   );
 
+  updateQueryRef.current = updateQuery;
+
   useEffect(() => {
     if (queryFrom > 0) {
-      updateQuery({ isScrollLoad: true, rangeFilter: rangeCacheRef.current });
+      updateQueryRef.current?.({ isScrollLoad: true, rangeFilter: rangeCacheRef.current });
     }
   }, [queryFrom]);
 
   useEffect(() => {
     if (!isFrist) {
-      updateQuery();
+      updateQueryRef.current?.();
     } else {
       isFrist = !isFrist;
     }
@@ -407,7 +412,7 @@ const Discover = (props: {
   const onSort = useCallback(
     (nsort) => {
       setState({ ...state, sort: nsort });
-      updateQuery({ sort: nsort.reverse() });
+      updateQueryRef.current?.({ sort: [...nsort].reverse() });
     },
     [state, indexPattern]
   );
