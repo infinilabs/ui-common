@@ -770,8 +770,8 @@ importers:
         specifier: ^2.1.3
         version: 2.1.3(@types/react@18.3.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@infinilabs/markdown':
-        specifier: ^0.0.2
-        version: 0.0.2(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        specifier: ^0.0.4
+        version: 0.0.4(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       ahooks:
         specifier: ^3.9.6
         version: 3.9.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -2136,6 +2136,13 @@ packages:
 
   '@infinilabs/markdown@0.0.2':
     resolution: {integrity: sha512-0troADW8OMuflcjNpHa42Y+lIUkVU7hqaOHZBzPg20sei35y0dZQyKRvrdAP7IbZXcfMH/ikLt5ubkF1dKKy4A==}
+    peerDependencies:
+      antd: '>=5'
+      react: '>=18'
+      react-dom: '>=18'
+
+  '@infinilabs/markdown@0.0.4':
+    resolution: {integrity: sha512-TuLUZZY3eo4GsXBP8c8MLw4WGBcfJEOyc6oxuP0iVNj/4acNrjMttkIo7g2/P35NnsTqPZYiFYVRh94Qj5iTfw==}
     peerDependencies:
       antd: '>=5'
       react: '>=18'
@@ -9213,7 +9220,7 @@ snapshots:
       - '@types/react'
       - supports-color
 
-  '@infinilabs/markdown@0.0.2(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+  '@infinilabs/markdown@0.0.4(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
       '@ant-design/x': 2.1.3(antd@6.1.3(moment@2.30.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@ant-design/x-markdown': 2.1.3(@types/react@18.3.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
