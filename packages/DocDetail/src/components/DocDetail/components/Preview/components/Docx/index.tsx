@@ -7,14 +7,16 @@ interface DocxProps extends DocDetailProps {
 }
 
 const Docx: FC<DocxProps> = (props) => {
-  const { url } = props;
+  const { url, requestHeaders } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
 
   const renderDocx = async () => {
     if (!containerRef.current) return;
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: requestHeaders,
+    });
 
     const arrayBuffer = await response.arrayBuffer();
 

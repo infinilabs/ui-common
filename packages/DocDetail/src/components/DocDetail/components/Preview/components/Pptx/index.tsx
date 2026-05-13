@@ -8,7 +8,7 @@ interface PptxProps extends DocDetailProps {
 }
 
 const Pptx: FC<PptxProps> = (props) => {
-  const { url } = props;
+  const { url, requestHeaders } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -20,7 +20,9 @@ const Pptx: FC<PptxProps> = (props) => {
       height: 540,
     });
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: requestHeaders,
+    });
 
     const arrayBuffer = await response.arrayBuffer();
 

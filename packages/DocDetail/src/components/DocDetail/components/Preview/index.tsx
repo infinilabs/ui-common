@@ -10,13 +10,14 @@ import Pdf from "./components/Pdf";
 import Docx from "./components/Docx";
 import Pptx from "./components/Pptx";
 import Image from "./components/Image";
+import Video from "./components/Video";
 
 const Preview: FC<DocDetailProps> = (props) => {
   const { data, i18n } = props;
 
   const renderFile = (type: MetadataContentType, url: string) => {
     if (type === "markdown") {
-      return <Markdown url={url} />;
+      return <Markdown url={url} requestHeaders={props.requestHeaders} />;
     }
 
     if (type === "pdf") {
@@ -45,7 +46,7 @@ const Preview: FC<DocDetailProps> = (props) => {
     }
 
     if (type === "video") {
-      return <video src={url} className="w-full" controls />;
+      return <Video url={url} requestHeaders={props.requestHeaders} />;
     }
 
     return (

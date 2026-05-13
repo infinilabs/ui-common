@@ -74,6 +74,7 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
       aiInterpretation?: string;
     };
   };
+  requestHeaders?: Record<string, string>;
   actionButtons?: ReactNode[];
 }
 

@@ -13,15 +13,18 @@ const { Link } = Typography;
 export interface MarkdownProps extends XMarkdownProps {
   // You may provide either the 'url' or 'content' parameter. If a URL is provided, the content will be retrieved via request.
   url?: string;
+  requestHeaders?: Record<string, string>;
 }
 
 const Markdown: FC<MarkdownProps> = (props) => {
-  const { url, className, components, ...rest } = props;
+  const { url, requestHeaders, className, components, ...rest } = props;
 
   const [content, setContent] = useState(rest.content);
 
   const fetchContent = async (url: string) => {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: requestHeaders,
+    });
 
     const text = await response.text();
 

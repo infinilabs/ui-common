@@ -1,14 +1,29 @@
-import { useMemo, useRef, useState, type FC } from "react";
+import { useEffect, useMemo, useRef, useState, type FC } from "react";
 import { Image as AntdImage, Skeleton } from "antd";
 import { useSize } from "ahooks";
 
 import type { DocDetailProps } from "@/components/DocDetail";
 
 const Image: FC<DocDetailProps> = (props) => {
-  const { data } = props;
+  const { data, requestHeaders } = props;
   const containerRef = useRef<HTMLDivElement>(null);
   const containerSize = useSize(containerRef);
   const [failed, setFailed] = useState(false);
+  const [imgSrc, setImgSrc] = useState<string | undefined>(data?.url);
+
+  useEffect(() => {
+    if (!requestHeaders || !data?.url) {
+      setImgSrc(failed ? data?.thumbnail : data?.url);
+      return;
+    }
+
+    const targetUrl = failed ? data?.thumbnail : data?.url;
+    if (!targetUrl) return;
+
+    fetch(targetUrl, { headers: requestHeaders })
+      .then((res) => res.blob())
+      .then((blob) => setImgSrc(URL.createObjectURL(blob)));
+  }, [data?.url, data?.thumbnail, failed, requestHeaders]);
 
   const calcHeight = useMemo(() => {
     const { width, height } = data.metadata ?? {};
@@ -35,7 +50,7 @@ const Image: FC<DocDetailProps> = (props) => {
             }}
           />
         }
-        src={failed ? data?.thumbnail : data?.url}
+        src={imgSrc}
         onError={() => {
           setFailed(true);
         }}

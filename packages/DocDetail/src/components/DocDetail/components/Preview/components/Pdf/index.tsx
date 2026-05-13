@@ -1,5 +1,5 @@
 import { Document, Page, pdfjs } from "react-pdf";
-import { useState, type FC } from "react";
+import { useState, useEffect, type FC } from "react";
 import type { DocDetailProps } from "@/components/DocDetail";
 import { Pagination } from "antd";
 
@@ -10,10 +10,21 @@ interface PdfProps extends DocDetailProps {
 }
 
 const Pdf: FC<PdfProps> = (props) => {
-  const { url } = props;
+  const { url, requestHeaders } = props;
 
   const [numPages, setNumPages] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
+  const [fileData, setFileData] = useState<{ data: ArrayBuffer } | string>(url);
+
+  useEffect(() => {
+    if (requestHeaders) {
+      fetch(url, { headers: requestHeaders })
+        .then((res) => res.arrayBuffer())
+        .then((data) => setFileData({ data }));
+    } else {
+      setFileData(url);
+    }
+  }, [url, requestHeaders]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -30,7 +41,7 @@ const Pdf: FC<PdfProps> = (props) => {
 
       <div className="border border-solid border-border rounded-lg overflow-hidden">
         <Document
-          file={url}
+          file={fileData}
           onLoadSuccess={(pdf) => {
             setNumPages(pdf.numPages);
           }}
