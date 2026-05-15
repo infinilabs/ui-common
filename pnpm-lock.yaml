@@ -7,7 +7,6 @@ settings:
 overrides:
   '@types/react': 18.3.3
   '@types/react-dom': 18.3.0
-  vite: npm:rolldown-vite@7.2.5
 
 importers:
 
@@ -54,7 +53,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 4.3.1(vite@5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       eslint:
         specifier: ^9.9.0
         version: 9.10.0(jiti@2.6.1)
@@ -71,8 +70,8 @@ importers:
         specifier: ^15.9.0
         version: 15.9.0
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^5.4.1
+        version: 5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   apps/react-ts:
     dependencies:
@@ -124,7 +123,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^5.1.1
-        version: 5.1.2(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 5.1.2(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       eslint:
         specifier: ^9.39.1
         version: 9.39.2(jiti@2.6.1)
@@ -145,10 +144,10 @@ importers:
         version: 8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       unocss:
         specifier: ^66.5.10
-        version: 66.5.10(postcss@8.5.6)(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 66.5.10(postcss@8.5.6)(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^7.2.4
+        version: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/AIAnswer:
     dependencies:
@@ -157,7 +156,7 @@ importers:
         version: 2.1.3(@types/react@18.3.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@tailwindcss/vite':
         specifier: ^4.1.18
-        version: 4.1.18(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 4.1.18(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -188,7 +187,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^5.1.1
-        version: 5.1.2(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 5.1.2(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       eslint:
         specifier: ^9.39.1
         version: 9.39.2(jiti@2.6.1)
@@ -208,14 +207,14 @@ importers:
         specifier: ^8.46.4
         version: 8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^7.2.4
+        version: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.2
-        version: 3.5.2(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 3.5.2(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@24.10.4)(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.9.3)
+        version: 4.5.4(@types/node@24.10.4)(rollup@4.52.4)(typescript@5.9.3)(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
 
   packages/AIChat:
     dependencies:
@@ -264,7 +263,7 @@ importers:
         version: 9.39.2
       '@tailwindcss/vite':
         specifier: ^4.1.18
-        version: 4.1.18(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 4.1.18(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
@@ -279,7 +278,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^5.1.1
-        version: 5.1.2(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 5.1.2(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       antd:
         specifier: 6.1.3
         version: 6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -311,11 +310,11 @@ importers:
         specifier: ^8.46.4
         version: 8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^7.2.4
+        version: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.2
-        version: 3.5.2(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 3.5.2(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
 
   packages/Attachments:
     dependencies:
@@ -340,7 +339,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^5.1.1
-        version: 5.1.2(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 5.1.2(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       antd:
         specifier: ^6.1.4
         version: 6.1.4(moment@2.30.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -358,16 +357,16 @@ importers:
         version: 5.9.3
       unocss:
         specifier: ^66.5.10
-        version: 66.5.10(postcss@8.5.6)(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 66.5.10(postcss@8.5.6)(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^7.2.4
+        version: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.2
-        version: 3.5.2(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 3.5.2(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@24.10.4)(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.9.3)
+        version: 4.5.4(@types/node@24.10.4)(rollup@4.52.4)(typescript@5.9.3)(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
 
   packages/ChatMessage:
     dependencies:
@@ -401,7 +400,7 @@ importers:
         version: 9.37.0
       '@tailwindcss/vite':
         specifier: ^4.1.18
-        version: 4.1.18(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 4.1.18(vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       '@types/react':
         specifier: 18.3.3
         version: 18.3.3
@@ -410,7 +409,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^5.0.0
-        version: 5.0.4(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 5.0.4(vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       antd:
         specifier: ^6.1.3
         version: 6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -448,14 +447,14 @@ importers:
         specifier: ^8.39.1
         version: 8.46.0(eslint@9.37.0(jiti@2.6.1))(typescript@5.8.3)
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^7.1.2
+        version: 7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.1
-        version: 3.5.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 3.5.1(vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.8.3)
+        version: 4.5.4(@types/node@25.2.0)(rollup@4.52.4)(typescript@5.8.3)(vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
 
   packages/CommandCenter:
     dependencies:
@@ -477,7 +476,7 @@ importers:
     devDependencies:
       '@tailwindcss/vite':
         specifier: ^4.0.0
-        version: 4.1.18(rolldown-vite@7.2.5(@types/node@25.0.9)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 4.1.18(vite@5.4.10(@types/node@25.0.9)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       '@types/node':
         specifier: ^25.0.1
         version: 25.0.9
@@ -489,7 +488,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^4.2.0
-        version: 4.3.1(rolldown-vite@7.2.5(@types/node@25.0.9)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 4.3.1(vite@5.4.10(@types/node@25.0.9)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       tailwindcss:
         specifier: ^4.0.0
         version: 4.1.18
@@ -497,8 +496,8 @@ importers:
         specifier: ^5.4.0
         version: 5.9.3
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@25.0.9)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^5.4.0
+        version: 5.4.10(@types/node@25.0.9)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/CustomIcons:
     dependencies:
@@ -517,7 +516,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^4.0.0
-        version: 4.3.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 4.3.1(vite@5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       lucide-react:
         specifier: ^0.454.0
         version: 0.454.0(react@18.3.1)
@@ -525,11 +524,11 @@ importers:
         specifier: ^5.3.3
         version: 5.8.3
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^5.0.0
+        version: 5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vite-plugin-dts:
         specifier: ^3.6.0
-        version: 3.9.1(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.8.3)
+        version: 3.9.1(@types/node@25.2.0)(rollup@4.52.4)(typescript@5.8.3)(vite@5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
 
   packages/DatePicker:
     dependencies:
@@ -569,7 +568,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(rolldown-vite@7.2.5(@types/node@22.5.5)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 4.3.1(vite@5.4.10(@types/node@22.5.5)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       eslint:
         specifier: ^9.9.0
         version: 9.10.0(jiti@2.6.1)
@@ -589,11 +588,11 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@22.5.5)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^5.4.1
+        version: 5.4.10(@types/node@22.5.5)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.1
-        version: 3.5.1(rolldown-vite@7.2.5(@types/node@22.5.5)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 3.5.1(vite@5.4.10(@types/node@22.5.5)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
 
   packages/Discover:
     dependencies:
@@ -699,10 +698,10 @@ importers:
         version: 7.18.0(eslint@8.57.1)(typescript@5.8.3)
       '@unocss/vite':
         specifier: ^66.6.0
-        version: 66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
+        version: 66.6.0(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5))
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.3.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
+        version: 4.3.1(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5))
       antd:
         specifier: 6.1.3
         version: 6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -750,16 +749,16 @@ importers:
         version: 5.8.3
       unocss:
         specifier: ^66.6.0
-        version: 66.6.0(postcss@8.5.6)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
+        version: 66.6.0(postcss@8.5.6)(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5))
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
+        specifier: 5.4.10
+        version: 5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.2
-        version: 3.5.2(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
+        version: 3.5.2(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5))
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))(rollup@4.52.4)(typescript@5.8.3)
+        version: 4.5.4(@types/node@25.2.0)(rollup@4.52.4)(typescript@5.8.3)(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5))
 
   packages/DocDetail:
     dependencies:
@@ -817,7 +816,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^5.1.1
-        version: 5.1.2(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 5.1.2(vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       globals:
         specifier: ^16.5.0
         version: 16.5.0
@@ -826,16 +825,16 @@ importers:
         version: 5.9.3
       unocss:
         specifier: ^66.5.10
-        version: 66.5.10(postcss@8.5.6)(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 66.5.10(postcss@8.5.6)(vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: 7.2.4
+        version: 7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.2
-        version: 3.5.2(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 3.5.2(vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@24.10.4)(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.9.3)
+        version: 4.5.4(@types/node@24.10.4)(rollup@4.52.4)(typescript@5.9.3)(vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
 
   packages/DropdownList:
     dependencies:
@@ -869,7 +868,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(rolldown-vite@7.2.5(@types/node@22.5.5)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 4.3.1(vite@5.4.10(@types/node@22.5.5)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       eslint:
         specifier: ^9.9.0
         version: 9.10.0(jiti@2.6.1)
@@ -889,11 +888,11 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@22.5.5)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^5.4.1
+        version: 5.4.10(@types/node@22.5.5)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.1
-        version: 3.5.1(rolldown-vite@7.2.5(@types/node@22.5.5)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 3.5.1(vite@5.4.10(@types/node@22.5.5)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
 
   packages/EntityUI:
     dependencies:
@@ -915,19 +914,19 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 4.3.1(vite@5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       antd:
         specifier: ^5.20.6
         version: 5.20.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^5.4.1
+        version: 5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.1
-        version: 3.5.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 3.5.1(vite@5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vite-plugin-dts:
         specifier: ^3.9.0
-        version: 3.9.1(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.9.3)
+        version: 3.9.1(@types/node@25.2.0)(rollup@4.52.4)(typescript@5.9.3)(vite@5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
 
   packages/Filter:
     dependencies:
@@ -1016,7 +1015,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^5.1.1
-        version: 5.1.2(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 5.1.2(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       globals:
         specifier: ^16.5.0
         version: 16.5.0
@@ -1025,16 +1024,16 @@ importers:
         version: 5.8.3
       unocss:
         specifier: ^66.5.10
-        version: 66.5.10(postcss@8.5.6)(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 66.5.10(postcss@8.5.6)(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^7.2.4
+        version: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.2
-        version: 3.5.2(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 3.5.2(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@24.10.4)(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.8.3)
+        version: 4.5.4(@types/node@24.10.4)(rollup@4.52.4)(typescript@5.8.3)(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
 
   packages/SearchChatUI:
     dependencies:
@@ -1061,7 +1060,7 @@ importers:
         version: 1.2.6(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tailwindcss/vite':
         specifier: ^4.1.17
-        version: 4.1.18(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 4.1.18(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1101,7 +1100,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^5.1.1
-        version: 5.1.2(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 5.1.2(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       eslint:
         specifier: ^9.39.1
         version: 9.39.2(jiti@2.6.1)
@@ -1124,11 +1123,11 @@ importers:
         specifier: ^8.46.4
         version: 8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^7.2.4
+        version: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@24.10.4)(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.9.3)
+        version: 4.5.4(@types/node@24.10.4)(rollup@4.52.4)(typescript@5.9.3)(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
 
   packages/SearchResults:
     dependencies:
@@ -1159,7 +1158,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^5.0.0
-        version: 5.1.2(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 5.1.2(vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.23(postcss@8.5.6)
@@ -1188,14 +1187,14 @@ importers:
         specifier: ^8.39.1
         version: 8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)
       vite:
-        specifier: npm:rolldown-vite@7.2.5
-        version: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+        specifier: ^7.1.2
+        version: 7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.1
-        version: 3.5.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))
+        version: 3.5.1(vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vite-plugin-dts:
         specifier: ^3.9.0
-        version: 3.9.1(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.8.3)
+        version: 3.9.1(@types/node@25.2.0)(rollup@4.52.4)(typescript@5.8.3)(vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
 
 packages:
 
@@ -1634,6 +1633,12 @@ packages:
   '@emotion/weak-memoize@0.4.0':
     resolution: {integrity: sha512-snKqtPW01tN0ui7yu9rGv69aJXr/a/Ywvl11sUjNtEcRc+ng/mQriFL0wLXMef74iHa/EkftbDzU9F8iFbH+zg==}
 
+  '@esbuild/aix-ppc64@0.21.5':
+    resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
+    engines: {node: '>=12'}
+    cpu: [ppc64]
+    os: [aix]
+
   '@esbuild/aix-ppc64@0.25.10':
     resolution: {integrity: sha512-0NFWnA+7l41irNuaSVlLfgNT12caWJVLzp5eAVhZ0z1qpxbockccEt3s+149rE64VUI3Ml2zt8Nv5JVc4QXTsw==}
     engines: {node: '>=18'}
@@ -1646,6 +1651,12 @@ packages:
     cpu: [ppc64]
     os: [aix]
 
+  '@esbuild/android-arm64@0.21.5':
+    resolution: {integrity: sha512-c0uX9VAUBQ7dTDCjq+wdyGLowMdtR/GoC2U5IYk/7D1H1JYC0qseD7+11iMP2mRLN9RcCMRcjC4YMclCzGwS/A==}
+    engines: {node: '>=12'}
+    cpu: [arm64]
+    os: [android]
+
   '@esbuild/android-arm64@0.25.10':
     resolution: {integrity: sha512-LSQa7eDahypv/VO6WKohZGPSJDq5OVOo3UoFR1E4t4Gj1W7zEQMUhI+lo81H+DtB+kP+tDgBp+M4oNCwp6kffg==}
     engines: {node: '>=18'}
@@ -1656,6 +1667,12 @@ packages:
     resolution: {integrity: sha512-pvz8ZZ7ot/RBphf8fv60ljmaoydPU12VuXHImtAs0XhLLw+EXBi2BLe3OYSBslR4rryHvweW5gmkKFwTiFy6KA==}
     engines: {node: '>=18'}
     cpu: [arm64]
+    os: [android]
+
+  '@esbuild/android-arm@0.21.5':
+    resolution: {integrity: sha512-vCPvzSjpPHEi1siZdlvAlsPxXl7WbOVUBBAowWug4rJHb68Ox8KualB+1ocNvT5fjv6wpkX6o/iEpbDrf68zcg==}
+    engines: {node: '>=12'}
+    cpu: [arm]
     os: [android]
 
   '@esbuild/android-arm@0.25.10':
@@ -1670,6 +1687,12 @@ packages:
     cpu: [arm]
     os: [android]
 
+  '@esbuild/android-x64@0.21.5':
+    resolution: {integrity: sha512-D7aPRUUNHRBwHxzxRvp856rjUHRFW1SdQATKXH2hqA0kAZb1hKmi02OpYRacl0TxIGz/ZmXWlbZgjwWYaCakTA==}
+    engines: {node: '>=12'}
+    cpu: [x64]
+    os: [android]
+
   '@esbuild/android-x64@0.25.10':
     resolution: {integrity: sha512-MiC9CWdPrfhibcXwr39p9ha1x0lZJ9KaVfvzA0Wxwz9ETX4v5CHfF09bx935nHlhi+MxhA63dKRRQLiVgSUtEg==}
     engines: {node: '>=18'}
@@ -1682,6 +1705,12 @@ packages:
     cpu: [x64]
     os: [android]
 
+  '@esbuild/darwin-arm64@0.21.5':
+    resolution: {integrity: sha512-DwqXqZyuk5AiWWf3UfLiRDJ5EDd49zg6O9wclZ7kUMv2WRFr4HKjXp/5t8JZ11QbQfUS6/cRCKGwYhtNAY88kQ==}
+    engines: {node: '>=12'}
+    cpu: [arm64]
+    os: [darwin]
+
   '@esbuild/darwin-arm64@0.25.10':
     resolution: {integrity: sha512-JC74bdXcQEpW9KkV326WpZZjLguSZ3DfS8wrrvPMHgQOIEIG/sPXEN/V8IssoJhbefLRcRqw6RQH2NnpdprtMA==}
     engines: {node: '>=18'}
@@ -1692,6 +1721,12 @@ packages:
     resolution: {integrity: sha512-davCD2Zc80nzDVRwXTcQP/28fiJbcOwvdolL0sOiOsbwBa72kegmVU0Wrh1MYrbuCL98Omp5dVhQFWRKR2ZAlg==}
     engines: {node: '>=18'}
     cpu: [arm64]
+    os: [darwin]
+
+  '@esbuild/darwin-x64@0.21.5':
+    resolution: {integrity: sha512-se/JjF8NlmKVG4kNIuyWMV/22ZaerB+qaSi5MdrXtd6R08kvs2qCN4C09miupktDitvh8jRFflwGFBQcxZRjbw==}
+    engines: {node: '>=12'}
+    cpu: [x64]
     os: [darwin]
 
   '@esbuild/darwin-x64@0.25.10':
@@ -1706,6 +1741,12 @@ packages:
     cpu: [x64]
     os: [darwin]
 
+  '@esbuild/freebsd-arm64@0.21.5':
+    resolution: {integrity: sha512-5JcRxxRDUJLX8JXp/wcBCy3pENnCgBR9bN6JsY4OmhfUtIHe3ZW0mawA7+RDAcMLrMIZaf03NlQiX9DGyB8h4g==}
+    engines: {node: '>=12'}
+    cpu: [arm64]
+    os: [freebsd]
+
   '@esbuild/freebsd-arm64@0.25.10':
     resolution: {integrity: sha512-3ZioSQSg1HT2N05YxeJWYR+Libe3bREVSdWhEEgExWaDtyFbbXWb49QgPvFH8u03vUPX10JhJPcz7s9t9+boWg==}
     engines: {node: '>=18'}
@@ -1716,6 +1757,12 @@ packages:
     resolution: {integrity: sha512-lS/9CN+rgqQ9czogxlMcBMGd+l8Q3Nj1MFQwBZJyoEKI50XGxwuzznYdwcav6lpOGv5BqaZXqvBSiB/kJ5op+g==}
     engines: {node: '>=18'}
     cpu: [arm64]
+    os: [freebsd]
+
+  '@esbuild/freebsd-x64@0.21.5':
+    resolution: {integrity: sha512-J95kNBj1zkbMXtHVH29bBriQygMXqoVQOQYA+ISs0/2l3T9/kj42ow2mpqerRBxDJnmkUDCaQT/dfNXWX/ZZCQ==}
+    engines: {node: '>=12'}
+    cpu: [x64]
     os: [freebsd]
 
   '@esbuild/freebsd-x64@0.25.10':
@@ -1730,6 +1777,12 @@ packages:
     cpu: [x64]
     os: [freebsd]
 
+  '@esbuild/linux-arm64@0.21.5':
+    resolution: {integrity: sha512-ibKvmyYzKsBeX8d8I7MH/TMfWDXBF3db4qM6sy+7re0YXya+K1cem3on9XgdT2EQGMu4hQyZhan7TeQ8XkGp4Q==}
+    engines: {node: '>=12'}
+    cpu: [arm64]
+    os: [linux]
+
   '@esbuild/linux-arm64@0.25.10':
     resolution: {integrity: sha512-5luJWN6YKBsawd5f9i4+c+geYiVEw20FVW5x0v1kEMWNq8UctFjDiMATBxLvmmHA4bf7F6hTRaJgtghFr9iziQ==}
     engines: {node: '>=18'}
@@ -1740,6 +1793,12 @@ packages:
     resolution: {integrity: sha512-hYxN8pr66NsCCiRFkHUAsxylNOcAQaxSSkHMMjcpx0si13t1LHFphxJZUiGwojB1a/Hd5OiPIqDdXONia6bhTw==}
     engines: {node: '>=18'}
     cpu: [arm64]
+    os: [linux]
+
+  '@esbuild/linux-arm@0.21.5':
+    resolution: {integrity: sha512-bPb5AHZtbeNGjCKVZ9UGqGwo8EUu4cLq68E95A53KlxAPRmUyYv2D6F0uUI65XisGOL1hBP5mTronbgo+0bFcA==}
+    engines: {node: '>=12'}
+    cpu: [arm]
     os: [linux]
 
   '@esbuild/linux-arm@0.25.10':
@@ -1754,6 +1813,12 @@ packages:
     cpu: [arm]
     os: [linux]
 
+  '@esbuild/linux-ia32@0.21.5':
+    resolution: {integrity: sha512-YvjXDqLRqPDl2dvRODYmmhz4rPeVKYvppfGYKSNGdyZkA01046pLWyRKKI3ax8fbJoK5QbxblURkwK/MWY18Tg==}
+    engines: {node: '>=12'}
+    cpu: [ia32]
+    os: [linux]
+
   '@esbuild/linux-ia32@0.25.10':
     resolution: {integrity: sha512-NrSCx2Kim3EnnWgS4Txn0QGt0Xipoumb6z6sUtl5bOEZIVKhzfyp/Lyw4C1DIYvzeW/5mWYPBFJU3a/8Yr75DQ==}
     engines: {node: '>=18'}
@@ -1764,6 +1829,12 @@ packages:
     resolution: {integrity: sha512-MJt5BRRSScPDwG2hLelYhAAKh9imjHK5+NE/tvnRLbIqUWa+0E9N4WNMjmp/kXXPHZGqPLxggwVhz7QP8CTR8w==}
     engines: {node: '>=18'}
     cpu: [ia32]
+    os: [linux]
+
+  '@esbuild/linux-loong64@0.21.5':
+    resolution: {integrity: sha512-uHf1BmMG8qEvzdrzAqg2SIG/02+4/DHB6a9Kbya0XDvwDEKCoC8ZRWI5JJvNdUjtciBGFQ5PuBlpEOXQj+JQSg==}
+    engines: {node: '>=12'}
+    cpu: [loong64]
     os: [linux]
 
   '@esbuild/linux-loong64@0.25.10':
@@ -1778,6 +1849,12 @@ packages:
     cpu: [loong64]
     os: [linux]
 
+  '@esbuild/linux-mips64el@0.21.5':
+    resolution: {integrity: sha512-IajOmO+KJK23bj52dFSNCMsz1QP1DqM6cwLUv3W1QwyxkyIWecfafnI555fvSGqEKwjMXVLokcV5ygHW5b3Jbg==}
+    engines: {node: '>=12'}
+    cpu: [mips64el]
+    os: [linux]
+
   '@esbuild/linux-mips64el@0.25.10':
     resolution: {integrity: sha512-ab6eiuCwoMmYDyTnyptoKkVS3k8fy/1Uvq7Dj5czXI6DF2GqD2ToInBI0SHOp5/X1BdZ26RKc5+qjQNGRBelRA==}
     engines: {node: '>=18'}
@@ -1788,6 +1865,12 @@ packages:
     resolution: {integrity: sha512-nlP2I6ArEBewvJ2gjrrkESEZkB5mIoaTswuqNFRv/WYd+ATtUpe9Y09RnJvgvdag7he0OWgEZWhviS1OTOKixw==}
     engines: {node: '>=18'}
     cpu: [mips64el]
+    os: [linux]
+
+  '@esbuild/linux-ppc64@0.21.5':
+    resolution: {integrity: sha512-1hHV/Z4OEfMwpLO8rp7CvlhBDnjsC3CttJXIhBi+5Aj5r+MBvy4egg7wCbe//hSsT+RvDAG7s81tAvpL2XAE4w==}
+    engines: {node: '>=12'}
+    cpu: [ppc64]
     os: [linux]
 
   '@esbuild/linux-ppc64@0.25.10':
@@ -1802,6 +1885,12 @@ packages:
     cpu: [ppc64]
     os: [linux]
 
+  '@esbuild/linux-riscv64@0.21.5':
+    resolution: {integrity: sha512-2HdXDMd9GMgTGrPWnJzP2ALSokE/0O5HhTUvWIbD3YdjME8JwvSCnNGBnTThKGEB91OZhzrJ4qIIxk/SBmyDDA==}
+    engines: {node: '>=12'}
+    cpu: [riscv64]
+    os: [linux]
+
   '@esbuild/linux-riscv64@0.25.10':
     resolution: {integrity: sha512-FE557XdZDrtX8NMIeA8LBJX3dC2M8VGXwfrQWU7LB5SLOajfJIxmSdyL/gU1m64Zs9CBKvm4UAuBp5aJ8OgnrA==}
     engines: {node: '>=18'}
@@ -1814,6 +1903,12 @@ packages:
     cpu: [riscv64]
     os: [linux]
 
+  '@esbuild/linux-s390x@0.21.5':
+    resolution: {integrity: sha512-zus5sxzqBJD3eXxwvjN1yQkRepANgxE9lgOW2qLnmr8ikMTphkjgXu1HR01K4FJg8h1kEEDAqDcZQtbrRnB41A==}
+    engines: {node: '>=12'}
+    cpu: [s390x]
+    os: [linux]
+
   '@esbuild/linux-s390x@0.25.10':
     resolution: {integrity: sha512-3BBSbgzuB9ajLoVZk0mGu+EHlBwkusRmeNYdqmznmMc9zGASFjSsxgkNsqmXugpPk00gJ0JNKh/97nxmjctdew==}
     engines: {node: '>=18'}
@@ -1824,6 +1919,12 @@ packages:
     resolution: {integrity: sha512-p4bm9+wsPwup5Z8f4EpfN63qNagQ47Ua2znaqGH6bqLlmJ4bx97Y9JdqxgGZ6Y8xVTixUnEkoKSHcpRlDnNr5w==}
     engines: {node: '>=18'}
     cpu: [s390x]
+    os: [linux]
+
+  '@esbuild/linux-x64@0.21.5':
+    resolution: {integrity: sha512-1rYdTpyv03iycF1+BhzrzQJCdOuAOtaqHTWJZCWvijKD2N5Xu0TtVC8/+1faWqcP9iBCWOmjmhoH94dH82BxPQ==}
+    engines: {node: '>=12'}
+    cpu: [x64]
     os: [linux]
 
   '@esbuild/linux-x64@0.25.10':
@@ -1850,6 +1951,12 @@ packages:
     cpu: [arm64]
     os: [netbsd]
 
+  '@esbuild/netbsd-x64@0.21.5':
+    resolution: {integrity: sha512-Woi2MXzXjMULccIwMnLciyZH4nCIMpWQAs049KEeMvOcNADVxo0UBIQPfSmxB3CWKedngg7sWZdLvLczpe0tLg==}
+    engines: {node: '>=12'}
+    cpu: [x64]
+    os: [netbsd]
+
   '@esbuild/netbsd-x64@0.25.10':
     resolution: {integrity: sha512-7RTytDPGU6fek/hWuN9qQpeGPBZFfB4zZgcz2VK2Z5VpdUxEI8JKYsg3JfO0n/Z1E/6l05n0unDCNc4HnhQGig==}
     engines: {node: '>=18'}
@@ -1872,6 +1979,12 @@ packages:
     resolution: {integrity: sha512-DNIHH2BPQ5551A7oSHD0CKbwIA/Ox7+78/AWkbS5QoRzaqlev2uFayfSxq68EkonB+IKjiuxBFoV8ESJy8bOHA==}
     engines: {node: '>=18'}
     cpu: [arm64]
+    os: [openbsd]
+
+  '@esbuild/openbsd-x64@0.21.5':
+    resolution: {integrity: sha512-HLNNw99xsvx12lFBUwoT8EVCsSvRNDVxNpjZ7bPn947b8gJPzeHWyNVhFsaerc0n3TsbOINvRP2byTZ5LKezow==}
+    engines: {node: '>=12'}
+    cpu: [x64]
     os: [openbsd]
 
   '@esbuild/openbsd-x64@0.25.10':
@@ -1898,6 +2011,12 @@ packages:
     cpu: [arm64]
     os: [openharmony]
 
+  '@esbuild/sunos-x64@0.21.5':
+    resolution: {integrity: sha512-6+gjmFpfy0BHU5Tpptkuh8+uw3mnrvgs+dSPQXQOv3ekbordwnzTVEb4qnIvQcYXq6gzkyTnoZ9dZG+D4garKg==}
+    engines: {node: '>=12'}
+    cpu: [x64]
+    os: [sunos]
+
   '@esbuild/sunos-x64@0.25.10':
     resolution: {integrity: sha512-fswk3XT0Uf2pGJmOpDB7yknqhVkJQkAQOcW/ccVOtfx05LkbWOaRAtn5SaqXypeKQra1QaEa841PgrSL9ubSPQ==}
     engines: {node: '>=18'}
@@ -1909,6 +2028,12 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [sunos]
+
+  '@esbuild/win32-arm64@0.21.5':
+    resolution: {integrity: sha512-Z0gOTd75VvXqyq7nsl93zwahcTROgqvuAcYDUr+vOv8uHhNSKROyU961kgtCD1e95IqPKSQKH7tBTslnS3tA8A==}
+    engines: {node: '>=12'}
+    cpu: [arm64]
+    os: [win32]
 
   '@esbuild/win32-arm64@0.25.10':
     resolution: {integrity: sha512-ah+9b59KDTSfpaCg6VdJoOQvKjI33nTaQr4UluQwW7aEwZQsbMCfTmfEO4VyewOxx4RaDT/xCy9ra2GPWmO7Kw==}
@@ -1922,6 +2047,12 @@ packages:
     cpu: [arm64]
     os: [win32]
 
+  '@esbuild/win32-ia32@0.21.5':
+    resolution: {integrity: sha512-SWXFF1CL2RVNMaVs+BBClwtfZSvDgtL//G/smwAc5oVK/UPu2Gu9tIaRgFmYFFKrmg3SyAjSrElf0TiJ1v8fYA==}
+    engines: {node: '>=12'}
+    cpu: [ia32]
+    os: [win32]
+
   '@esbuild/win32-ia32@0.25.10':
     resolution: {integrity: sha512-QHPDbKkrGO8/cz9LKVnJU22HOi4pxZnZhhA2HYHez5Pz4JeffhDjf85E57Oyco163GnzNCVkZK0b/n4Y0UHcSw==}
     engines: {node: '>=18'}
@@ -1932,6 +2063,12 @@ packages:
     resolution: {integrity: sha512-Iuws0kxo4yusk7sw70Xa2E2imZU5HoixzxfGCdxwBdhiDgt9vX9VUCBhqcwY7/uh//78A1hMkkROMJq9l27oLQ==}
     engines: {node: '>=18'}
     cpu: [ia32]
+    os: [win32]
+
+  '@esbuild/win32-x64@0.21.5':
+    resolution: {integrity: sha512-tQd/1efJuzPC6rCFwEvLtci/xNFcTZknmXs98FYDfGE4wP9ClFV98nyKrzJKVPMhdDnjzLhdUyMX4PsQAPjwIw==}
+    engines: {node: '>=12'}
+    cpu: [x64]
     os: [win32]
 
   '@esbuild/win32-x64@0.25.10':
@@ -5016,6 +5153,11 @@ packages:
       esbuild: '>=0.20.1'
       sass-embedded: ^1.71.1
 
+  esbuild@0.21.5:
+    resolution: {integrity: sha512-mg3OPMV4hXywwpoDxu3Qda5xCKQi+vCTZq8S9J/EpkhB2HzKXq4SNFZE3+NK93JYxc8VMSep+lOUSC/RVKaBqw==}
+    engines: {node: '>=12'}
+    hasBin: true
+
   esbuild@0.25.10:
     resolution: {integrity: sha512-9RiGKvCwaqxO2owP61uQ4BgNborAQskMR6QusfWzQqv7AZOg5oGehdY2pRJMTKuwxd1IDBP4rSbI5lHzU7SMsQ==}
     engines: {node: '>=18'}
@@ -7834,6 +7976,117 @@ packages:
       vite:
         optional: true
 
+  vite@5.4.10:
+    resolution: {integrity: sha512-1hvaPshuPUtxeQ0hsVH3Mud0ZanOLwVTneA1EgbAM5LhaZEqyPWGRQ7BtaMvUrTDeEaC8pxtj6a6jku3x4z6SQ==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || >=20.0.0
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      sass-embedded: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+
+  vite@7.2.4:
+    resolution: {integrity: sha512-NL8jTlbo0Tn4dUEXEsUg8KeyG/Lkmc4Fnzb8JXN/Ykm9G4HNImjtABMJgkQoVjOBN/j2WAwDTRytdqJbZsah7w==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^20.19.0 || >=22.12.0
+      jiti: '>=1.21.0'
+      less: ^4.0.0
+      lightningcss: ^1.21.0
+      sass: ^1.70.0
+      sass-embedded: ^1.70.0
+      stylus: '>=0.54.8'
+      sugarss: ^5.0.0
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+
+  vite@7.3.3:
+    resolution: {integrity: sha512-/4XH147Ui7OGTjg3HbdWe5arnZQSbfuRzdr9Ec7TQi5I7R+ir0Rlc9GIvD4v0XZurELqA035KVXJXpR61xhiTA==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^20.19.0 || >=22.12.0
+      jiti: '>=1.21.0'
+      less: ^4.0.0
+      lightningcss: ^1.21.0
+      sass: ^1.70.0
+      sass-embedded: ^1.70.0
+      stylus: '>=0.54.8'
+      sugarss: ^5.0.0
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+
   void-elements@3.1.0:
     resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
     engines: {node: '>=0.10.0'}
@@ -8778,10 +9031,16 @@ snapshots:
 
   '@emotion/weak-memoize@0.4.0': {}
 
+  '@esbuild/aix-ppc64@0.21.5':
+    optional: true
+
   '@esbuild/aix-ppc64@0.25.10':
     optional: true
 
   '@esbuild/aix-ppc64@0.27.2':
+    optional: true
+
+  '@esbuild/android-arm64@0.21.5':
     optional: true
 
   '@esbuild/android-arm64@0.25.10':
@@ -8790,10 +9049,16 @@ snapshots:
   '@esbuild/android-arm64@0.27.2':
     optional: true
 
+  '@esbuild/android-arm@0.21.5':
+    optional: true
+
   '@esbuild/android-arm@0.25.10':
     optional: true
 
   '@esbuild/android-arm@0.27.2':
+    optional: true
+
+  '@esbuild/android-x64@0.21.5':
     optional: true
 
   '@esbuild/android-x64@0.25.10':
@@ -8802,10 +9067,16 @@ snapshots:
   '@esbuild/android-x64@0.27.2':
     optional: true
 
+  '@esbuild/darwin-arm64@0.21.5':
+    optional: true
+
   '@esbuild/darwin-arm64@0.25.10':
     optional: true
 
   '@esbuild/darwin-arm64@0.27.2':
+    optional: true
+
+  '@esbuild/darwin-x64@0.21.5':
     optional: true
 
   '@esbuild/darwin-x64@0.25.10':
@@ -8814,10 +9085,16 @@ snapshots:
   '@esbuild/darwin-x64@0.27.2':
     optional: true
 
+  '@esbuild/freebsd-arm64@0.21.5':
+    optional: true
+
   '@esbuild/freebsd-arm64@0.25.10':
     optional: true
 
   '@esbuild/freebsd-arm64@0.27.2':
+    optional: true
+
+  '@esbuild/freebsd-x64@0.21.5':
     optional: true
 
   '@esbuild/freebsd-x64@0.25.10':
@@ -8826,10 +9103,16 @@ snapshots:
   '@esbuild/freebsd-x64@0.27.2':
     optional: true
 
+  '@esbuild/linux-arm64@0.21.5':
+    optional: true
+
   '@esbuild/linux-arm64@0.25.10':
     optional: true
 
   '@esbuild/linux-arm64@0.27.2':
+    optional: true
+
+  '@esbuild/linux-arm@0.21.5':
     optional: true
 
   '@esbuild/linux-arm@0.25.10':
@@ -8838,10 +9121,16 @@ snapshots:
   '@esbuild/linux-arm@0.27.2':
     optional: true
 
+  '@esbuild/linux-ia32@0.21.5':
+    optional: true
+
   '@esbuild/linux-ia32@0.25.10':
     optional: true
 
   '@esbuild/linux-ia32@0.27.2':
+    optional: true
+
+  '@esbuild/linux-loong64@0.21.5':
     optional: true
 
   '@esbuild/linux-loong64@0.25.10':
@@ -8850,10 +9139,16 @@ snapshots:
   '@esbuild/linux-loong64@0.27.2':
     optional: true
 
+  '@esbuild/linux-mips64el@0.21.5':
+    optional: true
+
   '@esbuild/linux-mips64el@0.25.10':
     optional: true
 
   '@esbuild/linux-mips64el@0.27.2':
+    optional: true
+
+  '@esbuild/linux-ppc64@0.21.5':
     optional: true
 
   '@esbuild/linux-ppc64@0.25.10':
@@ -8862,16 +9157,25 @@ snapshots:
   '@esbuild/linux-ppc64@0.27.2':
     optional: true
 
+  '@esbuild/linux-riscv64@0.21.5':
+    optional: true
+
   '@esbuild/linux-riscv64@0.25.10':
     optional: true
 
   '@esbuild/linux-riscv64@0.27.2':
     optional: true
 
+  '@esbuild/linux-s390x@0.21.5':
+    optional: true
+
   '@esbuild/linux-s390x@0.25.10':
     optional: true
 
   '@esbuild/linux-s390x@0.27.2':
+    optional: true
+
+  '@esbuild/linux-x64@0.21.5':
     optional: true
 
   '@esbuild/linux-x64@0.25.10':
@@ -8886,6 +9190,9 @@ snapshots:
   '@esbuild/netbsd-arm64@0.27.2':
     optional: true
 
+  '@esbuild/netbsd-x64@0.21.5':
+    optional: true
+
   '@esbuild/netbsd-x64@0.25.10':
     optional: true
 
@@ -8896,6 +9203,9 @@ snapshots:
     optional: true
 
   '@esbuild/openbsd-arm64@0.27.2':
+    optional: true
+
+  '@esbuild/openbsd-x64@0.21.5':
     optional: true
 
   '@esbuild/openbsd-x64@0.25.10':
@@ -8910,10 +9220,16 @@ snapshots:
   '@esbuild/openharmony-arm64@0.27.2':
     optional: true
 
+  '@esbuild/sunos-x64@0.21.5':
+    optional: true
+
   '@esbuild/sunos-x64@0.25.10':
     optional: true
 
   '@esbuild/sunos-x64@0.27.2':
+    optional: true
+
+  '@esbuild/win32-arm64@0.21.5':
     optional: true
 
   '@esbuild/win32-arm64@0.25.10':
@@ -8922,10 +9238,16 @@ snapshots:
   '@esbuild/win32-arm64@0.27.2':
     optional: true
 
+  '@esbuild/win32-ia32@0.21.5':
+    optional: true
+
   '@esbuild/win32-ia32@0.25.10':
     optional: true
 
   '@esbuild/win32-ia32@0.27.2':
+    optional: true
+
+  '@esbuild/win32-x64@0.21.5':
     optional: true
 
   '@esbuild/win32-x64@0.25.10':
@@ -11128,26 +11450,26 @@ snapshots:
       postcss: 8.5.6
       tailwindcss: 4.1.18
 
-  '@tailwindcss/vite@4.1.18(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))':
+  '@tailwindcss/vite@4.1.18(vite@5.4.10(@types/node@25.0.9)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
     dependencies:
       '@tailwindcss/node': 4.1.18
       '@tailwindcss/oxide': 4.1.18
       tailwindcss: 4.1.18
-      vite: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: 5.4.10(@types/node@25.0.9)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
-  '@tailwindcss/vite@4.1.18(rolldown-vite@7.2.5(@types/node@25.0.9)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))':
+  '@tailwindcss/vite@4.1.18(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
     dependencies:
       '@tailwindcss/node': 4.1.18
       '@tailwindcss/oxide': 4.1.18
       tailwindcss: 4.1.18
-      vite: rolldown-vite@7.2.5(@types/node@25.0.9)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
-  '@tailwindcss/vite@4.1.18(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))':
+  '@tailwindcss/vite@4.1.18(vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
     dependencies:
       '@tailwindcss/node': 4.1.18
       '@tailwindcss/oxide': 4.1.18
       tailwindcss: 4.1.18
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: 7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   '@tybys/wasm-util@0.10.1':
     dependencies:
@@ -11758,13 +12080,29 @@ snapshots:
     optionalDependencies:
       vite: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
 
-  '@unocss/astro@66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))':
+  '@unocss/astro@66.5.10(vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
+    dependencies:
+      '@unocss/core': 66.5.10
+      '@unocss/reset': 66.5.10
+      '@unocss/vite': 66.5.10(vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
+    optionalDependencies:
+      vite: 7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+
+  '@unocss/astro@66.5.10(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
+    dependencies:
+      '@unocss/core': 66.5.10
+      '@unocss/reset': 66.5.10
+      '@unocss/vite': 66.5.10(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
+    optionalDependencies:
+      vite: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+
+  '@unocss/astro@66.6.0(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5))':
     dependencies:
       '@unocss/core': 66.6.0
       '@unocss/reset': 66.6.0
-      '@unocss/vite': 66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
+      '@unocss/vite': 66.6.0(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5))
     optionalDependencies:
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
+      vite: 5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5)
 
   '@unocss/cli@66.5.10':
     dependencies:
@@ -12035,7 +12373,33 @@ snapshots:
       unplugin-utils: 0.3.1
       vite: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
 
-  '@unocss/vite@66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))':
+  '@unocss/vite@66.5.10(vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
+    dependencies:
+      '@jridgewell/remapping': 2.3.5
+      '@unocss/config': 66.5.10
+      '@unocss/core': 66.5.10
+      '@unocss/inspector': 66.5.10
+      chokidar: 3.6.0
+      magic-string: 0.30.21
+      pathe: 2.0.3
+      tinyglobby: 0.2.15
+      unplugin-utils: 0.3.1
+      vite: 7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+
+  '@unocss/vite@66.5.10(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
+    dependencies:
+      '@jridgewell/remapping': 2.3.5
+      '@unocss/config': 66.5.10
+      '@unocss/core': 66.5.10
+      '@unocss/inspector': 66.5.10
+      chokidar: 3.6.0
+      magic-string: 0.30.21
+      pathe: 2.0.3
+      tinyglobby: 0.2.15
+      unplugin-utils: 0.3.1
+      vite: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+
+  '@unocss/vite@66.6.0(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5))':
     dependencies:
       '@jridgewell/remapping': 2.3.5
       '@unocss/config': 66.6.0
@@ -12046,53 +12410,53 @@ snapshots:
       pathe: 2.0.3
       tinyglobby: 0.2.15
       unplugin-utils: 0.3.1
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
+      vite: 5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5)
 
-  '@vitejs/plugin-react@4.3.1(rolldown-vite@7.2.5(@types/node@22.5.5)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3))':
+  '@vitejs/plugin-react@4.3.1(vite@5.4.10(@types/node@22.5.5)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.25.2)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: rolldown-vite@7.2.5(@types/node@22.5.5)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: 5.4.10(@types/node@22.5.5)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.3.1(rolldown-vite@7.2.5(@types/node@25.0.9)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))':
+  '@vitejs/plugin-react@4.3.1(vite@5.4.10(@types/node@25.0.9)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.25.2)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: rolldown-vite@7.2.5(@types/node@25.0.9)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: 5.4.10(@types/node@25.0.9)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.3.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))':
+  '@vitejs/plugin-react@4.3.1(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5))':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.25.2)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: 5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.3.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))':
+  '@vitejs/plugin-react@4.3.1(vite@5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.25.2)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
+      vite: 5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@5.0.4(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))':
+  '@vitejs/plugin-react@5.0.4(vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
     dependencies:
       '@babel/core': 7.28.4
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.4)
@@ -12100,7 +12464,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.38
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: 7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -12116,7 +12480,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@5.1.2(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))':
+  '@vitejs/plugin-react@5.1.2(vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.5)
@@ -12124,7 +12488,31 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.53
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: 7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@vitejs/plugin-react@5.1.2(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
+    dependencies:
+      '@babel/core': 7.28.5
+      '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.5)
+      '@babel/plugin-transform-react-jsx-source': 7.27.1(@babel/core@7.28.5)
+      '@rolldown/pluginutils': 1.0.0-beta.53
+      '@types/babel__core': 7.20.5
+      react-refresh: 0.18.0
+      vite: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@vitejs/plugin-react@5.1.2(vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))':
+    dependencies:
+      '@babel/core': 7.28.5
+      '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.5)
+      '@babel/plugin-transform-react-jsx-source': 7.27.1(@babel/core@7.28.5)
+      '@rolldown/pluginutils': 1.0.0-beta.53
+      '@types/babel__core': 7.20.5
+      react-refresh: 0.18.0
+      vite: 7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -13525,6 +13913,32 @@ snapshots:
       sass: 1.97.3
       sass-embedded: 1.97.3
 
+  esbuild@0.21.5:
+    optionalDependencies:
+      '@esbuild/aix-ppc64': 0.21.5
+      '@esbuild/android-arm': 0.21.5
+      '@esbuild/android-arm64': 0.21.5
+      '@esbuild/android-x64': 0.21.5
+      '@esbuild/darwin-arm64': 0.21.5
+      '@esbuild/darwin-x64': 0.21.5
+      '@esbuild/freebsd-arm64': 0.21.5
+      '@esbuild/freebsd-x64': 0.21.5
+      '@esbuild/linux-arm': 0.21.5
+      '@esbuild/linux-arm64': 0.21.5
+      '@esbuild/linux-ia32': 0.21.5
+      '@esbuild/linux-loong64': 0.21.5
+      '@esbuild/linux-mips64el': 0.21.5
+      '@esbuild/linux-ppc64': 0.21.5
+      '@esbuild/linux-riscv64': 0.21.5
+      '@esbuild/linux-s390x': 0.21.5
+      '@esbuild/linux-x64': 0.21.5
+      '@esbuild/netbsd-x64': 0.21.5
+      '@esbuild/openbsd-x64': 0.21.5
+      '@esbuild/sunos-x64': 0.21.5
+      '@esbuild/win32-arm64': 0.21.5
+      '@esbuild/win32-ia32': 0.21.5
+      '@esbuild/win32-x64': 0.21.5
+
   esbuild@0.25.10:
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.25.10
@@ -13553,7 +13967,6 @@ snapshots:
       '@esbuild/win32-arm64': 0.25.10
       '@esbuild/win32-ia32': 0.25.10
       '@esbuild/win32-x64': 0.25.10
-    optional: true
 
   esbuild@0.27.2:
     optionalDependencies:
@@ -16224,24 +16637,6 @@ snapshots:
 
   robust-predicates@3.0.2: {}
 
-  rolldown-vite@7.2.5(@types/node@22.5.5)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3):
-    dependencies:
-      '@oxc-project/runtime': 0.97.0
-      fdir: 6.5.0(picomatch@4.0.3)
-      lightningcss: 1.30.2
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rolldown: 1.0.0-beta.50
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      '@types/node': 22.5.5
-      esbuild: 0.25.10
-      fsevents: 2.3.3
-      jiti: 2.6.1
-      less: 4.2.0
-      sass: 1.97.3
-      sass-embedded: 1.97.3
-
   rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3):
     dependencies:
       '@oxc-project/runtime': 0.97.0
@@ -16258,60 +16653,6 @@ snapshots:
       jiti: 2.6.1
       less: 4.5.1
       sass: 1.97.3
-      sass-embedded: 1.97.3
-
-  rolldown-vite@7.2.5(@types/node@25.0.9)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3):
-    dependencies:
-      '@oxc-project/runtime': 0.97.0
-      fdir: 6.5.0(picomatch@4.0.3)
-      lightningcss: 1.30.2
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rolldown: 1.0.0-beta.50
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      '@types/node': 25.0.9
-      esbuild: 0.25.10
-      fsevents: 2.3.3
-      jiti: 2.6.1
-      less: 4.5.1
-      sass: 1.97.3
-      sass-embedded: 1.97.3
-
-  rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3):
-    dependencies:
-      '@oxc-project/runtime': 0.97.0
-      fdir: 6.5.0(picomatch@4.0.3)
-      lightningcss: 1.30.2
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rolldown: 1.0.0-beta.50
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      '@types/node': 25.2.0
-      esbuild: 0.25.10
-      fsevents: 2.3.3
-      jiti: 2.6.1
-      less: 4.5.1
-      sass: 1.97.3
-      sass-embedded: 1.97.3
-
-  rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5):
-    dependencies:
-      '@oxc-project/runtime': 0.97.0
-      fdir: 6.5.0(picomatch@4.0.3)
-      lightningcss: 1.30.2
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rolldown: 1.0.0-beta.50
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      '@types/node': 25.2.0
-      esbuild: 0.27.2
-      fsevents: 2.3.3
-      jiti: 2.6.1
-      less: 4.2.0
-      sass: 1.69.5
       sass-embedded: 1.97.3
 
   rolldown@1.0.0-beta.50:
@@ -16361,7 +16702,6 @@ snapshots:
       '@rollup/rollup-win32-x64-gnu': 4.52.4
       '@rollup/rollup-win32-x64-msvc': 4.52.4
       fsevents: 2.3.3
-    optional: true
 
   roughjs@4.6.6:
     dependencies:
@@ -17006,9 +17346,63 @@ snapshots:
       - postcss
       - supports-color
 
-  unocss@66.6.0(postcss@8.5.6)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)):
+  unocss@66.5.10(postcss@8.5.6)(vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
     dependencies:
-      '@unocss/astro': 66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
+      '@unocss/astro': 66.5.10(vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
+      '@unocss/cli': 66.5.10
+      '@unocss/core': 66.5.10
+      '@unocss/postcss': 66.5.10(postcss@8.5.6)
+      '@unocss/preset-attributify': 66.5.10
+      '@unocss/preset-icons': 66.5.10
+      '@unocss/preset-mini': 66.5.10
+      '@unocss/preset-tagify': 66.5.10
+      '@unocss/preset-typography': 66.5.10
+      '@unocss/preset-uno': 66.5.10
+      '@unocss/preset-web-fonts': 66.5.10
+      '@unocss/preset-wind': 66.5.10
+      '@unocss/preset-wind3': 66.5.10
+      '@unocss/preset-wind4': 66.5.10
+      '@unocss/transformer-attributify-jsx': 66.5.10
+      '@unocss/transformer-compile-class': 66.5.10
+      '@unocss/transformer-directives': 66.5.10
+      '@unocss/transformer-variant-group': 66.5.10
+      '@unocss/vite': 66.5.10(vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
+    optionalDependencies:
+      vite: 7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+    transitivePeerDependencies:
+      - postcss
+      - supports-color
+
+  unocss@66.5.10(postcss@8.5.6)(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
+    dependencies:
+      '@unocss/astro': 66.5.10(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
+      '@unocss/cli': 66.5.10
+      '@unocss/core': 66.5.10
+      '@unocss/postcss': 66.5.10(postcss@8.5.6)
+      '@unocss/preset-attributify': 66.5.10
+      '@unocss/preset-icons': 66.5.10
+      '@unocss/preset-mini': 66.5.10
+      '@unocss/preset-tagify': 66.5.10
+      '@unocss/preset-typography': 66.5.10
+      '@unocss/preset-uno': 66.5.10
+      '@unocss/preset-web-fonts': 66.5.10
+      '@unocss/preset-wind': 66.5.10
+      '@unocss/preset-wind3': 66.5.10
+      '@unocss/preset-wind4': 66.5.10
+      '@unocss/transformer-attributify-jsx': 66.5.10
+      '@unocss/transformer-compile-class': 66.5.10
+      '@unocss/transformer-directives': 66.5.10
+      '@unocss/transformer-variant-group': 66.5.10
+      '@unocss/vite': 66.5.10(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
+    optionalDependencies:
+      vite: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+    transitivePeerDependencies:
+      - postcss
+      - supports-color
+
+  unocss@66.6.0(postcss@8.5.6)(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5)):
+    dependencies:
+      '@unocss/astro': 66.6.0(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5))
       '@unocss/cli': 66.6.0
       '@unocss/core': 66.6.0
       '@unocss/postcss': 66.6.0(postcss@8.5.6)
@@ -17026,9 +17420,9 @@ snapshots:
       '@unocss/transformer-compile-class': 66.6.0
       '@unocss/transformer-directives': 66.6.0
       '@unocss/transformer-variant-group': 66.6.0
-      '@unocss/vite': 66.6.0(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))
+      '@unocss/vite': 66.6.0(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5))
     optionalDependencies:
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
+      vite: 5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5)
     transitivePeerDependencies:
       - postcss
       - supports-color
@@ -17137,27 +17531,35 @@ snapshots:
       unist-util-stringify-position: 2.0.3
       vfile-message: 2.0.4
 
-  vite-plugin-css-injected-by-js@3.5.1(rolldown-vite@7.2.5(@types/node@22.5.5)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)):
-    dependencies:
-      vite: rolldown-vite@7.2.5(@types/node@22.5.5)(esbuild@0.25.10)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.97.3)
-
   vite-plugin-css-injected-by-js@3.5.1(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)):
     dependencies:
       vite: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
 
-  vite-plugin-css-injected-by-js@3.5.1(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)):
+  vite-plugin-css-injected-by-js@3.5.1(vite@5.4.10(@types/node@22.5.5)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
     dependencies:
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: 5.4.10(@types/node@22.5.5)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
-  vite-plugin-css-injected-by-js@3.5.2(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)):
+  vite-plugin-css-injected-by-js@3.5.1(vite@5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
     dependencies:
-      vite: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: 5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
-  vite-plugin-css-injected-by-js@3.5.2(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)):
+  vite-plugin-css-injected-by-js@3.5.1(vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
     dependencies:
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
+      vite: 7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
-  vite-plugin-dts@3.9.1(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.8.3):
+  vite-plugin-css-injected-by-js@3.5.2(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5)):
+    dependencies:
+      vite: 5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5)
+
+  vite-plugin-css-injected-by-js@3.5.2(vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
+    dependencies:
+      vite: 7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+
+  vite-plugin-css-injected-by-js@3.5.2(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
+    dependencies:
+      vite: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+
+  vite-plugin-dts@3.9.1(@types/node@25.2.0)(rollup@4.52.4)(typescript@5.8.3)(vite@5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
     dependencies:
       '@microsoft/api-extractor': 7.43.0(@types/node@25.2.0)
       '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
@@ -17168,13 +17570,30 @@ snapshots:
       typescript: 5.8.3
       vue-tsc: 1.8.27(typescript@5.8.3)
     optionalDependencies:
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: 5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
 
-  vite-plugin-dts@3.9.1(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.9.3):
+  vite-plugin-dts@3.9.1(@types/node@25.2.0)(rollup@4.52.4)(typescript@5.8.3)(vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
+    dependencies:
+      '@microsoft/api-extractor': 7.43.0(@types/node@25.2.0)
+      '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
+      '@vue/language-core': 1.8.27(typescript@5.8.3)
+      debug: 4.4.3
+      kolorist: 1.8.0
+      magic-string: 0.30.19
+      typescript: 5.8.3
+      vue-tsc: 1.8.27(typescript@5.8.3)
+    optionalDependencies:
+      vite: 7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+    transitivePeerDependencies:
+      - '@types/node'
+      - rollup
+      - supports-color
+
+  vite-plugin-dts@3.9.1(@types/node@25.2.0)(rollup@4.52.4)(typescript@5.9.3)(vite@5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
     dependencies:
       '@microsoft/api-extractor': 7.43.0(@types/node@25.2.0)
       '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
@@ -17185,26 +17604,7 @@ snapshots:
       typescript: 5.9.3
       vue-tsc: 1.8.27(typescript@5.9.3)
     optionalDependencies:
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
-    transitivePeerDependencies:
-      - '@types/node'
-      - rollup
-      - supports-color
-
-  vite-plugin-dts@4.5.4(@types/node@24.10.4)(rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.8.3):
-    dependencies:
-      '@microsoft/api-extractor': 7.55.2(@types/node@24.10.4)
-      '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
-      '@volar/typescript': 2.4.27
-      '@vue/language-core': 2.2.0(typescript@5.8.3)
-      compare-versions: 6.1.1
-      debug: 4.4.3
-      kolorist: 1.8.0
-      local-pkg: 1.1.2
-      magic-string: 0.30.21
-      typescript: 5.8.3
-    optionalDependencies:
-      vite: rolldown-vite@7.2.5(@types/node@24.10.4)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: 5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
@@ -17229,9 +17629,9 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-plugin-dts@4.5.4(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3))(rollup@4.52.4)(typescript@5.8.3):
+  vite-plugin-dts@4.5.4(@types/node@24.10.4)(rollup@4.52.4)(typescript@5.8.3)(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
     dependencies:
-      '@microsoft/api-extractor': 7.55.2(@types/node@25.2.0)
+      '@microsoft/api-extractor': 7.55.2(@types/node@24.10.4)
       '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
       '@volar/typescript': 2.4.27
       '@vue/language-core': 2.2.0(typescript@5.8.3)
@@ -17242,13 +17642,51 @@ snapshots:
       magic-string: 0.30.21
       typescript: 5.8.3
     optionalDependencies:
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.25.10)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)
+      vite: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
 
-  vite-plugin-dts@4.5.4(@types/node@25.2.0)(rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5))(rollup@4.52.4)(typescript@5.8.3):
+  vite-plugin-dts@4.5.4(@types/node@24.10.4)(rollup@4.52.4)(typescript@5.9.3)(vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
+    dependencies:
+      '@microsoft/api-extractor': 7.55.2(@types/node@24.10.4)
+      '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
+      '@volar/typescript': 2.4.27
+      '@vue/language-core': 2.2.0(typescript@5.9.3)
+      compare-versions: 6.1.1
+      debug: 4.4.3
+      kolorist: 1.8.0
+      local-pkg: 1.1.2
+      magic-string: 0.30.21
+      typescript: 5.9.3
+    optionalDependencies:
+      vite: 7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+    transitivePeerDependencies:
+      - '@types/node'
+      - rollup
+      - supports-color
+
+  vite-plugin-dts@4.5.4(@types/node@24.10.4)(rollup@4.52.4)(typescript@5.9.3)(vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
+    dependencies:
+      '@microsoft/api-extractor': 7.55.2(@types/node@24.10.4)
+      '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
+      '@volar/typescript': 2.4.27
+      '@vue/language-core': 2.2.0(typescript@5.9.3)
+      compare-versions: 6.1.1
+      debug: 4.4.3
+      kolorist: 1.8.0
+      local-pkg: 1.1.2
+      magic-string: 0.30.21
+      typescript: 5.9.3
+    optionalDependencies:
+      vite: 7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+    transitivePeerDependencies:
+      - '@types/node'
+      - rollup
+      - supports-color
+
+  vite-plugin-dts@4.5.4(@types/node@25.2.0)(rollup@4.52.4)(typescript@5.8.3)(vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5)):
     dependencies:
       '@microsoft/api-extractor': 7.55.2(@types/node@25.2.0)
       '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
@@ -17261,11 +17699,133 @@ snapshots:
       magic-string: 0.30.21
       typescript: 5.8.3
     optionalDependencies:
-      vite: rolldown-vite@7.2.5(@types/node@25.2.0)(esbuild@0.27.2)(jiti@2.6.1)(less@4.2.0)(sass-embedded@1.97.3)(sass@1.69.5)
+      vite: 5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
+
+  vite-plugin-dts@4.5.4(@types/node@25.2.0)(rollup@4.52.4)(typescript@5.8.3)(vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)):
+    dependencies:
+      '@microsoft/api-extractor': 7.55.2(@types/node@25.2.0)
+      '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
+      '@volar/typescript': 2.4.27
+      '@vue/language-core': 2.2.0(typescript@5.8.3)
+      compare-versions: 6.1.1
+      debug: 4.4.3
+      kolorist: 1.8.0
+      local-pkg: 1.1.2
+      magic-string: 0.30.21
+      typescript: 5.8.3
+    optionalDependencies:
+      vite: 7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+    transitivePeerDependencies:
+      - '@types/node'
+      - rollup
+      - supports-color
+
+  vite@5.4.10(@types/node@22.5.5)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3):
+    dependencies:
+      esbuild: 0.21.5
+      postcss: 8.5.6
+      rollup: 4.52.4
+    optionalDependencies:
+      '@types/node': 22.5.5
+      fsevents: 2.3.3
+      less: 4.2.0
+      lightningcss: 1.30.2
+      sass: 1.97.3
+      sass-embedded: 1.97.3
+
+  vite@5.4.10(@types/node@25.0.9)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3):
+    dependencies:
+      esbuild: 0.21.5
+      postcss: 8.5.6
+      rollup: 4.52.4
+    optionalDependencies:
+      '@types/node': 25.0.9
+      fsevents: 2.3.3
+      less: 4.5.1
+      lightningcss: 1.30.2
+      sass: 1.97.3
+      sass-embedded: 1.97.3
+
+  vite@5.4.10(@types/node@25.2.0)(less@4.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.69.5):
+    dependencies:
+      esbuild: 0.21.5
+      postcss: 8.5.6
+      rollup: 4.52.4
+    optionalDependencies:
+      '@types/node': 25.2.0
+      fsevents: 2.3.3
+      less: 4.2.0
+      lightningcss: 1.30.2
+      sass: 1.69.5
+      sass-embedded: 1.97.3
+
+  vite@5.4.10(@types/node@25.2.0)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3):
+    dependencies:
+      esbuild: 0.21.5
+      postcss: 8.5.6
+      rollup: 4.52.4
+    optionalDependencies:
+      '@types/node': 25.2.0
+      fsevents: 2.3.3
+      less: 4.5.1
+      lightningcss: 1.30.2
+      sass: 1.97.3
+      sass-embedded: 1.97.3
+
+  vite@7.2.4(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3):
+    dependencies:
+      esbuild: 0.25.10
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.52.4
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      '@types/node': 24.10.4
+      fsevents: 2.3.3
+      jiti: 2.6.1
+      less: 4.5.1
+      lightningcss: 1.30.2
+      sass: 1.97.3
+      sass-embedded: 1.97.3
+
+  vite@7.3.3(@types/node@24.10.4)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3):
+    dependencies:
+      esbuild: 0.27.2
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.52.4
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      '@types/node': 24.10.4
+      fsevents: 2.3.3
+      jiti: 2.6.1
+      less: 4.5.1
+      lightningcss: 1.30.2
+      sass: 1.97.3
+      sass-embedded: 1.97.3
+
+  vite@7.3.3(@types/node@25.2.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3):
+    dependencies:
+      esbuild: 0.27.2
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.52.4
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      '@types/node': 25.2.0
+      fsevents: 2.3.3
+      jiti: 2.6.1
+      less: 4.5.1
+      lightningcss: 1.30.2
+      sass: 1.97.3
+      sass-embedded: 1.97.3
 
   void-elements@3.1.0: {}
 
