@@ -79,7 +79,8 @@ export interface DocDetailProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const DocDetail: FC<DocDetailProps> = (props) => {
-  const { data, i18n, actionButtons, className, ...rest } = props;
+  const { data, i18n, actionButtons, requestHeaders, className, ...rest } =
+    props;
 
   const [expandMore, setExpandMore] = useState(false);
 

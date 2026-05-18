@@ -18,7 +18,11 @@ const Docx: FC<DocxProps> = (props) => {
       headers: requestHeaders,
     });
 
+    if (!response.ok) return;
+
     const arrayBuffer = await response.arrayBuffer();
+
+    if (arrayBuffer.byteLength === 0) return;
 
     containerRef.current.innerHTML = "";
 
