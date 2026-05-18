@@ -62,17 +62,26 @@ export function SectionHeader({
           >
             {title}
           </a>
-        ) : (
+        ) : titleAction?.onClick ? (
           <button
             type="button"
             className={clsx(
               "min-w-0 cursor-pointer bg-transparent p-0 text-left text-xl hover:underline hover:underline-offset-2 group-hover:underline group-hover:underline-offset-2",
               titleClassName
             )}
-            onClick={titleAction?.onClick}
+            onClick={titleAction.onClick}
           >
             {title}
           </button>
+        ) : (
+          <span
+            className={clsx(
+              "min-w-0 text-xl group-hover:underline group-hover:underline-offset-2",
+              titleClassName
+            )}
+          >
+            {title}
+          </span>
         )
       ) : null}
 

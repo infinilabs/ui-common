@@ -1,5 +1,6 @@
 import clsx from "clsx";
 
+import { AuthImage } from "./AuthImage";
 import { BreadcrumbsLine } from "./BreadcrumbsLine";
 import { ItemInteractive } from "./ItemInteractive";
 
@@ -29,7 +30,7 @@ export function ImageItem({
     >
       <div className="overflow-hidden rounded-lg ring-1 ring-slate-200 dark:ring-slate-700">
         <div className="relative aspect-video bg-slate-100 dark:bg-slate-800">
-          <img
+          <AuthImage
             src={item.imageUrl}
             alt={item.imageAlt ?? item.title}
             className="absolute inset-0 h-full w-full object-cover transform-gpu transition-transform duration-300 ease-out group-hover:scale-[1.03]"

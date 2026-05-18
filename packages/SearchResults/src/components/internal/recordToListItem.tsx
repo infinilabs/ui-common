@@ -1,3 +1,4 @@
+import { AuthImage } from "./AuthImage";
 import { formatDate } from "./formatDate";
 import { normalizeFileType } from "./normalizeFileType";
 
@@ -21,7 +22,7 @@ export function recordToListItem(
 
   const typeIconUrl = record.metadata?.icon_link ?? record.icon;
   const typeIcon = typeIconUrl ? (
-    <img src={typeIconUrl} alt="" className="h-5 w-5 rounded-sm object-contain" />
+    <AuthImage src={typeIconUrl} alt="" className="h-5 w-5 rounded-sm object-contain" />
   ) : undefined;
 
   return {

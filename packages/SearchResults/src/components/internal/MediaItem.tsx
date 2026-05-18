@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { Play } from "lucide-react";
 
+import { AuthImage } from "./AuthImage";
 import { BreadcrumbsLine } from "./BreadcrumbsLine";
 import { ItemInteractive } from "./ItemInteractive";
 
@@ -32,7 +33,7 @@ export function MediaItem({
     >
       <div className="overflow-hidden rounded-lg ring-1 ring-slate-200 dark:ring-slate-700">
         <div className="relative aspect-4/3 bg-slate-100 dark:bg-slate-800">
-          <img
+          <AuthImage
             src={item.cover}
             alt={item.thumbnailAlt ?? item.title}
             className="absolute inset-0 h-full w-full object-cover transform-gpu transition-transform duration-300 ease-out group-hover:scale-[1.1]"

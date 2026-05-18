@@ -1,5 +1,6 @@
 import clsx from "clsx";
 
+import { RequestHeadersContext } from "./internal/RequestHeadersContext";
 import { renderSection } from "./internal/renderSection";
 import { recordToListItem } from "./internal/recordToListItem";
 
@@ -24,14 +25,17 @@ export function SearchResults({
   footerAction,
   onRecordClick,
   onItemClick,
-  hideHeader
+  hideHeader,
+  requestHeaders
 }: SearchResultsProps) {
   const resolvedSection = applyFooterAction(resolveSection(section, onRecordClick), footerAction);
   const resolvedTheme = resolveTheme(theme);
   return (
-    <div className={clsx(resolvedTheme === "dark" && "dark", className)}>
-      {renderSection(resolvedSection, onItemClick, hideHeader)}
-    </div>
+    <RequestHeadersContext.Provider value={requestHeaders}>
+      <div className={clsx(resolvedTheme === "dark" && "dark", className)}>
+        {renderSection(resolvedSection, onItemClick, hideHeader)}
+      </div>
+    </RequestHeadersContext.Provider>
   );
 }
 

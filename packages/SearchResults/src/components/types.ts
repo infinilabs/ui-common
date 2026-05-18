@@ -186,6 +186,7 @@ export type SearchResultsProps = {
   onRecordClick?: (record: SearchResultsRecord, index: number) => void;
   onItemClick?: (item: SearchResultsItem) => void;
   hideHeader?: boolean;
+  requestHeaders?: Record<string, string>;
 };
 
 export type SearchResultsImageGroupProps = Omit<SearchResultsProps, "section"> & {
