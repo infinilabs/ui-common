@@ -60,7 +60,7 @@ export function AIAnswer({
     <div className={theme === "dark" ? "dark" : undefined}>
       <div
         className={clsx(
-          "p-6 rounded-xl border border-[#EBEBEB] bg-white text-[#333] dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200",
+          "p-6 rounded-xl border border-[#EBEBEB] bg-transparent text-[#333] dark:border-slate-700 dark:bg-transparent dark:text-slate-200",
           containerClass
         )}
         style={containerStyle}
@@ -86,12 +86,17 @@ export function AIAnswer({
         <div
           ref={bodyRef}
           className="relative overflow-hidden"
-          style={{ maxHeight: collapsed ? maxHeight : "none" }}
+          style={{
+            maxHeight: collapsed ? maxHeight : "none",
+            maskImage: collapsed && showToggle
+              ? "linear-gradient(to bottom, black 60%, transparent 100%)"
+              : undefined,
+            WebkitMaskImage: collapsed && showToggle
+              ? "linear-gradient(to bottom, black 60%, transparent 100%)"
+              : undefined,
+          }}
         >
           <XMarkdown content={content} />
-          {collapsed && showToggle ? (
-            <div className="absolute inset-x-0 bottom-0 h-16 bg-linear-to-b from-transparent to-white dark:to-[#0b1220]" />
-          ) : null}
         </div>
         {showToggle ? (
           <AIExpandToggle

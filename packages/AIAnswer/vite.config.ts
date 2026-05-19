@@ -1,11 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
 import dts from "vite-plugin-dts";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), dts({ rollupTypes: true, tsconfigPath: "./tsconfig.app.json" }), cssInjectedByJsPlugin()],
+  plugins: [react(), dts({ rollupTypes: true, tsconfigPath: "./tsconfig.app.json" }), cssInjectedByJsPlugin()],
   build: {
     lib: {
       entry: "src/components/index.ts",

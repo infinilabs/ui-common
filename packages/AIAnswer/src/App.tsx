@@ -24,7 +24,7 @@ function App() {
 
   return (
     <>
-      <div style={{ padding: 24, maxWidth: 800, margin: "0 auto" }} className={isDark ? "dark" : undefined}>
+      <div style={{ padding: 24, maxWidth: 800, margin: "0 auto", background: isDark ? "rgb(18,18,18)" : "#fff" }}>
         <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
           <button
             type="button"
@@ -46,6 +46,7 @@ function App() {
         <AIAnswer
           title="智能解读"
           content={content}
+          theme={isDark ? "dark" : "light"}
           onContinue={() => {
             alert("继续追问");
           }}
