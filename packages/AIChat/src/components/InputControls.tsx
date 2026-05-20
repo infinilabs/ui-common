@@ -79,24 +79,22 @@ const InputControls = ({
     <div className="flex items-center pt-3 gap-2">
       <div
         className={clsx(
-          "flex items-center justify-center gap-1 h-6 px-2 rounded-full transition hover:bg-[#EDEDED] dark:hover:bg-[#202126] cursor-pointer"
+          "flex items-center justify-center gap-1 h-6 px-2 rounded-full transition cursor-pointer"
         )}
         style={{
           backgroundColor: isDeepResearchActive
-            ? "rgba(1,138,229,0.21)"
+            ? 'var(--ant-color-primary-bg)'
             : undefined,
         }}
         onClick={() => setIsDeepResearchActive(!isDeepResearchActive)}
         title={t("search.input.deepResearch") || "DeepResearch"}
       >
         <Telescope
-          className={clsx("size-4", {
-            "text-[#1784FC] dark:text-[#1784FC]": isDeepResearchActive,
-            "text-[#333] dark:text-[#999]": !isDeepResearchActive,
-          })}
+          className="size-4"
+          style={{ color: isDeepResearchActive ? 'var(--ant-color-primary)' : 'var(--ant-color-text-secondary)' }}
         />
         {isDeepResearchActive && (
-          <span className="text-[#1784FC] text-xs">
+          <span className="text-xs" style={{ color: 'var(--ant-color-primary)' }}>
             {t("search.input.deepResearch") || "DeepResearch"}
           </span>
         )}
@@ -104,24 +102,22 @@ const InputControls = ({
       
       <div
         className={clsx(
-          "flex items-center justify-center gap-1 h-6 px-2 rounded-full transition hover:bg-[#EDEDED] dark:hover:bg-[#202126] cursor-pointer"
+          "flex items-center justify-center gap-1 h-6 px-2 rounded-full transition cursor-pointer"
         )}
         style={{
           backgroundColor: isDeepThinkActive
-            ? "rgba(1,138,229,0.21)"
+            ? 'var(--ant-color-primary-bg)'
             : undefined,
         }}
         onClick={() => setIsDeepThinkActive?.(!isDeepThinkActive)}
         title={t("search.input.deepThink") || "DeepThink"}
       >
         <Brain
-          className={clsx("size-4", {
-            "text-[#1784FC] dark:text-[#1784FC]": isDeepThinkActive,
-            "text-[#333] dark:text-[#999]": !isDeepThinkActive,
-          })}
+          className="size-4"
+          style={{ color: isDeepThinkActive ? 'var(--ant-color-primary)' : 'var(--ant-color-text-secondary)' }}
         />
         {isDeepThinkActive && (
-          <span className="text-[#1784FC] text-xs">
+          <span className="text-xs" style={{ color: 'var(--ant-color-primary)' }}>
             {t("search.input.deepThink") || "DeepThink"}
           </span>
         )}

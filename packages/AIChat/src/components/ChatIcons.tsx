@@ -105,8 +105,8 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
 
     return (
       <button
-        className={`ml-1 p-2 bg-[#0072FF] rounded-full transition-colors`}
-        type="submit"
+        className="flex items-center justify-center rounded-full shrink-0 cursor-pointer bg-[#0072FF] transition-colors"
+        style={{ width: "32px", height: "32px" }}
         onClick={() => {
           disabledChange?.();
           setCurChatEnd(true);
@@ -116,7 +116,7 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
         <Square
           size={12}
           strokeWidth={2}
-          className="w-3 h-3 text-white fill-white"
+          className="text-white fill-white"
           aria-label={t("search.input.stop") || "Stop"}
         />
       </button>

@@ -114,13 +114,14 @@ const AutoResizeTextarea = forwardRef<
           autoCapitalize="none"
           spellCheck="false"
           className={cn(
-            "auto-resize-textarea text-base flex-1 outline-none w-full min-w-[200px] text-[#333] dark:text-[#d8d8d8] bg-transparent custom-scrollbar resize-none overflow-y-auto",
+            "auto-resize-textarea text-base flex-1 outline-none w-full min-w-[200px] bg-transparent custom-scrollbar resize-none overflow-y-auto",
             {
               "overflow-y-hidden": lineCount === 1,
             }
           )}
           style={{
             resize: "none",
+            color: 'var(--ant-color-text)',
           }}
           placeholder={chatPlaceholder || t("search.textarea.placeholder")}
           aria-label={t("search.textarea.ariaLabel")}

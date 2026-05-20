@@ -67,6 +67,11 @@ export async function streamPost({
       }
       buffer = lines[lines.length - 1];
     }
+
+    // Process any remaining data in the buffer after stream ends
+    if (buffer.trim()) {
+      onMessage(buffer.trim());
+    }
   } catch (err) {
     console.error("streamPost error:", err);
     onError?.(err);

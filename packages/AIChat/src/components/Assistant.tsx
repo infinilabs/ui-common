@@ -56,6 +56,7 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const isLoadingMore = useRef(false);
   const pageSize = 10;
   
   const debouncedKeyword = useMemo(
@@ -92,7 +93,13 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
         const list = (res?.hits?.hits ?? []) as AssistantHit[];
         const totalValue = res?.hits?.total?.value ?? 0;
 
-        setAssistants(prev => isLoadMore ? [...prev, ...list] : list);
+        setAssistants(prev => {
+          if (!isLoadMore) return list;
+          // Deduplicate by _id when appending
+          const existingIds = new Set(prev.map(a => a._id));
+          const newItems = list.filter(a => !existingIds.has(a._id));
+          return [...prev, ...newItems];
+        });
         setTotal(totalValue);
         // Calculate hasMore based on total
         const currentCount = (currentPage - 1) * pageSize + list.length;
@@ -106,14 +113,12 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
               _id: list[0]._id,
               _source: list[0]._source,
             });
-          } else {
-             // If there is a current assistant, check if it is in the list
-             // If we need to validate or update the current assistant's info, we can do it here
-             // For now, we respect the user's previous selection (persisted in store)
           }
         }
       } catch (e) {
         console.error(e);
+      } finally {
+        isLoadingMore.current = false;
       }
     },
     [keyword, stableAssistantIDs, setCurrentAssistant]
@@ -135,11 +140,11 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-    if (scrollHeight - scrollTop <= clientHeight + 50 && hasMore && !isRefreshing) {
-       // Simple throttle
+    if (scrollHeight - scrollTop <= clientHeight + 50 && hasMore && !isRefreshing && !isLoadingMore.current) {
        if (assistants.length >= page * pageSize) {
           const nextPage = page + 1;
           setPage(nextPage);
+          isLoadingMore.current = true;
           fetchAssistant(nextPage, true);
        }
     }
@@ -148,7 +153,11 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
   return (
     <div className="relative">
       <button
-        className="flex cursor-pointer items-center gap-1 border border-border rounded-xl px-2 py-1.5 hover:bg-accent transition-colors"
+        className="flex cursor-pointer items-center gap-1 rounded-xl px-2 py-1.5 transition-colors"
+        style={{
+          border: '1px solid var(--ant-color-border)',
+          color: 'var(--ant-color-text)',
+        }}
         type="button"
         onClick={() => {
           setOpen((v) => !v);
@@ -178,22 +187,28 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
         <span className="text-sm">
           {currentAssistant?._source?.name || t("assistant_list.default_name")}
         </span>
-        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+        <ChevronDown className="h-4 w-4" style={{ color: 'var(--ant-color-text-secondary)' }} />
       </button>
 
       {open && (
         <div
-          className="absolute left-0 top-full z-50 mt-2 w-64 rounded-xl border border-border bg-white dark:bg-zinc-950 text-foreground shadow-lg p-3"
+          className="absolute left-0 top-full z-50 mt-2 w-64 rounded-xl shadow-lg p-3"
+          style={{
+            border: '1px solid var(--ant-color-border)',
+            backgroundColor: 'var(--ant-color-bg-elevated)',
+            color: 'var(--ant-color-text)',
+          }}
           onMouseMove={() => {
             // no-op
           }}
         >
-          <div className="flex items-center justify-between text-sm font-semibold mb-2">
+          <div className="flex items-center justify-between text-sm font-semibold mb-2" style={{ color: 'var(--ant-color-text)' }}>
             <div className="truncate">
               {t("assistant_list.title")}（{total}）
             </div>
             <button
-              className="h-6 w-6 flex items-center justify-center cursor-pointer rounded hover:bg-accent transition-colors"
+              className="h-6 w-6 flex items-center justify-center cursor-pointer rounded transition-colors"
+              style={{ color: 'var(--ant-color-text)' }}
               type="button"
               onClick={(e) => {
                 e.preventDefault();
@@ -203,9 +218,10 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
               disabled={isRefreshing}
             >
               <RefreshCw
-                className={clsx("w-4 h-4 text-foreground hover:text-primary", {
+                className={clsx("w-4 h-4", {
                   "animate-spin": isRefreshing,
                 })}
+                style={{ color: 'var(--ant-color-text-secondary)' }}
               />
             </button>
           </div>
@@ -216,8 +232,9 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
               autoFocus
               value={inputValue}
               placeholder={t("assistant_list.search.placeholder")}
-              className="h-8 rounded-full bg-gray-50 dark:bg-zinc-900"
-              prefix={<Search className="h-4 w-4 text-muted-foreground" />}
+              className="h-8 rounded-full"
+              style={{ backgroundColor: 'var(--ant-color-fill-quaternary)' }}
+              prefix={<Search className="h-4 w-4" style={{ color: 'var(--ant-color-text-tertiary)' }} />}
               onChange={(event) => {
                 const val = event.target.value;
                 setInputValue(val);
@@ -241,10 +258,12 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
                       key={assistant._id}
                       className={clsx(
                         "w-full text-left flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm transition-colors",
-                        isActive
-                          ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 font-medium"
-                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800"
+                        isActive ? "font-medium" : ""
                       )}
+                      style={{
+                        backgroundColor: isActive ? 'var(--ant-color-primary-bg)' : undefined,
+                        color: isActive ? 'var(--ant-color-primary)' : 'var(--ant-color-text)',
+                      }}
                       onClick={() => {
                         setCurrentAssistant({
                           _id: assistant._id,
@@ -272,13 +291,13 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
                         )
                       ) : null}
                       <div className="truncate flex-1">{name}</div>
-                      {isActive && <Check className="w-4 h-4 ml-auto text-blue-600 dark:text-blue-400" />}
+                      {isActive && <Check className="w-4 h-4 ml-auto" style={{ color: 'var(--ant-color-primary)' }} />}
                     </button>
                   );
                 })}
               </div>
             ) : (
-              <div className="py-8 text-center text-sm text-muted-foreground">
+              <div className="py-8 text-center text-sm" style={{ color: 'var(--ant-color-text-quaternary)' }}>
                 {t("assistant_list.no_data")}
               </div>
             )}

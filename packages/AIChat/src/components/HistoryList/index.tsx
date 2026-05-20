@@ -72,7 +72,7 @@ const HistoryList: FC<HistoryListProps> = (props) => {
   return (
     <div
       id={historyPanelId}
-      className={clsx("flex flex-col h-screen text-sm bg-transparent")}
+      className={clsx("flex flex-col h-full text-sm bg-transparent")}
     >
       <div className="flex gap-1 p-2">
         <div className="flex-1">

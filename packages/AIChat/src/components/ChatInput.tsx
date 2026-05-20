@@ -159,11 +159,19 @@ const textareaRef = useRef<{ reset: () => void; focus: () => void }>(null);
 
   return (
     <div
-      className={`w-full p-1 relative rounded-xl border border-[#E5E5E5] dark:border-[#333] overflow-hidden bg-white dark:bg-transparent`}
+      className={`w-full p-1 relative rounded-xl overflow-hidden`}
+      style={{
+        border: '1px solid var(--ant-color-border)',
+        backgroundColor: 'var(--ant-color-bg-container)',
+      }}
     >
       <div
         ref={containerRef}
-        className={`rounded-sm flex items-center dark:text-[#D8D8D8] transition-all relative bg-[#F3F4F6] dark:bg-[#202126]`}
+        className={`rounded-sm flex items-center transition-all relative`}
+        style={{
+          backgroundColor: 'var(--ant-color-fill-quaternary)',
+          color: 'var(--ant-color-text)',
+        }}
       >
         <div
           className={clsx("min-h-[48px] w-full p-2 bg-transparent", {
