@@ -768,11 +768,14 @@ importers:
 
   packages/DocDetail:
     dependencies:
+      '@ant-design/cssinjs':
+        specifier: '>=2'
+        version: 2.0.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@ant-design/x':
-        specifier: ^2.1.3
+        specifier: '>=2'
         version: 2.1.3(antd@6.1.3(moment@2.30.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@ant-design/x-markdown':
-        specifier: ^2.1.3
+        specifier: '>=2'
         version: 2.1.3(@types/react@18.3.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@infinilabs/markdown':
         specifier: ^0.0.4

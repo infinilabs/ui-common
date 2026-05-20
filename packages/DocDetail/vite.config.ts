@@ -33,6 +33,9 @@ export default defineConfig({
         "react/jsx-runtime",
         "react/jsx-dev-runtime",
         "antd",
+        "@ant-design/cssinjs",
+        "@ant-design/x",
+        "@ant-design/x-markdown",
         "lucide-react",
       ],
       output: {
