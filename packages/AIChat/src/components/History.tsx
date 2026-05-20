@@ -12,6 +12,7 @@ import i18n from "../i18n";
 interface HistoryProps {
   BaseUrl: string;
   Token?: string;
+  headers?: Record<string, string>;
   locale?: string;
   t?: TFunction;
 }
@@ -19,6 +20,7 @@ interface HistoryProps {
 function InnerHistory({
   BaseUrl,
   Token,
+  headers: headersProp = {},
   locale = "en",
   t: tProp,
 }: HistoryProps) {
@@ -29,6 +31,7 @@ function InnerHistory({
   const setChats = useChatStore((state) => state.setChats);
   const activeChat = useChatStore((state) => state.activeChat);
   const setActiveChat = useChatStore((state) => state.setActiveChat);
+  const historyVersion = useChatStore((state) => state.historyVersion);
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -49,11 +52,14 @@ function InnerHistory({
     const store = { state: { endpoint_http: BaseUrl } };
     localStorage.setItem("app-store", JSON.stringify(store));
 
+    const mergedHeaders: Record<string, string> = { ...headersProp };
     if (Token) {
-      const headers = { "X-API-TOKEN": Token };
-      localStorage.setItem("headers", JSON.stringify(headers));
+      mergedHeaders["X-API-TOKEN"] = Token;
     }
-  }, [BaseUrl, Token]);
+    if (Object.keys(mergedHeaders).length > 0) {
+      localStorage.setItem("headers", JSON.stringify(mergedHeaders));
+    }
+  }, [BaseUrl, Token, headersProp]);
 
   const fetchChatHistory = useCallback(async () => {
     try {
@@ -63,26 +69,26 @@ function InnerHistory({
         from: 0,
         size: 100,
         keyword,
-      });
+      }, undefined, headersProp);
       if (err) {
         return;
       }
       const hits = (res?.hits?.hits as Chat[] | undefined) || [];
       setChats(hits);
-
-      // 历史列表更新了，设置第一个为 activeChat
-      if (hits.length > 0) {
-        // console.log("setActiveChat1", hits[0]);
-        setActiveChat(hits[0]);
-      }
     } catch (e) {
       console.error(e);
     }
-  }, [keyword, setChats, setActiveChat]);
+  }, [keyword, setChats, headersProp]);
 
   useEffect(() => {
     fetchChatHistory();
   }, [fetchChatHistory]);
+
+  useEffect(() => {
+    if (historyVersion > 0) {
+      fetchChatHistory();
+    }
+  }, [historyVersion, fetchChatHistory]);
 
   const onSelect = useCallback(
     async (chat: Chat) => {
@@ -97,7 +103,7 @@ function InnerHistory({
       const key = "rename_message";
       try {
         setRenamingId(chatId);
-        const [err] = await Put(`/chat/${chatId}`, { title });
+        const [err] = await Put(`/chat/${chatId}`, { title }, {}, headersProp);
         if (err) {
           messageApi.open({
             key,
@@ -113,7 +119,7 @@ function InnerHistory({
         setRenamingId("");
       }
     },
-    [messageApi, t, fetchChatHistory],
+    [messageApi, t, fetchChatHistory, headersProp],
   );
 
   const onRemove = useCallback(
@@ -123,7 +129,7 @@ function InnerHistory({
       try {
         setDeletingId(chatId);
 
-        const [err] = await Delete(`/chat/${chatId}`);
+        const [err] = await Delete(`/chat/${chatId}`, {}, headersProp);
         if (err) {
           messageApi.open({
             key,
@@ -147,7 +153,7 @@ function InnerHistory({
         setDeletingId("");
       }
     },
-    [messageApi, t, fetchChatHistory],
+    [messageApi, t, fetchChatHistory, headersProp],
   );
 
   return (

@@ -30,6 +30,7 @@ import { useIconfontScript } from "../hooks/useScript";
 interface ChatAIProps {
   BaseUrl: string;
   Token?: string;
+  headers?: Record<string, string>;
   formatUrl?: (data: IChunkData) => string;
   locale?: string;
   t?: TFunction;
@@ -77,7 +78,7 @@ export interface ChatAIRef {
  */
 const InnerChatAI = memo(
   forwardRef<ChatAIRef, ChatAIProps>(
-    ({ BaseUrl, formatUrl, t: tProp }, ref) => {
+    ({ BaseUrl, formatUrl, headers: headersProp = {}, t: tProp }, ref) => {
       // 动态加载 iconfont 脚本
       useIconfontScript();
 
@@ -91,6 +92,7 @@ const InnerChatAI = memo(
       const activeChat = useChatStore((state) => state.activeChat); // 当前选中的对话
       const setActiveChat = useChatStore((state) => state.setActiveChat);
       const currentAssistant = useChatStore((state) => state.currentAssistant); // 当前助手信息
+      const incrementHistoryVersion = useChatStore((state) => state.incrementHistoryVersion);
 
       // 本地状态
       const [timedoutShow, setTimedoutShow] = useState(false); // 超时提示显示状态
@@ -139,6 +141,9 @@ const InnerChatAI = memo(
               // ... (其余的现有逻辑)
               let nextChat: Chat;
 
+              // 使用最新的 store 状态，避免闭包捕获的旧值
+              const latestActiveChat = useChatStore.getState().activeChat;
+
               if (Array.isArray(parsed)) {
                 // 情况 A: 收到消息数组（通常是加载历史记录）
                 const hits = parsed as ChatMessageItem[];
@@ -153,7 +158,7 @@ const InnerChatAI = memo(
                   }
                 }
                 // 获取当前活动聊天对象或创建一个新的基础对象
-                const baseChat: Chat = activeChat || {
+                const baseChat: Chat = latestActiveChat || {
                   _id: first?._id ?? "",
                 };
                 // 合并新消息到消息列表中
@@ -181,7 +186,7 @@ const InnerChatAI = memo(
                   _id:
                     withPayload._id ??
                     (typeof id === "string" ? id : "") ??
-                    activeChat?._id ??
+                    latestActiveChat?._id ??
                     "",
                   _source: {
                     ...(withPayload._source || {}),
@@ -190,7 +195,7 @@ const InnerChatAI = memo(
                 };
 
                 // 获取当前活动聊天对象或创建一个新的基础对象
-                const baseChat: Chat = activeChat || {
+                const baseChat: Chat = latestActiveChat || {
                   _id: messageItem._id,
                 };
 
@@ -228,7 +233,7 @@ const InnerChatAI = memo(
             console.error("Failed to parse chat message:", error);
           }
         },
-        [activeChat, setActiveChat, setCurChatEnd],
+        [setActiveChat, setCurChatEnd],
       );
 
       /**
@@ -253,7 +258,7 @@ const InnerChatAI = memo(
             }>(`/chat/${chatId}/_history`, {
               from: 0,
               size: 1000,
-            });
+            }, undefined, headersProp);
             if (err || !res) return;
             const hits = (res?.hits?.hits ?? []) as ChatMessageItem[];
 
@@ -273,7 +278,7 @@ const InnerChatAI = memo(
             console.error(e);
           }
         },
-        [setActiveChat],
+        [setActiveChat, headersProp],
       );
 
       /**
@@ -311,10 +316,14 @@ const InnerChatAI = memo(
               attachments,
             },
             queryParams,
+            headers: headersProp,
             onMessage: handleStreamMessage,
           });
+
+          // 创建完成后刷新历史列表
+          incrementHistoryVersion();
         },
-        [handleStreamMessage, prepareChatSession, currentAssistant],
+        [handleStreamMessage, prepareChatSession, currentAssistant, headersProp, incrementHistoryVersion],
       );
 
       /**
@@ -328,10 +337,12 @@ const InnerChatAI = memo(
           if (!text && (!attachments || attachments.length === 0)) {
             return;
           }
-          await prepareChatSession(text);
+          setTimedoutShow(false);
+          setQuestion(text);
 
-          // 发送前先刷新历史记录（确保上下文最新）
           await fetchHistory(chat._id);
+
+          activeMessageRef.current?.reset();
 
           const queryParams = {
             search:
@@ -351,16 +362,17 @@ const InnerChatAI = memo(
             url: `/chat/${chat._id}/_chat`,
             body: { message: text, attachments },
             queryParams,
+            headers: headersProp,
             onMessage: handleStreamMessage,
           });
         },
         [
-          prepareChatSession,
           fetchHistory,
           currentAssistant?._source?.deep_research_enabled,
           currentAssistant?._source?.deep_think_enabled,
           currentAssistant?._id,
           handleStreamMessage,
+          headersProp,
         ],
       );
 
@@ -389,13 +401,15 @@ const InnerChatAI = memo(
             await Post(
               `/chat/${activeChat._id}/_cancel?message_id=${curIdRef.current}`,
               undefined,
+              {},
+              headersProp,
             );
           } catch (e) {
             console.error(e);
           }
         }
         setCurChatEnd(true); // 强制标记为结束
-      }, [activeChat, setCurChatEnd]);
+      }, [activeChat, setCurChatEnd, headersProp]);
 
       /**
        * 切换当前选中的对话
@@ -427,16 +441,21 @@ const InnerChatAI = memo(
       const lastActiveChatIdRef = useRef<string | undefined>(undefined);
 
       useEffect(() => {
-        // console.log(555555, activeChat?._id, lastActiveChatIdRef.current);
-        // Only trigger onSelectChat if the activeChat ID has actually changed
         if (activeChat?._id && activeChat._id !== lastActiveChatIdRef.current) {
+          const prevId = lastActiveChatIdRef.current;
           lastActiveChatIdRef.current = activeChat._id;
-          // Use setTimeout to avoid synchronous state updates during render
-          setTimeout(() => {
-            onSelectChat(activeChat);
-          }, 0);
+
+          // Skip during streaming (chat creation in progress)
+          if (!curChatEnd) return;
+
+          // Only load history for external selection (e.g. from History list)
+          if (prevId !== undefined) {
+            setTimeout(() => {
+              onSelectChat(activeChat);
+            }, 0);
+          }
         }
-      }, [activeChat, onSelectChat]);
+      }, [activeChat?._id, curChatEnd, onSelectChat]);
 
       // 生成文件预览 URL 的辅助函数
       const getFileUrl = useCallback(

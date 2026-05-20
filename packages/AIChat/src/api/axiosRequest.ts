@@ -77,7 +77,8 @@ export const handleApiError = (error: unknown) => {
 export const Get = <T>(
   url: string,
   params: RequestParams = {},
-  clearFn?: Fn
+  clearFn?: Fn,
+  headers: RequestHeaders = {}
 ): Promise<[unknown, T | undefined]> =>
   new Promise((resolve) => {
     const appStore = JSON.parse(localStorage.getItem("app-store") || "{}");
@@ -106,7 +107,7 @@ export const Get = <T>(
     }
 
     axios
-      .get<T>(baseURL + url, { params, withCredentials: true })
+      .get<T>(baseURL + url, { params, headers, withCredentials: true })
       .then((result) => {
         let res: T;
         if (clearFn !== undefined) {

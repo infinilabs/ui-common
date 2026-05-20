@@ -32,7 +32,7 @@ const AutoResizeTextarea = forwardRef<
 >(
   (
     {
-      input,
+      input = "",
       setInput,
       handleKeyDown,
       chatPlaceholder,

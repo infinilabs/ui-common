@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 import { ChatMessage } from "@infinilabs/chat-message";
 
-import { useConnectStore } from "../stores/connectStore";
+import { useChatStore } from "../stores/chatStore";
 
 type Assistant = {
   _source?: {
@@ -19,7 +19,7 @@ interface GreetingsProps {
 export const Greetings = ({ t: tProp }: GreetingsProps) => {
   const { t: tOriginal } = useTranslation();
   const t = tProp || tOriginal;
-  const currentAssistant = useConnectStore(
+  const currentAssistant = useChatStore(
     (state) => state.currentAssistant as Assistant | null
   );
 
@@ -35,6 +35,7 @@ export const Greetings = ({ t: tProp }: GreetingsProps) => {
             t("assistant.chat.greetings"),
         },
       }}
+      currentAssistant={currentAssistant}
     />
   );
 };

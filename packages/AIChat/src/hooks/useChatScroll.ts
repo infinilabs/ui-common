@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { debounce } from "lodash-es";
 
-export function useChatScroll(messagesEndRef: React.RefObject<HTMLDivElement>) {
-  const [userScrolling, setUserScrolling] = useState(false);
+export function useChatScroll(scrollContainerRef: React.RefObject<HTMLDivElement>) {
+  const userScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-
   const lastScrollHeightRef = useRef<number>(0);
+  const programmaticScrollRef = useRef(false);
 
   const isNearBottom = (container: HTMLElement) => {
     const { scrollTop, scrollHeight, clientHeight } = container;
@@ -14,42 +14,69 @@ export function useChatScroll(messagesEndRef: React.RefObject<HTMLDivElement>) {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const scrollToBottom = useCallback(
-    debounce(() => {
-      const container = messagesEndRef.current?.parentElement;
+    debounce((force?: boolean) => {
+      const container = scrollContainerRef.current;
       if (!container) return;
 
       const contentChanged = lastScrollHeightRef.current !== container.scrollHeight;
       lastScrollHeightRef.current = container.scrollHeight;
 
-      if (!userScrolling || (contentChanged && isNearBottom(container))) {
+      if (force || !userScrollingRef.current || (contentChanged && isNearBottom(container))) {
+        programmaticScrollRef.current = true;
         container.scrollTo({
           top: container.scrollHeight,
           behavior: "smooth",
         });
       }
     }, 50),
-    [userScrolling, messagesEndRef]
+    [scrollContainerRef]
   );
 
   useEffect(() => {
-    const container = messagesEndRef.current?.parentElement;
+    const container = scrollContainerRef.current;
     if (!container) return;
 
     lastScrollHeightRef.current = container.scrollHeight;
 
+    const observer = new MutationObserver(() => {
+      if (!userScrollingRef.current) {
+        scrollToBottom();
+      }
+    });
+
+    observer.observe(container, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [scrollContainerRef, scrollToBottom]);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
     const handleScroll = () => {
+      if (programmaticScrollRef.current) {
+        programmaticScrollRef.current = false;
+        return;
+      }
+
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
 
       const near = isNearBottom(container);
       if (!near) {
-        setUserScrolling(true);
+        userScrollingRef.current = true;
       }
 
       scrollTimeoutRef.current = setTimeout(() => {
         if (isNearBottom(container)) {
-          setUserScrolling(false);
+          userScrollingRef.current = false;
         }
       }, 300);
     };
@@ -61,10 +88,14 @@ export function useChatScroll(messagesEndRef: React.RefObject<HTMLDivElement>) {
         clearTimeout(scrollTimeoutRef.current);
       }
     };
-  }, [messagesEndRef]);
+  }, [scrollContainerRef]);
+
+  const resetUserScrolling = useCallback(() => {
+    userScrollingRef.current = false;
+  }, []);
 
   return {
-    userScrolling,
+    resetUserScrolling,
     scrollToBottom
   };
 }

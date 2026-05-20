@@ -42,6 +42,8 @@ export type IChatStore = {
   assistantList?: Assistant[];
   setAssistantList: (assistantList: Assistant[]) => void;
   updateLastMessage: (updates: Partial<ChatMessageSource>) => void;
+  historyVersion: number;
+  incrementHistoryVersion: () => void;
 };
 
 export const useChatStore = create<IChatStore>()(
@@ -71,6 +73,9 @@ export const useChatStore = create<IChatStore>()(
       assistantList: [],
       setAssistantList: (assistantList: Assistant[]) =>
         set(() => ({ assistantList })),
+      historyVersion: 0,
+      incrementHistoryVersion: () =>
+        set((state) => ({ historyVersion: state.historyVersion + 1 })),
       updateLastMessage: (updates: Partial<ChatMessageSource>) =>
         set((state) => {
           if (!state.activeChat || !state.activeChat.messages) return {};
@@ -94,7 +99,6 @@ export const useChatStore = create<IChatStore>()(
       name: "chat-state",
       // storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({
-        activeChat: state.activeChat,
         currentAssistant: state.currentAssistant,
         messages: state.messages,
       }),
