@@ -2,7 +2,7 @@ import { XMarkdown, type XMarkdownProps } from "@ant-design/x-markdown";
 import { StyleProvider, createCache } from "@ant-design/cssinjs";
 import clsx from "clsx";
 import { useEffect, useMemo, useState, type FC } from "react";
-import { Typography } from "antd";
+import { ConfigProvider, Typography } from "antd";
 
 import "virtual:uno.css";
 
@@ -22,9 +22,10 @@ const Markdown: FC<MarkdownProps> = (props) => {
 
   const [content, setContent] = useState(rest.content);
 
-  // Use an isolated CSS-in-JS cache to prevent style cleanup from affecting external projects.
-  // Without this, unmounting the Markdown component would remove shared antd CSS variable
-  // style elements (e.g. style[data-token-hash]) from the parent application.
+  // Use an isolated CSS-in-JS cache and disable cssVar to prevent style cleanup
+  // from affecting external projects. Without this, unmounting the Markdown component
+  // would decrement the CSS variable reference count and remove shared antd
+  // style[data-token-hash] elements from the parent application.
   const styleCache = useMemo(() => createCache(), []);
 
   const fetchContent = async (url: string) => {
@@ -49,20 +50,22 @@ const Markdown: FC<MarkdownProps> = (props) => {
 
   return (
     <StyleProvider cache={styleCache}>
-      <XMarkdown
-        {...rest}
-        className={clsx(
-          "[&_:is(h1,h2,h3,h4,h5,h6,ul,ol,p)]:[all:revert]",
-          className,
-        )}
-        content={content}
-        components={{
-          code: Code,
-          a: Link,
-          table: Table,
-          ...components,
-        }}
-      />
+      <ConfigProvider theme={{ inherit: false }}>
+        <XMarkdown
+          {...rest}
+          className={clsx(
+            "[&_:is(h1,h2,h3,h4,h5,h6,ul,ol,p)]:[all:revert]",
+            className,
+          )}
+          content={content}
+          components={{
+            code: Code,
+            a: Link,
+            table: Table,
+            ...components,
+          }}
+        />
+      </ConfigProvider>
     </StyleProvider>
   );
 };
