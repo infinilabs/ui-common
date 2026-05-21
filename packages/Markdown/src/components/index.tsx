@@ -1,6 +1,7 @@
 import { XMarkdown, type XMarkdownProps } from "@ant-design/x-markdown";
+import { StyleProvider, createCache } from "@ant-design/cssinjs";
 import clsx from "clsx";
-import { useEffect, useState, type FC } from "react";
+import { useEffect, useMemo, useState, type FC } from "react";
 import { Typography } from "antd";
 
 import "virtual:uno.css";
@@ -20,6 +21,11 @@ const Markdown: FC<MarkdownProps> = (props) => {
   const { url, requestHeaders, className, components, ...rest } = props;
 
   const [content, setContent] = useState(rest.content);
+
+  // Use an isolated CSS-in-JS cache to prevent style cleanup from affecting external projects.
+  // Without this, unmounting the Markdown component would remove shared antd CSS variable
+  // style elements (e.g. style[data-token-hash]) from the parent application.
+  const styleCache = useMemo(() => createCache(), []);
 
   const fetchContent = async (url: string) => {
     const response = await fetch(url, {
@@ -42,20 +48,22 @@ const Markdown: FC<MarkdownProps> = (props) => {
   }, [rest.content]);
 
   return (
-    <XMarkdown
-      {...rest}
-      className={clsx(
-        "[&_:is(h1,h2,h3,h4,h5,h6,ul,ol,p)]:[all:revert]",
-        className,
-      )}
-      content={content}
-      components={{
-        code: Code,
-        a: Link,
-        table: Table,
-        ...components,
-      }}
-    />
+    <StyleProvider cache={styleCache}>
+      <XMarkdown
+        {...rest}
+        className={clsx(
+          "[&_:is(h1,h2,h3,h4,h5,h6,ul,ol,p)]:[all:revert]",
+          className,
+        )}
+        content={content}
+        components={{
+          code: Code,
+          a: Link,
+          table: Table,
+          ...components,
+        }}
+      />
+    </StyleProvider>
   );
 };
 
