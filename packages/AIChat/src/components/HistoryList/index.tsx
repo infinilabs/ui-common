@@ -97,7 +97,7 @@ const HistoryList: FC<HistoryListProps> = (props) => {
         >
           <RefreshCw
             strokeWidth={2}
-            className={clsx("size-4 text-[#0287FF]", {
+            className={clsx("size-4", {
               "animate-spin": isRefresh,
             })}
           />

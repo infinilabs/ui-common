@@ -5,7 +5,6 @@ import {
   useState,
   useEffect,
   type KeyboardEvent,
-  type FocusEvent,
 } from "react";
 import { Ellipsis, Loader2 } from "lucide-react";
 import clsx from "clsx";
@@ -21,9 +20,7 @@ interface HistoryListItemProps {
   active?: Chat;
   onSelect: (chat: Chat) => void;
   onRename: (chatId: string, title: string) => void;
-  onMouseEnter: () => void;
   handleDelete: () => void;
-  highlightId: string;
   renamingId?: string;
   deletingId?: string;
   t?: TFunction;
@@ -34,8 +31,6 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
   active,
   onSelect,
   onRename,
-  onMouseEnter,
-  highlightId,
   handleDelete,
   renamingId,
   deletingId,
@@ -47,7 +42,6 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
   const { _id, _source } = item;
   const title = (_source?.title ?? _id) as string;
   const isSelected = item._id === active?._id;
-  const isHovered = item._id === highlightId;
   const isRenaming = renamingId === item._id;
   const isDeleting = deletingId === item._id;
 
@@ -67,10 +61,8 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
   );
 
   const handleRename = useCallback(() => {
-    if (highlightId) {
-      setIsEdit(true);
-    }
-  }, [highlightId]);
+    setIsEdit(true);
+  }, []);
 
   const menuItems = [
     // {
@@ -140,7 +132,6 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
         "group flex w-full items-center mt-1 h-10 rounded-lg cursor-pointer hover:bg-[#EDEDED] dark:hover:bg-[#353F4D] transition-colors relative",
         {
           "bg-[#E5E7EB] dark:bg-[#2B3444]": isSelected,
-          "bg-[#EDEDED] dark:bg-[#353F4D]": isHovered && !isSelected,
         }
       )}
       onClick={() => {
@@ -150,7 +141,6 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
 
         onSelect(item);
       }}
-      onMouseEnter={onMouseEnter}
       onContextMenu={onContextMenu}
     >
       <div
@@ -160,37 +150,36 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
       />
 
       <div className="flex-1 flex items-center justify-between gap-2 px-2 overflow-hidden">
-        {(isEdit && isSelected) || isRenaming ? (
+        {isEdit || isRenaming ? (
           <Input
             autoFocus
             disabled={isRenaming}
             defaultValue={title}
             className="flex-1 -mx-px h-7"
             suffix={
-              <span
-                className={clsx("flex items-center", !isRenaming && "hidden")}
-              >
-                <Loader2 className="size-4 animate-spin" />
-              </span>
+              isRenaming ? (
+                <span className="flex items-center">
+                  <Loader2 className="size-4 animate-spin" />
+                </span>
+              ) : undefined
             }
             onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
               if (isRenaming) return;
+              if (event.key === "Escape") {
+                event.stopPropagation();
+                setIsEdit(false);
+                return;
+              }
               if (event.key !== "Enter") return;
 
               event.stopPropagation();
 
               const value = event.currentTarget.value;
-
               onRename(item._id || "", value);
-
               setIsEdit(false);
             }}
-            onBlur={(event: FocusEvent<HTMLInputElement>) => {
+            onBlur={() => {
               if (isRenaming) return;
-              const value = event.currentTarget.value;
-
-              onRename(item._id || "", value);
-
               setIsEdit(false);
             }}
           />
@@ -214,16 +203,15 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
               trigger="click"
               placement="bottomRight"
               arrow={false}
-              getPopupContainer={(trigger) => trigger.closest("li") || document.body}
             >
               <button
                 ref={moreButtonRef}
                 className={clsx(
                   "flex gap-2 bg-transparent border-none p-0 cursor-pointer outline-none",
                   {
-                    "opacity-100 pointer-events-auto":
+                    "opacity-100":
                       open || (!isEdit && isSelected),
-                    "opacity-0 pointer-events-none": !(
+                    "opacity-0 group-hover:opacity-100": !(
                       open ||
                       (!isEdit && isSelected)
                     ),

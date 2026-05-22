@@ -139,6 +139,11 @@ function InnerHistory({
           return;
         }
 
+        // Clear active chat if the deleted item is the current one
+        if (activeChat?._id === chatId) {
+          setActiveChat(undefined);
+        }
+
         // Fetch latest history after successful deletion
         await fetchChatHistory();
       } catch (e) {
@@ -153,7 +158,7 @@ function InnerHistory({
         setDeletingId("");
       }
     },
-    [messageApi, t, fetchChatHistory, headersProp],
+    [messageApi, t, fetchChatHistory, headersProp, activeChat, setActiveChat],
   );
 
   return (
