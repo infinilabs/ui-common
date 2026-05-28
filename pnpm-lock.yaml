@@ -227,9 +227,6 @@ importers:
       '@emotion/is-prop-valid':
         specifier: ^1.4.0
         version: 1.4.0
-      '@infinilabs/attachments':
-        specifier: workspace:*
-        version: link:../Attachments
       '@infinilabs/chat-message':
         specifier: workspace:*
         version: link:../ChatMessage
