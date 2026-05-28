@@ -8,6 +8,7 @@ import {
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { useChatStore } from "../stores/chatStore";
+import type { TFunction } from "i18next";
 
 export interface SendMessageParams {
   message?: string;
@@ -34,6 +35,7 @@ interface ChatIconsProps {
   attachmentCount?: number;
   /** When true, sending is blocked (e.g. attachments still uploading). */
   disableSend?: boolean;
+  t?: TFunction;
 }
 
 const ChatIcons: React.FC<ChatIconsProps> = ({
@@ -49,8 +51,10 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
   // speechSupported = false,
   // listening = false,
   // onVoiceToggle,
+  t: tProp,
 }) => {
-  const { t } = useTranslation("ai_chat");
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
   const setCurChatEnd = useChatStore((state) => state.setCurChatEnd);
 
   const renderSendButton = () => {

@@ -1,10 +1,9 @@
-import { useCallback, useRef, useState, useEffect } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSize } from "ahooks";
 import clsx from "clsx";
 import { X, Loader2, AlertCircle } from "lucide-react";
 
-import { resources } from "../i18n";
 import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
 import AutoResizeTextarea from "./AutoResizeTextarea";
 import ChatIcons, { type SendMessageParams } from "./ChatIcons";
@@ -189,6 +188,7 @@ type UploadResponse = {
   result?: { attachments?: string[] };
   attachments?: string[];
 };
+import type { TFunction } from "i18next";
 
 interface ChatInputProps {
   onSend: (params: SendMessageParams) => void;
@@ -196,6 +196,8 @@ interface ChatInputProps {
   inputValue: string;
   changeInput: (val: string) => void;
   chatPlaceholder?: string;
+  t?: TFunction;
+  locale?: string;
 }
 
 export default function ChatInput({
@@ -207,8 +209,11 @@ export default function ChatInput({
   maxAttachments = 5,
   attachmentUploadUrl = "/attachment/_upload",
   attachmentAccept,
+  t: tProp,
+  locale,
 }: ChatInputProps) {
-  const { i18n, t } = useTranslation("ai_chat");
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
 
   const curChatEnd = useChatStore((state) => state.curChatEnd);
   const currentAssistant = useChatStore((state) => state.currentAssistant);
@@ -218,21 +223,7 @@ export default function ChatInput({
   const isDeepThinkActive = !!(currentAssistant?._source?.deep_think_enabled ?? true);
   const deepResearchActive = !!(currentAssistant?._source?.deep_research_enabled ?? true);
 
-  useEffect(() => {
-    (Object.keys(resources) as Array<keyof typeof resources>).forEach((lng) => {
-      if (resources[lng]?.translation) {
-        i18n.addResourceBundle(
-          lng as string,
-          "ai_chat",
-          resources[lng].translation,
-          true,
-          true
-        );
-      }
-    });
-  }, [i18n]);
-
-const textareaRef = useRef<{ reset: () => void; focus: () => void }>(null);
+  const textareaRef = useRef<{ reset: () => void; focus: () => void }>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const containerSize = useSize(containerRef);
 
@@ -244,7 +235,7 @@ const textareaRef = useRef<{ reset: () => void; focus: () => void }>(null);
     start,
     stop,
   } = useSpeechRecognition({
-    lang: i18n.language || "zh-CN",
+    lang: locale || "zh-CN",
     autoRestart: true,
     onInterim: (interim) => {
       const composed =
@@ -427,6 +418,7 @@ const textareaRef = useRef<{ reset: () => void; focus: () => void }>(null);
         attachmentCount={attachments.length}
         canSendWithoutText={hasUploaded}
         disableSend={uploadingCount > 0}
+        t={t}
       />
     </div>
   );
