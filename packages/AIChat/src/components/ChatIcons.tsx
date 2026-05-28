@@ -8,6 +8,7 @@ import {
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { useChatStore } from "../stores/chatStore";
+import type { TFunction } from "i18next";
 
 export interface SendMessageParams {
   message?: string;
@@ -24,6 +25,17 @@ interface ChatIconsProps {
   speechSupported?: boolean;
   listening?: boolean;
   onVoiceToggle?: () => void;
+  /** Triggered when the user clicks the paperclip / attachment button. */
+  onAttachClick?: () => void;
+  /** When true, the attachment button is hidden (e.g. host did not wire it). */
+  hideAttachment?: boolean;
+  /** When true, the send button is enabled even when the input is empty (e.g. attachments present). */
+  canSendWithoutText?: boolean;
+  /** Number of currently attached/pending files. Shown as a small badge on the paperclip. */
+  attachmentCount?: number;
+  /** When true, sending is blocked (e.g. attachments still uploading). */
+  disableSend?: boolean;
+  t?: TFunction;
 }
 
 const ChatIcons: React.FC<ChatIconsProps> = ({
@@ -31,24 +43,50 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
   inputValue = "",
   onSend,
   disabledChange,
+  onAttachClick,
+  hideAttachment = false,
+  canSendWithoutText = false,
+  attachmentCount = 0,
+  disableSend = false,
   // speechSupported = false,
   // listening = false,
   // onVoiceToggle,
+  t: tProp,
 }) => {
-  const { t } = useTranslation("ai_chat");
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
   const setCurChatEnd = useChatStore((state) => state.setCurChatEnd);
 
   const renderSendButton = () => {
+    const canSend = !!inputValue?.trim() || (canSendWithoutText && !disableSend);
     if (curChatEnd) {
       return (
         <div className="flex items-center gap-1">
-          <button
-            className="flex items-center justify-center rounded-full shrink-0 text-[#999] hover:text-[#666] dark:text-[#666] dark:hover:text-[#999] transition-colors"
-            style={{ width: "32px", height: "32px" }}
-            title={t("search.input.attachment") || "Attachment"}
-          >
-            <Paperclip size={20} />
-          </button>
+          {!hideAttachment && (
+            <button
+              type="button"
+              className={clsx(
+                "relative flex items-center justify-center rounded-full shrink-0 transition-colors",
+                onAttachClick
+                  ? "text-[#999] hover:text-[#666] dark:text-[#666] dark:hover:text-[#999] cursor-pointer"
+                  : "text-[#ccc] dark:text-[#444] cursor-not-allowed"
+              )}
+              style={{ width: "32px", height: "32px" }}
+              title={t("search.input.attachment") || "Attachment"}
+              onClick={() => onAttachClick?.()}
+              disabled={!onAttachClick}
+            >
+              <Paperclip size={20} />
+              {attachmentCount > 0 && (
+                <span
+                  className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] px-[3px] rounded-full bg-[#027FFE] text-white text-[10px] leading-[14px] text-center"
+                  style={{ pointerEvents: "none" }}
+                >
+                  {attachmentCount}
+                </span>
+              )}
+            </button>
+          )}
           {/* {speechSupported && (
             <button
               className={clsx(
@@ -74,9 +112,9 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
             className={clsx(
               "flex items-center justify-center rounded-full transition-colors p-0 shrink-0 aspect-square cursor-pointer",
               {
-                "bg-[#027FFE] text-white": inputValue,
+                "bg-[#027FFE] text-white": canSend,
                 "text-[#999] hover:text-[#666] dark:text-[#666] dark:hover:text-[#999]":
-                  !inputValue,
+                  !canSend,
               }
             )}
             style={{ width: "32px", height: "32px" }}
@@ -94,7 +132,7 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
                 });
               }
             }}
-            disabled={!inputValue?.trim()}
+            disabled={!canSend}
             title={`${t("search.input.send") || "Send"} (Enter)`}
           >
             <Send size={20} />

@@ -62,6 +62,8 @@ export const resources = {
       search: {
         input: {
           attachment: "Attachment",
+          attachment_remove: "Remove",
+          attachment_upload_failed: "Upload failed",
           voice: "Voice",
           send: "Send",
           stop: "Stop",
@@ -142,6 +144,8 @@ export const resources = {
       search: {
         input: {
           attachment: "附件",
+          attachment_remove: "移除",
+          attachment_upload_failed: "上传失败",
           voice: "语音",
           send: "发送",
           stop: "停止",
