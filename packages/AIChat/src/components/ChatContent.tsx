@@ -1,8 +1,9 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import type { UIEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { type TFunction } from "i18next";
 import { ChatMessage, type ChatMessageRef } from "@infinilabs/chat-message";
+import { Post } from "../api/axiosRequest";
 
 import { Greetings } from "./Greetings";
 import { useChatScroll } from "../hooks/useChatScroll";
@@ -82,6 +83,14 @@ export const ChatContent = ({
   const { t: tOriginal } = useTranslation();
   const t = tProp || tOriginal;
 
+  const fetchAttachments = useCallback(async (ids: string[]) => {
+    const [, res] = await Post<{ hits?: { hits?: unknown[] } }>(
+      "/attachment/_search",
+      { attachments: ids },
+    );
+    return (res?.hits?.hits ?? []) as { _id: string; _source: Record<string, unknown> }[];
+  }, []);
+
   const setCurrentSessionId = useConnectStore(
     (state) => state.setCurrentSessionId
   );
@@ -147,6 +156,7 @@ export const ChatContent = ({
               onResend={handleSendMessage}
               formatUrl={formatUrl}
               assistantList={assistantList}
+              fetchAttachments={fetchAttachments}
             />
           ))}
 

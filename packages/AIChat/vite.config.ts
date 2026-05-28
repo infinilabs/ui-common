@@ -11,6 +11,11 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), tailwindcss(), cssInjectedByJsPlugin()],
     build: {
+      // Target ES2018 so that newer syntax such as optional catch binding
+      // (`} catch {`, ES2019) gets transpiled. This keeps the published bundle
+      // consumable by downstream bundlers whose parser does not understand
+      // the more recent syntax forms.
+      target: "es2018",
       minify: false,
       lib: {
         entry: path.resolve(__dirname, "src/components/index.tsx"),

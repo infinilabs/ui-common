@@ -227,9 +227,12 @@ importers:
       '@emotion/is-prop-valid':
         specifier: ^1.4.0
         version: 1.4.0
+      '@infinilabs/attachments':
+        specifier: workspace:*
+        version: link:../Attachments
       '@infinilabs/chat-message':
-        specifier: ^0.0.11
-        version: 0.0.11(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@emotion/is-prop-valid@1.4.0)(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-i18next@16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)(typescript@5.9.3)
+        specifier: workspace:*
+        version: link:../ChatMessage
       ahooks:
         specifier: ^3.9.6
         version: 3.9.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2258,14 +2261,6 @@ packages:
       antd: '>=6'
       react: '>=18'
       react-dom: '>=18'
-
-  '@infinilabs/chat-message@0.0.11':
-    resolution: {integrity: sha512-yxFqOFkMf772rv4vc27uID1338TBqLMpds59S4mDg9dI1yPp/GVDdhGWkYhW6GGS+k4gfCwtSbSd+Vdera70Dg==}
-    peerDependencies:
-      antd: ^6.1.3
-      react: ^18.3.1
-      react-dom: ^18.3.1
-      react-i18next: '>=11.0.0'
 
   '@infinilabs/datepicker@0.0.5':
     resolution: {integrity: sha512-juQV2yjfBdEfuahSYUCQGTgRcXQa5FPDThLylBr+KNATJswc3AVMjIxxVtAc/EEKxTBeSan6Gt0ZAqrUpaq7oQ==}
@@ -9484,27 +9479,6 @@ snapshots:
       nanoid: 5.1.6
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-
-  '@infinilabs/chat-message@0.0.11(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@emotion/is-prop-valid@1.4.0)(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-i18next@16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)(typescript@5.9.3)':
-    dependencies:
-      '@infinilabs/attachments': 0.0.1(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@infinilabs/markdown': 0.0.2(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@infinilabs/search-results': 0.0.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      ahooks: 3.9.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      antd: 6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      clsx: 2.1.1
-      i18next: 25.7.3(typescript@5.9.3)
-      lucide-react: 0.461.0(react@18.3.1)
-      motion: 12.25.0(@emotion/is-prop-valid@1.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      react-i18next: 16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)
-    transitivePeerDependencies:
-      - '@ant-design/icons'
-      - '@emotion/is-prop-valid'
-      - '@types/react'
-      - supports-color
-      - typescript
 
   '@infinilabs/datepicker@0.0.5':
     dependencies:

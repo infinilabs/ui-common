@@ -22,7 +22,7 @@ import { DeepRead } from "./DeepRead";
 import { Think } from "./Think";
 import { MessageActions } from "./MessageActions";
 import { SuggestionList } from "./SuggestionList";
-import { UserMessage } from "./UserMessage";
+import { UserMessage, type AttachmentHit } from "./UserMessage";
 import FontIcon from "./Common/Icons/FontIcon";
 import useMessageChunkData from "../hooks/useMessageChunkData";
 import { DeepResearch } from "./DeepResearch";
@@ -57,6 +57,8 @@ export interface ChatMessageProps {
   report_content?: string;
   assistantList?: any[];
   currentAssistant?: any;
+  /** Fetch attachment metadata by IDs for rendering in user messages. */
+  fetchAttachments?: (ids: string[]) => Promise<AttachmentHit[]>;
 }
 
 export interface ChatMessageRef {
@@ -96,6 +98,7 @@ const InnerChatMessage = memo(
       locale,
       assistantList,
       currentAssistant,
+      fetchAttachments,
     },
     ref,
   ) {
@@ -275,7 +278,7 @@ const InnerChatMessage = memo(
     const renderContent = () => {
       if (!isAssistant) {
         return (
-          <UserMessage message={messageContent} attachments={attachments} />
+          <UserMessage message={messageContent} attachments={attachments} fetchAttachments={fetchAttachments} />
         );
       }
 

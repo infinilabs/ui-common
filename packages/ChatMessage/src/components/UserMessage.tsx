@@ -6,16 +6,23 @@ import { Attachments } from "@infinilabs/attachments";
 
 import { CopyButton } from "./Common/CopyButton";
 
+export type AttachmentHit = {
+  _id: string;
+  _source: Record<string, unknown>;
+};
+
 interface UserMessageProps {
   message: string;
   attachments: string[];
+  /** Called to fetch attachment metadata by IDs. When omitted, attachments are not rendered. */
+  fetchAttachments?: (ids: string[]) => Promise<AttachmentHit[]>;
 }
 
 export const UserMessage: FC<UserMessageProps> = (props) => {
-  const { message, attachments } = props;
+  const { message, attachments, fetchAttachments } = props;
 
   const [showCopyButton, setShowCopyButton] = useState(false);
-  const [attachmentData, setAttachmentData] = useState<any[]>([]);
+  const [attachmentData, setAttachmentData] = useState<AttachmentHit[]>([]);
 
   const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (typeof window !== "undefined" && typeof document !== "undefined") {
@@ -36,16 +43,13 @@ export const UserMessage: FC<UserMessageProps> = (props) => {
 
   useAsyncEffect(async () => {
     try {
-      if (attachments.length === 0) return;
-
-      // todo: 调用平台接口获取附件详情
-      const result: any = {};
-
-      setAttachmentData(result?.hits?.hits);
+      if (attachments.length === 0 || !fetchAttachments) return;
+      const hits = await fetchAttachments(attachments);
+      setAttachmentData(hits ?? []);
     } catch (error) {
       console.error("Get attachment failed:", String(error));
     }
-  }, [attachments]);
+  }, [attachments, fetchAttachments]);
 
   return (
     <>
@@ -78,14 +82,27 @@ export const UserMessage: FC<UserMessageProps> = (props) => {
           })}
         >
           <Attachments
-            data={attachmentData.map((item) => ({
-              id: item._source.id,
-              filename: item._source.name,
-              extname: item._source.icon,
-              size: item._source.size,
-              status: "uploaded",
-            }))}
-            className="text-left"
+            className="justify-end"
+            data={attachmentData.map((item) => {
+              const bytes = item._source.size as number | undefined;
+              let sizeStr: string | undefined;
+              if (bytes != null) {
+                if (bytes >= 1024 * 1024) {
+                  sizeStr = (bytes / (1024 * 1024)).toFixed(1) + " MB";
+                } else if (bytes >= 1024) {
+                  sizeStr = (bytes / 1024).toFixed(1) + " KB";
+                } else {
+                  sizeStr = bytes + " B";
+                }
+              }
+              return {
+                id: item._source.id as string,
+                filename: item._source.name as string,
+                extname: item._source.icon as string,
+                size: sizeStr,
+                status: "uploaded" as const,
+              };
+            })}
           />
         </div>
       )}

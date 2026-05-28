@@ -224,6 +224,85 @@ export const Put = <T>(
   });
 };
 
+/**
+ * Upload one or more files via multipart/form-data.
+ * Files are appended under the form field `files` (the backend expects this name).
+ *
+ * @param url     - target endpoint, e.g. "/attachment/_upload"
+ * @param files   - one or more File objects to upload
+ * @param extra   - optional extra form fields to send alongside the files
+ * @param headers - optional request headers
+ * @param onProgress - optional upload progress callback (0..1)
+ */
+export const Upload = <T>(
+  url: string,
+  files: File[],
+  extra: Record<string, string> = {},
+  headers: RequestHeaders = {},
+  onProgress?: (percent: number) => void
+): Promise<[unknown, T | undefined]> => {
+  return new Promise((resolve) => {
+    const appStore = JSON.parse(localStorage.getItem("app-store") || "{}");
+
+    const meta = import.meta as unknown as { env?: { DEV?: boolean } };
+    const isDev = meta.env?.DEV === true;
+    const PROXY_PREFIXES: readonly string[] = [
+      "account",
+      "chat",
+      "query",
+      "connector",
+      "integration",
+      "assistant",
+      "datasource",
+      "settings",
+      "mcp_server",
+      "attachment",
+    ];
+    const shouldProxy =
+      isDev &&
+      url.startsWith("/") &&
+      PROXY_PREFIXES.some((p) => url.startsWith(`/${p}`));
+
+    let baseURL: string = appStore.state?.endpoint_http as string;
+    if (!baseURL || baseURL === "undefined" || shouldProxy) {
+      baseURL = "";
+    }
+
+    const formData = new FormData();
+    for (const f of files) {
+      formData.append("files", f, f.name);
+    }
+    for (const [k, v] of Object.entries(extra)) {
+      formData.append(k, v);
+    }
+
+    const config: AxiosRequestConfig = {
+      headers: {
+        // Let axios/browser set the multipart boundary automatically.
+        ...headers,
+      },
+      withCredentials: true,
+      onUploadProgress: onProgress
+        ? (evt) => {
+            if (evt.total) {
+              onProgress(evt.loaded / evt.total);
+            }
+          }
+        : undefined,
+    };
+
+    axios
+      .post<T>(baseURL + url, formData, config)
+      .then((result) => {
+        resolve([null, result.data as T]);
+      })
+      .catch((err: unknown) => {
+        handleApiError(err);
+        resolve([err, undefined]);
+      });
+  });
+};
+
 export const Delete = <T>(
   url: string,
   params: RequestParams = {},
