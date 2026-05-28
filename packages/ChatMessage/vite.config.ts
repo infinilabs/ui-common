@@ -47,7 +47,7 @@ export default defineConfig({
     },
     preprocessorOptions: {
       scss: {
-        javascriptEnabled: true,
+        // javascriptEnabled: true,
       },
     },
   },
