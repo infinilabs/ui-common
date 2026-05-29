@@ -425,9 +425,8 @@ export default function ChatInput({
 
   return (
     <div
-      className={`w-full p-1 relative rounded-xl overflow-hidden`}
+      className={`w-full p-1 relative rounded-xl overflow-hidden border-[#F0F0F0] dark:border-[#303030]`}
       style={{
-        border: '1px solid var(--ant-color-border)',
         backgroundColor: 'var(--ant-color-bg-container)',
       }}
     >
@@ -444,14 +443,10 @@ export default function ChatInput({
           {attachments.map((a) => (
             <div
               key={a.localId}
-              className="flex items-center gap-1.5 px-2 py-1 rounded-md text-xs max-w-[240px]"
+              className={`border-1px border-solid border-[#F0F0F0] dark:border-[#303030] ${a.status === "error" ? "!border-[var(--ant-color-error)]" : ""} flex items-center gap-1.5 px-2 py-1 rounded-md text-xs max-w-[240px]`}
               style={{
                 backgroundColor: "var(--ant-color-fill-quaternary)",
                 color: "var(--ant-color-text)",
-                border:
-                  a.status === "error"
-                    ? "1px solid var(--ant-color-error)"
-                    : "1px solid var(--ant-color-border)",
               }}
               title={
                 a.status === "error"

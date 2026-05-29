@@ -153,9 +153,8 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
   return (
     <div className="relative">
       <button
-        className="flex cursor-pointer items-center gap-1 rounded-xl px-2 py-1.5 transition-colors"
+        className="border-[#F0F0F0] dark:border-[#303030] border-1px border-solid flex cursor-pointer items-center gap-1 rounded-xl px-2 py-1.5 transition-colors"
         style={{
-          border: '1px solid var(--ant-color-border)',
           color: 'var(--ant-color-text)',
         }}
         type="button"
@@ -192,9 +191,8 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
 
       {open && (
         <div
-          className="absolute left-0 top-full z-50 mt-2 w-64 rounded-xl shadow-lg p-3"
+          className="border-[#F0F0F0] dark:border-[#303030] border-1px border-solid absolute left-0 top-full z-50 mt-2 w-64 rounded-xl shadow-lg p-3"
           style={{
-            border: '1px solid var(--ant-color-border)',
             backgroundColor: 'var(--ant-color-bg-elevated)',
             color: 'var(--ant-color-text)',
           }}
