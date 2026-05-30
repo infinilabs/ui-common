@@ -227,6 +227,9 @@ importers:
       '@emotion/is-prop-valid':
         specifier: ^1.4.0
         version: 1.4.0
+      '@infinilabs/attachments':
+        specifier: ^0.0.2
+        version: 0.0.2(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@infinilabs/chat-message':
         specifier: ^0.0.12
         version: 0.0.12(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@emotion/is-prop-valid@1.4.0)(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-i18next@16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)(typescript@5.9.3)
@@ -377,8 +380,8 @@ importers:
   packages/ChatMessage:
     dependencies:
       '@infinilabs/attachments':
-        specifier: ^0.0.1
-        version: 0.0.1(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.2
+        version: 0.0.2(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@infinilabs/markdown':
         specifier: ^0.0.2
         version: 0.0.2(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2253,6 +2256,14 @@ packages:
 
   '@infinilabs/attachments@0.0.1':
     resolution: {integrity: sha512-VStAMEZ5W8MToXotF4V3sQLPJoQGjV38blMiNwNRyiLiQtGfHo3PUiqHTCNOUEOWjJppv4jk/WZ1UE65/mwp9Q==}
+    peerDependencies:
+      '@ant-design/icons': '>=6'
+      antd: '>=6'
+      react: '>=18'
+      react-dom: '>=18'
+
+  '@infinilabs/attachments@0.0.2':
+    resolution: {integrity: sha512-NZArxIQc2mrFVsuAye0+shCxqZxmM7bgHL3yLsU8ZynST6vFDYi5bs8qZjjeFWqhrrooTzhG40kuU2vVht9ryg==}
     peerDependencies:
       '@ant-design/icons': '>=6'
       antd: '>=6'
@@ -9477,6 +9488,15 @@ snapshots:
       mlly: 1.8.0
 
   '@infinilabs/attachments@0.0.1(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@ant-design/icons': 6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      antd: 6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      clsx: 2.1.1
+      nanoid: 5.1.6
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
+  '@infinilabs/attachments@0.0.2(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@ant-design/icons': 6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       antd: 6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

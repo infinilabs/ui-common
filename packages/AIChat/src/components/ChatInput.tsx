@@ -1,8 +1,8 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSize } from "ahooks";
 import clsx from "clsx";
-import { X, Loader2, AlertCircle } from "lucide-react";
+import { Attachments as AttachmentsList } from "@infinilabs/attachments";
 
 import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
 import AutoResizeTextarea from "./AutoResizeTextarea";
@@ -10,147 +10,6 @@ import ChatIcons, { type SendMessageParams } from "./ChatIcons";
 import InputControls from "./InputControls";
 import { useChatStore } from "../stores/chatStore";
 import { Upload } from "../api/axiosRequest";
-
-function getAttachmentIconId(extname?: string) {
-  switch (extname) {
-    case "ts":
-      return "font_file_typescript";
-    case "js":
-      return "font_file_javascript";
-    case "rs":
-      return "font_file_rustscript1";
-    case "xml":
-      return "font_file_xml";
-    case "yaml":
-    case "yml":
-      return "font_file_yaml";
-    case "go":
-      return "font_file_golang";
-    case "php":
-      return "font_file_php";
-    case "css":
-      return "font_file_css";
-    case "jsx":
-    case "tsx":
-      return "font_file_react";
-    case "svg":
-      return "font_file_svg";
-    case "rb":
-      return "font_file_ruby";
-    case "html":
-    case "htm":
-      return "font_file_html";
-    case "epub":
-      return "font_file_epub";
-    case "java":
-      return "font_file_java";
-    case "sql":
-      return "font_file_sql";
-    case "vue":
-      return "font_file_vue";
-    case "json":
-      return "font_file_json";
-    case "py":
-      return "font_file_python";
-    case "sass":
-    case "scss":
-      return "font_file_sass";
-    case "toml":
-      return "font_file_toml";
-    case "c":
-    case "cpp":
-    case "cc":
-    case "cxx":
-    case "h":
-    case "hpp":
-      return "font_file_csource";
-    case "md":
-      return "font_file_markdown";
-    case "txt":
-      return "font_file_txt";
-    case "xlsx":
-    case "xls":
-      return "font_file_spreadsheet_excel";
-    case "csv":
-      return "font_file_csv";
-    case "pptx":
-    case "ppt":
-      return "font_file_presentation_powerpoint";
-    case "mp4":
-    case "avi":
-    case "mov":
-    case "wmv":
-    case "flv":
-    case "webm":
-    case "mkv":
-      return "font_file_video";
-    case "png":
-    case "jpg":
-    case "jpeg":
-    case "gif":
-    case "bmp":
-    case "webp":
-    case "ico":
-      return "font_file_image";
-    case "zip":
-    case "rar":
-    case "7z":
-    case "tar":
-    case "gz":
-      return "font_file_zip";
-    case "pdf":
-      return "font_file_document_pdf";
-    case "docx":
-    case "doc":
-      return "font_file_document_word";
-    case "mp3":
-    case "wav":
-    case "flac":
-    case "aac":
-    case "ogg":
-    case "wma":
-      return "font_file_audio";
-    case "ai":
-      return "font_file_adobe_ai";
-    case "xd":
-      return "font_file_adobe_xd";
-    case "fl":
-      return "font_file_adobe_fl";
-    case "pr":
-    case "pre":
-      return "font_file_adobe_pr";
-    case "lr":
-      return "font_file_adobe_lr";
-    case "ae":
-      return "font_file_adobe_ae";
-    case "id":
-    case "indd":
-      return "font_file_adobe_id";
-    case "dmg":
-      return "font_file_dmg";
-    case "au":
-      return "font_file_adobe_au";
-    case "psd":
-      return "font_file_adobe_psd";
-    case "sketch":
-      return "font_file_sketch";
-    case "sh":
-    case "bash":
-    case "zsh":
-    case "fish":
-      return "font_file_erminalsettings1";
-    default:
-      return "font_file_unknown";
-  }
-}
-
-function AttachmentPreviewIcon({ extname }: { extname?: string }) {
-  return (
-    <svg className="w-5 h-5 shrink-0" aria-hidden="true">
-      <use xlinkHref={`#${getAttachmentIconId(extname)}`} />
-    </svg>
-  );
-}
 
 interface ChatInputProps {
   onSend: (params: SendMessageParams) => void;
@@ -278,9 +137,18 @@ export default function ChatInput({
     fileInputRef.current?.click();
   }, [disabled, attachments.length, maxAttachments]);
 
-  const removeAttachment = useCallback((localId: string) => {
-    setAttachments((list) => list.filter((a) => a.localId !== localId));
+  const removeAttachment = useCallback((id: string) => {
+    setAttachments((list) => list.filter((a) => a.localId !== id && a.id !== id));
   }, []);
+
+  const attachmentsData = useMemo(() => attachments.map((a) => ({
+    id: a.id ?? a.localId,
+    filename: a.name,
+    extname: a.name.split(".").pop()?.toLowerCase(),
+    size: formatBytes(a.size),
+    status: a.status === "error" ? ("failed" as const) : (a.status as "uploading" | "analyzing" | "uploaded"),
+    failedMessage: a.error,
+  })), [attachments]);
 
   const uploadFile = useCallback(
     async (file: File, localId: string) => {
@@ -425,7 +293,7 @@ export default function ChatInput({
 
   return (
     <div
-      className={`w-full p-1 relative rounded-xl overflow-hidden border-[#F0F0F0] dark:border-[#303030]`}
+      className={`w-full p-1 relative rounded-xl overflow-hidden border border-solid border-[#F0F0F0] dark:border-[#303030]`}
       style={{
         backgroundColor: 'var(--ant-color-bg-container)',
       }}
@@ -439,53 +307,19 @@ export default function ChatInput({
         onChange={(e) => handleFilesPicked(e.target.files)}
       />
       {attachments.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 px-1 pt-1 pb-1">
-          {attachments.map((a) => (
-            <div
-              key={a.localId}
-              className={`border-1px border-solid border-[#F0F0F0] dark:border-[#303030] ${a.status === "error" ? "!border-[var(--ant-color-error)]" : ""} flex items-center gap-1.5 px-2 py-1 rounded-md text-xs max-w-[240px]`}
-              style={{
-                backgroundColor: "var(--ant-color-fill-quaternary)",
-                color: "var(--ant-color-text)",
-              }}
-              title={
-                a.status === "error"
-                  ? a.error || "Upload failed"
-                  : `${a.name} (${formatBytes(a.size)})`
-              }
-            >
-              {a.status === "uploading" && (
-                <Loader2 size={12} className="animate-spin shrink-0" />
-              )}
-              {(a.status === "uploaded" || a.status === "error") && (
-                <AttachmentPreviewIcon
-                  extname={a.name.split(".").pop()?.toLowerCase()}
-                />
-              )}
-              {a.status === "error" && (
-                <AlertCircle
-                  size={12}
-                  className="shrink-0"
-                  style={{ color: "var(--ant-color-error)" }}
-                />
-              )}
-              <span className="truncate max-w-[180px]">{a.name}</span>
-              <span
-                className="text-[10px] opacity-60 shrink-0"
-                style={{ color: "var(--ant-color-text-tertiary)" }}
-              >
-                {formatBytes(a.size)}
-              </span>
-              <button
-                type="button"
-                className="flex items-center justify-center w-4 h-4 rounded-full hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer shrink-0"
-                onClick={() => removeAttachment(a.localId)}
-                title={t("search.input.attachment_remove") || "Remove"}
-              >
-                <X size={10} />
-              </button>
-            </div>
-          ))}
+        <div className="pt-2 pb-2">
+          <AttachmentsList
+            data={attachmentsData}
+            i18n={{
+              labels: {
+                uploading: t("search.input.uploading") || "上传中…",
+                analyzing: t("search.input.analyzing") || "分析中…",
+                failed:
+                  t("search.input.attachment_upload_failed") || "上传失败",
+              },
+            }}
+            onItemRemove={(item) => removeAttachment(item.id)}
+          />
         </div>
       )}
       <div
