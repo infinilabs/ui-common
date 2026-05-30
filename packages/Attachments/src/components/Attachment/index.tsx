@@ -100,9 +100,9 @@ const Attachment: FC<AttachmentProps> = (props) => {
           <AttachmentIcon className="min-w-10 size-10" extname={extname} />
 
           <div className="flex flex-col gap-1 overflow-hidden">
-            <span className="text-sm truncate">{filename}</span>
+            <span className="text-sm truncate text-left">{filename}</span>
 
-            <Text type="secondary" className="text-xs">
+            <Text type="secondary" className="text-xs text-left">
               {renderStatus()}
             </Text>
           </div>
