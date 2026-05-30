@@ -231,8 +231,8 @@ importers:
         specifier: ^0.0.2
         version: 0.0.2(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@infinilabs/chat-message':
-        specifier: ^0.0.12
-        version: 0.0.12(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@emotion/is-prop-valid@1.4.0)(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-i18next@16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)(typescript@5.9.3)
+        specifier: ^0.0.13
+        version: 0.0.13(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@emotion/is-prop-valid@1.4.0)(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-i18next@16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)(typescript@5.9.3)
       ahooks:
         specifier: ^3.9.6
         version: 3.9.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2254,14 +2254,6 @@ packages:
   '@iconify/utils@3.1.0':
     resolution: {integrity: sha512-Zlzem1ZXhI1iHeeERabLNzBHdOa4VhQbqAcOQaMKuTuyZCpwKbC2R4Dd0Zo3g9EAc+Y4fiarO8HIHRAth7+skw==}
 
-  '@infinilabs/attachments@0.0.1':
-    resolution: {integrity: sha512-VStAMEZ5W8MToXotF4V3sQLPJoQGjV38blMiNwNRyiLiQtGfHo3PUiqHTCNOUEOWjJppv4jk/WZ1UE65/mwp9Q==}
-    peerDependencies:
-      '@ant-design/icons': '>=6'
-      antd: '>=6'
-      react: '>=18'
-      react-dom: '>=18'
-
   '@infinilabs/attachments@0.0.2':
     resolution: {integrity: sha512-NZArxIQc2mrFVsuAye0+shCxqZxmM7bgHL3yLsU8ZynST6vFDYi5bs8qZjjeFWqhrrooTzhG40kuU2vVht9ryg==}
     peerDependencies:
@@ -2270,8 +2262,8 @@ packages:
       react: '>=18'
       react-dom: '>=18'
 
-  '@infinilabs/chat-message@0.0.12':
-    resolution: {integrity: sha512-qowQ32MhDw7BnKpmXdEHdrCucPBR0Zu5OJYLbrbQApP421YCqijkgYujOw8L0HcuAytPT9/bhLT107ngsOmqRw==}
+  '@infinilabs/chat-message@0.0.13':
+    resolution: {integrity: sha512-z5jXqyf9KVaoZDT7CdmbrEXaVQ67ydbcynzTyTJFsT4PTi/XlTmbg+es8rxYRygaWt+e3gsqlCI/GQd5n40tJQ==}
     peerDependencies:
       antd: ^6.1.3
       react: ^18.3.1
@@ -9487,15 +9479,6 @@ snapshots:
       '@iconify/types': 2.0.0
       mlly: 1.8.0
 
-  '@infinilabs/attachments@0.0.1(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@ant-design/icons': 6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      antd: 6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      clsx: 2.1.1
-      nanoid: 5.1.6
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
   '@infinilabs/attachments@0.0.2(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@ant-design/icons': 6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -9505,9 +9488,9 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@infinilabs/chat-message@0.0.12(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@emotion/is-prop-valid@1.4.0)(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-i18next@16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)(typescript@5.9.3)':
+  '@infinilabs/chat-message@0.0.13(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@emotion/is-prop-valid@1.4.0)(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-i18next@16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)(typescript@5.9.3)':
     dependencies:
-      '@infinilabs/attachments': 0.0.1(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@infinilabs/attachments': 0.0.2(@ant-design/icons@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@infinilabs/markdown': 0.0.2(@types/react@18.3.3)(antd@6.1.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@infinilabs/search-results': 0.0.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       ahooks: 3.9.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
