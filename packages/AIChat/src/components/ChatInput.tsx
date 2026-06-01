@@ -307,7 +307,7 @@ export default function ChatInput({
         onChange={(e) => handleFilesPicked(e.target.files)}
       />
       {attachments.length > 0 && (
-        <div className="pt-2 pb-2">
+        <div className="mb-2">
           <AttachmentsList
             data={attachmentsData}
             i18n={{

@@ -97,10 +97,10 @@ export function ListItem({
       rel={item.rel}
       onClick={handleClick}
       className={clsx(
-        "group block w-full rounded-xl border border-transparent p-4! text-left no-underline transition-colors",
-        "hover:border-slate-200 hover:bg-slate-100/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300",
-        "dark:hover:border-slate-700 dark:hover:bg-slate-800/60 dark:focus-visible:ring-slate-600",
-        item.isActive ? "border-slate-200 bg-slate-100/70 dark:border-slate-700 dark:bg-slate-800/60" : ''
+        "group block w-full rounded-xl p-4! text-left no-underline transition-colors",
+        "hover:bg-slate-100/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300",
+        "dark:hover:bg-slate-800/60 dark:focus-visible:ring-slate-600",
+        item.isActive ? "bg-slate-100/70 dark:bg-slate-800/60" : ''
       )}
     >
       {content}
