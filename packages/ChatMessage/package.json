@@ -34,9 +34,9 @@
     "react-i18next": ">=11.0.0"
   },
   "dependencies": {
-    "@infinilabs/attachments": "^0.0.2",
-    "@infinilabs/markdown": "^0.0.2",
-    "@infinilabs/search-results": "^0.0.16",
+    "@infinilabs/attachments": "^0.0.3",
+    "@infinilabs/markdown": "^0.0.8",
+    "@infinilabs/search-results": "^0.0.19",
     "ahooks": "^3.9.6",
     "clsx": "^2.1.1",
     "i18next": "^25.7.3",

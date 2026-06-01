@@ -11,8 +11,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/filter.js",
       "require": "./dist/filter.cjs"
-    },
-    "./css": "./dist/filter.css"
+    }
   },
   "publishConfig": {
     "access": "public"
