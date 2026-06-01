@@ -203,6 +203,7 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
               trigger="click"
               placement="bottomRight"
               arrow={false}
+              getTooltipContainer={(node) => node.parentElement || document.body}
             >
               <button
                 ref={moreButtonRef}
