@@ -5,7 +5,7 @@ import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 
 export default defineConfig({
   plugins: [
-    react(), 
+    react(),
     dts({ rollupTypes: true, tsconfigPath: "./tsconfig.app.json" }), 
     cssInjectedByJsPlugin({
       injectCodeFunction: function (cssCode, options) {

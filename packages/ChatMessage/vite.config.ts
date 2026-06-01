@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tailwindcss from "@tailwindcss/vite";
 import { readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -25,7 +24,6 @@ function resolve(str: string) {
 export default defineConfig({
   plugins: [
     react(),
-    tailwindcss(),
     cssInjectedByJsPlugin({
       injectCodeFunction: function (cssCode, options) {
         try {
@@ -62,9 +60,6 @@ export default defineConfig({
     },
   },
   css: {
-    postcss: {
-      plugins: [],
-    },
     modules: {
       localsConvention: "camelCase",
       generateScopedName: "[name]__[local]___[hash:base64:5]",
