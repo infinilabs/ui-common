@@ -25,7 +25,7 @@ export const CopyButton = ({ textToCopy }: CopyButtonProps) => {
 
   return (
     <button
-      className={`cursor-pointer bg-gray-200 dark:bg-gray-700 rounded`}
+      className={`cursor-pointer p-1 bg-gray-200 dark:bg-gray-700 rounded`}
       onClick={handleCopy}
     >
       {copied ? (
