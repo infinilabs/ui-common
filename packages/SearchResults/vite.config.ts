@@ -18,13 +18,18 @@ export default defineConfig({
               style.setAttribute(attribute, options.attributes[attribute]);
             }
 
-            style.appendChild(doc.createTextNode(cssCode));
             var host = doc.querySelector('[data-fullscreen-host]');
             var shadowRoot = host && host.shadowRoot;
 
             if (shadowRoot) {
+              var processed = cssCode.replace(
+                /@layer properties\{@supports[^{]*\{([\s\S]*?)\}\s*\}/g,
+                '@layer properties{$1}'
+              );
+              style.appendChild(doc.createTextNode(processed));
               shadowRoot.appendChild(style);
             } else {
+              style.appendChild(doc.createTextNode(cssCode));
               doc.head.appendChild(style);
             }
           }
