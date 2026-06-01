@@ -25,7 +25,7 @@ export function AIAnswerActions({
   const [copied, setCopied] = useState(false);
 
   const baseBtnClass =
-    "inline-flex p-1 items-center justify-center rounded bg-transparent cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:focus-visible:ring-slate-600";
+    "inline-flex items-center justify-center rounded bg-transparent cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:focus-visible:ring-slate-600";
   const defaultBtnClass =
     "text-[#666] hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800";
   
