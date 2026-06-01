@@ -43,15 +43,15 @@ const FilterCollapse: FC<FilterCollapseProps> = (props) => {
         <div className="flex items-center gap-2">
           <div className="relative size-4 children:(absolute inset-0)">
             <motion.div
-              initial={{ opacity: 1 }}
-              animate={{ opacity: expand ? 0 : 1 }}
+              initial={{ display: 'block' }}
+              animate={{ display: expand ? 'none' : 'block' }}
             >
               <SquarePlus className="size-4" />
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: expand ? 1 : 0 }}
+              initial={{ display: 'none' }}
+              animate={{ display: expand ? 'block' : 'none' }}
             >
               <SquareMinus className="size-4" />
             </motion.div>
