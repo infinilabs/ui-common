@@ -99,7 +99,7 @@ export const FetchSource = ({
     >
       <button
         onClick={() => setIsSourceExpanded((prev) => !prev)}
-        className={`inline-flex justify-between items-center gap-2 px-2 py-1 rounded-xl transition-colors whitespace-nowrap ${
+        className={`cursor-pointer inline-flex justify-between items-center gap-2 px-2 py-1 rounded-xl transition-colors whitespace-nowrap ${
           isSourceExpanded
             ? "w-full"
             : "border border-[#E6E6E6] dark:border-[#272626]"

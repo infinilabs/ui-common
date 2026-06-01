@@ -55,7 +55,7 @@ export const UserMessage: FC<UserMessageProps> = (props) => {
     <>
       {message && (
         <div
-          className="flex gap-1 items-center justify-end"
+          className="flex gap-2 items-center justify-end"
           onMouseEnter={() => setShowCopyButton(true)}
           onMouseLeave={() => setShowCopyButton(false)}
         >
