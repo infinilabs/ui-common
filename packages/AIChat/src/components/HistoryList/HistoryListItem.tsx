@@ -203,7 +203,17 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
               trigger="click"
               placement="bottomRight"
               arrow={false}
-              getTooltipContainer={(node) => node.parentElement || document.body}
+              getTooltipContainer={(node) => {
+                let el = node.parentElement;
+                while (el) {
+                  const { overflowY } = getComputedStyle(el);
+                  if (overflowY === "auto" || overflowY === "scroll") {
+                    return el.parentElement || el;
+                  }
+                  el = el.parentElement;
+                }
+                return node.parentElement || document.body;
+              }}
             >
               <button
                 ref={moreButtonRef}
