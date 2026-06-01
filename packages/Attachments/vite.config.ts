@@ -8,7 +8,31 @@ export default defineConfig({
   plugins: [
     react(),
     UnoCSS(),
-    cssInjectedByJsPlugin(),
+    cssInjectedByJsPlugin({
+      injectCodeFunction: function (cssCode, options) {
+        try {
+          const doc = (globalThis as { document?: any }).document;
+          if (doc) {
+            var style = doc.createElement('style');
+
+            for (var attribute in options.attributes) {
+              style.setAttribute(attribute, options.attributes[attribute]);
+            }
+
+            style.appendChild(doc.createTextNode(cssCode));
+            var host = doc.querySelector('[data-fullscreen-host]');
+            var shadowRoot = host && host.shadowRoot;
+
+            if (shadowRoot) {
+              shadowRoot.appendChild(style);
+            } else {
+              doc.head.appendChild(style);
+            }
+          }
+        } catch {
+        }
+      }
+    }),
     dts({
       rollupTypes: true,
       tsconfigPath: "./tsconfig.app.json",

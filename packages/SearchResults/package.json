@@ -17,8 +17,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/search-results.js",
       "require": "./dist/search-results.cjs"
-    },
-    "./css": "./dist/search-results.css"
+    }
   },
   "scripts": {
     "dev": "vite",
