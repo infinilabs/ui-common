@@ -192,7 +192,8 @@ export default function SearchPopover({
                     autoCorrect="off"
                     value={keyword}
                     ref={searchInputRef}
-                    className="h-6 p-0 border-0 shadow-none focus-visible:ring-0"
+                    className="h-6 p-0 border-0 shadow-none focus-visible:ring-0 focus:shadow-none"
+                    variant="borderless"
                     placeholder={
                       t("search.input.searchPopover.placeholder") || "Search..."
                     }
