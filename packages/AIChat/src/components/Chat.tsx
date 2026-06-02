@@ -103,6 +103,7 @@ const InnerChatAI = memo(
       const curIdRef = useRef(""); // 当前生成的消息 ID
       const curSessionIdRef = useRef(""); // 当前会话 ID
       const activeMessageRef = useRef<ChatMessageRef>(null); // 活跃消息组件的引用
+      const streamGenRef = useRef(0); // 流式请求的代次，用于切换后忽略旧流的渲染
 
       type ChatStreamSingle = {
         _id?: string;
@@ -306,6 +307,7 @@ const InnerChatAI = memo(
           };
 
           // 发送创建会话请求
+          const gen = ++streamGenRef.current;
           try {
             await streamPost({
               url: "/chat/_create",
@@ -315,10 +317,15 @@ const InnerChatAI = memo(
               },
               queryParams,
               headers: headersProp,
-              onMessage: handleStreamMessage,
+              onMessage: (msg) => {
+                if (streamGenRef.current !== gen) return;
+                handleStreamMessage(msg);
+              },
             });
           } finally {
-            setCurChatEnd(true);
+            if (streamGenRef.current === gen) {
+              setCurChatEnd(true);
+            }
           }
 
           // 创建完成后刷新历史列表
@@ -355,16 +362,22 @@ const InnerChatAI = memo(
           };
 
           // 发送聊天消息请求
+          const gen = ++streamGenRef.current;
           try {
             await streamPost({
               url: `/chat/${chat._id}/_chat`,
               body: { message: text, attachments },
               queryParams,
               headers: headersProp,
-              onMessage: handleStreamMessage,
+              onMessage: (msg) => {
+                if (streamGenRef.current !== gen) return;
+                handleStreamMessage(msg);
+              },
             });
           } finally {
-            setCurChatEnd(true);
+            if (streamGenRef.current === gen) {
+              setCurChatEnd(true);
+            }
           }
         },
         [
@@ -418,6 +431,9 @@ const InnerChatAI = memo(
        */
       const onSelectChat = useCallback(
         async (chat?: Chat) => {
+          // 递增 generation，使旧流的回调不再渲染
+          streamGenRef.current++;
+
           activeMessageRef.current?.reset(); // 重置上一条消息的 UI 状态
           setCurChatEnd(true);
           setTimedoutShow(false);

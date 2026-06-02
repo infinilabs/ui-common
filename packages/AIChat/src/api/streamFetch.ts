@@ -5,6 +5,7 @@ export async function streamPost({
   headers,
   onMessage,
   onError,
+  signal,
 }: {
   url: string;
   body: unknown;
@@ -15,6 +16,7 @@ export async function streamPost({
   headers?: Record<string, string>;
   onMessage: (chunk: string) => void;
   onError?: (err: unknown) => void;
+  signal?: AbortSignal;
 }) {
   const appStore = JSON.parse(localStorage.getItem("app-store") || "{}");
 
@@ -46,6 +48,7 @@ export async function streamPost({
       },
       credentials: "include",
       body: JSON.stringify(body),
+      signal,
     });
 
     if (!res.ok || !res.body) throw new Error("Stream failed");
@@ -73,6 +76,10 @@ export async function streamPost({
       onMessage(buffer.trim());
     }
   } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      // 流被主动中断，不视为错误
+      return;
+    }
     console.error("streamPost error:", err);
     onError?.(err);
   }
