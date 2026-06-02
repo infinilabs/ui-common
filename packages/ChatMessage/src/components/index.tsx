@@ -98,7 +98,6 @@ const InnerChatMessage = memo(
       copyButtonId,
       formatUrl,
       theme,
-      locale,
       assistantList,
       currentAssistant,
       fetchAttachments,
