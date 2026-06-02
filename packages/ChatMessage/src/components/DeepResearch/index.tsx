@@ -14,6 +14,7 @@ import type { ResearchReportData } from "./ResearchReportContent";
 import type { IChunkData } from "../../types/chat";
 
 interface DeepResearchProps {
+  Detail?: { type: string; payload?: IChunkData[] };
   ChunkData?: IChunkData[];
   question?: string;
   formatUrl?: (data: any) => string;
@@ -215,6 +216,7 @@ const deriveDeepResearchState = (chunks: IChunkData[]): DeepResearchState => {
 };
 
 export const DeepResearch = ({
+  Detail,
   ChunkData = [],
   question,
   formatUrl,
@@ -225,6 +227,14 @@ export const DeepResearch = ({
   const [drawerDefaultTab, setDrawerDefaultTab] = useState(
     t("deepResearch.tab.steps"),
   );
+
+  // Merge persisted detail chunks (from ES history) with live streaming chunks.
+  // Detail.payload contains the saved chunks; ChunkData contains real-time ones.
+  const allChunks = useMemo(() => {
+    const saved = Detail?.payload ?? [];
+    if (ChunkData.length > 0) return ChunkData;
+    return saved;
+  }, [Detail?.payload, ChunkData]);
 
   const {
     deepResearchPlans,
@@ -238,7 +248,7 @@ export const DeepResearch = ({
     deepResearchReporterFinished,
     deepResearchReportData,
     deepResearchSearchMap,
-  } = useMemo(() => deriveDeepResearchState(ChunkData), [ChunkData]);
+  } = useMemo(() => deriveDeepResearchState(allChunks), [allChunks]);
 
   const hasDeepResearchPlan =
     deepResearchPlans.length > 0 &&

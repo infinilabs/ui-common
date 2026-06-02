@@ -218,6 +218,7 @@ const InnerChatAI = memo(
             if (chunkData.chunk_type) {
               // 标记回复开始
               if (chunkData.chunk_type === "reply_start") {
+                activeMessageRef.current?.reset(); // 收到新回复后再清空上一条，避免发送期间屏幕空白
                 setCurChatEnd(false);
               }
 
@@ -346,8 +347,6 @@ const InnerChatAI = memo(
           setQuestion(text);
 
           await fetchHistory(chat._id);
-
-          activeMessageRef.current?.reset();
 
           const queryParams = {
             search:

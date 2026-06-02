@@ -331,6 +331,7 @@ const InnerChatMessage = memo(
           <PayloadCard payload={payload as any} formatUrl={formatUrl} />
 
           <DeepResearch
+            Detail={details.find((item) => item.type === "deep_research")}
             ChunkData={deepResearch}
             question={question}
             formatUrl={formatUrl}
