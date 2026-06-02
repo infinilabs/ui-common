@@ -9,6 +9,7 @@ export interface ResearchReportData {
   url?: string;
   created?: string;
   attachment?: string;
+  format?: string;
 }
 
 export interface ResearchReportContentProps {
@@ -68,15 +69,35 @@ export const ResearchReportContent = ({
         </div>
       )}
       {content && (
-        <div className="cm-markdown">
-          <Markdown content={content} />
-        </div>
+        data?.format === "html" ? (
+          <iframe
+            srcDoc={content}
+            className="w-full border-0 rounded-lg"
+            style={{ minHeight: 600 }}
+            sandbox="allow-same-origin"
+            title="research-report"
+          />
+        ) : (
+          <div className="cm-markdown">
+            <Markdown content={content} />
+          </div>
+        )
       )}
 
-      {data?.url && (
-        <div className="cm-markdown">
-          <Markdown url={formatUrl ? formatUrl({ url: data.url }) : data.url} />
-        </div>
+      {!content && data?.url && (
+        data?.format === "html" ? (
+          <iframe
+            src={formatUrl ? formatUrl({ url: data.url }) : data.url}
+            className="w-full border-0 rounded-lg"
+            style={{ minHeight: 600 }}
+            sandbox="allow-same-origin allow-scripts"
+            title="research-report"
+          />
+        ) : (
+          <div className="cm-markdown">
+            <Markdown url={formatUrl ? formatUrl({ url: data.url }) : data.url} />
+          </div>
+        )
       )}
     </div>
   );
