@@ -455,16 +455,13 @@ const InnerChatAI = memo(
           const prevId = lastActiveChatIdRef.current;
           lastActiveChatIdRef.current = activeChat._id;
 
-          // Only load history for external selection (e.g. from History list)
-          if (prevId !== undefined) {
-            // If a response is in progress, cancel it first before switching sessions.
-            if (!curChatEnd) {
-              cancelChat();
-            }
-            setTimeout(() => {
-              onSelectChat(activeChat);
-            }, 0);
+          // If a response is in progress, cancel it first before switching sessions.
+          if (prevId !== undefined && !curChatEnd) {
+            cancelChat();
           }
+          setTimeout(() => {
+            onSelectChat(activeChat);
+          }, 0);
         }
       }, [activeChat?._id, curChatEnd, onSelectChat, cancelChat]);
 
