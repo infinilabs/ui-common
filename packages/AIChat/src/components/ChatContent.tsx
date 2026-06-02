@@ -21,6 +21,7 @@ export interface ActiveChatMessageProps {
   formatUrl?: (data: IChunkData) => string;
   assistantList?: Assistant[];
   currentAssistant?: Assistant;
+  t?: TFunction;
 }
 
 export const ActiveChatMessage = ({
@@ -31,7 +32,8 @@ export const ActiveChatMessage = ({
   handleSendMessage,
   formatUrl,
   assistantList,
-  currentAssistant
+  currentAssistant,
+  t
 }: ActiveChatMessageProps) => {
   const allMessages = activeChat?.messages || [];
 
@@ -54,6 +56,7 @@ export const ActiveChatMessage = ({
       formatUrl={formatUrl}
       assistantList={assistantList}
       currentAssistant={currentAssistant}
+      t={t}
     />
   );
 };
@@ -157,6 +160,7 @@ export const ChatContent = ({
               formatUrl={formatUrl}
               assistantList={assistantList}
               fetchAttachments={fetchAttachments}
+              t={t}
             />
           ))}
 
@@ -169,6 +173,7 @@ export const ChatContent = ({
             formatUrl={formatUrl}
             assistantList={assistantList}
             currentAssistant={currentAssistant}
+            t={t}
           />
 
           {timedoutShow ? (
@@ -184,6 +189,7 @@ export const ChatContent = ({
               }}
               onResend={handleSendMessage}
               isTyping={false}
+              t={t}
             />
           ) : null}
           <div ref={messagesEndRef} />

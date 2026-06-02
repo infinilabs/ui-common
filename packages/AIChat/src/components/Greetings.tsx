@@ -36,6 +36,7 @@ export const Greetings = ({ t: tProp }: GreetingsProps) => {
         },
       }}
       currentAssistant={currentAssistant}
+      t={t}
     />
   );
 };
