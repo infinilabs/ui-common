@@ -454,17 +454,18 @@ const InnerChatAI = memo(
           const prevId = lastActiveChatIdRef.current;
           lastActiveChatIdRef.current = activeChat._id;
 
-          // Skip during streaming (chat creation in progress)
-          if (!curChatEnd) return;
-
           // Only load history for external selection (e.g. from History list)
           if (prevId !== undefined) {
+            // If a response is in progress, cancel it first before switching sessions.
+            if (!curChatEnd) {
+              cancelChat();
+            }
             setTimeout(() => {
               onSelectChat(activeChat);
             }, 0);
           }
         }
-      }, [activeChat?._id, curChatEnd, onSelectChat]);
+      }, [activeChat?._id, curChatEnd, onSelectChat, cancelChat]);
 
       // 生成文件预览 URL 的辅助函数
       const getFileUrl = useCallback(
