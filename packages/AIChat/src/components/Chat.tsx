@@ -12,7 +12,7 @@ import { type TFunction } from "i18next";
 import { type ChatMessageRef } from "@infinilabs/chat-message";
 
 import i18n from "../i18n";
-import { useChatStore } from "../stores/chatStore";
+import { useChatStore, type IChatStore } from "../stores/chatStore";
 import { ChatContent } from "./ChatContent";
 import type { Chat, ChatMessageItem, IChunkData } from "../types/chat";
 import { streamPost } from "../api/streamFetch";
@@ -465,9 +465,12 @@ const InnerChatAI = memo(
           if (prevId !== undefined && !curChatEnd) {
             cancelChat();
           }
-          setTimeout(() => {
-            onSelectChat(activeChat);
-          }, 0);
+          // 仅在切换已有对话时加载历史，首次创建对话（prevId 为 undefined）不触发
+          if (prevId !== undefined) {
+            setTimeout(() => {
+              onSelectChat(activeChat);
+            }, 0);
+          }
         }
       }, [activeChat?._id, curChatEnd, onSelectChat, cancelChat]);
 
@@ -478,26 +481,53 @@ const InnerChatAI = memo(
         [baseUrl],
       );
 
+      /**
+       * 等待 assistantList 就绪后执行回调
+       * 如果列表已有数据则立即执行，否则订阅 store 变化等待填充
+       */
+      const waitForAssistantList = useCallback(
+        (callback: (list: NonNullable<IChatStore["assistantList"]>) => void) => {
+          const list = useChatStore.getState().assistantList;
+          if (list && list.length > 0) {
+            callback(list);
+            return;
+          }
+          const unsubscribe = useChatStore.subscribe((state) => {
+            if (state.assistantList && state.assistantList.length > 0) {
+              unsubscribe();
+              callback(state.assistantList);
+            }
+          });
+        },
+        [],
+      );
+
       // 暴露给父组件的方法
       useImperativeHandle(ref, () => ({
         init: (params: SendMessageParams) => {
-          // 如果传入了 assistant_id，切换当前助手
-          if (params.assistant_id) {
-            const latestAssistantList = useChatStore.getState().assistantList;
-            const latestCurrentAssistant = useChatStore.getState().currentAssistant;
-            const target = latestAssistantList?.find((a) => a._id === params.assistant_id);
-            if (params.assistant_id !== latestCurrentAssistant?._id) {
-              setCurrentAssistant(target ?? { _id: params.assistant_id });
+          const proceed = () => {
+            if (!activeChat?._id) {
+              createNewChat(params);
+            } else {
+              handleSendMessage(activeChat, params);
             }
-            if ((target?._source?.type as string) === "deep_think") {
-              params.deep_thinking = true;
-            }
-          }
+          };
 
-          if (!activeChat?._id) {
-            createNewChat(params);
+          // 如果传入了 assistant_id，等待 assistantList 就绪后再切换助手并发送
+          if (params.assistant_id) {
+            waitForAssistantList((list) => {
+              const latestCurrentAssistant = useChatStore.getState().currentAssistant;
+              const target = list.find((a) => a._id === params.assistant_id);
+              if (params.assistant_id !== latestCurrentAssistant?._id) {
+                setCurrentAssistant(target ?? { _id: params.assistant_id! });
+              }
+              if ((target?._source?.type as string) === "deep_think") {
+                params.deep_thinking = true;
+              }
+              proceed();
+            });
           } else {
-            handleSendMessage(activeChat, params);
+            proceed();
           }
         },
         cancelChat: () => {
