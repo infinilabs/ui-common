@@ -1,5 +1,6 @@
 import { FileText, ExternalLink } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { type TFunction } from "i18next";
 import Markdown from "@infinilabs/markdown";
 
 import { formatDate } from "../../utils";
@@ -16,14 +17,17 @@ export interface ResearchReportContentProps {
   content?: string;
   data?: ResearchReportData;
   formatUrl?: (data: any) => string;
+  t?: TFunction;
 }
 
 export const ResearchReportContent = ({
   content,
   data,
   formatUrl,
+  t: tProp,
 }: ResearchReportContentProps) => {
-  const { t } = useTranslation();
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
 
   if (!content && !data) {
     return (

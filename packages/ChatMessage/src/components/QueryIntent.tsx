@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronUp, Loader } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { type TFunction } from "i18next";
 
 import type { IChunkData } from "../types/chat";
 import UnderstandIcon from "../icons/Understand";
@@ -10,6 +11,7 @@ interface QueryIntentProps {
   ChunkData?: IChunkData;
   getSuggestion?: (suggestion: string[]) => void;
   loading?: boolean;
+  t?: TFunction;
 }
 
 interface IQueryData {
@@ -25,8 +27,10 @@ export const QueryIntent = ({
   ChunkData,
   getSuggestion,
   loading,
+  t: tProp,
 }: QueryIntentProps) => {
-  const { t } = useTranslation();
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
 
   const [isThinkingExpanded, setIsThinkingExpanded] = useState(false);
 

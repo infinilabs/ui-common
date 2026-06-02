@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { type TFunction } from "i18next";
 import { Loader, Hourglass, CirclePause, Check } from "lucide-react";
 
 import { DeepResearchDrawer } from "./DeepResearchDrawer";
@@ -19,6 +20,7 @@ interface DeepResearchProps {
   question?: string;
   formatUrl?: (data: any) => string;
   theme?: "light" | "dark";
+  t?: TFunction;
 }
 
 interface DeepResearchState {
@@ -221,8 +223,10 @@ export const DeepResearch = ({
   question,
   formatUrl,
   theme,
+  t: tProp,
 }: DeepResearchProps) => {
-  const { t } = useTranslation();
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
   const [drawerDefaultTab, setDrawerDefaultTab] = useState(
     t("deepResearch.tab.steps"),
@@ -500,6 +504,7 @@ export const DeepResearch = ({
         searchHits={searchHits}
         formatUrl={formatUrl}
         theme={theme}
+        t={t}
       />
     </>
   );

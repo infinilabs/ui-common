@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { type TFunction } from "i18next";
 
 import { OpenURLWithBrowser } from "../utils/index";
 import type { IChunkData } from "../types/chat";
@@ -16,6 +17,7 @@ interface FetchSourceProps {
   ChunkData?: IChunkData;
   loading?: boolean;
   formatUrl?: (data: ISourceData) => string;
+  t?: TFunction;
 }
 
 interface ISourceData {
@@ -40,8 +42,10 @@ export const FetchSource = ({
   ChunkData,
   loading,
   formatUrl,
+  t: tProp,
 }: FetchSourceProps) => {
-  const { t } = useTranslation();
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
 
   const [isSourceExpanded, setIsSourceExpanded] = useState(false);
 

@@ -3,6 +3,7 @@ import { Button, Segmented } from "antd";
 import { Download, Share2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { type TFunction } from "i18next";
 
 import { ResearchStepsContent } from "./ResearchStepsContent";
 import type { StepItem, StepStatus, StepSearchHit } from "./ResearchStepsContent";
@@ -26,6 +27,7 @@ interface DeepResearchDrawerProps {
   formatUrl?: (data: any) => string;
   theme?: "light" | "dark";
   showReportOnly?: boolean;
+  t?: TFunction;
 }
 
 export const DeepResearchDrawer = ({
@@ -42,8 +44,10 @@ export const DeepResearchDrawer = ({
   formatUrl,
   theme,
   showReportOnly = false,
+  t: tProp,
 }: DeepResearchDrawerProps) => {
-  const { t } = useTranslation();
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
   const [activeTab, setActiveTab] = useState(defaultActiveTab || t("deepResearch.tab.steps"));
 
   useEffect(() => {
@@ -142,6 +146,7 @@ export const DeepResearchDrawer = ({
                   content={reportContent}
                   data={reportData}
                   formatUrl={formatUrl}
+                  t={t}
                 />
               )}
               {activeTab === t("deepResearch.tab.steps") && (
@@ -150,6 +155,7 @@ export const DeepResearchDrawer = ({
                   plannerStatus={plannerStatus}
                   executionStatus={executionStatus}
                   reportStatus={reportStatus}
+                  t={t}
                 />
               )}
               {activeTab === t("deepResearch.tab.searchResults") && (

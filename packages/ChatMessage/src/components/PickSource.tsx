@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronUp, Loader } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { type TFunction } from "i18next";
 
 import type { IChunkData } from "../types/chat";
 import SelectionIcon from "../icons/Selection";
@@ -9,6 +10,7 @@ interface PickSourceProps {
   Detail?: any;
   ChunkData?: IChunkData;
   loading?: boolean;
+  t?: TFunction;
 }
 
 interface IData {
@@ -21,8 +23,10 @@ export const PickSource = ({
   Detail,
   ChunkData,
   loading,
+  t: tProp,
 }: PickSourceProps) => {
-  const { t } = useTranslation();
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
 
   const [isThinkingExpanded, setIsThinkingExpanded] = useState(false);
 

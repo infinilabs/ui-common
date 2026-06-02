@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronUp, Loader } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { type TFunction } from "i18next";
 
 import type { IChunkData } from "../types/chat";
 import ReadingIcon from "../icons/Reading";
@@ -9,14 +10,17 @@ interface DeepReadeProps {
   Detail?: any;
   ChunkData?: IChunkData;
   loading?: boolean;
+  t?: TFunction;
 }
 
 export const DeepRead = ({
   Detail,
   ChunkData,
   loading,
+  t: tProp,
 }: DeepReadeProps) => {
-  const { t } = useTranslation();
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
 
   const [isThinkingExpanded, setIsThinkingExpanded] = useState(false);
 

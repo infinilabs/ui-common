@@ -28,6 +28,8 @@ import useMessageChunkData from "../hooks/useMessageChunkData";
 import { DeepResearch } from "./DeepResearch";
 import { PayloadCard } from "./PayloadCard";
 
+import { type TFunction } from "i18next";
+
 import "./index.css";
 
 const DEEP_RESEARCH_CHUNK_TYPES = [
@@ -59,6 +61,7 @@ export interface ChatMessageProps {
   currentAssistant?: any;
   /** Fetch attachment metadata by IDs for rendering in user messages. */
   fetchAttachments?: (ids: string[]) => Promise<AttachmentHit[]>;
+  t?: TFunction;
 }
 
 export interface ChatMessageRef {
@@ -99,10 +102,12 @@ const InnerChatMessage = memo(
       assistantList,
       currentAssistant,
       fetchAttachments,
+      t: tProp,
     },
     ref,
   ) {
-    const { t, i18n } = useTranslation();
+    const { t: tOriginal } = useTranslation();
+    const t = tProp || tOriginal;
     const resolvedTheme = resolveTheme(theme);
 
     const [assistant, setAssistant] = useState<any>({});
@@ -215,12 +220,6 @@ const InnerChatMessage = memo(
     const assistant_item = message?._source?.assistant_item;
 
     useEffect(() => {
-      if (locale && i18n.language !== locale) {
-        i18n.changeLanguage(locale);
-      }
-    }, [locale, i18n]);
-
-    useEffect(() => {
       if (assistant_item) {
         setAssistant(assistant_item);
         return;
@@ -289,12 +288,14 @@ const InnerChatMessage = memo(
             ChunkData={query_intent}
             getSuggestion={getSuggestion}
             loading={loadingStep?.query_intent}
+            t={t}
           />
 
           <CallTools
             Detail={details.find((item) => item.type === "tools")}
             ChunkData={tools}
             loading={loadingStep?.tools}
+            t={t}
           />
 
           <FetchSource
@@ -302,24 +303,28 @@ const InnerChatMessage = memo(
             ChunkData={fetch_source}
             loading={loadingStep?.fetch_source}
             formatUrl={formatUrl}
+            t={t}
           />
 
           <PickSource
             Detail={details.find((item) => item.type === "pick_source")}
             ChunkData={pick_source}
             loading={loadingStep?.pick_source}
+            t={t}
           />
 
           <DeepRead
             Detail={details.find((item) => item.type === "deep_read")}
             ChunkData={deep_read}
             loading={loadingStep?.deep_read}
+            t={t}
           />
 
           <Think
             Detail={details.find((item) => item.type === "think")}
             ChunkData={think}
             loading={loadingStep?.think}
+            t={t}
           />
 
           <div className="cm-markdown">
@@ -336,6 +341,7 @@ const InnerChatMessage = memo(
             question={question}
             formatUrl={formatUrl}
             theme={resolvedTheme}
+            t={t}
           />
 
           {isTyping && (

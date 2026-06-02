@@ -1,6 +1,7 @@
 import { Loader, Hammer, ChevronDown, ChevronUp } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { type TFunction } from "i18next";
 import Markdown from '@infinilabs/markdown';
 
 import type { IChunkData } from "../types/chat";
@@ -9,10 +10,12 @@ interface CallToolsProps {
   Detail?: any;
   ChunkData?: IChunkData;
   loading?: boolean;
+  t?: TFunction;
 }
 
-export const CallTools = ({ Detail, ChunkData, loading }: CallToolsProps) => {
-  const { t } = useTranslation();
+export const CallTools = ({ Detail, ChunkData, loading, t: tProp }: CallToolsProps) => {
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
   const [isThinkingExpanded, setIsThinkingExpanded] = useState(false);
 
   const [data, setData] = useState("");

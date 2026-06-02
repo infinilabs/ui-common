@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { type TFunction } from "i18next";
 
 /**
  * 步骤状态类型定义
@@ -88,6 +89,7 @@ interface ResearchStepsContentProps {
   executionStatus?: StepStatus;
   // 报告生成状态
   reportStatus?: StepStatus;
+  t?: TFunction;
 }
 
 /**
@@ -99,8 +101,10 @@ export const ResearchStepsContent = ({
   plannerStatus,
   executionStatus,
   reportStatus,
+  t: tProp,
 }: ResearchStepsContentProps) => {
-  const { t } = useTranslation();
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
   const data = steps ?? [];
   // 控制展开的搜索结果集合
   const [expandedSearches, setExpandedSearches] = useState<Set<string>>(
