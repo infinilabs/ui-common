@@ -6,10 +6,11 @@ interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>
   indeterminate?: boolean;
   onCheckedChange?: (checked: boolean) => void;
   onChange?: (checked: boolean) => void;
+  isCheckSome?: boolean;
 }
 
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ className, indeterminate, checked, onCheckedChange, onChange, ...props }, ref) => {
+  ({ className, indeterminate, checked, onCheckedChange, onChange, isCheckSome, ...props }, ref) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const isChecked = e.target.checked;
       onCheckedChange?.(isChecked);
@@ -26,11 +27,11 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           onChange={handleChange}
           {...props}
         />
-        {checked && !indeterminate && (
-          <Check className="absolute h-3 w-3 text-white pointer-events-none" />
+        {checked && (
+          <Check className="absolute h-3 w-3 text-[#2F54EB] pointer-events-none" />
         )}
-        {indeterminate && (
-           <div className="absolute h-2 w-2 bg-[#2F54EB] pointer-events-none rounded-[1px]" />
+        {indeterminate && !checked && isCheckSome && (
+          <div className="absolute h-2 w-2 bg-[#2F54EB] pointer-events-none rounded-[1px]" />
         )}
       </div>
     );

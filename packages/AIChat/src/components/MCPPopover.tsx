@@ -233,22 +233,19 @@ export default function MCPPopover({
                       const { id, name, icon } = item;
                       const isAll = index === 0;
 
-                      const isChecked = () => {
-                        if (isAll) {
-                          return visibleList.slice(1).every((vItem) => {
-                            return selectedIds.includes(vItem.id);
-                          });
-                        } else {
-                          return selectedIds.includes(id);
-                        }
-                      };
+                      const checked = isAll
+                        ? visibleList.slice(1).every((vItem) => selectedIds.includes(vItem.id))
+                        : selectedIds.includes(id);
+
+                      const isCheckSome = isAll && !checked &&
+                        visibleList.slice(1).some((vItem) => selectedIds.includes(vItem.id));
 
                       return (
                         <li
                           key={id}
                           className="flex justify-between items-center px-2 py-1 hover:bg-black/5 dark:hover:bg-white/10 rounded-sm cursor-pointer"
                           onClick={() => {
-                            onSelectDataSource(id, !isChecked(), isAll);
+                            onSelectDataSource(id, !checked, isAll);
                           }}
                         >
                           <div className="flex items-center gap-2 overflow-hidden">
@@ -267,10 +264,11 @@ export default function MCPPopover({
                           <div className="flex items-center gap-1">
                             <div className="flex justify-center items-center size-6">
                               <Checkbox
-                                checked={isChecked()}
+                                checked={checked}
                                 indeterminate={isAll}
-                                onChange={(checked) =>
-                                  onSelectDataSource(id, checked, isAll)
+                                isCheckSome={isCheckSome}
+                                onChange={(val) =>
+                                  onSelectDataSource(id, val, isAll)
                                 }
                               />
                             </div>
