@@ -107,14 +107,16 @@ export const DeepResearchDrawer = ({
               <div className="flex items-center gap-2">
                 {activeTab === t("deepResearch.tab.report") && (
                   <>
-                    <button
-                      type="button"
-                      className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#E9F0FE] dark:bg-blue-900/30 text-sm text-[#1784FC] dark:text-blue-400 hover:bg-[#E0E9FD] dark:hover:bg-blue-900/50 border-none outline-none cursor-pointer"
-                      onClick={() => reportData?.url && window.open(formatUrl?.({ url: reportData.url }) || reportData.url, '_blank')}
+                    <a
+                      className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#E9F0FE] dark:bg-blue-900/30 text-sm text-[#1784FC] dark:text-blue-400 hover:bg-[#E0E9FD] dark:hover:bg-blue-900/50 border-none outline-none cursor-pointer no-underline"
+                      href={reportData?.url ? (formatUrl?.({ url: reportData.url }) || reportData.url) : undefined}
+                      download={reportData?.title || true}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
                       <Download className="w-4 h-4" />
                       <span>{t("deepResearch.button.download")}</span>
-                    </button>
+                    </a>
                     <button
                       type="button"
                       className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#E9F0FE] dark:bg-blue-900/30 text-sm text-[#1784FC] dark:text-blue-400 hover:bg-[#E0E9FD] dark:hover:bg-blue-900/50 border-none outline-none cursor-pointer"

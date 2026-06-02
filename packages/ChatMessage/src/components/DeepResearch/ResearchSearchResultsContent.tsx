@@ -63,7 +63,7 @@ export const ResearchSearchResultsContent = ({
         theme={theme || "light"}
         hideHeader
         onRecordClick={(record) => {
-          if (typeof record.url === "string") window.open(record.url);
+          if (typeof record.url === "string") window.open(record.url, "_blank");
         }}
       />
     </div>
