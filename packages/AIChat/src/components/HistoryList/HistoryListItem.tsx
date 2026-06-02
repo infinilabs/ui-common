@@ -203,7 +203,7 @@ const HistoryListItem: FC<HistoryListItemProps> = ({
               trigger="click"
               placement="bottomRight"
               arrow={false}
-              getTooltipContainer={(node) => {
+              getPopupContainer={(node) => {
                 let el = node.parentElement;
                 while (el) {
                   const { overflowY } = getComputedStyle(el);

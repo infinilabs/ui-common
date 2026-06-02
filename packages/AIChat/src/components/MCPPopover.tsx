@@ -9,6 +9,7 @@ import Checkbox from "./Common/Checkbox";
 import NoDataImage from "./NoDataImage";
 import Pagination from "./Common/Pagination";
 import { Input, type InputRef } from "antd";
+import type { TFunction } from "i18next";
 
 export interface DataSource {
   id: string;
@@ -25,6 +26,7 @@ interface MCPPopoverProps {
   setIsMCPActive: (val: boolean) => void;
   getMCPByServer: (query?: string) => Promise<DataSource[]>;
   shortcut?: string;
+  t?: TFunction;
 }
 
 export default function MCPPopover({
@@ -34,8 +36,10 @@ export default function MCPPopover({
   isMCPActive,
   setIsMCPActive,
   getMCPByServer,
+  t: tProp,
 }: MCPPopoverProps) {
-  const { t } = useTranslation("ai_chat");
+  const { t: tOriginal } = useTranslation("ai_chat");
+  const t = tProp || tOriginal;
 
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -137,7 +141,7 @@ export default function MCPPopover({
     }, 1000);
   };
 
-  if (!(mcp_servers?.enabled && mcp_servers?.visible)) {
+  if (!mcp_servers?.visible) {
     return null;
   }
 
@@ -169,8 +173,24 @@ export default function MCPPopover({
 
           <Popover
             open={open}
+            trigger="click"
             onOpenChange={setOpen}
             placement="bottomLeft"
+            getPopupContainer={(node) => {
+              let el = node.parentElement;
+              while (el && el !== document.body && el !== document.documentElement) {
+                const { overflowY } = getComputedStyle(el);
+                if (overflowY === "auto" || overflowY === "scroll") {
+                  const parent = el.parentElement;
+                  if (parent && parent !== document.documentElement) {
+                    return parent;
+                  }
+                  return el;
+                }
+                el = el.parentElement;
+              }
+              return document.body;
+            }}
             content={
               <div
                 className="w-[300px] flex flex-col gap-2"
@@ -190,7 +210,7 @@ export default function MCPPopover({
                     </button>
                 </div>
                 
-                <div className="flex items-center gap-2 px-2 py-1 border rounded-md border-input">
+                <div className="flex items-center gap-2 px-2 py-1 border rounded-md border border-solid border-[#F0F0F0] dark:border-[#303030]">
                   <Input
                     autoFocus
                     autoCorrect="off"
@@ -270,7 +290,7 @@ export default function MCPPopover({
                     totalPage={totalPage}
                     onPrev={handlePrev}
                     onNext={handleNext}
-                    className="dark:border-t-[#202126]"
+                    className="border-t-[#F0F0F0] dark:border-t-[#303030]"
                   />
                 )}
               </div>

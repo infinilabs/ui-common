@@ -9,6 +9,7 @@ import Checkbox from "./Common/Checkbox";
 import NoDataImage from "./NoDataImage";
 import Pagination from "./Common/Pagination";
 import { Input, type InputRef } from "antd";
+import type { TFunction } from "i18next";
 
 export interface DataSource {
   id: string;
@@ -25,6 +26,7 @@ interface SearchPopoverProps {
   setIsSearchActive: (val: boolean) => void;
   getDataSources: (query?: string) => Promise<DataSource[]>;
   shortcut?: string;
+  t?: TFunction;
 }
 
 export default function SearchPopover({
@@ -34,15 +36,17 @@ export default function SearchPopover({
   isSearchActive,
   setIsSearchActive,
   getDataSources,
+  t: tProp,
 }: SearchPopoverProps) {
-  const { t } = useTranslation("ai_chat");
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
 
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [visibleList, setVisibleList] = useState<DataSource[]>([]);
   const searchInputRef = useRef<InputRef>(null);
-  
+
   const [dataSourceList, setDataSourceList] = useState<DataSource[]>([]);
   const [keyword, setKeyword] = useState("");
   const debouncedKeyword = useDebounce(keyword, { wait: 500 });
@@ -58,12 +62,12 @@ export default function SearchPopover({
       }
       const data = res.length
         ? [
-            {
-              id: "all",
-              name: "search.input.searchPopover.allScope",
-            },
-            ...res,
-          ]
+          {
+            id: "all",
+            name: "search.input.searchPopover.allScope",
+          },
+          ...res,
+        ]
         : [];
 
       setDataSourceList(data);
@@ -128,7 +132,7 @@ export default function SearchPopover({
     setPage(page + 1);
   };
 
-  if (!(datasource?.enabled && datasource?.visible)) {
+  if (!datasource?.visible) {
     return null;
   }
 
@@ -145,11 +149,10 @@ export default function SearchPopover({
       }}
     >
       <Globe
-        className={`size-4 ${
-          isSearchActive
+        className={`size-4 ${isSearchActive
             ? "text-[#1784FC] dark:text-[#1784FC]"
             : "text-[#333] dark:text-[#999]"
-        }`}
+          }`}
       />
 
       {isSearchActive && (
@@ -163,12 +166,27 @@ export default function SearchPopover({
             trigger="click"
             onOpenChange={setOpen}
             placement="bottomLeft"
+            getPopupContainer={(node) => {
+              let el = node.parentElement;
+              while (el && el !== document.body && el !== document.documentElement) {
+                const { overflowY } = getComputedStyle(el);
+                if (overflowY === "auto" || overflowY === "scroll") {
+                  const parent = el.parentElement;
+                  if (parent && parent !== document.documentElement) {
+                    return parent;
+                  }
+                  return el;
+                }
+                el = el.parentElement;
+              }
+              return document.body;
+            }}
             content={
               <div
                 className="w-[300px] flex flex-col gap-2"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="flex items-center gap-2 px-2 py-1 border rounded-md border-input">
+                <div className="flex items-center gap-2 px-2 py-1 border rounded-md border border-solid border-[#F0F0F0] dark:border-[#303030]">
                   <Input
                     autoFocus
                     autoCorrect="off"
@@ -247,7 +265,7 @@ export default function SearchPopover({
                     totalPage={totalPage}
                     onPrev={handlePrev}
                     onNext={handleNext}
-                    className="dark:border-t-[#202126]"
+                    className="border-t-[#F0F0F0] dark:border-t-[#303030]"
                   />
                 )}
               </div>

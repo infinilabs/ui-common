@@ -15,12 +15,16 @@ export interface SendMessageParams {
   attachments?: string[];
   search?: boolean;
   deep_thinking?: boolean;
+  datasource?: string[],
+  mcp?: boolean,
+  mcp_servers?: string[],
 }
 
 interface ChatIconsProps {
   curChatEnd: boolean;
   inputValue: string;
   onSend: (params: SendMessageParams) => void;
+  onCancel: () => void;
   disabledChange?: () => void;
   speechSupported?: boolean;
   listening?: boolean;
@@ -42,6 +46,7 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
   curChatEnd,
   inputValue = "",
   onSend,
+  onCancel,
   disabledChange,
   onAttachClick,
   hideAttachment = false,
@@ -146,6 +151,7 @@ const ChatIcons: React.FC<ChatIconsProps> = ({
         className="flex items-center justify-center rounded-full shrink-0 cursor-pointer bg-[#0072FF] transition-colors"
         style={{ width: "32px", height: "32px" }}
         onClick={() => {
+          onCancel();
           disabledChange?.();
           setCurChatEnd(true);
         }}

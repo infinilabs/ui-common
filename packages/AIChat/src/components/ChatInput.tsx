@@ -8,11 +8,13 @@ import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
 import AutoResizeTextarea from "./AutoResizeTextarea";
 import ChatIcons, { type SendMessageParams } from "./ChatIcons";
 import InputControls from "./InputControls";
+import { type DataSource } from "./SearchPopover";
 import { useChatStore } from "../stores/chatStore";
-import { Upload } from "../api/axiosRequest";
+import { Post, Upload } from "../api/axiosRequest";
 
 interface ChatInputProps {
   onSend: (params: SendMessageParams) => void;
+  onCancel: () => void;
   disabled: boolean;
   inputValue: string;
   changeInput: (val: string) => void;
@@ -59,8 +61,49 @@ interface ChatInputProps {
   locale?: string;
 }
 
+const createGetDataSources = (ids?: string[]) => async (_query?: string): Promise<DataSource[]> => {
+  let url = "/datasource/_search?from=0&size=10000&filter=enabled:any(true)";
+  if (ids && ids.length > 0 && !ids.includes("*")) {
+    url += `&filter=id:any(${ids.join(",")})`;
+  }
+  if (_query) {
+    url += `&query=${encodeURIComponent(_query)}`;
+  }
+  const [err, res] = await Post<{ hits?: { hits?: Array<{ _id: string; _source?: Record<string, unknown> }> } }>(
+    url,
+    undefined
+  );
+  if (err || !res?.hits?.hits) return [];
+  return res.hits.hits.map((hit) => ({
+    id: hit._id,
+    name: (hit._source?.name as string) ?? hit._id,
+    ...(hit._source ?? {}),
+  }));
+};
+
+const createGetMCPServers = (ids?: string[]) => async (_query?: string): Promise<DataSource[]> => {
+  let url = "/mcp_server/_search?from=0&size=10000&filter=enabled:any(true)";
+  if (ids && ids.length > 0 && !ids.includes("*")) {
+    url += `&filter=id:any(${ids.join(",")})`;
+  }
+  if (_query) {
+    url += `&query=${encodeURIComponent(_query)}`;
+  }
+  const [err, res] = await Post<{ hits?: { hits?: Array<{ _id: string; _source?: Record<string, unknown> }> } }>(
+    url,
+    undefined
+  );
+  if (err || !res?.hits?.hits) return [];
+  return res.hits.hits.map((hit) => ({
+    id: hit._id,
+    name: (hit._source?.name as string) ?? hit._id,
+    ...(hit._source ?? {}),
+  }));
+};
+
 export default function ChatInput({
   onSend,
+  onCancel,
   disabled = false,
   inputValue,
   changeInput,
@@ -77,10 +120,55 @@ export default function ChatInput({
   const curChatEnd = useChatStore((state) => state.curChatEnd);
   const currentAssistant = useChatStore((state) => state.currentAssistant);
 
-  // TODO: Check if the assistant supports deep thinking and deep research
-  // Currently defaulting to true as per requirements
-  const isDeepThinkActive = !!(currentAssistant?._source?.deep_think_enabled ?? true);
-  const deepResearchActive = !!(currentAssistant?._source?.deep_research_enabled ?? true);
+  // -------------------- Visibility by assistant type --------------------
+  const assistantType = (currentAssistant?._source?.type as string) || "simple";
+  // simple: search + mcp
+  // deep_think: search + mcp + deepthink
+  // deep_research: deep_research only
+  const showSearch = assistantType === "simple" || assistantType === "deep_think";
+  const showMCP = assistantType === "simple" || assistantType === "deep_think";
+  const showDeepThink = assistantType === "deep_think";
+  const showDeepResearch = assistantType === "deep_research";
+
+  // -------------------- Datasource (from assistant config) --------------------
+  const assistantDatasource = currentAssistant?._source?.datasource as
+    | { enabled?: boolean; enabled_by_default?: boolean; ids?: string[]; visible?: boolean }
+    | undefined;
+  const [selectedDataSourceIds, setSelectedDataSourceIds] = useState<string[]>([]);
+  const searchEnabled = (assistantDatasource?.enabled ?? true) && showSearch;
+  const [isSearchActive, setIsSearchActive] = useState(
+    () => !!(searchEnabled && assistantDatasource?.enabled_by_default)
+  );
+  const datasource = useMemo(() => ({
+    enabled: searchEnabled,
+    visible: (assistantDatasource?.visible ?? true) && showSearch,
+  }), [searchEnabled, assistantDatasource?.visible, showSearch]);
+  const getDataSources = useMemo(
+    () => createGetDataSources(assistantDatasource?.ids),
+    [assistantDatasource?.ids]
+  );
+
+  // -------------------- MCP (from assistant config) --------------------
+  const assistantMcpServers = currentAssistant?._source?.mcp_servers as
+    | { enabled?: boolean; enabled_by_default?: boolean; ids?: string[]; visible?: boolean }
+    | undefined;
+  const [selectedMCPIds, setSelectedMCPIds] = useState<string[]>([]);
+  const mcpEnabled = (assistantMcpServers?.enabled ?? true) && showMCP;
+  const [isMCPActive, setIsMCPActive] = useState(
+    () => !!(mcpEnabled && assistantMcpServers?.enabled_by_default)
+  );
+  const mcp_servers = useMemo(() => ({
+    enabled: mcpEnabled,
+    visible: (assistantMcpServers?.visible ?? true) && showMCP,
+  }), [mcpEnabled, assistantMcpServers?.visible, showMCP]);
+  const getMCPServers = useMemo(
+    () => createGetMCPServers(assistantMcpServers?.ids),
+    [assistantMcpServers?.ids]
+  );
+
+  // -------------------- Deep Think (toggleable) --------------------
+  const [isDeepThinkActive, setIsDeepThinkActive] = useState(false);
+  const deepResearchActive = showDeepResearch;
 
   const textareaRef = useRef<{ reset: () => void; focus: () => void }>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -201,27 +289,35 @@ export default function ChatInput({
   );
   // -----------------------------------------------------
 
+  const appendFeatureParams = useCallback((params: SendMessageParams) => {
+    if (!deepResearchActive) {
+      if (isDeepThinkActive) {
+        params.deep_thinking = true;
+      }
+      if (searchEnabled && isSearchActive) {
+        params.search = true;
+        params.datasource = selectedDataSourceIds;
+      }
+      if (mcpEnabled && isMCPActive) {
+        params.mcp = true;
+        params.mcp_servers = selectedMCPIds;
+      }
+    }
+  }, [deepResearchActive, isDeepThinkActive, searchEnabled, isSearchActive, selectedDataSourceIds, mcpEnabled, isMCPActive, selectedMCPIds]);
+
   const handleSubmit = useCallback(() => {
     const trimmedValue = inputValue.trim();
-    if (uploadingCount > 0) return; // wait for uploads to finish
+    if (uploadingCount > 0) return;
     if (!trimmedValue && uploadedIds.length === 0) return;
     changeInput("");
     setAttachments([]);
-    onSend({
+    const newParams: SendMessageParams = {
       message: trimmedValue,
       attachments: uploadedIds.length > 0 ? uploadedIds : undefined,
-      deep_thinking: isDeepThinkActive,
-      search: deepResearchActive,
-    });
-  }, [
-    inputValue,
-    onSend,
-    changeInput,
-    isDeepThinkActive,
-    deepResearchActive,
-    uploadingCount,
-    uploadedIds,
-  ]);
+    };
+    appendFeatureParams(newParams);
+    onSend(newParams);
+  }, [inputValue, onSend, changeInput, uploadingCount, uploadedIds, appendFeatureParams]);
 
   const handleInputChange = useCallback(
     (value: string) => {
@@ -262,13 +358,13 @@ export default function ChatInput({
     if (!trimmedValue && uploadedIds.length === 0) return;
     changeInput("");
     setAttachments([]);
-    onSend({
+    const newParams: SendMessageParams = {
       ...params,
       message: trimmedValue,
       attachments: uploadedIds.length > 0 ? uploadedIds : params.attachments,
-      deep_thinking: isDeepThinkActive,
-      search: deepResearchActive,
-    });
+    };
+    appendFeatureParams(newParams);
+    onSend(newParams);
   };
 
   const renderExtraIcon = () => (
@@ -277,6 +373,7 @@ export default function ChatInput({
         curChatEnd={curChatEnd}
         inputValue={inputValue}
         onSend={handleIconSend}
+        onCancel={onCancel}
         speechSupported={speechSupported}
         listening={listening}
         onVoiceToggle={handleVoiceToggle}
@@ -348,12 +445,30 @@ export default function ChatInput({
         </div>
       </div>
 
+      {(showDeepThink || showDeepResearch || datasource.visible || mcp_servers.visible) && (
       <div className="pb-2">
         <InputControls
           isDeepThinkActive={isDeepThinkActive}
+          setIsDeepThinkActive={setIsDeepThinkActive}
           isDeepResearchActive={deepResearchActive}
+          showDeepThink={showDeepThink}
+          showDeepResearch={showDeepResearch}
+          datasource={datasource}
+          selectedDataSourceIds={selectedDataSourceIds}
+          onDataSourceSelectionChange={setSelectedDataSourceIds}
+          isSearchActive={isSearchActive}
+          setIsSearchActive={setIsSearchActive}
+          getDataSources={getDataSources}
+          mcp_servers={mcp_servers}
+          selectedMCPIds={selectedMCPIds}
+          onMCPSelectionChange={setSelectedMCPIds}
+          isMCPActive={isMCPActive}
+          setIsMCPActive={setIsMCPActive}
+          getMCPByServer={getMCPServers}
+          t={t}
         />
       </div>
+      )}
     </div>
   );
 }

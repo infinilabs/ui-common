@@ -92,6 +92,7 @@ const InnerChatAI = memo(
       const activeChat = useChatStore((state) => state.activeChat); // 当前选中的对话
       const setActiveChat = useChatStore((state) => state.setActiveChat);
       const currentAssistant = useChatStore((state) => state.currentAssistant); // 当前助手信息
+      const setCurrentAssistant = useChatStore((state) => state.setCurrentAssistant);
       const incrementHistoryVersion = useChatStore((state) => state.incrementHistoryVersion);
 
       // 本地状态
@@ -476,6 +477,16 @@ const InnerChatAI = memo(
       // 暴露给父组件的方法
       useImperativeHandle(ref, () => ({
         init: (params: SendMessageParams) => {
+          // 如果传入了 assistant_id，切换当前助手
+          if (params.assistant_id) {
+            const latestAssistantList = useChatStore.getState().assistantList;
+            const latestCurrentAssistant = useChatStore.getState().currentAssistant;
+            if (params.assistant_id !== latestCurrentAssistant?._id) {
+              const target = latestAssistantList?.find((a) => a._id === params.assistant_id);
+              setCurrentAssistant(target ?? { _id: params.assistant_id });
+            }
+          }
+
           if (!activeChat?._id) {
             createNewChat(params);
           } else {

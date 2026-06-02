@@ -48,24 +48,29 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
   useEffect(() => {
     setAssistantList(assistants);
   }, [assistants, setAssistantList]);
+
+  // 当 currentAssistant 只有 _id 没有 _source 时，从本地列表补全信息
+  useEffect(() => {
+    if (currentAssistant?._id && !currentAssistant._source && assistants.length > 0) {
+      const match = assistants.find((a) => a._id === currentAssistant._id);
+      if (match) {
+        setCurrentAssistant({ _id: match._id, _source: match._source });
+      }
+    }
+  }, [currentAssistant, assistants, setCurrentAssistant]);
+
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [open, setOpen] = useState(false);
   const searchInputRef = useRef<InputRef>(null);
   const [keyword, setKeyword] = useState("");
   const [inputValue, setInputValue] = useState("");
-  const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const isLoadingMore = useRef(false);
-  const pageSize = 10;
   
   const debouncedKeyword = useMemo(
     () => debounce((k: string) => {
       setKeyword(k);
-      setPage(1);
       setAssistants([]);
       setTotal(0);
-      setHasMore(true);
     }, 500),
     []
   );
@@ -75,11 +80,11 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
   const stableAssistantIDs = useMemo(() => assistantIDs, [assistantIDsStr]);
 
   const fetchAssistant = useCallback(
-    async (currentPage: number, isLoadMore = false) => {
+    async () => {
       try {
-        const queryParams = [`current=${currentPage}`, `pageSize=${pageSize}`];
-        if (keyword) queryParams.push(`keyword=${encodeURIComponent(keyword)}`);
-        if (stableAssistantIDs.length) queryParams.push(`ids=${encodeURIComponent(stableAssistantIDs.join(","))}`);
+        const queryParams = [`from=0`, `size=10000`];
+        if (keyword) queryParams.push(`query=${encodeURIComponent(keyword)}`);
+        if (stableAssistantIDs.length) queryParams.push(`filter=id:any(${encodeURIComponent(stableAssistantIDs.join(","))})`);
 
         const [error, res] = await Post<{
           hits?: { hits?: AssistantHit[], total?: { value: number } };
@@ -93,19 +98,10 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
         const list = (res?.hits?.hits ?? []) as AssistantHit[];
         const totalValue = res?.hits?.total?.value ?? 0;
 
-        setAssistants(prev => {
-          if (!isLoadMore) return list;
-          // Deduplicate by _id when appending
-          const existingIds = new Set(prev.map(a => a._id));
-          const newItems = list.filter(a => !existingIds.has(a._id));
-          return [...prev, ...newItems];
-        });
+        setAssistants(list);
         setTotal(totalValue);
-        // Calculate hasMore based on total
-        const currentCount = (currentPage - 1) * pageSize + list.length;
-        setHasMore(currentCount < totalValue);
 
-        if (!isLoadMore && list.length > 0) {
+        if (list.length > 0) {
           const current = useChatStore.getState().currentAssistant;
           // If no assistant is selected, select the first one
           if (!current?._id) {
@@ -117,8 +113,6 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
         }
       } catch (e) {
         console.error(e);
-      } finally {
-        isLoadingMore.current = false;
       }
     },
     [keyword, stableAssistantIDs, setCurrentAssistant]
@@ -126,29 +120,18 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
 
   useEffect(() => {
     const t = setTimeout(() => {
-      fetchAssistant(1);
+      fetchAssistant();
     }, 0);
     return () => clearTimeout(t);
   }, [fetchAssistant]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    setPage(1);
-    await fetchAssistant(1);
+    await fetchAssistant();
     setTimeout(() => setIsRefreshing(false), 800);
   };
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-    if (scrollHeight - scrollTop <= clientHeight + 50 && hasMore && !isRefreshing && !isLoadingMore.current) {
-       if (assistants.length >= page * pageSize) {
-          const nextPage = page + 1;
-          setPage(nextPage);
-          isLoadingMore.current = true;
-          fetchAssistant(nextPage, true);
-       }
-    }
-  };
+
 
   return (
     <div className="relative">
@@ -244,7 +227,6 @@ function InnerAssistantList({ assistantIDs = [], locale = "en", t: tProp }: Assi
 
           <div
             className="mt-2 max-h-60 overflow-auto custom-scrollbar"
-            onScroll={handleScroll}
           >
             {assistants.length > 0 ? (
               <div className="flex flex-col gap-1">

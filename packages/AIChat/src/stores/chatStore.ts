@@ -1,8 +1,4 @@
 import { create } from "zustand";
-import {
-  persist,
-  // createJSONStorage
-} from "zustand/middleware";
 
 interface SynthesizeItem {
   id: string;
@@ -47,8 +43,7 @@ export type IChatStore = {
 };
 
 export const useChatStore = create<IChatStore>()(
-  persist(
-    (set) => ({
+  (set) => ({
       curChatEnd: true,
       setCurChatEnd: (value: boolean) => set(() => ({ curChatEnd: value })),
       stopChat: false,
@@ -95,13 +90,4 @@ export const useChatStore = create<IChatStore>()(
           };
         }),
     }),
-    {
-      name: "chat-state",
-      // storage: createJSONStorage(() => sessionStorage),
-      partialize: (state) => ({
-        currentAssistant: state.currentAssistant,
-        messages: state.messages,
-      }),
-    }
-  )
 );

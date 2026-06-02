@@ -1,21 +1,22 @@
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Brain, Telescope } from "lucide-react";
 import clsx from "clsx";
 
 import SearchPopover, { type DataSource } from "./SearchPopover";
 import MCPPopover from "./MCPPopover";
-import { resources } from "../i18n";
+import type { TFunction } from "i18next";
 
 interface InputControlsProps {
   // Deep Research
   isDeepResearchActive?: boolean;
   setIsDeepResearchActive?: (val: boolean) => void;
+  showDeepResearch?: boolean;
 
   // Deep Think
   isDeepThinkActive?: boolean;
   setIsDeepThinkActive?: (val: boolean) => void;
   deepThinkingShortcut?: string;
+  showDeepThink?: boolean;
 
   // Datasource
   datasource?: { enabled?: boolean; visible?: boolean };
@@ -34,14 +35,17 @@ interface InputControlsProps {
   setIsMCPActive?: (val: boolean) => void;
   getMCPByServer?: (query?: string) => Promise<DataSource[]>;
   mcpShortcut?: string;
+  t?: TFunction;
 }
 
 const InputControls = ({
   isDeepResearchActive = false,
   setIsDeepResearchActive = () => {},
+  showDeepResearch = true,
 
   isDeepThinkActive = false,
   setIsDeepThinkActive,
+  showDeepThink = true,
 
   datasource,
   selectedDataSourceIds = [],
@@ -58,26 +62,14 @@ const InputControls = ({
   setIsMCPActive = () => {},
   getMCPByServer = async () => [],
   mcpShortcut,
+  t: tProp,
 }: InputControlsProps) => {
-  const { t, i18n } = useTranslation("ai_chat");
-
-  useEffect(() => {
-    (Object.keys(resources) as Array<keyof typeof resources>).forEach((lng) => {
-      if (resources[lng]?.translation) {
-        i18n.addResourceBundle(
-          lng as string,
-          "ai_chat",
-          resources[lng].translation,
-          true,
-          true
-        );
-      }
-    });
-  }, [i18n]);
+  const { t: tOriginal } = useTranslation();
+  const t = tProp || tOriginal;
 
   return (
     <div className="flex items-center pt-3 gap-2">
-      <div
+      {showDeepResearch && (<div
         className={clsx(
           "flex items-center justify-center gap-1 h-6 px-2 rounded-full transition cursor-pointer"
         )}
@@ -98,9 +90,9 @@ const InputControls = ({
             {t("search.input.deepResearch") || "DeepResearch"}
           </span>
         )}
-      </div>
+      </div>)}
       
-      <div
+      {showDeepThink && (<div
         className={clsx(
           "flex items-center justify-center gap-1 h-6 px-2 rounded-full transition cursor-pointer"
         )}
@@ -121,7 +113,7 @@ const InputControls = ({
             {t("search.input.deepThink") || "DeepThink"}
           </span>
         )}
-      </div>
+      </div>)}
 
       <SearchPopover
         datasource={datasource || {}}
@@ -131,6 +123,7 @@ const InputControls = ({
         setIsSearchActive={setIsSearchActive}
         getDataSources={getDataSources}
         shortcut={searchShortcut}
+        t={t}
       />
 
       <MCPPopover
@@ -141,6 +134,7 @@ const InputControls = ({
         setIsMCPActive={setIsMCPActive}
         getMCPByServer={getMCPByServer}
         shortcut={mcpShortcut}
+        t={t}
       />
     </div>
   );
