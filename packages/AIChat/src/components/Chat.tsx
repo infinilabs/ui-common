@@ -485,9 +485,12 @@ const InnerChatAI = memo(
           if (params.assistant_id) {
             const latestAssistantList = useChatStore.getState().assistantList;
             const latestCurrentAssistant = useChatStore.getState().currentAssistant;
+            const target = latestAssistantList?.find((a) => a._id === params.assistant_id);
             if (params.assistant_id !== latestCurrentAssistant?._id) {
-              const target = latestAssistantList?.find((a) => a._id === params.assistant_id);
               setCurrentAssistant(target ?? { _id: params.assistant_id });
+            }
+            if ((target?._source?.type as string) === "deep_think") {
+              params.deep_thinking = true;
             }
           }
 
