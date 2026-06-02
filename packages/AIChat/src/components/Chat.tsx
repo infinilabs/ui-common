@@ -454,17 +454,13 @@ const InnerChatAI = memo(
           const prevId = lastActiveChatIdRef.current;
           lastActiveChatIdRef.current = activeChat._id;
 
-          // Only react to user-initiated session switches (prevId was a real session).
-          // When creating a new chat, prevId is undefined — skip to avoid
-          // interrupting the in-flight createNewChat stream.
-          if (prevId !== undefined) {
-            if (!curChatEnd) {
-              cancelChat();
-            }
-            setTimeout(() => {
-              onSelectChat(activeChat);
-            }, 0);
+          // If a response is in progress, cancel it first before switching sessions.
+          if (prevId !== undefined && !curChatEnd) {
+            cancelChat();
           }
+          setTimeout(() => {
+            onSelectChat(activeChat);
+          }, 0);
         }
       }, [activeChat?._id, curChatEnd, onSelectChat, cancelChat]);
 
