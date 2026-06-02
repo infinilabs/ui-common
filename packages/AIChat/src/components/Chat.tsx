@@ -297,12 +297,8 @@ const InnerChatAI = memo(
 
           // 构建查询参数，包含助手配置
           const queryParams = {
-            search:
-              params.search ??
-              !!(currentAssistant?._source?.deep_research_enabled ?? true),
-            deep_thinking:
-              params.deep_thinking ??
-              !!(currentAssistant?._source?.deep_think_enabled ?? true),
+            search: params.search,
+            deep_thinking: params.deep_thinking,
             mcp: params.mcp,
             datasource: params.datasource,
             mcp_servers: params.mcp_servers,
@@ -328,7 +324,7 @@ const InnerChatAI = memo(
           // 创建完成后刷新历史列表
           incrementHistoryVersion();
         },
-        [handleStreamMessage, prepareChatSession, currentAssistant, headersProp, incrementHistoryVersion, setCurChatEnd],
+        [handleStreamMessage, prepareChatSession, currentAssistant?._id, headersProp, incrementHistoryVersion, setCurChatEnd],
       );
 
       /**
@@ -350,12 +346,8 @@ const InnerChatAI = memo(
           activeMessageRef.current?.reset();
 
           const queryParams = {
-            search:
-              params.search ??
-              !!(currentAssistant?._source?.deep_research_enabled ?? true),
-            deep_thinking:
-              params.deep_thinking ??
-              !!(currentAssistant?._source?.deep_think_enabled ?? true),
+            search: params.search,
+            deep_thinking: params.deep_thinking,
             mcp: params.mcp,
             datasource: params.datasource,
             mcp_servers: params.mcp_servers,
@@ -377,8 +369,6 @@ const InnerChatAI = memo(
         },
         [
           fetchHistory,
-          currentAssistant?._source?.deep_research_enabled,
-          currentAssistant?._source?.deep_think_enabled,
           currentAssistant?._id,
           handleStreamMessage,
           headersProp,
@@ -393,6 +383,7 @@ const InnerChatAI = memo(
       const handleSendMessage = useCallback(
         async (chat?: Chat, params?: SendMessageParams) => {
           if (!curChatEnd) return; // 如果当前正在生成中，阻止发送
+
           if (!chat?._id) {
             await createNewChat(params || {});
           } else {

@@ -167,7 +167,7 @@ export default function ChatInput({
   );
 
   // -------------------- Deep Think (toggleable) --------------------
-  const [isDeepThinkActive, setIsDeepThinkActive] = useState(false);
+  const [isDeepThinkActive, setIsDeepThinkActive] = useState(true);
   const deepResearchActive = showDeepResearch;
 
   const textareaRef = useRef<{ reset: () => void; focus: () => void }>(null);
@@ -291,9 +291,7 @@ export default function ChatInput({
 
   const appendFeatureParams = useCallback((params: SendMessageParams) => {
     if (!deepResearchActive) {
-      if (isDeepThinkActive) {
-        params.deep_thinking = true;
-      }
+      params.deep_thinking = isDeepThinkActive;
       if (searchEnabled && isSearchActive) {
         params.search = true;
         params.datasource = selectedDataSourceIds;
