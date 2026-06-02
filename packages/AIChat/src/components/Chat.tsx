@@ -462,8 +462,17 @@ const InnerChatAI = memo(
           lastActiveChatIdRef.current = activeChat._id;
 
           // If a response is in progress, cancel it first before switching sessions.
+          // Must use prevId directly instead of cancelChat(), because cancelChat
+          // captures the NEW activeChat._id (the chat we're switching TO), not
+          // the old session we want to cancel.
           if (prevId !== undefined && !curChatEnd) {
-            cancelChat();
+            Post(
+              `/chat/${prevId}/_cancel?message_id=${curIdRef.current}`,
+              undefined,
+              {},
+              headersProp,
+            ).catch(console.error);
+            setCurChatEnd(true);
           }
           // 仅在切换已有对话时加载历史，首次创建对话（prevId 为 undefined）不触发
           if (prevId !== undefined) {
@@ -472,7 +481,7 @@ const InnerChatAI = memo(
             }, 0);
           }
         }
-      }, [activeChat?._id, curChatEnd, onSelectChat, cancelChat]);
+      }, [activeChat?._id, curChatEnd, onSelectChat, headersProp, setCurChatEnd]);
 
       // 生成文件预览 URL 的辅助函数
       const getFileUrl = useCallback(
