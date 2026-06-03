@@ -92,7 +92,6 @@ function InnerHistory({
 
   const onSelect = useCallback(
     async (chat: Chat) => {
-      // console.log("setActiveChat2", chat);
       setActiveChat(chat);
     },
     [setActiveChat],

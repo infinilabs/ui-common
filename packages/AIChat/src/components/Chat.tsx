@@ -78,7 +78,7 @@ export interface ChatAIRef {
  */
 const InnerChatAI = memo(
   forwardRef<ChatAIRef, ChatAIProps>(
-    ({ BaseUrl, formatUrl, headers: headersProp = {}, t: tProp }, ref) => {
+    ({ BaseUrl, formatUrl, headers: headersProp = {}, locale, t: tProp }, ref) => {
       // 动态加载 iconfont 脚本
       useIconfontScript();
 
@@ -104,6 +104,7 @@ const InnerChatAI = memo(
       const curSessionIdRef = useRef(""); // 当前会话 ID
       const activeMessageRef = useRef<ChatMessageRef>(null); // 活跃消息组件的引用
       const streamGenRef = useRef(0); // 流式请求的代次，用于切换后忽略旧流的渲染
+      const generatingSessionRef = useRef<string | undefined>(undefined); // 当前正在生成回复的会话 ID
 
       type ChatStreamSingle = {
         _id?: string;
@@ -184,6 +185,10 @@ const InnerChatAI = memo(
                 }
                 if (typeof sessionId === "string") {
                   curSessionIdRef.current = sessionId;
+                  // Keep generatingSessionRef in sync when backend creates a new session
+                  if (generatingSessionRef.current) {
+                    generatingSessionRef.current = sessionId;
+                  }
                 }
 
                 // 构造标准消息项对象
@@ -298,6 +303,7 @@ const InnerChatAI = memo(
           }
           await prepareChatSession(text);
           setCurChatEnd(false); // 立即进入生成状态，按钮开始转圈
+          generatingSessionRef.current = curSessionIdRef.current || activeChat?._id;
 
           // 构建查询参数，包含助手配置
           const queryParams = {
@@ -328,6 +334,7 @@ const InnerChatAI = memo(
           } finally {
             if (streamGenRef.current === gen) {
               setCurChatEnd(true);
+              generatingSessionRef.current = undefined;
             }
           }
 
@@ -352,6 +359,7 @@ const InnerChatAI = memo(
           setQuestion(text);
           activeMessageRef.current?.reset(); // 清空上一条 AI 回复的 chunk 数据，避免残留显示
           setCurChatEnd(false); // 立即进入生成状态，按钮开始转圈
+          generatingSessionRef.current = chat._id;
 
           await fetchHistory(chat._id);
 
@@ -396,6 +404,7 @@ const InnerChatAI = memo(
           } finally {
             if (streamGenRef.current === gen) {
               setCurChatEnd(true);
+              generatingSessionRef.current = undefined;
             }
           }
         },
@@ -431,11 +440,13 @@ const InnerChatAI = memo(
       const cancelChat = useCallback(async () => {
         // 递增 generation，使进行中的流回调不再处理
         streamGenRef.current++;
+        const sessionToCancel = generatingSessionRef.current || activeChat?._id;
+        generatingSessionRef.current = undefined;
 
-        if (activeChat?._id) {
+        if (sessionToCancel) {
           try {
             await Post(
-              `/chat/${activeChat._id}/_cancel?message_id=${curIdRef.current}&lang=${i18n.language}`,
+              `/chat/${sessionToCancel}/_cancel?message_id=${curIdRef.current}&lang=${locale || i18n.language}`,
               undefined,
               {},
               headersProp,
@@ -444,10 +455,13 @@ const InnerChatAI = memo(
             console.error(e);
           }
           // 取消后重新拉取历史，获取干净的消息列表
-          await fetchHistory(activeChat._id);
+          const currentActive = useChatStore.getState().activeChat;
+          if (currentActive?._id) {
+            await fetchHistory(currentActive._id);
+          }
         }
         setCurChatEnd(true); // 强制标记为结束
-      }, [activeChat, setCurChatEnd, headersProp, fetchHistory]);
+      }, [setCurChatEnd, headersProp, fetchHistory]);
 
       /**
        * 切换当前选中的对话
@@ -455,21 +469,36 @@ const InnerChatAI = memo(
        */
       const onSelectChat = useCallback(
         async (chat?: Chat) => {
+          const generatingSession = generatingSessionRef.current;
+          const curChatEndNow = useChatStore.getState().curChatEnd;
           // 递增 generation，使旧流的回调不再渲染
           streamGenRef.current++;
+
+          // If a response is in progress, cancel it before switching.
+          // Use generatingSessionRef (not activeChat from closure) to get the
+          // correct session ID, because activeChat may have already been
+          // updated by the stream handler (e.g. backend created a new session).
+          if (generatingSession && !curChatEndNow) {
+            generatingSessionRef.current = undefined;
+            Post(
+              `/chat/${generatingSession}/_cancel?message_id=${curIdRef.current}&lang=${locale || i18n.language}`,
+              undefined,
+              {},
+              headersProp,
+            ).catch(console.error);
+          }
 
           activeMessageRef.current?.reset(); // 重置上一条消息的 UI 状态
           setCurChatEnd(true);
           setTimedoutShow(false);
           setQuestion(""); // 重置问题文本，避免切换聊天后残留旧问题
 
-          // console.log("setActiveChat5", chat);
           setActiveChat(chat);
           if (chat?._id) {
             await fetchHistory(chat?._id); // 加载历史记录
           }
         },
-        [setActiveChat, setCurChatEnd, fetchHistory],
+        [setActiveChat, setCurChatEnd, fetchHistory, headersProp],
       );
 
       /**
@@ -484,30 +513,18 @@ const InnerChatAI = memo(
 
       useEffect(() => {
         if (activeChat?._id && activeChat._id !== lastActiveChatIdRef.current) {
-          const prevId = lastActiveChatIdRef.current;
           lastActiveChatIdRef.current = activeChat._id;
 
-          // If a response is in progress, cancel it first before switching sessions.
-          // Must use prevId directly instead of cancelChat(), because cancelChat
-          // captures the NEW activeChat._id (the chat we're switching TO), not
-          // the old session we want to cancel.
-          if (prevId !== undefined && !curChatEnd) {
-            Post(
-              `/chat/${prevId}/_cancel?message_id=${curIdRef.current}&lang=${i18n.language}`,
-              undefined,
-              {},
-              headersProp,
-            ).catch(console.error);
-            setCurChatEnd(true);
-          }
-          // 仅在切换已有对话时加载历史，首次创建对话（prevId 为 undefined）不触发
-          if (prevId !== undefined) {
+          // Skip if a stream is currently generating — the session change came
+          // from the stream handler (e.g. backend created a new session), not
+          // from a user click.  Otherwise, load history for the selected chat.
+          if (!generatingSessionRef.current) {
             setTimeout(() => {
               onSelectChat(activeChat);
             }, 0);
           }
         }
-      }, [activeChat?._id, curChatEnd, onSelectChat, headersProp, setCurChatEnd]);
+      }, [activeChat?._id, onSelectChat]);
 
       // 生成文件预览 URL 的辅助函数
       const getFileUrl = useCallback(
