@@ -98,6 +98,7 @@ const InnerChatAI = memo(
       // 本地状态
       const [timedoutShow, setTimedoutShow] = useState(false); // 超时提示显示状态
       const [Question, setQuestion] = useState<string>(""); // 当前正在处理的问题文本
+      const [activeMessageGen, setActiveMessageGen] = useState(0); // 用于强制 ActiveChatMessage 重新挂载
 
       // Refs 用于在闭包和异步操作中保持最新值
       const curIdRef = useRef(""); // 当前生成的消息 ID
@@ -105,6 +106,7 @@ const InnerChatAI = memo(
       const activeMessageRef = useRef<ChatMessageRef>(null); // 活跃消息组件的引用
       const streamGenRef = useRef(0); // 流式请求的代次，用于切换后忽略旧流的渲染
       const generatingSessionRef = useRef<string | undefined>(undefined); // 当前正在生成回复的会话 ID
+      const fetchHistoryRef = useRef<(chatId: string) => Promise<void>>(); // 避免 handleStreamMessage 的循环依赖
 
       type ChatStreamSingle = {
         _id?: string;
@@ -151,6 +153,7 @@ const InnerChatAI = memo(
                 // 情况 A: 收到消息数组（通常是加载历史记录）
                 const hits = parsed as ChatMessageItem[];
                 const first = hits[0];
+                let resolvedSessionId = "";
                 if (first) {
                   // 更新当前消息 ID 和会话 ID
                   curIdRef.current = first._id;
@@ -158,6 +161,7 @@ const InnerChatAI = memo(
                   const sessionId = source.session_id as string | undefined;
                   if (sessionId) {
                     curSessionIdRef.current = sessionId;
+                    resolvedSessionId = sessionId;
                   }
                 }
                 // 获取当前活动聊天对象或创建一个新的基础对象
@@ -170,6 +174,8 @@ const InnerChatAI = memo(
                 );
                 nextChat = {
                   ...baseChat,
+                  // 如果 baseChat._id 为空（新建会话的乐观状态），用后端返回的 session_id 覆盖
+                  _id: baseChat._id || resolvedSessionId || first?._id || "",
                   messages: [...existingMessages, ...hits],
                 };
               } else {
@@ -215,11 +221,25 @@ const InnerChatAI = memo(
                 );
                 nextChat = {
                   ...baseChat,
+                  // 如果 baseChat._id 为空（新建会话的乐观状态），用后端返回的 session_id 覆盖
+                  _id: baseChat._id || (typeof sessionId === "string" ? sessionId : "") || messageItem._id,
                   messages: [...existingMessages, messageItem],
                 };
               }
 
               // 更新全局活动聊天状态，触发 UI 重绘
+              // 同步更新 lastActiveChatIdRef，防止 useEffect 在 finally 清除
+              // generatingSessionRef 后误触发 onSelectChat
+              if (nextChat._id) {
+                // 当 _id 从空变为真实值时（新建会话首次获取后端 ID），立即刷新历史列表
+                if (!lastActiveChatIdRef.current || lastActiveChatIdRef.current !== nextChat._id) {
+                  const prevId = latestActiveChat?._id;
+                  if (!prevId && nextChat._id) {
+                    incrementHistoryVersion();
+                  }
+                }
+                lastActiveChatIdRef.current = nextChat._id;
+              }
               setActiveChat(nextChat);
             }
 
@@ -239,6 +259,11 @@ const InnerChatAI = memo(
               // 标记回复结束
               if (chunkData.chunk_type === "reply_end") {
                 setCurChatEnd(true);
+                // 流式结束后，不立即 fetchHistory 加载到 messages，
+                // 让 AI 回答留在 ActiveChatMessage 的 chunk 数据中继续展示，
+                // 避免 messages 列表与 ActiveChatMessage 同时渲染导致重复。
+                // 下次 sendMessage 时 fetchHistory + reset 会正确完成内容切换。
+                incrementHistoryVersion();
               }
             }
           } catch (error) {
@@ -246,7 +271,7 @@ const InnerChatAI = memo(
             console.error("Failed to parse chat message:", error);
           }
         },
-        [setActiveChat, setCurChatEnd],
+        [setActiveChat, setCurChatEnd, incrementHistoryVersion],
       );
 
       /**
@@ -289,6 +314,9 @@ const InnerChatAI = memo(
         },
         [setActiveChat, headersProp],
       );
+
+      // 保持 fetchHistoryRef 始终指向最新的 fetchHistory
+      fetchHistoryRef.current = fetchHistory;
 
       /**
        * 创建新会话并发送第一条消息
@@ -351,10 +379,9 @@ const InnerChatAI = memo(
             }
           }
 
-          // 创建完成后刷新历史列表
-          incrementHistoryVersion();
+          // 历史列表已在 handleStreamMessage 中首次获取到真实 session_id 时刷新
         },
-        [handleStreamMessage, prepareChatSession, currentAssistant?._id, headersProp, incrementHistoryVersion, setCurChatEnd, setActiveChat],
+        [handleStreamMessage, prepareChatSession, currentAssistant?._id, headersProp, setCurChatEnd, setActiveChat],
       );
 
       /**
@@ -370,11 +397,14 @@ const InnerChatAI = memo(
           }
           setTimedoutShow(false);
           setQuestion(text);
-          activeMessageRef.current?.reset(); // 清空上一条 AI 回复的 chunk 数据，避免残留显示
-          setCurChatEnd(false); // 立即进入生成状态，按钮开始转圈
           generatingSessionRef.current = chat._id;
 
+          // 拉取历史，将之前的 AI 回答从服务器加载到 activeChat.messages
           await fetchHistory(chat._id);
+          // fetchHistory 完成后，之前的 AI 回答已持久化到 messages 列表中，
+          // 此时可以安全 reset 活跃消息组件，避免旧的 chunk 数据（含 suggestion）残留显示
+          activeMessageRef.current?.reset();
+          setCurChatEnd(false); // 立即进入生成状态，按钮开始转圈
 
           // 乐观追加用户消息到本地状态，使其立即可见
           const currentChat = useChatStore.getState().activeChat;
@@ -502,6 +532,7 @@ const InnerChatAI = memo(
           }
 
           activeMessageRef.current?.reset(); // 重置上一条消息的 UI 状态
+          setActiveMessageGen((v) => v + 1); // 强制 ActiveChatMessage 重新挂载，彻底清除旧 chunk 数据
           setCurChatEnd(true);
           setTimedoutShow(false);
           setQuestion(""); // 重置问题文本，避免切换聊天后残留旧问题
@@ -586,8 +617,24 @@ const InnerChatAI = memo(
               if (params.assistant_id !== latestCurrentAssistant?._id) {
                 setCurrentAssistant(target ?? { _id: params.assistant_id! });
               }
-              if ((target?._source?.type as string) === "deep_think") {
+              const targetType = (target?._source?.type as string) || "simple";
+              if (targetType === "deep_think") {
                 params.deep_thinking = true;
+              }
+              const showSearchMCP = targetType === "simple" || targetType === "deep_think";
+              if (showSearchMCP) {
+                const ds = target?._source?.datasource as
+                  | { enabled?: boolean; enabled_by_default?: boolean; ids?: string[] }
+                  | undefined;
+                if ((ds?.enabled ?? true) && ds?.enabled_by_default) {
+                  params.search = true;
+                }
+                const mcp = target?._source?.mcp_servers as
+                  | { enabled?: boolean; enabled_by_default?: boolean; ids?: string[] }
+                  | undefined;
+                if ((mcp?.enabled ?? true) && mcp?.enabled_by_default) {
+                  params.mcp = true;
+                }
               }
               proceed();
             });
@@ -607,10 +654,13 @@ const InnerChatAI = memo(
           <ChatContent
             activeChat={activeChat}
             activeMessageRef={activeMessageRef}
+            activeMessageGen={activeMessageGen}
             timedoutShow={timedoutShow}
             Question={Question}
             handleSendMessage={(message) =>
-              handleSendMessage(activeChat, { message })
+              handleSendMessage(activeChat, {
+                message: Array.isArray(message) ? message.join("") : String(message ?? ""),
+              })
             }
             getFileUrl={getFileUrl}
             formatUrl={formatUrl}

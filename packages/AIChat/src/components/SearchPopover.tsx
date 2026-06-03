@@ -139,25 +139,27 @@ export default function SearchPopover({
   return (
     <div
       className={clsx(
-        "flex justify-center items-center gap-1 h-6 px-2 rounded-full transition cursor-pointer hover:bg-[#EDEDED] dark:hover:bg-[#202126]"
+        "flex justify-center items-center gap-1 h-6 px-2 rounded-full transition cursor-pointer",
+        !isSearchActive && "hover:bg-[#EDEDED] dark:hover:bg-[#202126]"
       )}
       style={{
-        backgroundColor: isSearchActive ? "rgba(1,138,229,0.21)" : undefined,
+        backgroundColor: isSearchActive
+          ? 'var(--ant-color-primary-bg)'
+          : undefined,
       }}
       onClick={() => {
         setIsSearchActive(!isSearchActive);
       }}
+      title={t("search.input.search") || "Search"}
     >
       <Globe
-        className={`size-4 ${isSearchActive
-            ? "text-[#1784FC] dark:text-[#1784FC]"
-            : "text-[#333] dark:text-[#999]"
-          }`}
+        className="size-4"
+        style={{ color: isSearchActive ? 'var(--ant-color-primary)' : 'var(--ant-color-text-secondary)' }}
       />
 
       {isSearchActive && (
         <>
-          <span className="text-[#1784FC] text-xs">
+          <span className="text-xs" style={{ color: 'var(--ant-color-primary)' }}>
             {t("search.input.search") || "Search"}
           </span>
 

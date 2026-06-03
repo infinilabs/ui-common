@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSize } from "ahooks";
 import clsx from "clsx";
@@ -139,6 +139,9 @@ export default function ChatInput({
   const [isSearchActive, setIsSearchActive] = useState(
     () => !!(searchEnabled && assistantDatasource?.enabled_by_default)
   );
+  useEffect(() => {
+    setIsSearchActive(!!(searchEnabled && assistantDatasource?.enabled_by_default));
+  }, [searchEnabled, assistantDatasource?.enabled_by_default]);
   const datasource = useMemo(() => ({
     enabled: searchEnabled,
     visible: (assistantDatasource?.visible ?? true) && showSearch,
@@ -157,6 +160,9 @@ export default function ChatInput({
   const [isMCPActive, setIsMCPActive] = useState(
     () => !!(mcpEnabled && assistantMcpServers?.enabled_by_default)
   );
+  useEffect(() => {
+    setIsMCPActive(!!(mcpEnabled && assistantMcpServers?.enabled_by_default));
+  }, [mcpEnabled, assistantMcpServers?.enabled_by_default]);
   const mcp_servers = useMemo(() => ({
     enabled: mcpEnabled,
     visible: (assistantMcpServers?.visible ?? true) && showMCP,

@@ -64,6 +64,7 @@ export const ActiveChatMessage = ({
 interface ChatContentProps {
   activeChat?: Chat;
   activeMessageRef?: React.RefObject<ChatMessageRef>;
+  activeMessageGen?: number;
   timedoutShow: boolean;
   Question: string;
   handleSendMessage: (content: string, newChat?: Chat) => void;
@@ -77,6 +78,7 @@ interface ChatContentProps {
 export const ChatContent = ({
   activeChat,
   activeMessageRef,
+  activeMessageGen = 0,
   timedoutShow,
   Question,
   handleSendMessage,
@@ -164,17 +166,20 @@ export const ChatContent = ({
             />
           ))}
 
-          <ActiveChatMessage
-            activeMessageRef={activeMessageRef}
-            activeChat={activeChat}
-            curChatEnd={curChatEnd}
-            Question={Question}
-            handleSendMessage={handleSendMessage}
-            formatUrl={formatUrl}
-            assistantList={assistantList}
-            currentAssistant={currentAssistant}
-            t={t}
-          />
+          {(activeChat || !curChatEnd) && (
+            <ActiveChatMessage
+              key={activeMessageGen}
+              activeMessageRef={activeMessageRef}
+              activeChat={activeChat}
+              curChatEnd={curChatEnd}
+              Question={Question}
+              handleSendMessage={handleSendMessage}
+              formatUrl={formatUrl}
+              assistantList={assistantList}
+              currentAssistant={currentAssistant}
+              t={t}
+            />
+          )}
 
           {timedoutShow ? (
             <ChatMessage

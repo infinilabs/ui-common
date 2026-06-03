@@ -200,6 +200,7 @@ const InnerChatMessage = memo(
       },
       reset: () => {
         clearAllChunkData();
+        setSuggestion([]);
         setLoadingStep({
           query_intent: false,
           tools: false,

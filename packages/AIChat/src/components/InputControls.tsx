@@ -40,7 +40,6 @@ interface InputControlsProps {
 
 const InputControls = ({
   isDeepResearchActive = false,
-  setIsDeepResearchActive = () => {},
   showDeepResearch = true,
 
   isDeepThinkActive = false,
@@ -71,14 +70,13 @@ const InputControls = ({
     <div className="flex items-center pt-3 gap-2">
       {showDeepResearch && (<div
         className={clsx(
-          "flex items-center justify-center gap-1 h-6 px-2 rounded-full transition cursor-pointer"
+          "flex items-center justify-center gap-1 h-6 px-2 rounded-full transition cursor-pointer",
         )}
         style={{
           backgroundColor: isDeepResearchActive
             ? 'var(--ant-color-primary-bg)'
             : undefined,
         }}
-        onClick={() => setIsDeepResearchActive(!isDeepResearchActive)}
         title={t("search.input.deepResearch") || "DeepResearch"}
       >
         <Telescope
@@ -94,7 +92,8 @@ const InputControls = ({
       
       {showDeepThink && (<div
         className={clsx(
-          "flex items-center justify-center gap-1 h-6 px-2 rounded-full transition cursor-pointer"
+          "flex items-center justify-center gap-1 h-6 px-2 rounded-full transition cursor-pointer",
+          !isDeepThinkActive && "hover:bg-[#EDEDED] dark:hover:bg-[#202126]"
         )}
         style={{
           backgroundColor: isDeepThinkActive

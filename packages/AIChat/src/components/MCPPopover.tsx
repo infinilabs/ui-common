@@ -148,26 +148,25 @@ export default function MCPPopover({
   return (
     <div
       className={clsx(
-        "flex justify-center items-center gap-1 h-6 px-2 rounded-full transition cursor-pointer hover:bg-[#EDEDED] dark:hover:bg-[#202126]"
+        "flex justify-center items-center gap-1 h-6 px-2 rounded-full transition cursor-pointer",
+        !isMCPActive && "hover:bg-[#EDEDED] dark:hover:bg-[#202126]"
       )}
       style={{
-        backgroundColor: isMCPActive ? "rgba(1,138,229,0.21)" : undefined,
+        backgroundColor: isMCPActive
+          ? 'var(--ant-color-primary-bg)'
+          : undefined,
       }}
       onClick={() => setIsMCPActive(!isMCPActive)}
+      title={t("search.input.MCP") || "MCP"}
     >
        <Hammer
-          className={`size-4 ${
-            isMCPActive
-              ? "text-[#1784FC] dark:text-[#1784FC]"
-              : "text-[#333] dark:text-[#999]"
-          }`}
+          className="size-4"
+          style={{ color: isMCPActive ? 'var(--ant-color-primary)' : 'var(--ant-color-text-secondary)' }}
         />
 
       {isMCPActive && (
         <>
-          <span
-            className={`${isMCPActive ? "text-[#1784FC]" : "dark:text-white"} text-xs`}
-          >
+          <span className="text-xs" style={{ color: 'var(--ant-color-primary)' }}>
             {t("search.input.MCP") || "MCP"}
           </span>
 
