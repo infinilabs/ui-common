@@ -163,10 +163,13 @@ const InnerChatAI = memo(
                 const baseChat: Chat = latestActiveChat || {
                   _id: first?._id ?? "",
                 };
-                // 合并新消息到消息列表中
+                // 合并新消息到消息列表中（先移除乐观插入的临时消息）
+                const existingMessages = (baseChat.messages || []).filter(
+                  (m) => !m._id.startsWith("optimistic-")
+                );
                 nextChat = {
                   ...baseChat,
-                  messages: [...(baseChat.messages || []), ...hits],
+                  messages: [...existingMessages, ...hits],
                 };
               } else {
                 // 情况 B: 收到单个消息对象（通常是新发送的用户消息回执）
@@ -201,15 +204,17 @@ const InnerChatAI = memo(
                   _id: messageItem._id,
                 };
 
-                // 将新消息追加到消息列表中
+                // 将新消息追加到消息列表中（先移除乐观插入的临时消息）
+                const existingMessages = (baseChat.messages || []).filter(
+                  (m) => !m._id.startsWith("optimistic-")
+                );
                 nextChat = {
                   ...baseChat,
-                  messages: [...(baseChat.messages || []), messageItem],
+                  messages: [...existingMessages, messageItem],
                 };
               }
 
               // 更新全局活动聊天状态，触发 UI 重绘
-              // console.log("setActiveChat3", nextChat);
               setActiveChat(nextChat);
             }
 
@@ -268,10 +273,6 @@ const InnerChatAI = memo(
             // 获取最新状态以确保我们在更新正确的聊天
             const currentActive = useChatStore.getState().activeChat;
             if (currentActive?._id === chatId) {
-              // console.log("setActiveChat4", {
-              //   ...currentActive,
-              //   messages: hits,
-              // });
               setActiveChat({
                 ...currentActive,
                 messages: hits,
@@ -348,8 +349,25 @@ const InnerChatAI = memo(
           }
           setTimedoutShow(false);
           setQuestion(text);
+          activeMessageRef.current?.reset(); // 清空上一条 AI 回复的 chunk 数据，避免残留显示
 
           await fetchHistory(chat._id);
+
+          // 乐观追加用户消息到本地状态，使其立即可见
+          const currentChat = useChatStore.getState().activeChat;
+          if (currentChat) {
+            const userMessage: ChatMessageItem = {
+              _id: `optimistic-${Date.now()}`,
+              _source: {
+                type: "user",
+                message: text,
+              },
+            };
+            setActiveChat({
+              ...currentChat,
+              messages: [...(currentChat.messages || []), userMessage],
+            });
+          }
 
           const queryParams = {
             search: params.search,
@@ -436,6 +454,7 @@ const InnerChatAI = memo(
           activeMessageRef.current?.reset(); // 重置上一条消息的 UI 状态
           setCurChatEnd(true);
           setTimedoutShow(false);
+          setQuestion(""); // 重置问题文本，避免切换聊天后残留旧问题
 
           // console.log("setActiveChat5", chat);
           setActiveChat(chat);
