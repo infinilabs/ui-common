@@ -305,6 +305,19 @@ const InnerChatAI = memo(
           setCurChatEnd(false); // 立即进入生成状态，按钮开始转圈
           generatingSessionRef.current = curSessionIdRef.current || activeChat?._id;
 
+          // 乐观插入用户消息，立即隐藏欢迎语并显示用户消息
+          const optimisticUserMessage: ChatMessageItem = {
+            _id: `optimistic-${Date.now()}`,
+            _source: {
+              type: "user",
+              message: text,
+            },
+          };
+          setActiveChat({
+            _id: "",
+            messages: [optimisticUserMessage],
+          });
+
           // 构建查询参数，包含助手配置
           const queryParams = {
             search: params.search,
@@ -341,7 +354,7 @@ const InnerChatAI = memo(
           // 创建完成后刷新历史列表
           incrementHistoryVersion();
         },
-        [handleStreamMessage, prepareChatSession, currentAssistant?._id, headersProp, incrementHistoryVersion, setCurChatEnd],
+        [handleStreamMessage, prepareChatSession, currentAssistant?._id, headersProp, incrementHistoryVersion, setCurChatEnd, setActiveChat],
       );
 
       /**
