@@ -297,6 +297,7 @@ const InnerChatAI = memo(
             return;
           }
           await prepareChatSession(text);
+          setCurChatEnd(false); // 立即进入生成状态，按钮开始转圈
 
           // 构建查询参数，包含助手配置
           const queryParams = {
@@ -350,6 +351,7 @@ const InnerChatAI = memo(
           setTimedoutShow(false);
           setQuestion(text);
           activeMessageRef.current?.reset(); // 清空上一条 AI 回复的 chunk 数据，避免残留显示
+          setCurChatEnd(false); // 立即进入生成状态，按钮开始转圈
 
           await fetchHistory(chat._id);
 
@@ -427,6 +429,9 @@ const InnerChatAI = memo(
        * 取消当前对话生成
        */
       const cancelChat = useCallback(async () => {
+        // 递增 generation，使进行中的流回调不再处理
+        streamGenRef.current++;
+
         if (activeChat?._id) {
           try {
             await Post(
@@ -438,9 +443,11 @@ const InnerChatAI = memo(
           } catch (e) {
             console.error(e);
           }
+          // 取消后重新拉取历史，获取干净的消息列表
+          await fetchHistory(activeChat._id);
         }
         setCurChatEnd(true); // 强制标记为结束
-      }, [activeChat, setCurChatEnd, headersProp]);
+      }, [activeChat, setCurChatEnd, headersProp, fetchHistory]);
 
       /**
        * 切换当前选中的对话
