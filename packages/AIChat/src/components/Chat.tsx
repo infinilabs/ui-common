@@ -435,7 +435,7 @@ const InnerChatAI = memo(
         if (activeChat?._id) {
           try {
             await Post(
-              `/chat/${activeChat._id}/_cancel?message_id=${curIdRef.current}`,
+              `/chat/${activeChat._id}/_cancel?message_id=${curIdRef.current}&lang=${i18n.language}`,
               undefined,
               {},
               headersProp,
@@ -493,7 +493,7 @@ const InnerChatAI = memo(
           // the old session we want to cancel.
           if (prevId !== undefined && !curChatEnd) {
             Post(
-              `/chat/${prevId}/_cancel?message_id=${curIdRef.current}`,
+              `/chat/${prevId}/_cancel?message_id=${curIdRef.current}&lang=${i18n.language}`,
               undefined,
               {},
               headersProp,
