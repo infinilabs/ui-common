@@ -1,7 +1,7 @@
-import { Open } from "./open";
-import { Cell } from "./cell";
-import { Detail } from "./detail";
-import React, { useState } from "react";
+import { Open } from './open';
+import { Cell } from './cell';
+import { Detail } from './detail';
+import React, { useState } from 'react';
 
 const MemoDetail = React.memo(Detail);
 
@@ -16,9 +16,14 @@ interface Props {
   onRemoveColumn?: (name: string) => void;
   row: any;
   document: any;
-  formatHit?: (name: string, hit: Record<string, any>) => Record<string, any>
-  filterIconRender?: (children: any, params: { field: any, values: any, operation: any }) => any;
+  formatHit?: (name: string, hit: Record<string, any>) => Record<string, any>;
+  filterIconRender?: (
+    children: any,
+    params: { field: any; values: any; operation: any }
+  ) => any;
   theme?: string;
+  isOpen?: boolean;
+  onToggle?: () => void;
 }
 
 export function TableRow({
@@ -33,19 +38,24 @@ export function TableRow({
   document,
   formatHit,
   filterIconRender,
-  theme
+  theme,
+  isOpen,
+  onToggle
 }: Props) {
   const mapping = indexPattern.fields.getByName;
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = isOpen !== undefined ? isOpen : internalOpen;
+  const handleToggle = () => {
+    if (onToggle) onToggle();
+    else setInternalOpen(!internalOpen);
+  };
 
   return (
     <>
       <tr className="kbnDocTable__row">
         <Open
           open={open}
-          onClick={() => {
-            setOpen(!open);
-          }}
+          onClick={handleToggle}
         />
         {indexPattern.timeFieldName && !hideTimeColumn ? (
           <Cell
@@ -58,23 +68,32 @@ export function TableRow({
               row,
               indexPattern.timeFieldName
             )}
-            filterable={!!onFilter && mapping(indexPattern.timeFieldName).filterable} //&& $scope.filter
+            filterable={
+              !!onFilter && mapping(indexPattern.timeFieldName).filterable
+            } //&& $scope.filter
             column={indexPattern.timeFieldName}
             filterIconRender={filterIconRender}
           />
         ) : null}
 
-        {columns.map(function(column: any) {
-          const isFilterable = !!onFilter && mapping(column) && mapping(column).filterable; //&& $scope.filter;
+        {columns.map(function (column: any) {
+          const isFilterable =
+            !!onFilter && mapping(column) && mapping(column).filterable; //&& $scope.filter;
           return (
             <Cell
-              key={"discover-cell-" + column}
+              key={'discover-cell-' + column}
               timefield={false}
               row={row}
               inlineFilter={onFilter}
               indexPattern={indexPattern}
-              sourcefield={column === "_source"}
-              formatted={_displayField(indexPattern, row, column, true, formatHit)}
+              sourcefield={column === '_source'}
+              formatted={_displayField(
+                indexPattern,
+                row,
+                column,
+                true,
+                formatHit
+              )}
               filterable={isFilterable} //&& $scope.filter
               column={column}
               filterIconRender={filterIconRender}
