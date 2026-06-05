@@ -326,7 +326,7 @@ const Table: React.FC<TableProps> = ({
         <>
           <div
             ref={headerRef}
-            style={{ flexShrink: 0, overflowY: 'scroll' }}
+            style={{ flexShrink: 0 }}
           >
             <table className="kbn-table table">
               <thead>
