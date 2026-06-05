@@ -1,47 +1,44 @@
-import { AutocompleteService } from "./vendor/data/public/autocomplete";
-import { FilterManager } from "./vendor/data/public/query/filter_manager/filter_manager";
-import { QueryStringManager } from "./vendor/data/public/query/query_string/query_string_manager";
-import {
-  Timefilter,
-  TimeHistory,
-} from "./vendor/data/public/query/timefilter";
-import { buildEsQuery } from "./vendor/data/common/es_query/es_query/build_es_query";
-import { intervalOptions } from "./vendor/data/common/search/aggs/buckets/_interval_options";
-import { TimeBuckets } from "./vendor/data/common/search/aggs/buckets/lib/time_buckets/time_buckets";
-import { Fetch } from "./vendor/core/public/http/fetch";
-import { SavedObjectsClient } from "./vendor/core/public/saved_objects/saved_objects_client";
+import { AutocompleteService } from './vendor/data/public/autocomplete';
+import { FilterManager } from './vendor/data/public/query/filter_manager/filter_manager';
+import { QueryStringManager } from './vendor/data/public/query/query_string/query_string_manager';
+import { Timefilter, TimeHistory } from './vendor/data/public/query/timefilter';
+import { buildEsQuery } from './vendor/data/common/es_query/es_query/build_es_query';
+import { intervalOptions } from './vendor/data/common/search/aggs/buckets/_interval_options';
+import { TimeBuckets } from './vendor/data/common/search/aggs/buckets/lib/time_buckets/time_buckets';
+import { Fetch } from './vendor/core/public/http/fetch';
+import { SavedObjectsClient } from './vendor/core/public/saved_objects/saved_objects_client';
 import {
   getIndexPatterns,
-  setIndexPatterns,
-} from "./vendor/data/public/services";
+  setIndexPatterns
+} from './vendor/data/public/services';
 import {
   IndexPatternsService,
   onRedirectNoIndexPattern,
   onUnsupportedTimePattern,
   IndexPatternsApiClient,
-  SavedObjectsClientPublicToCommon,
-} from "./vendor/data/public/index_patterns";
-import { FieldFormatsRegistry } from "./vendor/data/common/field_formats";
-import { baseFormattersPublic } from "./vendor/data/public/field_formats";
-import { deserializeFieldFormat } from "./vendor/data/public/field_formats/utils/deserialize";
+  SavedObjectsClientPublicToCommon
+} from './vendor/data/public/index_patterns';
+import { FieldFormatsRegistry } from './vendor/data/common/field_formats';
+import { baseFormattersPublic } from './vendor/data/public/field_formats';
+import { deserializeFieldFormat } from './vendor/data/public/field_formats/utils/deserialize';
 
 export const timeBucketConfig = {
-  "histogram:maxBars": 100,
-  "histogram:barTarget": 50,
-  dateFormat: "YYYY-MM-DD",
-  "dateFormat:scaled": [
-    ["", "HH:mm:ss.SSS"],
-    ["PT1S", "HH:mm:ss"],
-    ["PT1M", "HH:mm"],
-    ["PT1H", "YYYY-MM-DD HH:mm"],
-    ["P1DT", "YYYY-MM-DD"],
-    ["P1YT", "YYYY"],
-  ],
+  'histogram:maxBars': 100,
+  'histogram:barTarget': 50,
+  dateFormat: 'YYYY-MM-DD',
+  'dateFormat:scaled': [
+    ['', 'HH:mm:ss.SSS'],
+    ['PT1S', 'HH:mm:ss'],
+    ['PT1M', 'HH:mm'],
+    ['PT1H', 'YYYY-MM-DD HH:mm'],
+    ['P1DT', 'YYYY-MM-DD'],
+    ['P1YT', 'YYYY']
+  ]
 };
 
 const basePath = {
   get: () => {
-    return "";
+    return '';
   },
   prepend: (path) => {
     return path;
@@ -49,29 +46,29 @@ const basePath = {
   remove: (url) => {
     return url;
   },
-  serverBasePath: "/api/",
+  serverBasePath: '/api/'
 };
 const http = new Fetch({
-  basePath,
+  basePath
 });
 const savedObjects = new SavedObjectsClient(http);
 const savedObjectsClient = new SavedObjectsClientPublicToCommon(savedObjects);
 const getFieldFormatsConfig = (key) => {
   return {
-    ["format:defaultTypeMap"]: {
-      ip: { id: "ip", params: {} },
-      date: { id: "date", params: {} },
-      date_nanos: { id: "date_nanos", params: {}, es: true },
-      number: { id: "number", params: {} },
-      boolean: { id: "boolean", params: {} },
-      histogram: { id: "histogram", params: {} },
-      _source: { id: "_source", params: {} },
-      _default_: { id: "string", params: {} },
+    ['format:defaultTypeMap']: {
+      ip: { id: 'ip', params: {} },
+      date: { id: 'date', params: {} },
+      date_nanos: { id: 'date_nanos', params: {}, es: true },
+      number: { id: 'number', params: {} },
+      boolean: { id: 'boolean', params: {} },
+      histogram: { id: 'histogram', params: {} },
+      _source: { id: '_source', params: {} },
+      _default_: { id: 'string', params: {} }
     },
-    "format:number:defaultPattern": "0,0.[000]",
-    "format:percent:defaultPattern": "0,0.[000]%",
-    "format:bytes:defaultPattern": "0,0.[0]b",
-    "format:currency:defaultPattern": "($0,0.[00])",
+    'format:number:defaultPattern': '0,0.[000]',
+    'format:percent:defaultPattern': '0,0.[000]%',
+    'format:bytes:defaultPattern': '0,0.[0]b',
+    'format:currency:defaultPattern': '($0,0.[00])'
   }[key];
 };
 
@@ -82,8 +79,8 @@ fieldFormats.init(
     parsedUrl: {
       origin: window.location.origin,
       pathname: window.location.pathname,
-      basePath: basePath.get(),
-    },
+      basePath: basePath.get()
+    }
   },
   baseFormattersPublic
 );
@@ -91,8 +88,8 @@ fieldFormats.deserialize = deserializeFieldFormat.bind(fieldFormats);
 
 const indexPatternsApiClient = new IndexPatternsApiClient(http);
 const uiconfigs = {
-  ["metaFields"]: ["_source", "_id", "_type", "_index"], //'_score'
-  defaultIndex: "",
+  ['metaFields']: ['_source', '_id', '_type', '_index'], //'_score'
+  defaultIndex: ''
 };
 const uiSettings = {
   get: (key) => {
@@ -103,7 +100,7 @@ const uiSettings = {
   },
   getAll: () => {
     return uiconfigs;
-  },
+  }
 };
 const indexPatternService = new IndexPatternsService({
   uiSettings,
@@ -113,7 +110,7 @@ const indexPatternService = new IndexPatternsService({
   onNotification: () => {},
   onError: () => {},
   onUnsupportedTimePattern,
-  onRedirectNoIndexPattern,
+  onRedirectNoIndexPattern
 });
 
 export class Storage {
@@ -161,8 +158,8 @@ const filterManager = new FilterManager();
 const storage = new Storage(localStorage);
 const queryStringManager = new QueryStringManager(storage);
 export const timefilterConfig = {
-  timeDefaults: { from: "", to: "" },
-  refreshIntervalDefaults: { pause: true, value: 10000 },
+  timeDefaults: { from: '', to: '' },
+  refreshIntervalDefaults: { pause: true, value: 10000 }
 };
 const timeHistory = new TimeHistory(storage);
 const timefilter = new Timefilter(timefilterConfig, timeHistory);
@@ -196,21 +193,21 @@ export const getContext = () => {
     services: {
       savedObjects: {
         client: savedObjects,
-        savedObjectsClient,
+        savedObjectsClient
       },
       data: {
         autocomplete: new AutocompleteService({
           querySuggestions: {
-            enabled: true,
+            enabled: true
           },
           valueSuggestions: {
-            enabled: true,
+            enabled: true
           }
         })
       },
-      indexPatternService,
+      indexPatternService
     },
-    http,
+    http
   };
 };
 
@@ -239,44 +236,45 @@ const getSearchParams = (
   const timeExp = getTimeBuckets(internal)?.getInterval(true).expression;
   // console.log(timeExp, internal)
   let esSort = indexPattern.timeFieldName
-    ? [{ [indexPattern.timeFieldName]: { order: "desc" } }]
+    ? [{ [indexPattern.timeFieldName]: { order: 'desc' } }]
     : [];
   if (sort) {
     esSort = sort.reduce((sorts, s) => {
       const [sortField, sortDeriction] = s;
       sorts.push({
-        [sortField]: { order: sortDeriction },
+        [sortField]: { order: sortDeriction }
       });
       return sorts;
     }, []);
   }
 
-  const aggs: any = {}
+  const aggs: any = {};
 
   if (indexPattern.timeFieldName) {
     if (timeExp) {
       const isCalendarInterval =
-        timeExp.includes("w") ||
-        timeExp.includes("d") ||
-        timeExp.includes("y") ||
-        timeExp.includes("M");
+        timeExp.includes('w') ||
+        timeExp.includes('d') ||
+        timeExp.includes('y') ||
+        timeExp.includes('M');
       aggs['counts'] = {
         date_histogram: {
           //calendar_interval:
-          [isCalendarInterval ? "calendar_interval" : "fixed_interval"]: timeExp,
+          [isCalendarInterval ? 'calendar_interval' : 'fixed_interval']:
+            timeExp,
           field: indexPattern.timeFieldName,
           min_doc_count: 1,
-          time_zone: timeZone,
-        },
-      }
+          time_zone: timeZone
+        }
+      };
     } else {
       aggs['counts'] = {
         auto_date_histogram: {
           field: indexPattern.timeFieldName,
-          buckets: 10,
-          time_zone: timeZone,
-        },
-      }
+          buckets: 50,
+          time_zone: timeZone
+        }
+      };
     }
   }
 
@@ -288,29 +286,27 @@ const getSearchParams = (
       size: size,
 
       highlight: {
-        pre_tags: ["@highlighted-field@"],
-        post_tags: ["@/highlighted-field@"],
-        fields: {"*": {}}
+        pre_tags: ['@highlighted-field@'],
+        post_tags: ['@/highlighted-field@'],
+        fields: { '*': {} }
       },
-      sort: esSort, //
-    },
+      sort: esSort //
+    }
   };
   if (indexPattern.timeFieldName) {
-    esRequest.body["aggs"] = aggs;
+    esRequest.body['aggs'] = aggs;
   }
   if (inputAggs) {
-    esRequest.body["aggs"] = inputAggs;
+    esRequest.body['aggs'] = inputAggs;
   }
   if (distinctParams?.field && distinctParams?.enabled) {
-    esRequest["distinct_by_field"] = distinctParams;
+    esRequest['distinct_by_field'] = distinctParams;
   }
   if (trackTotalHits) {
-    esRequest.body["track_total_hits"] = trackTotalHits;
+    esRequest.body['track_total_hits'] = trackTotalHits;
   }
 
   return esRequest;
 };
 
-const fetchESRequest = (params, clusterID, option) => {
-  
-};
+const fetchESRequest = (params, clusterID, option) => {};
