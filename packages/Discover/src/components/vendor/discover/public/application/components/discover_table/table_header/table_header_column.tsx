@@ -17,6 +17,7 @@ interface Props {
   sortOrder: SortOrder[];
   columnWidth?: number;
   onColumnResize?: (name: string, width: number) => void;
+  showResizeHandle?: boolean;
 }
 
 export function TableHeaderColumn({
@@ -31,7 +32,8 @@ export function TableHeaderColumn({
   onRemoveColumn,
   sortOrder,
   columnWidth,
-  onColumnResize
+  onColumnResize,
+  showResizeHandle = true
 }: Props) {
   const { i18n } = useContext(GlobalConfigContext);
   const i18nField = i18n?.field || {};
@@ -178,7 +180,7 @@ export function TableHeaderColumn({
             </Tooltip>
           ))}
       </span>
-      {onColumnResize && (
+      {onColumnResize && showResizeHandle && (
         <div
           className="column-resize-handle"
           onMouseDown={handleResizeMouseDown}

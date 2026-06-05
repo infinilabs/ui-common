@@ -80,6 +80,7 @@ export function TableHeader({
             onChangeSortOrder={onChangeSortOrder}
             columnWidth={userColWidths?.[col.name]}
             onColumnResize={onColumnResize}
+            showResizeHandle={index < displayedColumns.length - 1}
           />
         );
       })}
