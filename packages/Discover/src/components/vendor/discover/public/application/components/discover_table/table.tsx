@@ -1,5 +1,5 @@
 import { TableHeader } from './table_header/table_header';
-import { SortOrder } from './table_header/helpers';
+import { SortOrder, getDisplayedColumns } from './table_header/helpers';
 import './_doc_table.scss';
 import { TableRow } from './table_row/table_row';
 import React, {
@@ -170,6 +170,31 @@ const Table: React.FC<TableProps> = ({
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
   const [colWidths, setColWidths] = useState<number[]>([]);
+  const [userColWidths, setUserColWidths] = useState<Record<string, number>>(
+    {}
+  );
+
+  const handleColumnResize = useCallback((colName: string, width: number) => {
+    setUserColWidths((prev) => ({ ...prev, [colName]: width }));
+  }, []);
+
+  const effectiveColWidths = useMemo(() => {
+    if (colWidths.length === 0) return [];
+    const displayedCols = getDisplayedColumns(
+      columns,
+      indexPattern,
+      false,
+      false
+    );
+    return colWidths.map((w, i) => {
+      if (i === 0) return w; // toggle column, keep as-is
+      const colName = displayedCols[i - 1]?.name;
+      if (colName && colName in userColWidths) {
+        return userColWidths[colName];
+      }
+      return w;
+    });
+  }, [colWidths, userColWidths, columns, indexPattern]);
 
   const measureHeader = useCallback(() => {
     if (headerRef.current) {
@@ -196,10 +221,10 @@ const Table: React.FC<TableProps> = ({
     return () => ro.disconnect();
   }, [measureHeader]);
 
-  // Re-measure column widths when columns change
+  // Re-measure column widths when columns or user widths change
   useEffect(() => {
     requestAnimationFrame(measureHeader);
-  }, [columns, indexPattern?.timeFieldName, measureHeader]);
+  }, [columns, indexPattern?.timeFieldName, userColWidths, measureHeader]);
 
   const getRowHeight = useCallback(
     (index: number) => {
@@ -268,7 +293,7 @@ const Table: React.FC<TableProps> = ({
       theme,
       expandedRows,
       toggleRowExpand,
-      colWidths,
+      colWidths: effectiveColWidths,
       loading
     }),
     [
@@ -284,7 +309,7 @@ const Table: React.FC<TableProps> = ({
       theme,
       expandedRows,
       toggleRowExpand,
-      colWidths,
+      effectiveColWidths,
       loading
     ]
   );
@@ -316,6 +341,8 @@ const Table: React.FC<TableProps> = ({
                   onRemoveColumn={onRemoveColumn}
                   sortOrder={sortOrder || []}
                   formatDisplayName={formatDisplayName}
+                  userColWidths={userColWidths}
+                  onColumnResize={handleColumnResize}
                 />
               </thead>
             </table>

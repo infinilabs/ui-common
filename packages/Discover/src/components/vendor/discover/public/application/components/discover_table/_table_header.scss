@@ -1,6 +1,22 @@
 .kbnDocTableHeader {
   white-space: nowrap;
 }
+
+.column-resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 1;
+  transition: background-color 0.15s;
+
+  &:hover,
+  &:active {
+    background-color: var(--ant-color-primary, #1890ff);
+  }
+}
 .kbnDocTableHeader button {
   // margin-left: 4px;
 }

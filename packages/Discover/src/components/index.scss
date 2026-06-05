@@ -7,11 +7,11 @@
 }
 
 *:focus:focus-visible {
-    outline-style: none !important;
+  outline-style: none !important;
 }
 
 .eui-textNoWrap {
-    white-space: nowrap !important;
+  white-space: nowrap !important;
 }
 
 .euiButtonIcon {
@@ -28,7 +28,7 @@
   }
 }
 
-.kbnDocViewer .eui-textTruncate{
+.kbnDocViewer .eui-textTruncate {
   text-align: left;
   max-width: 100%;
   overflow: hidden !important;
@@ -51,11 +51,10 @@
   background-color: transparent;
 }
 
-.kbnDocTableHeader th{
-  overflow: hidden!important;
-  text-overflow: ellipsis!important;
-  white-space: nowrap!important;
-  word-wrap: normal!important;
-  max-width: 150px;
+.kbnDocTableHeader th {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  word-wrap: normal !important;
   text-align: left;
 }
