@@ -34,6 +34,8 @@ interface Props {
   onRemoveColumn?: (name: string) => void;
   sortOrder: SortOrder[];
   formatDisplayName?: (name: string) => string;
+  userColWidths?: Record<string, number>;
+  onColumnResize?: (name: string, width: number) => void;
 }
 
 export function TableHeader({
@@ -47,22 +49,38 @@ export function TableHeader({
   onRemoveColumn,
   sortOrder,
   formatDisplayName,
+  userColWidths,
+  onColumnResize
 }: Props) {
-  const displayedColumns = getDisplayedColumns(columns, indexPattern, hideTimeColumn, isShortDots, formatDisplayName);
+  const displayedColumns = getDisplayedColumns(
+    columns,
+    indexPattern,
+    hideTimeColumn,
+    isShortDots,
+    formatDisplayName
+  );
   return (
-    <tr data-test-subj="docTableHeader" className="kbnDocTableHeader">
-      <th className='!w-24px'/>
+    <tr
+      data-test-subj="docTableHeader"
+      className="kbnDocTableHeader"
+    >
+      <th className="!w-24px" />
       {displayedColumns.map((col, index) => {
         return (
           <TableHeaderColumn
             key={col.name}
             {...col}
             sortOrder={
-              sortOrder.length ? sortOrder : getDefaultSort(indexPattern, defaultSortOrder)
+              sortOrder.length
+                ? sortOrder
+                : getDefaultSort(indexPattern, defaultSortOrder)
             }
             onMoveColumn={onMoveColumn}
             onRemoveColumn={onRemoveColumn}
             onChangeSortOrder={onChangeSortOrder}
+            columnWidth={userColWidths?.[col.name]}
+            onColumnResize={onColumnResize}
+            showResizeHandle={index < displayedColumns.length - 1}
           />
         );
       })}

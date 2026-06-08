@@ -68,6 +68,9 @@ doc-table {
 .kbnDocTable__row {
   td {
     position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
     &:hover {
       .kbnDocTableRowFilterButton {
@@ -141,23 +144,28 @@ table {
     button.fa-sort-down,
     i.fa-sort-asc,
     i.fa-sort-down {
-      color: #006BB4;
+      color: #006bb4;
     }
 
     button.fa-sort-desc,
     button.fa-sort-up,
     i.fa-sort-desc,
     i.fa-sort-up {
-      color: #006BB4;
+      color: #006bb4;
     }
   }
 }
 
-.table{
+.table {
   width: 100%;
 }
 
-.table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > th, .table > caption + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > td, .table > thead:first-child > tr:first-child > td {
+.table > caption + thead > tr:first-child > th,
+.table > colgroup + thead > tr:first-child > th,
+.table > thead:first-child > tr:first-child > th,
+.table > caption + thead > tr:first-child > td,
+.table > colgroup + thead > tr:first-child > td,
+.table > thead:first-child > tr:first-child > td {
   border-top: 0;
 }
 
@@ -167,7 +175,12 @@ table {
   border-bottom: 1px solid var(--ant-color-border);
   padding-left: 0px;
 }
-.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
   padding-top: 6px;
   padding-left: 6px;
   padding-right: 6px;
@@ -179,13 +192,13 @@ doc-table th {
   font-weight: bold;
 }
 
-.kbnDocTable__row{
-  font-family: "Roboto Mono", Consolas, Menlo, Courier, monospace;
+.kbnDocTable__row {
+  font-family: 'Roboto Mono', Consolas, Menlo, Courier, monospace;
   font-size: 12px;
-  span{
+  span {
     line-height: 2em;
   }
-  .euiButtonIcon{
+  .euiButtonIcon {
     height: auto;
     width: auto;
     line-height: 2em;
