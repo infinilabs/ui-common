@@ -2,12 +2,13 @@ import { XMarkdown, type XMarkdownProps } from "@ant-design/x-markdown";
 import { StyleProvider, createCache } from "@ant-design/cssinjs";
 import clsx from "clsx";
 import { useEffect, useMemo, useState, type FC } from "react";
-import { ConfigProvider, Typography } from "antd";
+import { ConfigProvider, theme, Typography } from "antd";
 
 import "virtual:uno.css";
 
 import Code from "./Code";
 import Table from "./Table";
+import { MarkdownContext } from "./context";
 
 const { Link } = Typography;
 
@@ -15,10 +16,12 @@ export interface MarkdownProps extends XMarkdownProps {
   // You may provide either the 'url' or 'content' parameter. If a URL is provided, the content will be retrieved via request.
   url?: string;
   requestHeaders?: Record<string, string>;
+  // Enable dark mode for the markdown component
+  dark?: boolean;
 }
 
 const Markdown: FC<MarkdownProps> = (props) => {
-  const { url, requestHeaders, className, components, ...rest } = props;
+  const { url, requestHeaders, className, components, dark, ...rest } = props;
 
   const [content, setContent] = useState(rest.content);
 
@@ -50,21 +53,28 @@ const Markdown: FC<MarkdownProps> = (props) => {
 
   return (
     <StyleProvider cache={styleCache}>
-      <ConfigProvider theme={{ inherit: false }}>
-        <XMarkdown
-          {...rest}
-          className={clsx(
-            "[&_:is(h1,h2,h3,h4,h5,h6,ul,ol,p)]:[all:revert]",
-            className,
-          )}
-          content={content}
-          components={{
-            code: Code,
-            a: Link,
-            table: Table,
-            ...components,
-          }}
-        />
+      <ConfigProvider
+        theme={{
+          inherit: false,
+          algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        }}
+      >
+        <MarkdownContext.Provider value={{ dark }}>
+          <XMarkdown
+            {...rest}
+            className={clsx(
+              "[&_:is(h1,h2,h3,h4,h5,h6,ul,ol,p)]:[all:revert]",
+              className,
+            )}
+            content={content}
+            components={{
+              code: Code,
+              a: Link,
+              table: Table,
+              ...components,
+            }}
+          />
+        </MarkdownContext.Provider>
       </ConfigProvider>
     </StyleProvider>
   );

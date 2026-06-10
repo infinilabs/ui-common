@@ -1,12 +1,15 @@
 import { type ComponentProps } from "@ant-design/x-markdown";
 import { type FC } from "react";
-import { Mermaid, CodeHighlighter } from "@ant-design/x";
+import { CodeHighlighter, Mermaid } from "@ant-design/x";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Typography } from "antd";
+import { useMarkdownContext } from "../context";
 
 const { Text } = Typography;
 
 const Code: FC<ComponentProps> = (props) => {
   const { className, children } = props;
+  const { dark } = useMarkdownContext();
   const lang = className?.match(/language-(\w+)/)?.[1] ?? "";
 
   if (typeof children !== "string") return null;
@@ -16,7 +19,14 @@ const Code: FC<ComponentProps> = (props) => {
   }
 
   if (lang) {
-    return <CodeHighlighter lang={lang}>{children}</CodeHighlighter>;
+    return (
+      <CodeHighlighter
+        lang={lang}
+        highlightProps={dark ? { style: oneDark } : undefined}
+      >
+        {children}
+      </CodeHighlighter>
+    );
   }
 
   return <Text code>{children}</Text>;
