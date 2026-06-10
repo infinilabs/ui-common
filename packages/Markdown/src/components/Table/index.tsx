@@ -1,11 +1,8 @@
 import { Table as AntTable } from "antd";
 import type { AnyObject } from "antd/es/_util/type";
 import type { ColumnsType } from "antd/es/table";
+import type { ComponentProps } from "@ant-design/x-markdown";
 import { Children, isValidElement, type FC, type ReactNode } from "react";
-
-interface TableProps {
-  children?: ReactNode;
-}
 
 const extractText = (node: ReactNode): string => {
   if (typeof node === "string" || typeof node === "number") {
@@ -92,7 +89,7 @@ const parseTableChildren = (children: ReactNode) => {
   return { columns, dataSource };
 };
 
-const Table: FC<TableProps> = ({ children }) => {
+const Table: FC<ComponentProps> = ({ children }) => {
   const { columns, dataSource } = parseTableChildren(children);
 
   return (

@@ -10,7 +10,13 @@ import Code from "./Code";
 import Table from "./Table";
 import { MarkdownContext } from "./context";
 
-const { Link } = Typography;
+const { Link: AntLink } = Typography;
+
+const Link: FC<Record<string, unknown>> = ({
+  domNode,
+  streamStatus,
+  ...rest
+}) => <AntLink {...rest} />;
 
 export interface MarkdownProps extends XMarkdownProps {
   // You may provide either the 'url' or 'content' parameter. If a URL is provided, the content will be retrieved via request.
