@@ -1,5 +1,5 @@
 import { useState, type FC } from "react";
-import { Checkbox } from "antd";
+import { Checkbox, Tooltip } from "antd";
 import { motion, AnimatePresence } from "motion/react";
 
 import type { FilterCollapseProps } from "../FilterCollapse";
@@ -43,9 +43,9 @@ const FilterCheckboxGroup: FC<FilterCheckboxGroupProps> = (props) => {
           const { label, value, icon, count } = item;
 
           return (
-            <div key={value} className="flex items-center justify-between">
+            <div key={value} className="flex items-center justify-between gap-2">
               <Checkbox
-                className="inline-flex items-center"
+                className="inline-flex min-w-0 flex-1 items-center [&>span:nth-child(2)]:(min-w-0 flex-1)"
                 checked={propsValue.includes(value)}
                 onChange={(event) => {
                   const checked = event.target.checked;
@@ -57,29 +57,31 @@ const FilterCheckboxGroup: FC<FilterCheckboxGroupProps> = (props) => {
                   }
                 }}
               >
-                <div className="flex items-center gap-1">
+                <div className="flex min-w-0 items-center gap-1">
                   {icon && (
                     <img
                       src={icon}
                       alt={label}
-                      className={cn("size-4", classNames?.icon)}
+                      className={cn("size-4 shrink-0", classNames?.icon)}
                     />
                   )}
 
-                  <span
-                    className={cn(
-                      "text-[#666] dark:text-white/80",
-                      classNames?.label
-                    )}
-                  >
-                    {label}
-                  </span>
+                  <Tooltip title={label}>
+                    <span
+                      className={cn(
+                        "min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[#666] dark:text-white/80",
+                        classNames?.label
+                      )}
+                    >
+                      {label}
+                    </span>
+                  </Tooltip>
                 </div>
               </Checkbox>
 
               <span
                 className={cn(
-                  "text-[#666] dark:text-white/80",
+                  "shrink-0 text-[#666] dark:text-white/80",
                   classNames?.count
                 )}
               >
