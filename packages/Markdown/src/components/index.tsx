@@ -1,7 +1,7 @@
 import { XMarkdown, type XMarkdownProps } from "@ant-design/x-markdown";
 import { StyleProvider, createCache } from "@ant-design/cssinjs";
 import clsx from "clsx";
-import { useEffect, useMemo, useState, type FC } from "react";
+import { useEffect, useMemo, useRef, useState, type FC } from "react";
 import { ConfigProvider, theme, Typography } from "antd";
 
 import "virtual:uno.css";
@@ -37,20 +37,18 @@ const Markdown: FC<MarkdownProps> = (props) => {
   // style[data-token-hash] elements from the parent application.
   const styleCache = useMemo(() => createCache(), []);
 
-  const fetchContent = async (url: string) => {
-    const response = await fetch(url, {
-      headers: requestHeaders,
-    });
-
-    const text = await response.text();
-
-    setContent(text);
-  };
+  const fetchedUrlRef = useRef<string>();
 
   useEffect(() => {
-    if (!url) return;
+    if (!url || fetchedUrlRef.current === url) return;
 
-    fetchContent(url);
+    fetchedUrlRef.current = url;
+
+    fetch(url, {
+      headers: requestHeaders,
+    })
+      .then((response) => response.text())
+      .then((text) => setContent(text));
   }, [url]);
 
   useEffect(() => {
