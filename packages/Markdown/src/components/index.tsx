@@ -24,10 +24,12 @@ export interface MarkdownProps extends XMarkdownProps {
   requestHeaders?: Record<string, string>;
   // Enable dark mode for the markdown component
   dark?: boolean;
+  // Callback to notify loading state changes
+  onLoadingChange?: (loading: boolean) => void;
 }
 
 const Markdown: FC<MarkdownProps> = (props) => {
-  const { url, requestHeaders, className, components, dark, ...rest } = props;
+  const { url, requestHeaders, className, components, dark, onLoadingChange, ...rest } = props;
 
   const [content, setContent] = useState(rest.content);
 
@@ -44,11 +46,16 @@ const Markdown: FC<MarkdownProps> = (props) => {
 
     fetchedUrlRef.current = url;
 
+    onLoadingChange?.(true);
+
     fetch(url, {
       headers: requestHeaders,
     })
       .then((response) => response.text())
-      .then((text) => setContent(text));
+      .then((text) => setContent(text))
+      .finally(() => {
+        onLoadingChange?.(false);
+      });
   }, [url]);
 
   useEffect(() => {
