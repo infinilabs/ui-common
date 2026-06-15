@@ -46,7 +46,7 @@ function flattenHit(indexPattern: IndexPattern, hit: Record<string, any>, deep: 
       }
 
       const field = fields(key);
-      const hasValidMapping = field && field.type !== 'conflict';
+      const hasValidMapping = field && field.type !== 'conflict' && field.type !== 'object';
       const isValue = !_.isPlainObject(val);
 
       if (hasValidMapping || isValue) {
