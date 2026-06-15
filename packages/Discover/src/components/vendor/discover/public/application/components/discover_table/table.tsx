@@ -4,6 +4,7 @@ import './_doc_table.scss';
 import { TableRow } from './table_row/table_row';
 import React, {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   useCallback,
@@ -40,6 +41,10 @@ interface TableProps {
 const pageCount = 20;
 const ROW_HEIGHT = 36;
 const EXPANDED_ROW_HEIGHT = 400;
+const TOGGLE_COLUMN_WIDTH = 36;
+const DEFAULT_FIELD_COLUMN_WIDTH = 180;
+const TIME_COLUMN_SAMPLE_LIMIT = 200;
+type ColumnWidth = number | undefined;
 
 interface VirtualRowProps {
   hits: any[];
@@ -57,8 +62,27 @@ interface VirtualRowProps {
   theme?: string;
   expandedRows: Set<string>;
   toggleRowExpand: (rowId: string, index: number) => void;
-  colWidths: number[];
+  colWidths: ColumnWidth[];
   loading: boolean;
+}
+
+function ColumnGroup({ colWidths }: { colWidths: ColumnWidth[] }) {
+  if (colWidths.length === 0) return null;
+
+  return (
+    <colgroup>
+      {colWidths.map((width, i) => (
+        <col
+          key={i}
+          style={width === undefined ? undefined : { width: `${width}px` }}
+        />
+      ))}
+    </colgroup>
+  );
+}
+
+function normalizeFormattedValue(value: unknown) {
+  return value === undefined || value === null ? '' : String(value);
 }
 
 function VirtualRow({
@@ -108,16 +132,7 @@ function VirtualRow({
         className="kbn-table table"
         style={{ tableLayout: 'fixed', width: '100%' }}
       >
-        {colWidths.length > 0 && (
-          <colgroup>
-            {colWidths.map((w, i) => (
-              <col
-                key={i}
-                style={{ width: w }}
-              />
-            ))}
-          </colgroup>
-        )}
+        <ColumnGroup colWidths={colWidths} />
         <tbody>
           <TableRow
             onFilter={onFilter}
@@ -165,44 +180,124 @@ const Table: React.FC<TableProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<any>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const timeColumnSizerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState(0);
   const [headerHeight, setHeaderHeight] = useState(0);
+  const [autoTimeColumnWidth, setAutoTimeColumnWidth] = useState<
+    number | undefined
+  >();
+  const [timeColumnMinWidth, setTimeColumnMinWidth] = useState<
+    number | undefined
+  >();
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
-  const [colWidths, setColWidths] = useState<number[]>([]);
   const [userColWidths, setUserColWidths] = useState<Record<string, number>>(
     {}
   );
 
-  const handleColumnResize = useCallback((colName: string, width: number) => {
-    setUserColWidths((prev) => ({ ...prev, [colName]: width }));
-  }, []);
+  const timeFieldName = indexPattern?.timeFieldName;
 
-  const effectiveColWidths = useMemo(() => {
-    if (colWidths.length === 0) return [];
+  const timeColumnSamples = useMemo(() => {
+    if (!timeFieldName || !indexPattern?.formatField) return [];
+
+    return hits.slice(0, TIME_COLUMN_SAMPLE_LIMIT).map((row) => {
+      try {
+        return normalizeFormattedValue(
+          indexPattern.formatField(row, timeFieldName)
+        );
+      } catch {
+        return normalizeFormattedValue(
+          row?._source?.[timeFieldName] ?? row?.fields?.[timeFieldName]
+        );
+      }
+    });
+  }, [hits, indexPattern, timeFieldName]);
+
+  useLayoutEffect(() => {
+    const sizer = timeColumnSizerRef.current;
+    if (!sizer || !timeFieldName) return;
+
+    const header = sizer.querySelector<HTMLElement>(
+      '[data-time-column-header]'
+    );
+    const cells = Array.from(
+      sizer.querySelectorAll<HTMLElement>('[data-time-column-cell]')
+    );
+    const headerWidth = header
+      ? Math.ceil(header.getBoundingClientRect().width)
+      : 0;
+    const cellWidth = Math.ceil(
+      cells.reduce(
+        (maxWidth, cell) =>
+          Math.max(maxWidth, cell.getBoundingClientRect().width),
+        0
+      )
+    );
+    const nextMinWidth = headerWidth || undefined;
+    const nextAutoWidth = Math.max(headerWidth, cellWidth) || undefined;
+
+    setTimeColumnMinWidth((current) =>
+      current === nextMinWidth ? current : nextMinWidth
+    );
+    setAutoTimeColumnWidth((current) =>
+      current === nextAutoWidth ? current : nextAutoWidth
+    );
+  }, [timeFieldName, timeColumnSamples]);
+
+  const handleColumnResize = useCallback(
+    (colName: string, width: number) => {
+      const minWidth =
+        colName === timeFieldName && timeColumnMinWidth
+          ? timeColumnMinWidth
+          : 50;
+      setUserColWidths((prev) => ({
+        ...prev,
+        [colName]: Math.max(minWidth, width)
+      }));
+    },
+    [timeColumnMinWidth, timeFieldName]
+  );
+
+  const effectiveColWidths = useMemo<ColumnWidth[]>(() => {
     const displayedCols = getDisplayedColumns(
       columns,
       indexPattern,
       false,
       false
     );
-    return colWidths.map((w, i) => {
-      if (i === 0) return w; // toggle column, keep as-is
-      const colName = displayedCols[i - 1]?.name;
-      if (colName && colName in userColWidths) {
-        return userColWidths[colName];
-      }
-      return w;
-    });
-  }, [colWidths, userColWidths, columns, indexPattern]);
+    const flexColumnName =
+      displayedCols.find((col) => col.name === '_source')?.name ||
+      displayedCols[displayedCols.length - 1]?.name;
+
+    return [
+      TOGGLE_COLUMN_WIDTH,
+      ...displayedCols.map((col) => {
+        if (col.name in userColWidths) {
+          return col.name === timeFieldName && timeColumnMinWidth
+            ? Math.max(userColWidths[col.name], timeColumnMinWidth)
+            : userColWidths[col.name];
+        }
+        if (col.name === timeFieldName) {
+          return autoTimeColumnWidth;
+        }
+        if (col.name === flexColumnName) {
+          return undefined;
+        }
+        return DEFAULT_FIELD_COLUMN_WIDTH;
+      })
+    ];
+  }, [
+    columns,
+    userColWidths,
+    indexPattern,
+    timeFieldName,
+    autoTimeColumnWidth,
+    timeColumnMinWidth
+  ]);
 
   const measureHeader = useCallback(() => {
     if (headerRef.current) {
       setHeaderHeight(headerRef.current.offsetHeight);
-      const ths = headerRef.current.querySelectorAll('th');
-      if (ths.length > 0) {
-        setColWidths(Array.from(ths).map((th) => th.offsetWidth));
-      }
     }
   }, []);
 
@@ -221,7 +316,7 @@ const Table: React.FC<TableProps> = ({
     return () => ro.disconnect();
   }, [measureHeader]);
 
-  // Re-measure column widths when columns or user widths change
+  // Re-measure header height when columns or user widths change
   useEffect(() => {
     requestAnimationFrame(measureHeader);
   }, [columns, indexPattern?.timeFieldName, userColWidths, measureHeader]);
@@ -322,13 +417,71 @@ const Table: React.FC<TableProps> = ({
       className="infini-discover-table flex-1 min-h-0"
       style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}
     >
+      {timeFieldName ? (
+        <div
+          ref={timeColumnSizerRef}
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            visibility: 'hidden',
+            height: 0,
+            overflow: 'hidden',
+            pointerEvents: 'none',
+            whiteSpace: 'nowrap',
+            zIndex: -1
+          }}
+        >
+          <span
+            data-time-column-header
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              fontWeight: 700,
+              paddingLeft: 6,
+              paddingRight: 6,
+              whiteSpace: 'nowrap'
+            }}
+          >
+            <span>Time</span>
+            <span
+              style={{
+                display: 'inline-block',
+                marginLeft: 4,
+                width: 20,
+                height: 20
+              }}
+            />
+          </span>
+          {timeColumnSamples.map((sample, index) => (
+            <span
+              key={index}
+              data-time-column-cell
+              style={{
+                display: 'inline-block',
+                fontFamily:
+                  "'Roboto Mono', Consolas, Menlo, Courier, monospace",
+                fontSize: 12,
+                lineHeight: '2em',
+                paddingLeft: 6,
+                paddingRight: 6,
+                whiteSpace: 'nowrap'
+              }}
+              dangerouslySetInnerHTML={{ __html: sample }}
+            />
+          ))}
+        </div>
+      ) : null}
       {hits.length > 0 ? (
         <>
           <div
             ref={headerRef}
             style={{ flexShrink: 0 }}
           >
-            <table className="kbn-table table">
+            <table
+              className="kbn-table table"
+              style={{ tableLayout: 'fixed', width: '100%' }}
+            >
+              <ColumnGroup colWidths={effectiveColWidths} />
               <thead>
                 <TableHeader
                   columns={columns}
