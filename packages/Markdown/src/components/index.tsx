@@ -16,7 +16,7 @@ const Link: FC<Record<string, unknown>> = ({
   domNode,
   streamStatus,
   ...rest
-}) => <AntLink {...rest} />;
+}) => <AntLink {...rest} target="_blank" rel="noopener noreferrer" />;
 
 export interface MarkdownProps extends XMarkdownProps {
   // You may provide either the 'url' or 'content' parameter. If a URL is provided, the content will be retrieved via request.
