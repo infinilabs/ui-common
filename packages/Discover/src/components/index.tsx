@@ -60,6 +60,9 @@ const Discover = (props: {
   setIndexPattern: React.Dispatch<React.SetStateAction<IndexPattern | undefined>>
   onIndexPatternChange: (index: string) => void;
   onSearch?: (index: string, body: any) => Promise<any> | undefined
+  onGetIndexSetting?: (index: string) => Promise<any> | undefined
+  onOpenPit?: (index: string, keepAlive: string) => Promise<string | null> | undefined
+  onClosePit?: (pitId: string) => Promise<void> | undefined
   queryParams: any;
   setQueryParams: (queryParams: any) => void;
   locale?: string;
@@ -72,6 +75,9 @@ const Discover = (props: {
     setIndexPattern,
     onIndexPatternChange,
     onSearch,
+    onGetIndexSetting,
+    onOpenPit,
+    onClosePit,
     queryParams = {},
     setQueryParams,
     locale,
@@ -85,6 +91,41 @@ const Discover = (props: {
   })
 
   const [timeZone, setTimeZone] = useState(() => getTimezone())
+
+  const indexPatternRef = useRef(indexPattern);
+  useEffect(() => {
+    indexPatternRef.current = indexPattern;
+  }, [indexPattern]);
+
+  const refreshExportLimit = useCallback(async () => {
+    if (!onGetIndexSetting) return;
+    const index = indexPattern?.id || indexPattern?.index || indexPattern?.title;
+    if (!index) return;
+    try {
+      const res = await onGetIndexSetting(index);
+      if (index !== (indexPatternRef.current?.id || indexPatternRef.current?.index || indexPatternRef.current?.title)) {
+        return;
+      }
+      const values = Object.values(res || {}).map((entry: any) => {
+        const explicit = entry?.settings?.index?.max_result_window;
+        const fallback = entry?.defaults?.index?.max_result_window;
+        const value = Number(explicit || fallback);
+        return Number.isFinite(value) && value > 0 ? value : NaN;
+      }).filter((value) => Number.isFinite(value));
+      if (values.length > 0) {
+        setMaxResultWindow(Math.min(...values));
+      }
+    } catch (error) {
+      // keep the current limit when the index setting cannot be fetched
+    }
+  }, [onGetIndexSetting, indexPattern]);
+
+  const [maxResultWindow, setMaxResultWindow] = useState<number>(exportMaxSize);
+
+  useEffect(() => {
+    setMaxResultWindow(exportMaxSize);
+    refreshExportLimit();
+  }, [exportMaxSize, refreshExportLimit]);
 
   const [searchResult, setSearchResult] = useState({
     took: 11,
@@ -208,7 +249,7 @@ const Discover = (props: {
         _payload?.aggs || aggs,
         distinctParams || {},
         _payload?.isScrollLoad ? queryFrom : 0,
-        false,
+        true,
         20,
         timeZone
       );
@@ -596,7 +637,12 @@ const Discover = (props: {
     updateQuery({ sort: newSort });
   };
 
-  const onDownloadQuery = async (from: number, size: number, callback?: (hits: any[], columns: string[], timeField?: string) => void) => {
+  const EXPORT_PAGE_SIZE = 5000;
+  const PIT_KEEP_ALIVE = '2m';
+
+  const exportUsePit = Boolean(onOpenPit && onClosePit);
+
+  const onDownloadQuery = async (from: number, size: number, callback?: (hits: any[], columns: string[], timeField?: string) => void, shouldCancel?: () => boolean) => {
     if (!onSearch) return;
     setResultState('downloading')
     const params = getSearchParams(
@@ -605,21 +651,89 @@ const Discover = (props: {
       state.sort,
       null,
       distinctParams || {},
-      from,
+      0,
       false,
       size,
       timeZone
     );
 
     const { index, body } = params
-
-    const res = await onSearch(index, body);
-
-    const hits = Array.isArray(res?.hits?.hits) ? res?.hits?.hits : []
-
     const timeField = indexPattern.timeFieldName
 
-    callback?.(hits, columns, timeField)
+    // Single-request fallback when the host does not provide PIT support
+    let pitId: string | null = null;
+    if (onOpenPit && onClosePit) {
+      try {
+        pitId = await onOpenPit(index, PIT_KEEP_ALIVE);
+      } catch (error) {
+        pitId = null;
+      }
+    }
+
+    if (!pitId) {
+      const singleBody = { ...body, from, size };
+      const res = await onSearch(index, singleBody);
+      const hits = Array.isArray(res?.hits?.hits) ? res?.hits?.hits : []
+      if (!shouldCancel?.()) {
+        callback?.(hits, columns, timeField)
+      }
+      setResultState('ready')
+      return;
+    }
+
+    const hits: any[] = [];
+    try {
+      // Only the first page request counts toward max_result_window, so apply
+      // the from offset server-side when it fits; otherwise skip pages client-side.
+      const useFrom = from + Math.min(size, EXPORT_PAGE_SIZE) <= maxResultWindow;
+      let toSkip = useFrom ? 0 : from;
+      let remaining = size;
+      let searchAfter: any = undefined;
+      let isFirstPage = true;
+
+      while (remaining > 0 && !shouldCancel?.()) {
+        const pageSize = Math.min(toSkip + remaining, EXPORT_PAGE_SIZE);
+        const pageBody: any = {
+          query: body.query,
+          size: pageSize,
+          sort: [{ _doc: 'asc' }],
+          track_total_hits: false,
+          pit: { id: pitId, keep_alive: PIT_KEEP_ALIVE },
+        };
+        if (isFirstPage && useFrom && from > 0) {
+          pageBody.from = from;
+        } else if (!isFirstPage) {
+          pageBody.search_after = searchAfter;
+        }
+
+        const res = await onSearch('', pageBody);
+        const rawHits = Array.isArray(res?.hits?.hits) ? res?.hits?.hits : [];
+        if (rawHits.length === 0 || res?.error) break;
+
+        searchAfter = rawHits[rawHits.length - 1].sort;
+
+        let pageHits = rawHits;
+        if (toSkip > 0) {
+          const skipped = Math.min(toSkip, rawHits.length);
+          toSkip -= skipped;
+          pageHits = rawHits.slice(skipped);
+        }
+
+        hits.push(...pageHits);
+        remaining -= pageHits.length;
+        isFirstPage = false;
+      }
+    } finally {
+      try {
+        await onClosePit?.(pitId);
+      } catch (error) {
+        // best effort cleanup; the pit expires via keep_alive anyway
+      }
+    }
+
+    if (!shouldCancel?.()) {
+      callback?.(hits, columns, timeField)
+    }
 
     setResultState('ready')
   }
@@ -757,7 +871,9 @@ const Discover = (props: {
                     timeChartProps={timeChartProps}
                     onDownloadQuery={onDownloadQuery}
                     downloading={resultState === "downloading"}
-                    exportMaxSize={exportMaxSize}
+                    exportMaxSize={exportUsePit ? total : maxResultWindow}
+                    exportUsePit={exportUsePit}
+                    onRefreshExportLimit={refreshExportLimit}
                   />
                 }
                 {
@@ -933,6 +1049,9 @@ export interface IDiscoverProps {
   theme?: string;
   i18n?: II18nProps;
   exportMaxSize?: number;
+  onGetIndexSetting?: (index: string) => Promise<any> | undefined;
+  onOpenPit?: (index: string, keepAlive: string) => Promise<string | null> | undefined;
+  onClosePit?: (pitId: string) => Promise<void> | undefined;
 }
 
 export const GlobalConfigContext = React.createContext<any>({});
@@ -945,6 +1064,9 @@ export default (props: IDiscoverProps) => {
     getIndexPattern,
     onSearch,
     onSuggestions,
+    onGetIndexSetting,
+    onOpenPit,
+    onClosePit,
     queryParams,
     setQueryParams,
     locale,
@@ -1069,6 +1191,9 @@ export default (props: IDiscoverProps) => {
         setIndexPattern={setIndexPattern}
         onIndexPatternChange={fetchIndexPattern}
         onSearch={onSearch}
+        onGetIndexSetting={onGetIndexSetting}
+        onOpenPit={onOpenPit}
+        onClosePit={onClosePit}
         queryParams={queryParams}
         setQueryParams={setQueryParams}
         locale={locale}

@@ -100,6 +100,37 @@ const App = () => {
             })
     }
 
+    const onGetIndexSetting = async (index: string) => {
+        return fetch(`/api/${index}/_settings?include_defaults=true`)
+            .then((res) => res.json())
+            .catch((error) => {
+                console.log('error', error)
+            })
+    }
+
+    const onOpenPit = async (index: string, keepAlive: string) => {
+        return fetch(`/api/${index}/_pit?keep_alive=${keepAlive}`, {
+            method: 'POST'
+        }).then((res) => res.json())
+            .then((res) => res?.pit_id || null)
+            .catch((error) => {
+                console.log('error', error)
+                return null
+            })
+    }
+
+    const onClosePit = async (pitId: string) => {
+        return fetch(`/api/_pit`, {
+            method: 'DELETE',
+            body: JSON.stringify({ pit_id: [pitId] }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).catch((error) => {
+            console.log('error', error)
+        })
+    }
+
     useEffect(() => {
         getIndices()
     }, [])
@@ -111,11 +142,13 @@ const App = () => {
             getIndexPattern={getIndexPattern}
             onSuggestions={onSuggestions}
             onSearch={onSearch}
+            onGetIndexSetting={onGetIndexSetting}
+            onOpenPit={onOpenPit}
+            onClosePit={onClosePit}
             queryParams={queryParams}
             setQueryParams={setQueryParams}
             locale='zh-CN'
             theme='light'
-            exportMaxSize={10000}
         />
         // </div>
     );
