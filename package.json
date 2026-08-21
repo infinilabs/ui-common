@@ -16,11 +16,5 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "packageManager": "pnpm@11.22.0",
-  "pnpm": {
-    "overrides": {
-      "@types/react": "18.3.3",
-      "@types/react-dom": "18.3.0"
-    }
-  }
+  "packageManager": "pnpm@11.22.0"
 }
