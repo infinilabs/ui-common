@@ -16,13 +16,15 @@ interface IProps {
     took: number;
     total: number;
     timeChartProps: any;
-    onDownloadQuery?: (from: number, size: number, handleDownload?: (hits: any[], columns: string[], timeField?: string) => void) => void;
+    onDownloadQuery?: (from: number, size: number, handleDownload?: (hits: any[], columns: string[], timeField?: string) => void, shouldCancel?: () => boolean) => void;
     downloading?: boolean;
     exportMaxSize?: number;
+    exportUsePit?: boolean;
+    onRefreshExportLimit?: () => void;
 }
 
 export default function ResultHeader(props: IProps) {
-    const { showCollapse, collapseState, setCollapseState, took, total, timeChartProps, onDownloadQuery, downloading = false, exportMaxSize = 10000 } = props;
+    const { showCollapse, collapseState, setCollapseState, took, total, timeChartProps, onDownloadQuery, downloading = false, exportMaxSize = 10000, exportUsePit = false, onRefreshExportLimit } = props;
 
     const showSideBar = showCollapse.sideBar && collapseState.sideBar
     const showHistogram = showCollapse.histogram
@@ -80,24 +82,32 @@ export default function ResultHeader(props: IProps) {
 
     const showModal = () => {
         isCancelRef.current = false
+        onRefreshExportLimit?.()
         setIsModalOpen(true);
+    };
+
+    const validateExportParams = () => {
+        const { from, size } = form.getFieldsValue();
+        const fromValue = Number(from) || 0;
+        const sizeValue = Number(size) || 0;
+        if (sizeValue > exportMaxSize) {
+            return Promise.reject(new Error((i18nDownload.sizeExceedHint || 'Size max is %d').replace('%d', String(exportMaxSize))));
+        }
+        if (fromValue + sizeValue > exportMaxSize) {
+            const hint = exportUsePit
+                ? (i18nDownload.totalExceedHint || 'from + size max is %d (total records)').replace('%d', String(total))
+                : (i18nDownload.rangeExceedHint || 'from + size max is %d').replace('%d', String(exportMaxSize));
+            return Promise.reject(new Error(hint));
+        }
+        if (!exportUsePit && fromValue + sizeValue > total) {
+            return Promise.reject(new Error((i18nDownload.totalExceedHint || 'from + size max is %d (total records)').replace('%d', String(total))));
+        }
+        return Promise.resolve();
     };
 
     const handleOk = async () => {
         const params = await form.validateFields();
-        let { from, size } = params;
-
-        if (size > exportMaxSize) {
-            size = exportMaxSize;
-        }
-
-        if (from + size > total) {
-            size = total - from;
-        }
-
-        size = Math.max(1, size);
-
-        onDownloadQuery?.(from, size, handleDownload);
+        onDownloadQuery?.(params.from, params.size, handleDownload, () => isCancelRef.current);
     };
 
     const handleCancel = () => {
@@ -153,7 +163,7 @@ export default function ResultHeader(props: IProps) {
             />
 
             <Modal
-                title={i18nDownload.title || `Export search as CSV (max: ${exportMaxSize})`}
+                title={(i18nDownload.title || `Export search as CSV (up to %d records)`).replace('%d', String(exportMaxSize))}
                 closable
                 open={isModalOpen}
                 onOk={handleOk}
@@ -164,10 +174,21 @@ export default function ResultHeader(props: IProps) {
                 }}
             >
                 <Form form={form} layout="vertical" className="mt-24px" initialValues={{ from: 0, size: 20 }}>
-                    <Form.Item label={`From`} name="from" required>
-                        <InputNumber className="w-full" min={0} max={total - 1} />
+                    <Form.Item
+                        label={`From`}
+                        name="from"
+                        required
+                        tooltip={(i18nDownload.fromRangeHint || `From range: 0 ~ %d`).replace('%d', String(Math.min(total - 1, exportMaxSize - 1)))}
+                        rules={[{ validator: validateExportParams }]}
+                    >
+                        <InputNumber className="w-full" min={0} max={Math.min(total - 1, exportMaxSize - 1)} />
                     </Form.Item>
-                    <Form.Item label={`Size`} name="size" required>
+                    <Form.Item
+                        label={`Size`}
+                        name="size"
+                        required
+                        rules={[{ validator: validateExportParams }]}
+                    >
                         <InputNumber className="w-full" min={1} />
                     </Form.Item>
                 </Form>
