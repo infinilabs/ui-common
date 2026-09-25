@@ -1,31 +1,12 @@
 import React from "react";
 import { Breadcrumb, Tag, Progress } from "antd";
-import * as LucideIcons from "lucide-react";
 import { ExternalLink, Tags } from "lucide-react";
+
+import { getLucideIcon } from "./lucideIcons";
 
 import type { EntityCardData } from "./types";
 
 import styles from "./Entity.module.css";
-
-const getLucideIcon = (name?: string) => {
-  if (!name) return null;
-  const raw = name.trim();
-  const alias: Record<string, string> = {
-    user: "User",
-    email: "Mail",
-    mail: "Mail",
-    phone: "Phone",
-    datetime: "Calendar",
-    date: "Calendar",
-    time: "Clock",
-    tags: "Tag",
-  };
-  const mapped = alias[raw];
-  const pascal =
-    mapped ?? raw.replace(/(^\w|-\w)/g, (s) => s.replace("-", "").toUpperCase());
-  const IconComp = (LucideIcons as any)[pascal];
-  return IconComp || null;
-};
 
 const renderPercentBar = (val: any, payload?: any) => {
   const num =

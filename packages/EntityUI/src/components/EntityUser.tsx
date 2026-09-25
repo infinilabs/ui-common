@@ -1,6 +1,7 @@
 import React from "react";
-import * as LucideIcons from "lucide-react";
 import { Avatar } from "antd";
+
+import { getLucideIcon } from "./lucideIcons";
 
 export interface EntityUserData {
   type?: string;
@@ -16,26 +17,6 @@ export interface EntityUserData {
 export interface EntityUserProps {
   data?: EntityUserData;
 }
-
-const getLucideIcon = (name?: string) => {
-  if (!name) return null;
-  const raw = name.trim();
-  const alias: Record<string, string> = {
-    user: "User",
-    email: "Mail",
-    mail: "Mail",
-    phone: "Phone",
-    datetime: "Calendar",
-    date: "Calendar",
-    time: "Clock",
-    tags: "Tag",
-  };
-  const pascal =
-    alias[raw] ??
-    raw.replace(/(^\w|-\w)/g, (s) => s.replace("-", "").toUpperCase());
-  const IconComp = (LucideIcons as any)[pascal];
-  return IconComp || null;
-};
 
 const parseMailtoText = (url?: string) => {
   if (!url) return undefined;
