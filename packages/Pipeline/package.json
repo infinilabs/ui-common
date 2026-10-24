@@ -12,13 +12,15 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./api": "./src/pipeline-api.ts"
+    "./api": "./src/pipeline-api.ts",
+    "./styles.css": "./dist/pipeline-ui.css"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
     "lucide-react": "^0.460.0"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "build:css": "./scripts/build-css.sh"
   }
 }
