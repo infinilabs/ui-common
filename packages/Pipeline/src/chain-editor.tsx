@@ -6,19 +6,19 @@
 
 import { useEffect, useState } from "react";
 import { Braces, ChevronDown, Plus, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "./primitives";
+import { Badge } from "./primitives";
 // No API imports — all data via props
 
 // Instance catalog: what processors are actually available on the target
-type CatalogType = Record<string, Record<string, {
+export type CatalogType = Record<string, Record<string, {
   properties?: Record<string, { type?: string; default_value?: unknown }>;
   scope?: string;
   record_contract?: { namespace?: string; granularity?: string };
 }>>;
 
 // Logpilot doc layer: human-readable descriptions (from processor_docs.go)
-type DocType = Record<string, Record<string, {
+export type DocType = Record<string, Record<string, {
   description?: string;
   param_docs?: Record<string, string>;
   example?: unknown;
