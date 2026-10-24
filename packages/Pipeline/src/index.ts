@@ -50,3 +50,6 @@ export type {
 
 export { DryRunDrawer } from "./dryrun-drawer";
 export { AiGeneratePanel } from "./ai-generate-panel";
+
+export { ProcessingCanvas } from "./processing-canvas";
+export type { CanvasProps, CanvasRunState, DryRunStepResult } from "./processing-canvas";

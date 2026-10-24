@@ -20,8 +20,10 @@ import { BookOpen, Trash2 } from "lucide-react";
 import { Input, Label, Select, Textarea } from "./primitives";
 
 export type Translate = (s: string, vars?: Record<string, unknown>) => string;
-const identity: Translate = (s, vars) =>
-  vars ? s.replace(/\{v(\d+)\}/g, (_, i) => String(vars["v" + i] ?? "")) : s;
+// 缺省翻译: 原文返回, 仅替换 vars 中存在的 {name} 占位符 (与 logpilot 的
+// t 语义一致 — 未提供的键保持字面, 不产生空白)。
+export const identityTranslate: Translate = (s, vars) =>
+  vars ? s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m)) : s;
 
 export interface PatternPickerProps {
   open: boolean;
@@ -221,7 +223,7 @@ export function SchemaForm({ schema, processorName, cfg, onChange, t, patternPic
   /** optional pattern-library browser for grok patterns (logpilot injects) */
   patternPicker?: ComponentType<PatternPickerProps>;
 }) {
-  t = t ?? identity;
+  t = t ?? identityTranslate;
   const meta = schema[processorName];
   const props = meta?.properties;
 
