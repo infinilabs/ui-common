@@ -16,3 +16,24 @@ export { LanesPanel } from "./lanes-panel";
 export type { LaneStat } from "./lanes-panel";
 
 export { InjectDialog } from "./inject-dialog";
+
+export {
+  createPipelineClient,
+  PIPELINE_ENDPOINTS
+} from "./pipeline-api";
+export type {
+  DryRunSample,
+  DryRunOptions,
+  FieldDiff,
+  StepResult,
+  StepDesc,
+  CapturedWrite,
+  DryRunReport,
+  ChainEntry,
+  AIGenerateRequest,
+  AIGenerateResponse,
+  CodecInfo,
+  ProcessorMeta,
+  PipelineFetchers,
+  PipelineClient
+} from "./pipeline-api";
