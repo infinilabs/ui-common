@@ -726,6 +726,34 @@ function AnchorNode({ data }: NodeProps) {
 
 const nodeTypes = { proc: ProcNode, ifn: IfNode, casen: CaseNode, foreachn: ForEachNode, sub: SubNode, anchor: AnchorNode };
 
+// ── 内嵌引擎测量急救 ────────────────────────────────────────────────
+// 规范要求 ResizeObserver.observe() 立即派发一次初始回调; 部分内嵌引擎
+// (如 ZCode 内置浏览器) 只派发后续 resize 回调。React Flow 的节点测量
+// 完全依赖该初始回调, 缺失则节点永远 visibility:hidden(不可拖、坐标不
+// 持久化)且无任何控制台报错。特性检测中招时以 0.5px 宽度扰动触发一次
+// 真实回调完成测量; 真实 Chrome/Safari 检测通过, 本逻辑零开销。
+let roInitialCheck: Promise<boolean> | null = null;
+function roDeliversInitial(): Promise<boolean> {
+  roInitialCheck ??= new Promise((resolve) => {
+    if (typeof ResizeObserver === "undefined") return resolve(false);
+    const probe = document.createElement("div");
+    probe.style.cssText = "width:16px;height:16px;position:fixed;top:-9999px;left:-9999px";
+    document.body.appendChild(probe);
+    const ro = new ResizeObserver(() => {
+      ro.disconnect();
+      probe.remove();
+      resolve(true);
+    });
+    ro.observe(probe);
+    setTimeout(() => {
+      ro.disconnect();
+      probe.remove();
+      resolve(false);
+    }, 400);
+  });
+  return roInitialCheck;
+}
+
 function CanvasInner({ processors, sourceLabel, sinkLabel, sourceTitle, sinkTitle, onChange, readOnly, run, liveRates, parallel, fetchProcessorCatalog, patternPicker, layout: layoutSeed, onLayoutChange }: CanvasProps) {
   const __t = useT();
   const [selected, setSelected] = useState<number | null>(null);
@@ -1091,6 +1119,30 @@ function CanvasInner({ processors, sourceLabel, sinkLabel, sourceTitle, sinkTitl
     setNodes(buildNodes());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [processors, selected, selSub, sourceLabel, sinkLabel, sourceTitle, sinkTitle, schema, layout, badgeFor, sinkRunNote, fitTick, liveRates]);
+
+  // 测量急救 (见模块级 roDeliversInitial 注释): 挂载/加节点后新元素若因
+  // 引擎缺失初始 RO 回调而未被测量, 扰动宽度两帧触发真实回调。
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (await roDeliversInitial()) return;
+      if (cancelled) return;
+      const els = document.querySelectorAll<HTMLElement>(".react-flow__node");
+      els.forEach((el) => {
+        el.style.width = `${el.offsetWidth + 0.5}px`;
+      });
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          els.forEach((el) => {
+            el.style.width = "";
+          });
+        })
+      );
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [processors.length]);
 
   // ── 连线: 主链蛇形 + if 分支 (满足=绿 / 否则=橙) + case 分支列 (按列配色,
   // default 灰, 无 default 时 "未命中" 直通) + for_each 循环子链 (indigo),
