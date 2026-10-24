@@ -1121,23 +1121,31 @@ function CanvasInner({ processors, sourceLabel, sinkLabel, sourceTitle, sinkTitl
   }, [processors, selected, selSub, sourceLabel, sinkLabel, sourceTitle, sinkTitle, schema, layout, badgeFor, sinkRunNote, fitTick, liveRates]);
 
   // 测量急救 (见模块级 roDeliversInitial 注释): 挂载/加节点后新元素若因
-  // 引擎缺失初始 RO 回调而未被测量, 扰动宽度两帧触发真实回调。
+  // 引擎缺失初始 RO 回调而未被测量, 扰动宽度两帧触发真实回调。节点数组
+  // 会因 schema 加载/选中态等结构性重建换新对象, 测量态可能随之丢失 —
+  // 故有界重试, 每轮只扰动仍隐藏的节点, 全部收敛即提前退出。
   useEffect(() => {
     let cancelled = false;
     (async () => {
       if (await roDeliversInitial()) return;
-      if (cancelled) return;
-      const els = document.querySelectorAll<HTMLElement>(".react-flow__node");
-      els.forEach((el) => {
-        el.style.width = `${el.offsetWidth + 0.5}px`;
-      });
-      requestAnimationFrame(() =>
-        requestAnimationFrame(() => {
-          els.forEach((el) => {
-            el.style.width = "";
-          });
-        })
-      );
+      for (let i = 0; i < 6 && !cancelled; i++) {
+        await new Promise((r) => setTimeout(r, i === 0 ? 50 : 500));
+        if (cancelled) return;
+        const stuck = Array.from(
+          document.querySelectorAll<HTMLElement>(".react-flow__node")
+        ).filter((el) => getComputedStyle(el).visibility === "hidden");
+        if (stuck.length === 0) return;
+        stuck.forEach((el) => {
+          el.style.width = `${el.offsetWidth + 0.5}px`;
+        });
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() =>
+            stuck.forEach((el) => {
+              el.style.width = "";
+            })
+          )
+        );
+      }
     })();
     return () => {
       cancelled = true;
