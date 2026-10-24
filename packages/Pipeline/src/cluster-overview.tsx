@@ -18,6 +18,7 @@ export interface ClusterInstanceReport {
   version: number;
   last_seen: string;
   reason?: string;
+  cordoned?: boolean;
 }
 
 export interface ClusterDeploymentStatus {
@@ -171,8 +172,8 @@ function ClusterOverviewInner({ fetchOverview, fetchStages, onPipelineClick, ref
                   <span
                     key={i.instance_id}
                     className={`rounded px-1 text-[9px] font-mono ${stateCls(i.state)}`}
-                    title={`${i.instance_id} · v${i.version} · ${i.last_seen}${i.reason ? `\n${i.reason}` : ""}`}>
-                    {i.instance_id}{i.state !== "running" ? ` (${i.state})` : ""}
+                    title={`${i.instance_id} · v${i.version} · ${i.last_seen}${i.cordoned ? `\n${__t("已封闸 (cordon): 在跑任务排空后停, 不再启动新任务")}` : ""}${i.reason ? `\n${i.reason}` : ""}`}>
+                    {i.instance_id}{i.cordoned ? " ⊘" : ""}{i.state !== "running" ? ` (${i.state})` : ""}
                   </span>
                 ))}
                 {(d.status?.instances?.length ?? 0) === 0 && (
