@@ -75,6 +75,11 @@ export interface CanvasProps {
   fetchProcessorCatalog?: () => Promise<{ processors: CatalogType }>;
   // 模式选择控件注入 (grok patterns 等), 透传给 SchemaForm。
   patternPicker?: ComponentType<PatternPickerProps>;
+  // 受控布局持久化 (#108/#109): layout 为位置记忆的初始种子 (键 = 节点
+  // 内容指纹, 含字母/\u0000, 天然避开 ucfg 纯数字键丢弃), 拖动/重排后经
+  // onLayoutChange 回吐全量布局 — 产品存入 PipelineConfigV2.canvas_layout。
+  layout?: Record<string, { x: number; y: number }>;
+  onLayoutChange?: (layout: Record<string, { x: number; y: number }>) => void;
 }
 
 // ── dry-run 报告类型: 与 pipeline-api 同源 (framework dryrun JSON), 保留
@@ -721,7 +726,7 @@ function AnchorNode({ data }: NodeProps) {
 
 const nodeTypes = { proc: ProcNode, ifn: IfNode, casen: CaseNode, foreachn: ForEachNode, sub: SubNode, anchor: AnchorNode };
 
-function CanvasInner({ processors, sourceLabel, sinkLabel, sourceTitle, sinkTitle, onChange, readOnly, run, liveRates, parallel, fetchProcessorCatalog, patternPicker }: CanvasProps) {
+function CanvasInner({ processors, sourceLabel, sinkLabel, sourceTitle, sinkTitle, onChange, readOnly, run, liveRates, parallel, fetchProcessorCatalog, patternPicker, layout: layoutSeed, onLayoutChange }: CanvasProps) {
   const __t = useT();
   const [selected, setSelected] = useState<number | null>(null);
   // 分支/循环子节点的选中态: 子节点点击查看配置 + 实时指标。br = then|else|loop
@@ -744,8 +749,24 @@ function CanvasInner({ processors, sourceLabel, sinkLabel, sourceTitle, sinkTitl
   const [schema, setSchema] = useState<ProcessorSchema>({});
   const [catalog, setCatalog] = useState<CatalogType>({});
   const rfRef = useRef<ReactFlowInstance | null>(null);
-  // 画布位置记忆: 布局键 -> 坐标。
-  const [posMap, setPosMap] = useState<Map<string, XYPosition>>(() => new Map());
+  // 画布位置记忆: 布局键 -> 坐标。种子取受控 layout (产品持久化的
+  // canvas_layout), 会话内的增量 (拖动/迁移/重置) 仍由内部 state 承载。
+  const [posMap, setPosMap] = useState<Map<string, XYPosition>>(() => {
+    const m = new Map<string, XYPosition>();
+    for (const [k, v] of Object.entries(layoutSeed ?? {})) {
+      if (v && typeof v.x === "number" && typeof v.y === "number") m.set(k, v);
+    }
+    return m;
+  });
+  // 布局回吐: posMap 每次变化发全量 (映射小, 拖动每帧回调可接受);
+  // 产品侧 setLoading 语义的节流由调用方决定。
+  useEffect(() => {
+    if (!onLayoutChange) return;
+    const out: Record<string, { x: number; y: number }> = {};
+    for (const [k, v] of posMap) out[k] = v;
+    onLayoutChange(out);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [posMap]);
 
   // 节点库 schema 从后端元数据加载 (与 Gateway 注册中心同源, 含文档层);
   // 失败时画布仍可用 (配置退化为 JSON 编辑, 节点库只剩 schema 覆盖的项)。
