@@ -10,12 +10,13 @@ export { PipelineChainEditor } from "./chain-editor";
 export type { CatalogType, DocType } from "./chain-editor";
 
 export { PipelineRuntime } from "./runtime-detail";
-export type { StageRow, FlightEvent } from "./runtime-detail";
+export type { StageRow, FlightEvent, PipelineRuntimeProps } from "./runtime-detail";
 
 export { LanesPanel } from "./lanes-panel";
-export type { LaneStat } from "./lanes-panel";
+export type { LaneStat, LanesPanelProps } from "./lanes-panel";
 
 export { InjectDialog } from "./inject-dialog";
+export type { InjectDialogProps } from "./inject-dialog";
 
 export {
   createPipelineClient,
