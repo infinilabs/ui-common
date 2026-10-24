@@ -26,6 +26,9 @@ export interface ClusterDeploymentStatus {
   instances: ClusterInstanceReport[];
   desired_count: number;
   ready_count: number;
+  // staged-delivery progress (#125): present while a rollout is (or was)
+  // active — rolled lists the instances already on the staged content
+  rollout?: { active: boolean; digest?: string; rolled?: string[] } | null;
 }
 
 export interface ClusterDeploymentRow {
@@ -138,6 +141,8 @@ function ClusterOverviewInner({ fetchOverview, fetchStages, onPipelineClick, ref
         {deployments && deployments.map((d) => {
           const ready = d.status?.ready_count ?? 0;
           const desired = d.status?.desired_count ?? 0;
+          const rollout = d.status?.rollout;
+          const rolled = rollout?.rolled?.length ?? 0;
           return (
             <div key={d.deployment} className="px-2 py-1.5 flex items-center gap-2 text-xs">
               <span className="flex-1 min-w-0 flex items-center gap-1">
@@ -148,6 +153,13 @@ function ClusterOverviewInner({ fetchOverview, fetchStages, onPipelineClick, ref
                   {d.pipeline}
                 </button>
                 <span className="text-[9px] text-muted-foreground truncate">{d.deployment}</span>
+                {rollout?.active && (
+                  <span
+                    className="rounded bg-violet-100 px-1 text-[9px] font-mono text-violet-700"
+                    title={__t("灰度发布进行中 — 已推送到部分实例，等待其确认运行新内容后继续推进（canary → 批次）")}>
+                    {__t("灰度")} {rolled}/{desired}
+                  </span>
+                )}
               </span>
               <span className="w-28 text-[10px] font-mono text-slate-500">{d.strategy || "all"}</span>
               <span className="w-14 text-right text-[10px] font-mono text-slate-500" title={`${d.status?.version ?? d.version}`}>v{d.status?.version ?? d.version}</span>
