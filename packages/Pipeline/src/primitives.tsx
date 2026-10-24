@@ -6,7 +6,7 @@
 // for free; non-tailwind products (coco/antd) get functional plain ones
 // and own the shell styling.
 
-import type { InputHTMLAttributes, LabelHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
+import { forwardRef, type InputHTMLAttributes, type LabelHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 
 /** shadcn-compatible prop surface (variant/size map to classes) so
  * components migrated from shadcn consumers compile unchanged */
@@ -27,26 +27,31 @@ const SIZE_CLS: Record<ButtonSize, string> = {
   icon: "h-6 w-6 p-0"
 };
 
-export function Button({ className, children, variant = "outline", size = "default", ...rest }: {
+// forwardRef: the canvas anchors its processor-library popover on the
+// "add processor" button via ref.
+export const Button = forwardRef<HTMLButtonElement, {
   className?: string;
   children?: ReactNode;
   variant?: ButtonVariant;
   size?: ButtonSize;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  return (
-    <button
-      className={
-        "inline-flex items-center justify-center gap-1 rounded-md border " +
-        VARIANT_CLS[variant] + " " + SIZE_CLS[size] + " " +
-        "disabled:opacity-50 " +
-        (className ?? "")
-      }
-      {...rest}
-    >
-      {children}
-    </button>
-  );
-}
+} & React.ButtonHTMLAttributes<HTMLButtonElement>>(
+  function Button({ className, children, variant = "outline", size = "default", ...rest }, ref) {
+    return (
+      <button
+        ref={ref}
+        className={
+          "inline-flex items-center justify-center gap-1 rounded-md border " +
+          VARIANT_CLS[variant] + " " + SIZE_CLS[size] + " " +
+          "disabled:opacity-50 " +
+          (className ?? "")
+        }
+        {...rest}
+      >
+        {children}
+      </button>
+    );
+  },
+);
 
 export function Badge({ className, children, variant }: {
   className?: string; children?: ReactNode; variant?: string;

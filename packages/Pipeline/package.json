@@ -6,7 +6,9 @@
   "types": "src/index.ts",
   "peerDependencies": {
     "react": ">=18",
-    "lucide-react": ">=0.400"
+    "lucide-react": ">=0.400",
+    "@xyflow/react": ">=12",
+    "react-dom": ">=18"
   },
   "exports": {
     ".": "./src/index.ts",
