@@ -3,12 +3,12 @@
 // LanesPanel — 实例的进程内通道 (lane) 总览: 深度/投递/丢弃/溢写/阻塞等待。
 // GET /pipeline/lanes 经反向通道代理。
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { Waves, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "./primitives";
 // Data via props
 
-interface LaneStat {
+export interface LaneStat {
   name?: string; namespace?: string; owner?: string;
   capacity?: number; depth?: number;
   emitted?: number; delivered?: number;
@@ -19,9 +19,6 @@ export function LanesPanel({ lanes, onRefresh }: {
   lanes: LaneStat[] | null;
   onRefresh?: () => void;
 }) {
-  const [lanes, setLanes] = useState<LaneStat[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const load = useCallback(() => {
     if (onRefresh) onRefresh();
@@ -41,11 +38,10 @@ export function LanesPanel({ lanes, onRefresh }: {
         <h4 className="text-xs font-semibold flex items-center gap-1.5"><Waves className="h-3.5 w-3.5" />内存通道</h4>
         <span className="text-[10px] text-muted-foreground">(lane · 深度/背压)</span>
         <div className="flex-1" />
-        <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={load} disabled={loading} title="刷新">
-          <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
+        <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={load} title="刷新">
+          <RefreshCw className="h-3 w-3" />
         </Button>
       </div>
-      {error && <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">{error}</div>}
       {lanes && (
         <div className="rounded border divide-y">
           {lanes.map((l, i) => {
@@ -68,7 +64,7 @@ export function LanesPanel({ lanes, onRefresh }: {
           {lanes.length === 0 && <p className="px-2 py-2 text-xs text-muted-foreground">实例暂无 lane (未配置通道或旧版网关)</p>}
         </div>
       )}
-      {!lanes && !error && <p className="text-xs text-muted-foreground py-2 text-center">加载中…</p>}
+      {!lanes && <p className="text-xs text-muted-foreground py-2 text-center">无 lane 数据</p>}
     </div>
   );
 }

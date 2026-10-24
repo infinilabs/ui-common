@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Gauge, RefreshCw, Zap } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "./primitives";
 // Data via props callback — product adapter fetches
 
 export interface StageRow {
@@ -16,7 +16,7 @@ export interface StageRow {
   avg_latency_ns?: number;
 }
 
-interface FlightEvent {
+export interface FlightEvent {
   trace_id?: string;
   step?: number;
   processor?: string;

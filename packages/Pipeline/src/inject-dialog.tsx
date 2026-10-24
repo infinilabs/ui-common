@@ -5,7 +5,7 @@
 
 import { useState } from "react";
 import { Send, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "./primitives";
 // Data via props callback
 
 export function InjectDialog({ pipeline, onInject, onClose }: {

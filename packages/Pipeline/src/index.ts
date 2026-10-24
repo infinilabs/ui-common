@@ -37,3 +37,13 @@ export type {
   PipelineFetchers,
   PipelineClient
 } from "./pipeline-api";
+
+export { SchemaForm } from "./schema-form";
+export type {
+  FilterProperty,
+  SchemaProcessorMeta,
+  ProcessorSchema,
+  ProcessorCatalog,
+  Translate,
+  PatternPickerProps
+} from "./schema-form";
