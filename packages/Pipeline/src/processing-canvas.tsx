@@ -22,7 +22,7 @@
 // (处理器目录端点)、patternPicker (grok Pattern 库等选控件), UI 原语取自
 // ./primitives, dry-run 报告类型与 ./pipeline-api 同源去重。
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { createPortal } from "react-dom";
 import {
   ReactFlow, ReactFlowProvider, Background, Controls, MiniMap,
@@ -36,17 +36,12 @@ import {
   RotateCcw, Scissors, Search, ShieldCheck, SlidersHorizontal, Tag, Trash2, X,
 } from "lucide-react";
 import { Button, Input, Badge, Label, Select, Textarea } from "./primitives";
+import { TContext, useT, identityTranslate } from "./i18n";
 import {
-  SchemaForm, identityTranslate,
+  SchemaForm,
   type Translate, type PatternPickerProps, type ProcessorSchema, type ProcessorCatalog as CatalogType,
 } from "./schema-form";
 import type { DryRunReport, StepResult } from "./pipeline-api";
-
-// i18n 注入: 产品在 <ProcessingCanvas t={...}> 上提供; 缺省恒等 (仅替换 vars
-// 中存在的 {name} 占位符)。经 context 下发, 免去向每个节点组件逐层穿 prop;
-// 组件内 `const __t = useT()` 与原产品形态的调用点同名, 迁移零改动。
-const TContext = createContext<Translate>(identityTranslate);
-const useT = (): Translate => useContext(TContext);
 
 export interface CanvasProps {
   processors: Record<string, unknown>[];
