@@ -38,7 +38,7 @@ export type {
   PipelineClient
 } from "./pipeline-api";
 
-export { SchemaForm } from "./schema-form";
+export { SchemaForm, identityTranslate } from "./schema-form";
 export type {
   FilterProperty,
   SchemaProcessorMeta,
