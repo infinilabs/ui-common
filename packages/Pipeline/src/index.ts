@@ -47,3 +47,6 @@ export type {
   Translate,
   PatternPickerProps
 } from "./schema-form";
+
+export { DryRunDrawer } from "./dryrun-drawer";
+export { AiGeneratePanel } from "./ai-generate-panel";
