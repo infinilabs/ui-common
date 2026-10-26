@@ -103,13 +103,12 @@ function FieldControl({ processorName, name, prop, value, onChange, t, picker }:
       return <GrokPatternsField value={value} onChange={onChange} t={t} picker={picker} />;
     }
     return (
-      <Textarea className="mt-1 text-xs font-mono" rows={2}
+      <LinesField className="mt-1 text-xs font-mono" rows={2}
         placeholder={t("每行一个{v0}", { v0: prop.sub_type ? ` (${prop.sub_type})` : "" })}
-        value={Array.isArray(value) ? value.map((x) => (typeof x === "string" ? x : JSON.stringify(x))).join("\n") : ""}
-        onChange={(e) => onChange(e.target.value.split("\n").filter((l) => l.trim() !== "").map((l) => {
-          if (prop.sub_type === "int" || prop.sub_type === "int64") return Number(l);
-          return l;
-        }))} />
+        value={value} onChange={onChange}
+        coerceLine={prop.sub_type === "int" || prop.sub_type === "int64"
+          ? (l) => { const n = Number(l); return Number.isNaN(n) ? l : n; }
+          : undefined} />
     );
   }
   const enumOpts = enumFor(processorName, name);
@@ -129,22 +128,60 @@ function FieldControl({ processorName, name, prop, value, onChange, t, picker }:
     onChange={(e) => onChange(e.target.value)} />;
 }
 
+// LinesField — 多行数组字段的通用控件。输入期间保留原始草稿 (含换行与
+// 空行), 失焦时才清洗为行数组并回调; 直接在 onChange 里 split+filter 会
+// 吞掉用户刚敲的回车 (见 GrokPatternsField 注释)。
+function LinesField({ value, onChange, placeholder, rows = 2, className, coerceLine }: {
+  value: unknown;
+  onChange: (v: unknown[]) => void;
+  placeholder?: string;
+  rows?: number;
+  className?: string;
+  coerceLine?: (l: string) => string | number;
+}) {
+  const [draft, setDraft] = useState<string | null>(null);
+  const lines = Array.isArray(value) ? value.map((x) => (typeof x === "string" ? x : JSON.stringify(x))) : [];
+  const commit = () => {
+    if (draft === null) return;
+    onChange(draft.split("\n").filter((l) => l.trim() !== "").map((l) => (coerceLine ? coerceLine(l) : l)));
+    setDraft(null);
+  };
+  return (
+    <Textarea className={className} rows={rows} placeholder={placeholder}
+      value={draft ?? lines.join("\n")}
+      onChange={(e) => setDraft(e.target.value)}
+      onBlur={() => commit()} />
+  );
+}
+
 // grok patterns 专用控件: 多行表达式 + 「Pattern 库」浏览器 (搜索/学习/插入)。
 function GrokPatternsField({ value, onChange, t, picker }: {
   value: unknown; onChange: (v: unknown) => void; t: Translate;
   picker?: ComponentType<PatternPickerProps>;
 }) {
   const [pickerOpen, setPickerOpen] = useState(false);
+  // 输入期间保留原始草稿 (含刚敲下的换行与空行), 失焦时才清洗为行数组 —
+  // 若在 onChange 里直接 split+filter 非空行, 回车产生的空行会被立即过滤,
+  // 重渲染吞掉换行, 用户永远无法输入换行符。
+  const [draft, setDraft] = useState<string | null>(null);
   const lines = Array.isArray(value) ? value.map((x) => (typeof x === "string" ? x : JSON.stringify(x))) : [];
+  const text = draft ?? lines.join("\n");
+  const cleanCommit = (raw: string) => {
+    onChange(raw.split("\n").filter((l) => l.trim() !== ""));
+    setDraft(null);
+  };
   const insert = (snippet: string) => {
-    onChange([...lines, snippet]);
+    const base = (draft ?? lines.join("\n")).split("\n").filter((l) => l.trim() !== "");
+    onChange([...base, snippet]);
+    setDraft(null);
   };
   const Picker = picker;
   return (
     <div>
       <Textarea className="mt-1 text-xs font-mono" rows={2} placeholder={t("每行一条表达式, 如 %{COMBINEDAPACHELOG}")}
-        value={lines.join("\n")}
-        onChange={(e) => onChange(e.target.value.split("\n").filter((l) => l.trim() !== ""))} />
+        value={text}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={() => { if (draft !== null) cleanCommit(draft); }} />
       {Picker && (
         <>
           <button type="button" className="mt-1 flex items-center gap-1 text-[10px] text-primary hover:underline"
@@ -176,12 +213,12 @@ function AutoControl({ name, value, onChange, t }: {
   }
   if (Array.isArray(value)) {
     return (
-      <Textarea className={`${commonCls} font-mono`} rows={2} placeholder={t("每行一项")}
-        value={value.map((x) => (typeof x === "string" ? x : JSON.stringify(x))).join("\n")}
-        onChange={(e) => onChange(e.target.value.split("\n").filter((l) => l.trim() !== "").map((l) => {
+      <LinesField className={`${commonCls} font-mono`} rows={2} placeholder={t("每行一项")}
+        value={value} onChange={onChange}
+        coerceLine={(l) => {
           const n = Number(l);
           return l !== "" && !Number.isNaN(n) && /^-?\d+(\.\d+)?$/.test(l.trim()) ? n : l;
-        }))} />
+        }} />
     );
   }
   if (value != null && typeof value === "object") {
