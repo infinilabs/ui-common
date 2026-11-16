@@ -26,5 +26,5 @@
     "isolatedModules": true
   },
   "include": ["./**/*.ts", "./**/*.tsx"],
-  "exclude": ["node_modules", "dist", "src/components/vendor/**"]
+  "exclude": ["node_modules", "dist", "src/components/vendor/**", "test", "vitest.config.ts"]
 }

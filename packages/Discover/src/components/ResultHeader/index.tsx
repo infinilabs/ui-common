@@ -13,10 +13,11 @@ interface IProps {
     showCollapse: ICollapseState,
     collapseState: ICollapseState,
     setCollapseState: (collapseState: ICollapseState) => void;
-    took: number;
-    total: number;
+    took?: number;
+    total?: number;
     timeChartProps: any;
     onDownloadQuery?: (from: number, size: number, handleDownload?: (hits: any[], columns: string[], timeField?: string) => void, shouldCancel?: () => boolean) => void;
+    resultsAvailable?: boolean;
     downloading?: boolean;
     exportMaxSize?: number;
     exportUsePit?: boolean;
@@ -24,8 +25,9 @@ interface IProps {
 }
 
 export default function ResultHeader(props: IProps) {
-    const { showCollapse, collapseState, setCollapseState, took, total, timeChartProps, onDownloadQuery, downloading = false, exportMaxSize = 10000, exportUsePit = false, onRefreshExportLimit } = props;
+    const { showCollapse, collapseState, setCollapseState, took, total, timeChartProps, onDownloadQuery, downloading = false, exportMaxSize = 10000, exportUsePit = false, onRefreshExportLimit, resultsAvailable = true } = props;
 
+    const totalRecords = total ?? 0;
     const showSideBar = showCollapse.sideBar && collapseState.sideBar
     const showHistogram = showCollapse.histogram
 
@@ -95,12 +97,12 @@ export default function ResultHeader(props: IProps) {
         }
         if (fromValue + sizeValue > exportMaxSize) {
             const hint = exportUsePit
-                ? (i18nDownload.totalExceedHint || 'from + size max is %d (total records)').replace('%d', String(total))
+                ? (i18nDownload.totalExceedHint || 'from + size max is %d (total records)').replace('%d', String(totalRecords))
                 : (i18nDownload.rangeExceedHint || 'from + size max is %d').replace('%d', String(exportMaxSize));
             return Promise.reject(new Error(hint));
         }
-        if (!exportUsePit && fromValue + sizeValue > total) {
-            return Promise.reject(new Error((i18nDownload.totalExceedHint || 'from + size max is %d (total records)').replace('%d', String(total))));
+        if (!exportUsePit && fromValue + sizeValue > totalRecords) {
+            return Promise.reject(new Error((i18nDownload.totalExceedHint || 'from + size max is %d (total records)').replace('%d', String(totalRecords))));
         }
         return Promise.resolve();
     };
@@ -150,22 +152,23 @@ export default function ResultHeader(props: IProps) {
                 <Button
                     className="flex-shrink-0"
                     icon={<Download className="w-14px h-14px" />}
+                    disabled={!resultsAvailable}
                     onClick={() => {
                         showModal()
                     }}
                 />
             </Space.Compact>
 
-            <Info
+            {resultsAvailable && <Info
                 took={took}
                 total={total}
                 {...(timeChartProps || {})}
-            />
+            />}
 
             <Modal
                 title={(i18nDownload.title || `Export search as CSV (up to %d records)`).replace('%d', String(exportMaxSize))}
                 closable
-                open={isModalOpen}
+                open={resultsAvailable && isModalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 destroyOnHidden
@@ -178,10 +181,10 @@ export default function ResultHeader(props: IProps) {
                         label={`From`}
                         name="from"
                         required
-                        tooltip={(i18nDownload.fromRangeHint || `From range: 0 ~ %d`).replace('%d', String(Math.min(total - 1, exportMaxSize - 1)))}
+                        tooltip={(i18nDownload.fromRangeHint || `From range: 0 ~ %d`).replace('%d', String(Math.min(totalRecords - 1, exportMaxSize - 1)))}
                         rules={[{ validator: validateExportParams }]}
                     >
-                        <InputNumber className="w-full" min={0} max={Math.min(total - 1, exportMaxSize - 1)} />
+                        <InputNumber className="w-full" min={0} max={Math.min(totalRecords - 1, exportMaxSize - 1)} />
                     </Form.Item>
                     <Form.Item
                         label={`Size`}

@@ -51,6 +51,7 @@ export interface DiscoverFieldProps {
   whetherToSample?: boolean;
   sampleSize?: number;
   topNumber?: number;
+  resultsAvailable?: boolean;
 }
 
 export function DiscoverField({
@@ -68,7 +69,8 @@ export function DiscoverField({
   columns,
   whetherToSample,
   sampleSize,
-  topNumber
+  topNumber,
+  resultsAvailable = true
 }: DiscoverFieldProps) {
   const addLabelAria = `Add ${field.name} to table`;
   const removeLabelAria = `Remove ${field.name} to table`;
@@ -254,7 +256,7 @@ export function DiscoverField({
           ): null}
         </div>
       )}
-      open={open}
+      open={resultsAvailable && open}
       onOpenChange={(visible) => {
         if (!visible) setOpen(false);
       }}
@@ -275,6 +277,7 @@ export function DiscoverField({
       destroyOnHidden
     >
       <div onClick={() => {
+        if (!resultsAvailable) return;
         setLastPopoverField(field.name);
         togglePopover();
         !open && fetchFieldAgg(lightningToggleLocal, field);
