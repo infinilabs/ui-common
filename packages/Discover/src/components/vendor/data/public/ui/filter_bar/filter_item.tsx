@@ -72,13 +72,14 @@ export function FilterItem(props: Props) {
   >(undefined);
   const { id, filter, indexPatterns } = props;
 
-  const { i18n } = useContext(GlobalConfigContext)
+  const { i18n, getIndexPatterns: getScopedIndexPatterns } = useContext(GlobalConfigContext)
   const i18nFilterItem = i18n?.filter?.item || {}
 
   useEffect(() => {
     const index = props.filter.meta.index;
     if (index) {
-      getIndexPatterns()
+      // A controlled workspace must never validate a filter against another host.
+      (getScopedIndexPatterns || getIndexPatterns)()
         .get(index)
         .then((indexPattern) => {
           setIndexPatternExists(!!indexPattern);

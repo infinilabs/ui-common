@@ -19,7 +19,7 @@
 
 import { SavedObjectsClientCommon } from "../..";
 
-import { createIndexPatternCache } from ".";
+import { createIndexPatternCache } from "./_pattern_cache";
 import { IndexPattern } from "./index_pattern";
 import {
   createEnsureDefaultIndexPattern,
@@ -46,7 +46,6 @@ import { findByTitle } from "../utils";
 import { DuplicateIndexPatternError } from "../errors";
 import { createKbnFieldTypes } from "../../kbn_field_types/kbn_field_types_factory";
 
-const indexPatternCache = createIndexPatternCache();
 const MAX_ATTEMPTS_TO_RESOLVE_CONFLICTS = 3;
 const savedObjectType = "view";
 
@@ -78,6 +77,11 @@ export class IndexPatternsService {
   private onError: OnError;
   private onUnsupportedTimePattern: OnUnsupportedTimePattern;
   private getIndexPattern: any;
+  // A service can be rebound to another host session. Its old requests must not
+  // refill the new session's fields or change retained saved objects.
+  public generation = 0;
+  private indexPatternCache = createIndexPatternCache();
+  private patternGenerations = new WeakMap<IndexPattern, number>();
   ensureDefaultIndexPattern: EnsureDefaultIndexPattern;
 
   constructor({
@@ -109,13 +113,15 @@ export class IndexPatternsService {
    * Refresh cache of index pattern ids and titles
    */
   private async refreshSavedObjectsCache() {
-    this.savedObjectsCache = await this.savedObjectsClient.find<
+    const generation = this.generation;
+    const cache = await this.savedObjectsClient.find<
       IndexPatternSavedObjectAttrs
     >({
       type: "index-pattern",
       fields: ["title"],
       perPage: 10000,
     });
+    if (generation === this.generation) this.savedObjectsCache = cache;
   }
 
   /**
@@ -172,9 +178,9 @@ export class IndexPatternsService {
   clearCache = (id?: string) => {
     this.savedObjectsCache = null;
     if (id) {
-      indexPatternCache.clear(id);
+      this.indexPatternCache.clear(id);
     } else {
-      indexPatternCache.clearAll();
+      this.indexPatternCache.clearAll();
     }
   };
 
@@ -407,14 +413,16 @@ export class IndexPatternsService {
     // clusterID: string,
   ): Promise<IndexPattern | undefined> => {
     // const cacheID = typ == "index" ? clusterID + id : id;
+    const generation = this.generation;
+    const getter = this.getIndexPattern;
     const cacheID = id;
-    const cache = indexPatternCache.get(cacheID);
+    const cache = this.indexPatternCache.get(cacheID);
     if (cache) {
       return cache;
     }
 
-    if (!this.getIndexPattern) {
-      return
+    if (!getter) {
+      return;
     }
 
     function convertEsMapping(originalMapping: any) {
@@ -441,7 +449,9 @@ export class IndexPatternsService {
       });
     }
 
-    const res = await this.getIndexPattern(id);
+    const res = await getter(id);
+    if (generation !== this.generation || !res || res.error) return;
+
     const savedObject = {
       "id": id,
       "attributes": {
@@ -488,6 +498,7 @@ export class IndexPatternsService {
           )
         : spec.fields;
     } catch (err) {
+      if (generation !== this.generation) return;
       isSaveRequired = false;
       if (err instanceof IndexPatternMissingIndices) {
         this.onNotification({
@@ -502,6 +513,7 @@ export class IndexPatternsService {
       }
     }
 
+    if (generation !== this.generation) return;
     Object.entries(parsedFieldFormats).forEach(([fieldName, value]) => {
       const field = spec.fields?.[fieldName];
       if (field) {
@@ -510,7 +522,8 @@ export class IndexPatternsService {
     });
 
     const indexPattern = await this.create(spec, true);
-    indexPatternCache.set(cacheID, indexPattern);
+    if (generation !== this.generation) return;
+    this.indexPatternCache.set(cacheID, indexPattern);
     if (isSaveRequired) {
       try {
         this.updateSavedObject(indexPattern);
@@ -562,6 +575,7 @@ export class IndexPatternsService {
     spec: IndexPatternSpec,
     skipFetchFields = false
   ): Promise<IndexPattern> {
+    const generation = this.generation;
     const shortDotsEnable = await this.config.get(
       UI_SETTINGS.SHORT_DOTS_ENABLE
     );
@@ -574,7 +588,8 @@ export class IndexPatternsService {
       metaFields,
     });
 
-    if (!skipFetchFields) {
+    this.patternGenerations.set(indexPattern, generation);
+    if (!skipFetchFields && generation === this.generation) {
       await this.refreshFields(indexPattern);
     }
 
@@ -609,10 +624,13 @@ export class IndexPatternsService {
     override = false,
     skipFetchFields = false
   ) {
+    const generation = this.generation;
     const indexPattern = await this.create(spec, skipFetchFields);
+    if (generation !== this.generation) return;
     await this.createSavedObject(indexPattern, override);
+    if (generation !== this.generation) return;
     await this.setDefault(indexPattern.id as string);
-    return indexPattern;
+    return generation === this.generation ? indexPattern : undefined;
   }
 
   /**
@@ -622,7 +640,11 @@ export class IndexPatternsService {
    */
 
   async createSavedObject(indexPattern: IndexPattern, override = false) {
+    const generation = this.generation;
+    const owner = this.patternGenerations.get(indexPattern);
+    if (owner !== undefined && owner !== generation) return;
     const dupe = await findByTitle(this.savedObjectsClient, indexPattern.title);
+    if (generation !== this.generation) return;
     if (dupe) {
       if (override) {
         await this.delete(dupe.id);
@@ -633,6 +655,7 @@ export class IndexPatternsService {
       }
     }
 
+    if (generation !== this.generation) return;
     const body = indexPattern.getAsSavedObjectBody();
     const response = await this.savedObjectsClient.create(
       savedObjectType,
@@ -641,8 +664,10 @@ export class IndexPatternsService {
         id: indexPattern.id,
       }
     );
+    if (generation !== this.generation) return;
+    this.patternGenerations.set(indexPattern, generation);
     indexPattern.id = response.id;
-    indexPatternCache.set(indexPattern.id, indexPattern);
+    this.indexPatternCache.set(indexPattern.id, indexPattern);
     return indexPattern;
   }
 
@@ -657,7 +682,9 @@ export class IndexPatternsService {
     saveAttempts: number = 0,
     ignoreErrors: boolean = false
   ): Promise<void | Error> {
-    if (!indexPattern.id) return;
+    const generation = this.generation;
+    const owner = this.patternGenerations.get(indexPattern);
+    if (!indexPattern.id || owner !== undefined && owner !== generation) return;
 
     // get the list of attributes
     const body = indexPattern.getAsSavedObjectBody();
@@ -676,6 +703,7 @@ export class IndexPatternsService {
         version: indexPattern.version,
       })
       .then((resp) => {
+        if (generation !== this.generation) return;
         if (resp.id) {
           indexPattern.id = resp.id;
         }
@@ -684,11 +712,13 @@ export class IndexPatternsService {
         }
       })
       .catch(async (err) => {
+        if (generation !== this.generation) return;
         if (
           err?.res?.status === 409 &&
           saveAttempts++ < MAX_ATTEMPTS_TO_RESOLVE_CONFLICTS
         ) {
           const samePattern = await this.get(indexPattern.id as string);
+          if (!samePattern || generation !== this.generation) return;
           // What keys changed from now and what the server returned
           const updatedBody = samePattern.getAsSavedObjectBody();
 
@@ -735,7 +765,7 @@ export class IndexPatternsService {
           indexPattern.version = samePattern.version;
 
           // Clear cache
-          indexPatternCache.clear(indexPattern.id!);
+          this.indexPatternCache.clear(indexPattern.id!);
 
           // Try the save again
           return this.updateSavedObject(
@@ -749,12 +779,23 @@ export class IndexPatternsService {
   }
 
   async delete(indexPatternId: string) {
-    indexPatternCache.clear(indexPatternId);
+    this.indexPatternCache.clear(indexPatternId);
     return this.savedObjectsClient.delete(savedObjectType, indexPatternId);
   }
 
-  setup({getIndexPattern}: any) {
-    this.getIndexPattern = getIndexPattern
+  setup({ getIndexPattern }: any) {
+    const generation = ++this.generation;
+    this.clearCache();
+    this.getIndexPattern = getIndexPattern;
+
+    // A later mount can use the same callback. Only the binding created here
+    // can release it, so an older cleanup cannot disconnect that later mount.
+    return () => {
+      if (generation !== this.generation) return;
+      this.generation += 1;
+      this.clearCache();
+      this.getIndexPattern = undefined;
+    };
   }
 }
 

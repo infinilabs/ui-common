@@ -89,6 +89,7 @@ export interface DiscoverSidebarProps {
   whetherToSample?: boolean;
   sampleSize?: number;
   topNumber?: number;
+  resultsAvailable?: boolean;
   onCollapseToggle: () => void;
 }
 
@@ -107,7 +108,8 @@ export function DiscoverSidebar({
   whetherToSample,
   sampleSize,
   topNumber,
-  onCollapseToggle
+  onCollapseToggle,
+  resultsAvailable = true
 }: DiscoverSidebarProps) {
   const { i18n } = useContext(GlobalConfigContext)
   const i18nField = i18n?.field || {}
@@ -164,7 +166,7 @@ export function DiscoverSidebar({
       columns,
       popularLimit,
       fieldCounts,
-      fieldFilterState
+      resultsAvailable ? fieldFilterState : { ...fieldFilterState, missing: false }
     );
     const fieldsTree = {};
     groupedFields.unpopular.forEach((field) => {
@@ -194,7 +196,7 @@ export function DiscoverSidebar({
       ...groupedFields,
       fieldsTree,
     };
-  }, [fields, columns, popularLimit, fieldCounts, fieldFilterState]);
+  }, [fields, columns, popularLimit, fieldCounts, fieldFilterState, resultsAvailable]);
 
   const fieldTypes = useMemo(() => {
     const result = ["any"];
@@ -239,6 +241,7 @@ export function DiscoverSidebar({
             whetherToSample={whetherToSample}
             sampleSize={sampleSize}
             topNumber={topNumber}
+            resultsAvailable={resultsAvailable}
           />
         )
       };
@@ -346,6 +349,7 @@ export function DiscoverSidebar({
                         whetherToSample={whetherToSample}
                         sampleSize={sampleSize}
                         topNumber={topNumber}
+            resultsAvailable={resultsAvailable}
                       />
                     </li>
                   );
@@ -398,6 +402,7 @@ export function DiscoverSidebar({
                         whetherToSample={whetherToSample}
                         sampleSize={sampleSize}
                         topNumber={topNumber}
+            resultsAvailable={resultsAvailable}
                       />
                     </li>
                   );
@@ -431,6 +436,7 @@ export function DiscoverSidebar({
                     whetherToSample={whetherToSample}
                     sampleSize={sampleSize}
                     topNumber={topNumber}
+            resultsAvailable={resultsAvailable}
                   />
                 </li>
               );

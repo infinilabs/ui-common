@@ -8,10 +8,6 @@ import { TimeBuckets } from './vendor/data/common/search/aggs/buckets/lib/time_b
 import { Fetch } from './vendor/core/public/http/fetch';
 import { SavedObjectsClient } from './vendor/core/public/saved_objects/saved_objects_client';
 import {
-  getIndexPatterns,
-  setIndexPatterns
-} from './vendor/data/public/services';
-import {
   IndexPatternsService,
   onRedirectNoIndexPattern,
   onUnsupportedTimePattern,
@@ -87,31 +83,6 @@ fieldFormats.init(
 fieldFormats.deserialize = deserializeFieldFormat.bind(fieldFormats);
 
 const indexPatternsApiClient = new IndexPatternsApiClient(http);
-const uiconfigs = {
-  ['metaFields']: ['_source', '_id', '_type', '_index'], //'_score'
-  defaultIndex: ''
-};
-const uiSettings = {
-  get: (key) => {
-    return uiconfigs[key];
-  },
-  set: (key, val) => {
-    return (uiconfigs[key] = val);
-  },
-  getAll: () => {
-    return uiconfigs;
-  }
-};
-const indexPatternService = new IndexPatternsService({
-  uiSettings,
-  savedObjectsClient,
-  apiClient: indexPatternsApiClient,
-  fieldFormats,
-  onNotification: () => {},
-  onError: () => {},
-  onUnsupportedTimePattern,
-  onRedirectNoIndexPattern
-});
 
 export class Storage {
   store;
@@ -154,32 +125,168 @@ export class Storage {
   };
 }
 
-const filterManager = new FilterManager();
-const storage = new Storage(localStorage);
-const queryStringManager = new QueryStringManager(storage);
 export const timefilterConfig = {
   timeDefaults: { from: '', to: '' },
   refreshIntervalDefaults: { pause: true, value: 10000 }
 };
-const timeHistory = new TimeHistory(storage);
-const timefilter = new Timefilter(timefilterConfig, timeHistory);
 
-const getTimeBuckets = (interval) => {
-  const bounds = timefilter.getBounds();
-  if (bounds.max && bounds.min) {
-    const timeBuckets = new TimeBuckets(timeBucketConfig);
-    timeBuckets.setBounds(bounds);
-    timeBuckets.setInterval(interval);
-    return timeBuckets;
-  }
-};
+/** Create the search state owned by one mounted workspace.
+ *
+ * A new workspace must not reset another component's filters, timers, or
+ * cached fields. Query builders close over this instance's services.
+ */
+export const createContext = () => {
+  let localPatterns: any = [];
+  localPatterns.get = () => Promise.resolve(undefined);
+  const uiconfigs = {
+    ['metaFields']: ['_source', '_id', '_type', '_index'], //'_score'
+    defaultIndex: ''
+  };
+  const uiSettings = {
+    get: (key) => {
+      return uiconfigs[key];
+    },
+    set: (key, val) => {
+      return (uiconfigs[key] = val);
+    },
+    getAll: () => {
+      return uiconfigs;
+    }
+  };
+  const indexPatternService = new IndexPatternsService({
+    uiSettings,
+    savedObjectsClient,
+    apiClient: indexPatternsApiClient,
+    fieldFormats,
+    onNotification: () => {},
+    onError: () => {},
+    onUnsupportedTimePattern,
+    onRedirectNoIndexPattern
+  });
 
-export const getContext = () => {
+  const filterManager = new FilterManager();
+  const storage = new Storage(localStorage);
+  const queryStringManager = new QueryStringManager(storage);
+  const timeHistory = new TimeHistory(storage);
+  const timefilter = new Timefilter(timefilterConfig, timeHistory);
+
+  const getTimeBuckets = (interval) => {
+    const bounds = timefilter.getBounds();
+    if (bounds.max && bounds.min) {
+      const timeBuckets = new TimeBuckets(timeBucketConfig);
+      timeBuckets.setBounds(bounds);
+      timeBuckets.setInterval(interval);
+      return timeBuckets;
+    }
+  };
+
+  const getEsQuery = (indexPattern) => {
+    const timeFilter = timefilter.createFilter(indexPattern);
+    return buildEsQuery(
+      indexPattern,
+      queryStringManager.getQuery(),
+      [...filterManager.getFilters(), ...(timeFilter ? [timeFilter] : [])]
+      // getEsQueryConfig(getUiSettings())
+    );
+  };
+
+  const getSearchParams = (
+    indexPattern,
+    internal,
+    sort,
+    inputAggs,
+    distinctParams,
+    queryFrom,
+    trackTotalHits,
+    size = 20,
+    timeZone
+  ) => {
+    // const timeExp = calculateAutoTimeExpression(timefilter.getTime());
+    const timeExp = getTimeBuckets(internal)?.getInterval(true).expression;
+    // console.log(timeExp, internal)
+    let esSort = indexPattern.timeFieldName
+      ? [{ [indexPattern.timeFieldName]: { order: 'desc' } }]
+      : [];
+    if (sort) {
+      esSort = sort.reduce((sorts, s) => {
+        const [sortField, sortDeriction] = s;
+        sorts.push({
+          [sortField]: { order: sortDeriction }
+        });
+        return sorts;
+      }, []);
+    }
+
+    const aggs: any = {};
+
+    if (indexPattern.timeFieldName) {
+      if (timeExp) {
+        const isCalendarInterval =
+          timeExp.includes('w') ||
+          timeExp.includes('d') ||
+          timeExp.includes('y') ||
+          timeExp.includes('M');
+        aggs['counts'] = {
+          date_histogram: {
+            //calendar_interval:
+            [isCalendarInterval ? 'calendar_interval' : 'fixed_interval']:
+              timeExp,
+            field: indexPattern.timeFieldName,
+            min_doc_count: 1,
+            time_zone: timeZone
+          }
+        };
+      } else {
+        aggs['counts'] = {
+          auto_date_histogram: {
+            field: indexPattern.timeFieldName,
+            buckets: 50,
+            time_zone: timeZone
+          }
+        };
+      }
+    }
+
+    let esRequest = {
+      index: indexPattern.index || indexPattern.title,
+      body: {
+        query: getEsQuery(indexPattern),
+        from: queryFrom || 0,
+        size: size,
+
+        highlight: {
+          pre_tags: ['@highlighted-field@'],
+          post_tags: ['@/highlighted-field@'],
+          fields: { '*': {} }
+        },
+        sort: esSort //
+      }
+    };
+    if (indexPattern.timeFieldName) {
+      esRequest.body['aggs'] = aggs;
+    }
+    if (inputAggs) {
+      esRequest.body['aggs'] = inputAggs;
+    }
+    if (distinctParams?.field && distinctParams?.enabled) {
+      esRequest['distinct_by_field'] = distinctParams;
+    }
+    if (trackTotalHits) {
+      esRequest.body['track_total_hits'] = trackTotalHits;
+    }
+
+    return esRequest;
+  };
+
+  const fetchESRequest = (params, clusterID, option) => {};
+
   return {
     filterManager,
     // useFilterManager,
-    getIndexPatterns,
-    setIndexPatterns,
+    getIndexPatterns: () => localPatterns,
+    setIndexPatterns: (patterns: any) => {
+      localPatterns = patterns;
+    },
     queryStringManager,
     storage,
     timefilter,
@@ -210,103 +317,3 @@ export const getContext = () => {
     http
   };
 };
-
-const getEsQuery = (indexPattern) => {
-  const timeFilter = timefilter.createFilter(indexPattern);
-  return buildEsQuery(
-    indexPattern,
-    queryStringManager.getQuery(),
-    [...filterManager.getFilters(), ...(timeFilter ? [timeFilter] : [])]
-    // getEsQueryConfig(getUiSettings())
-  );
-};
-
-const getSearchParams = (
-  indexPattern,
-  internal,
-  sort,
-  inputAggs,
-  distinctParams,
-  queryFrom,
-  trackTotalHits,
-  size = 20,
-  timeZone
-) => {
-  // const timeExp = calculateAutoTimeExpression(timefilter.getTime());
-  const timeExp = getTimeBuckets(internal)?.getInterval(true).expression;
-  // console.log(timeExp, internal)
-  let esSort = indexPattern.timeFieldName
-    ? [{ [indexPattern.timeFieldName]: { order: 'desc' } }]
-    : [];
-  if (sort) {
-    esSort = sort.reduce((sorts, s) => {
-      const [sortField, sortDeriction] = s;
-      sorts.push({
-        [sortField]: { order: sortDeriction }
-      });
-      return sorts;
-    }, []);
-  }
-
-  const aggs: any = {};
-
-  if (indexPattern.timeFieldName) {
-    if (timeExp) {
-      const isCalendarInterval =
-        timeExp.includes('w') ||
-        timeExp.includes('d') ||
-        timeExp.includes('y') ||
-        timeExp.includes('M');
-      aggs['counts'] = {
-        date_histogram: {
-          //calendar_interval:
-          [isCalendarInterval ? 'calendar_interval' : 'fixed_interval']:
-            timeExp,
-          field: indexPattern.timeFieldName,
-          min_doc_count: 1,
-          time_zone: timeZone
-        }
-      };
-    } else {
-      aggs['counts'] = {
-        auto_date_histogram: {
-          field: indexPattern.timeFieldName,
-          buckets: 50,
-          time_zone: timeZone
-        }
-      };
-    }
-  }
-
-  let esRequest = {
-    index: indexPattern.index || indexPattern.title,
-    body: {
-      query: getEsQuery(indexPattern),
-      from: queryFrom || 0,
-      size: size,
-
-      highlight: {
-        pre_tags: ['@highlighted-field@'],
-        post_tags: ['@/highlighted-field@'],
-        fields: { '*': {} }
-      },
-      sort: esSort //
-    }
-  };
-  if (indexPattern.timeFieldName) {
-    esRequest.body['aggs'] = aggs;
-  }
-  if (inputAggs) {
-    esRequest.body['aggs'] = inputAggs;
-  }
-  if (distinctParams?.field && distinctParams?.enabled) {
-    esRequest['distinct_by_field'] = distinctParams;
-  }
-  if (trackTotalHits) {
-    esRequest.body['track_total_hits'] = trackTotalHits;
-  }
-
-  return esRequest;
-};
-
-const fetchESRequest = (params, clusterID, option) => {};

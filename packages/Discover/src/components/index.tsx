@@ -3,73 +3,70 @@ import React, {
   useEffect,
   useMemo,
   useState,
-  useRef,
-} from "react";
+  useRef
+} from 'react';
 
-import { Subscription } from "rxjs";
-import "@elastic/eui/dist/eui_theme_light.min.css";
-import { Card, Empty, Spin } from "antd";
-import { getStateColumnActions } from "./vendor/discover/public/application/angular/doc_table/actions/columns";
-import { DiscoverSidebar } from "./vendor/discover/public/application/components/sidebar/discover_sidebar";
-import { DiscoverHistogram } from "./vendor/discover/public/application/components/histogram/histogram";
-import moment from "moment";
-import { getContext, Storage, timeBucketConfig, timefilterConfig } from "./context";
-import { createSearchBar } from "./vendor/data/public/ui/search_bar/create_search_bar";
-import { DiscoverNoResults } from "./vendor/discover/public/application/angular/directives/no_results";
-import { buildPointSeriesData } from "./vendor/discover/public/application/angular/helpers/";
-import { generateFilters } from "./vendor/data/public/query/filter_manager/lib/generate_filters";
-import Table from "./vendor/discover/public/application/components/discover_table/table";
-import { LoadingSpinner } from "./vendor/discover/public/application/components/loading_spinner/loading_spinner";
-import { cloneDeep } from "lodash";
-import ResultHeader from "./ResultHeader";
-import { FilterStateStore, IndexPattern } from "./vendor/data/common";
+import '@elastic/eui/dist/eui_theme_light.min.css';
+import { Card, Empty, Spin } from 'antd';
+import { getStateColumnActions } from './vendor/discover/public/application/angular/doc_table/actions/columns';
+import { DiscoverSidebar } from './vendor/discover/public/application/components/sidebar/discover_sidebar';
+import { DiscoverHistogram } from './vendor/discover/public/application/components/histogram/histogram';
+import moment from 'moment';
+import {
+  createContext,
+  Storage,
+  timeBucketConfig,
+  timefilterConfig
+} from './context';
+import { createSearchBar } from './vendor/data/public/ui/search_bar/create_search_bar';
+import { DiscoverNoResults } from './vendor/discover/public/application/angular/directives/no_results';
+import { buildPointSeriesData } from './vendor/discover/public/application/angular/helpers/';
+import { generateFilters } from './vendor/data/public/query/filter_manager/lib/generate_filters';
+import Table from './vendor/discover/public/application/components/discover_table/table';
+import { LoadingSpinner } from './vendor/discover/public/application/components/loading_spinner/loading_spinner';
+import { cloneDeep } from 'lodash';
+import ResultHeader from './ResultHeader';
+import { FilterStateStore, IndexPattern } from './vendor/data/common';
 import { loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
-import { getTimezone } from "@/utils/utils";
+import { getTimezone } from '@/utils/utils';
 
-import 'uno.css'
-import './index.scss'
-import './euiicons'
-import { TimeBuckets } from "./vendor/data/common/search/aggs/buckets/lib/time_buckets";
-import { Timefilter } from "./vendor/data/public/query";
+import 'uno.css';
+import './index.scss';
+import './euiicons';
+import { TimeBuckets } from './vendor/data/common/search/aggs/buckets/lib/time_buckets';
+import { Timefilter } from './vendor/data/public/query';
 
 loader.config({ monaco });
 
 const SidebarMemoized = React.memo(DiscoverSidebar);
 
-const {
-  filterManager,
-  queryStringManager,
-  timefilter,
-  storage,
-  getEsQuery,
-  getSearchParams,
-  intervalOptions,
-  getTimeBuckets,
-  fetchESRequest,
-  services,
-  setIndexPatterns,
-} = getContext();
+type DiscoverContext = ReturnType<typeof createContext>;
 
 const SearchBar = createSearchBar();
-let isFrist = true;
 
 const Discover = (props: {
+  context: DiscoverContext;
+  errorContent?: React.ReactNode;
   indices: { [key: string]: any }[];
   indexPattern: IndexPattern;
-  setIndexPattern: React.Dispatch<React.SetStateAction<IndexPattern | undefined>>
+  setIndexPattern: React.Dispatch<
+    React.SetStateAction<IndexPattern | undefined>
+  >;
   onIndexPatternChange: (index: string) => void;
-  onSearch?: (index: string, body: any) => Promise<any> | undefined
-  onGetIndexSetting?: (index: string) => Promise<any> | undefined
-  onOpenPit?: (index: string, keepAlive: string) => Promise<string | null> | undefined
-  onClosePit?: (pitId: string) => Promise<void> | undefined
+  onSearch?: (index: string, body: any) => Promise<any> | undefined;
+  onGetIndexSetting?: (index: string) => Promise<any> | undefined;
+  onOpenPit?: (
+    index: string,
+    keepAlive: string
+  ) => Promise<string | null> | undefined;
+  onClosePit?: (pitId: string) => Promise<void> | undefined;
   queryParams: any;
   setQueryParams: (queryParams: any) => void;
   locale?: string;
   theme?: string;
   exportMaxSize?: number;
 }) => {
-
   const {
     indexPattern,
     setIndexPattern,
@@ -79,18 +76,87 @@ const Discover = (props: {
     onOpenPit,
     onClosePit,
     queryParams = {},
-    setQueryParams,
+    setQueryParams: publishQuery,
     locale,
     theme,
     exportMaxSize = 10000
   } = props;
 
+  const {
+    filterManager,
+    queryStringManager,
+    timefilter,
+    storage,
+    getEsQuery,
+    getSearchParams,
+    intervalOptions,
+    getTimeBuckets,
+    fetchESRequest,
+    services,
+    setIndexPatterns
+  } = props.context;
+
+  // Controlled queries come from the host URL. An echoed local publication is
+  // acknowledged once. History navigation restores the whole workspace instead.
+  const querySync = useRef({
+    received: null as string | null,
+    pending: null as { key: string; value: any } | null,
+    columns: null as string[] | null,
+    defaults: {} as any,
+    latest: queryParams,
+    publish: publishQuery
+  });
+  querySync.current.latest = queryParams;
+  querySync.current.publish = publishQuery;
+  const queryKey = JSON.stringify(queryParams);
+  const requestOwner = useRef({
+    key: queryKey,
+    pattern: indexPattern,
+    selectedIndex: queryParams.index || (indexPattern.id || indexPattern.title),
+    read: 0
+  });
+  if (
+    requestOwner.current.key !== queryKey ||
+    requestOwner.current.pattern !== indexPattern
+  ) {
+    requestOwner.current = {
+      key: queryKey,
+      pattern: indexPattern,
+      selectedIndex: queryParams.index || (indexPattern.id || indexPattern.title),
+      read: 0
+    };
+  }
+  const lifetime = useRef({ active: true });
+  useEffect(() => {
+    lifetime.current.active = true;
+    return () => { lifetime.current.active = false; };
+  }, []);
+
+  const setQueryParams = (update: any) => {
+    const owner = querySync.current;
+    const base = owner.pending?.value || owner.latest;
+    const value =
+      typeof update === 'function' ? update(base) : { ...base, ...update };
+    // Search completion also publishes its inputs. Defaults are not a user edit
+    // and must not add a duplicate browser history entry.
+    if (
+      Object.keys(value).every(
+        (key) =>
+          JSON.stringify(value[key]) ===
+          JSON.stringify(base[key] ?? owner.defaults[key])
+      )
+    )
+      return;
+    owner.pending = { key: JSON.stringify(value), value };
+    owner.publish(value);
+  };
+
   const [collapseState, setCollapseState] = useState({
     sideBar: false,
-    histogram: false,
-  })
+    histogram: false
+  });
 
-  const [timeZone, setTimeZone] = useState(() => getTimezone())
+  const [timeZone, setTimeZone] = useState(() => getTimezone());
 
   const indexPatternRef = useRef(indexPattern);
   useEffect(() => {
@@ -99,19 +165,26 @@ const Discover = (props: {
 
   const refreshExportLimit = useCallback(async () => {
     if (!onGetIndexSetting) return;
-    const index = indexPattern?.id || indexPattern?.index || indexPattern?.title;
+    const index =
+      indexPattern?.id || indexPattern?.index || indexPattern?.title;
     if (!index) return;
     try {
       const res = await onGetIndexSetting(index);
-      if (index !== (indexPatternRef.current?.id || indexPatternRef.current?.index || indexPatternRef.current?.title)) {
+      if (
+        index !==
+        (indexPatternRef.current?.id ||
+          indexPatternRef.current?.title)
+      ) {
         return;
       }
-      const values = Object.values(res || {}).map((entry: any) => {
-        const explicit = entry?.settings?.index?.max_result_window;
-        const fallback = entry?.defaults?.index?.max_result_window;
-        const value = Number(explicit || fallback);
-        return Number.isFinite(value) && value > 0 ? value : NaN;
-      }).filter((value) => Number.isFinite(value));
+      const values = Object.values(res || {})
+        .map((entry: any) => {
+          const explicit = entry?.settings?.index?.max_result_window;
+          const fallback = entry?.defaults?.index?.max_result_window;
+          const value = Number(explicit || fallback);
+          return Number.isFinite(value) && value > 0 ? value : NaN;
+        })
+        .filter((value) => Number.isFinite(value));
       if (values.length > 0) {
         setMaxResultWindow(Math.min(...values));
       }
@@ -132,7 +205,7 @@ const Discover = (props: {
     timed_out: false,
     _shards: { total: 4, successful: 4, skipped: 3, failed: 0 },
     hits: { total: 0, max_score: null, hits: [] },
-    aggregations: { counts: { buckets: [] } },
+    aggregations: { counts: { buckets: [] } }
   });
 
   const rangeCacheRef = useRef();
@@ -140,33 +213,16 @@ const Discover = (props: {
   const queryParamsRef = useRef(queryParams);
   queryParamsRef.current = queryParams;
 
-  useEffect(() => {
-    if (queryParams.range && queryParams.range[0] && queryParams.range[1]) {
-      timefilter.setTime({
-        from: queryParams.range[0],
-        to: queryParams.range[1],
-      });
-    }
-    if (Array.isArray(queryParams.filters) && queryParams.filters.length > 0) {
-      filterManager.setFilters(queryParams.filters.filter((item: any) => !!item.meta).map((item: any) => {
-        return {
-          ...item,
-          store: FilterStateStore.APP_STATE
-        }
-      }))
-    }
-  }, [])
-
   const [state, setState] = useState<any>({
-    columns: queryParams.columns || ["_source"], //['name', 'address'],
-    interval: "15s",
-    sort: queryParams.sort || [],
+    columns: queryParams.columns || ['_source'], //['name', 'address'],
+    interval: '15s',
+    sort: queryParams.sort || []
   });
 
   const distinctParamsDefault = {
-    type: "string",
-    field: "",
-    enabled: false,
+    type: 'string',
+    field: '',
+    enabled: false
   };
 
   const [distinctParams, setDistinctParams] = React.useState(
@@ -180,47 +236,81 @@ const Discover = (props: {
     setDistinctParams({
       ...distinctParams,
       type: distinctParamsDefault.type,
-      field: distinctParamsDefault.field,
+      field: distinctParamsDefault.field
     });
   }, [indexPattern]);
 
   useEffect(() => {
-    if (indexPattern) {
-      setDistinctParams({
-        ...distinctParams,
-        type: distinctParamsDefault.type,
-        field: distinctParamsDefault.field,
-      });
-      if (indexPattern?.timeFieldName) {
-        const newSort = [[indexPattern?.timeFieldName, 'desc']]
-        setState({
-          ...state,
-          columns: ['_source'],
-          sort: newSort
-        });
-        updateQueryRef.current?.({ sort: newSort });
-      } else {
-        setState({
-          ...state,
-          columns: ['_source'],
-          sort: []
-        });
-        updateQueryRef.current?.({ sort: [] });
-      }
-    }
-  }, [indexPattern]);
+    if (
+      !indexPattern ||
+      (queryParams.index &&
+        queryParams.index !==
+          (indexPattern.id || indexPattern.title))
+    )
+      return;
+    const owner = querySync.current;
+    if (owner.received === queryKey) return;
+    const ownPublication = owner.pending?.key === queryKey;
+    owner.received = queryKey;
+    owner.pending = null;
+    if (ownPublication) return;
 
-  const subscriptions = useMemo(() => {
-    const subscriptions = new Subscription();
-    subscriptions.add(
-      timefilter.getAutoRefreshFetch$().subscribe({
-        next: () => {
-          updateQueryRef.current?.();
-        },
-      })
+    // Apply all inputs before reading. Omitted filters and ranges clear the
+    // previous controlled query instead of inheriting invisible conditions.
+    queryStringManager.setQuery({
+      query: queryParams.query || '',
+      language: 'kuery'
+    });
+    filterManager.setFilters(
+      (Array.isArray(queryParams.filters) ? queryParams.filters : [])
+        .filter((filter: any) => !!filter.meta)
+        .map((filter: any) => ({ ...filter, store: FilterStateStore.APP_STATE }))
     );
-    return subscriptions;
-  }, [indexPattern]);
+    timefilter.setTime({
+      from: queryParams.range?.[0] || '',
+      to: queryParams.range?.[1] || ''
+    });
+    const defaultTimeField =
+      indexPattern.fields?.find((field) => field.spec?.type === 'date')?.spec
+        .name || '';
+    indexPattern.timeFieldName =
+      typeof queryParams.timeField === 'string'
+        ? queryParams.timeField
+        : defaultTimeField;
+    const columns = queryParams.columns || ['_source'];
+    const sort =
+      queryParams.sort ||
+      (indexPattern.timeFieldName
+        ? [[indexPattern.timeFieldName, 'desc']]
+        : []);
+    owner.defaults = {
+      query: '',
+      columns: ['_source'],
+      range: ['', ''],
+      filters: [],
+      timeField: defaultTimeField,
+      sort: indexPattern.timeFieldName
+        ? [[indexPattern.timeFieldName, 'desc']]
+        : []
+    };
+    // Do not let the old columns effect publish over a query restored by history.
+    owner.columns =
+      JSON.stringify(state.columns) === JSON.stringify(columns)
+        ? null
+        : columns;
+    setState((previous: any) => ({ ...previous, columns, sort }));
+    updateQueryRef.current?.({ sort });
+  }, [queryKey, indexPattern]);
+
+  const firstIndices = useRef(true);
+  // Subscription lifetime follows the mounted context. Index and time-field
+  // edits replace request owners, not the refresh subscription itself.
+  useEffect(() => {
+    const subscription = timefilter.getAutoRefreshFetch$().subscribe({
+      next: () => { updateQueryRef.current?.(); },
+    });
+    return () => subscription.unsubscribe();
+  }, [timefilter]);
 
   const [queryFrom, setQueryFrom] = React.useState(0);
 
@@ -231,16 +321,20 @@ const Discover = (props: {
       if (!indexPattern || !onSearch) {
         return;
       }
+      const owner = requestOwner.current;
+      const patternId = indexPattern.id || indexPattern.title;
+      if (!lifetime.current.active || owner.selectedIndex !== patternId) return;
+      const read = ++owner.read;
       setResultState((prev) => {
         if (prev === 'next') return prev;
-        return "loading"
+        return 'loading';
       });
       let aggs = null;
       if (!_payload?.isScrollLoad) {
         setQueryFrom(0);
       }
 
-      const sort = _payload?.sort || state.sort
+      const sort = _payload?.sort || state.sort;
 
       const params = getSearchParams(
         indexPattern,
@@ -254,24 +348,34 @@ const Discover = (props: {
         timeZone
       );
 
-      const filters = cloneDeep(params?.body?.query?.bool?.filter || [])
+      const filters = cloneDeep(params?.body?.query?.bool?.filter || []);
 
       if (filters.length > 0) {
         const rangeFilter = filters[filters.length - 1];
-        if (rangeFilter?.hasOwnProperty("range")) {
+        if (rangeFilter?.hasOwnProperty('range')) {
           if (_payload?.rangeFilter) {
-            filters[filters.length - 1] = cloneDeep(_payload?.rangeFilter)
-            params.body.query.bool.filter = filters
+            filters[filters.length - 1] = cloneDeep(_payload?.rangeFilter);
+            params.body.query.bool.filter = filters;
           } else {
-            rangeCacheRef.current = rangeFilter
+            rangeCacheRef.current = rangeFilter;
           }
         }
       }
-      const { index, body } = params
+      const { index, body } = params;
       const res = await onSearch(index, body);
+      if (
+        !lifetime.current.active ||
+        owner !== requestOwner.current ||
+        read !== owner.read
+      )
+        return;
+      if (!res || res.error) {
+        setResultState('ready');
+        return;
+      }
       if (!res || !res.hits) {
         res.hits = {
-          hits: [],
+          hits: []
         };
       }
       setSearchResult(res);
@@ -281,19 +385,20 @@ const Discover = (props: {
       const currentQueryParams = queryParamsRef.current;
       setQueryParams({
         ...currentQueryParams,
-        query: query != currentQueryParams.query ? query : currentQueryParams.query,
+        query:
+          query != currentQueryParams.query ? query : currentQueryParams.query,
         range: [timefilter._time?.from, timefilter._time?.to],
         sort: sort,
         timeField: indexPattern.timeFieldName,
         filters: allFilters.map((item) => {
-          const { meta, query } = item
-          const { value, ...rest } = meta || {}
+          const { meta, query } = item;
+          const { value, ...rest } = meta || {};
           return {
             meta: rest,
             query
-          }
+          };
         })
-      })
+      });
     },
     [
       state.interval,
@@ -302,7 +407,9 @@ const Discover = (props: {
       distinctParams,
       queryFrom,
       indexPattern?.timeFieldName,
-      timeZone
+      timeZone,
+      onSearch,
+      queryKey
     ]
   );
 
@@ -310,15 +417,18 @@ const Discover = (props: {
 
   useEffect(() => {
     if (queryFrom > 0) {
-      updateQueryRef.current?.({ isScrollLoad: true, rangeFilter: rangeCacheRef.current });
+      updateQueryRef.current?.({
+        isScrollLoad: true,
+        rangeFilter: rangeCacheRef.current
+      });
     }
   }, [queryFrom]);
 
   useEffect(() => {
-    if (!isFrist) {
+    if (!firstIndices.current) {
       updateQueryRef.current?.();
     } else {
-      isFrist = !isFrist;
+      firstIndices.current = false;
     }
   }, [props.indices]);
 
@@ -328,96 +438,98 @@ const Discover = (props: {
     }
   };
 
-  const [resultState, setResultState] = useState("loading");
+  const [resultState, setResultState] = useState('loading');
   const { histogramData, timeChartProps } = useMemo(() => {
     if (!searchResult.hits.hits || searchResult.hits.hits.length == 0) {
-      setResultState("none");
+      setResultState('none');
       return {};
     }
     if (
       !indexPattern?.timeFieldName ||
       !searchResult.aggregations ||
-      !searchResult.aggregations["counts"]
+      !searchResult.aggregations['counts']
     ) {
-      setResultState("ready");
+      setResultState('ready');
       return { histogramData: null, timeChartProps: null };
     }
     const rows: any[] = [];
-    searchResult.aggregations["counts"].buckets.forEach((bk) => {
+    searchResult.aggregations['counts'].buckets.forEach((bk) => {
       rows.push(bk);
     });
     let tf;
     let buckets = getTimeBuckets(state.interval);
     if (!buckets) {
-      const from = rows[0]?.key
-      const to = rows[rows.length - 1]?.key
+      const from = rows[0]?.key;
+      const to = rows[rows.length - 1]?.key;
       if (from && to) {
         const storage = new Storage(localStorage);
         tf = new Timefilter(timefilterConfig, storage);
         tf.setTime({
           from: moment(from).toISOString(),
           to: moment(to).toISOString(),
-          mode: "absolute",
-        })
+          mode: 'absolute'
+        });
         const bounds = tf.getBounds();
         const timeBuckets = new TimeBuckets(timeBucketConfig);
         timeBuckets.setBounds(bounds);
-        timeBuckets.setInterval(searchResult.aggregations["counts"].interval);
-        buckets = timeBuckets
+        timeBuckets.setInterval(searchResult.aggregations['counts'].interval);
+        buckets = timeBuckets;
       }
     } else {
-      tf = timefilter
+      tf = timefilter;
     }
     if (!buckets) {
-      setResultState("ready");
+      setResultState('ready');
       return { histogramData: null, timeChartProps: null };
     }
     const interval = buckets.getInterval(true);
     const chartTable = {
       columns: [
         {
-          id: "key",
-          name: `${indexPattern?.getTimeField().displayName} per ${interval.description
-            }`,
+          id: 'key',
+          name: `${indexPattern?.getTimeField().displayName} per ${
+            interval.description
+          }`
         },
-        { id: "doc_count", name: "count" },
+        { id: 'doc_count', name: 'count' }
       ],
-      rows,
+      rows
     };
 
     const dimensions = {
       x: {
         accessor: 0,
         format: {
-          id: "date",
+          id: 'date',
           params: {
-            pattern: buckets.getScaledDateFormat(),
+            pattern: buckets.getScaledDateFormat()
             //pattern: 'YYYY-MM-DD',
-          },
+          }
         },
         params: {
           date: true,
           interval: moment.duration(interval.esValue, interval.esUnit),
           intervalESValue: interval.esValue,
           intervalESUnit: interval.esUnit,
-          bounds: buckets.getBounds(),
-        },
+          bounds: buckets.getBounds()
+        }
       },
       y: {
         accessor: 1,
         format: {
-          id: "number",
+          id: 'number'
         },
-        label: "Count",
-      },
+        label: 'Count'
+      }
     };
-    setResultState("ready");
+    setResultState('ready');
     const timeChartProps = {
       timeRange: {
         from: tf?.getBounds().min,
-        to: tf?.getBounds().max,
+        to: tf?.getBounds().max
       },
-      stateInterval: state.interval || searchResult.aggregations["counts"].interval || '15s',
+      stateInterval:
+        state.interval || searchResult.aggregations['counts'].interval || '15s',
       options: intervalOptions,
       onIntervalChange, //(interval)=>{console.log(interval)},
       bucketInterval: {
@@ -425,18 +537,31 @@ const Discover = (props: {
         // description: 'day',
         // scale: undefined,
         ...interval,
-        timeFieldName: indexPattern?.timeFieldName,
-      },
+        timeFieldName: indexPattern?.timeFieldName
+      }
     };
     const histogramData = buildPointSeriesData(chartTable, dimensions);
     return { histogramData, timeChartProps };
   }, [searchResult, indexPattern, indexPattern?.timeFieldName, state.interval]);
 
   useEffect(() => {
+    {
+      const owner = querySync.current;
+      if (owner.columns) {
+        if (JSON.stringify(state.columns) === JSON.stringify(owner.columns))
+          owner.columns = null;
+        return;
+      }
+      if (
+        JSON.stringify(state.columns) ===
+        JSON.stringify(queryParams.columns || ['_source'])
+      )
+        return;
+    }
     setQueryParams((prev: any) => ({
       ...prev,
       columns: state.columns
-    }))
+    }));
   }, [state.columns]);
 
   const { onAddColumn, onRemoveColumn, onMoveColumn, onSetColumns } = useMemo(
@@ -445,7 +570,7 @@ const Discover = (props: {
         indexPattern,
         setAppState: setState,
         state,
-        useNewFieldsApi: false,
+        useNewFieldsApi: false
       }),
     [indexPattern, state]
   );
@@ -460,7 +585,7 @@ const Discover = (props: {
 
   const onAddFilter = useCallback(
     (field, values, operation) => {
-      const fieldName = typeof field === "string" ? field : field.name;
+      const fieldName = typeof field === 'string' ? field : field.name;
       const newFilters = generateFilters(
         filterManager,
         field,
@@ -478,7 +603,7 @@ const Discover = (props: {
     timefilter.setTime({
       from: moment(ranges.from).toISOString(),
       to: moment(ranges.to).toISOString(),
-      mode: "absolute",
+      mode: 'absolute'
     });
     updateQuery();
   };
@@ -499,7 +624,7 @@ const Discover = (props: {
   const opts = {
     savedSearch: {},
     timefield: indexPattern?.getTimeField()?.displayName,
-    chartAggConfigs: {},
+    chartAggConfigs: {}
   };
   const fieldCounts = {};
   for (const hit of records) {
@@ -507,8 +632,10 @@ const Discover = (props: {
       fieldCounts[key] = (fieldCounts[key] || 0) + 1;
     }
   }
-  const total = Number.isInteger(searchResult.hits.total?.value) ? searchResult.hits.total?.value : 0;
-  const showDatePicker = indexPattern?.timeFieldName != "";
+  const total = Number.isInteger(searchResult.hits.total?.value)
+    ? searchResult.hits.total?.value
+    : 0;
+  const showDatePicker = indexPattern?.timeFieldName != '';
 
   const saveDocument = useCallback(
     async ({ _index, _id, _type, _source, is_new }) => {
@@ -528,7 +655,7 @@ const Discover = (props: {
   }, [saveDocument, deleteDocument]);
 
   const onFieldAgg = async (field, beforeFuc, afterFuc) => {
-    let name = field?.spec?.name || field?.name
+    let name = field?.spec?.name || field?.name;
     if (!name || !onSearch) {
       return;
     }
@@ -536,50 +663,51 @@ const Discover = (props: {
       name = `${name}.keyword`;
     } else {
       if (field?.spec?.aggregatable !== true) {
-        return
+        return;
       }
     }
     if (beforeFuc) {
-      beforeFuc()
+      beforeFuc();
     }
 
-    const dsl_json = queryParams.sampleRecords === 'all'
-      ? {
-        "top5": {
-          "terms": {
-            "field": name,
-            "size": queryParams.topNumber || 5,
-          }
-        }
-      }
-      : {
-        "sample": {
-          "sampler": {
-            "shard_size": queryParams.sampleSize || 5000
-          },
-          "aggs": {
-            "sample_count": {
-              "value_count": {
-                "field": name,
-              }
-            },
-            "top5": {
-              "terms": {
-                "field": name,
-                "size": queryParams.topNumber || 5,
-                "shard_size": 25
+    const dsl_json =
+      queryParams.sampleRecords === 'all'
+        ? {
+            top5: {
+              terms: {
+                field: name,
+                size: queryParams.topNumber || 5
               }
             }
           }
-        },
-        "top5": {
-          "terms": {
-            "field": name,
-            "size": queryParams.topNumber || 5,
-            "shard_size": 25
-          }
-        }
-      };
+        : {
+            sample: {
+              sampler: {
+                shard_size: queryParams.sampleSize || 5000
+              },
+              aggs: {
+                sample_count: {
+                  value_count: {
+                    field: name
+                  }
+                },
+                top5: {
+                  terms: {
+                    field: name,
+                    size: queryParams.topNumber || 5,
+                    shard_size: 25
+                  }
+                }
+              }
+            },
+            top5: {
+              terms: {
+                field: name,
+                size: queryParams.topNumber || 5,
+                shard_size: 25
+              }
+            }
+          };
 
     const params = getSearchParams(
       indexPattern,
@@ -593,46 +721,47 @@ const Discover = (props: {
       timeZone
     );
 
-    const filters = params?.body?.query?.bool?.filter || []
+    const filters = params?.body?.query?.bool?.filter || [];
 
     if (filters.length > 0) {
       if (rangeCacheRef.current) {
         const rangeFilter = filters[filters.length - 1];
         const range = cloneDeep(rangeCacheRef.current);
-        if (rangeFilter?.hasOwnProperty("range")) {
-          filters[filters.length - 1] = range
-          params.body.query.bool.filter = filters
+        if (rangeFilter?.hasOwnProperty('range')) {
+          filters[filters.length - 1] = range;
+          params.body.query.bool.filter = filters;
         } else {
-          filters.push(range)
+          filters.push(range);
         }
-        params.body.query.bool.filter = filters
+        params.body.query.bool.filter = filters;
       }
     }
 
-    const { index, body } = params
+    const { index, body } = params;
 
     const res = await onSearch(index, body);
 
     if (afterFuc) {
-      const buckets = queryParams.sampleRecords === 'all'
-        ? res?.aggregations?.['top5']?.buckets
-        : res?.aggregations?.sample?.['top5']?.buckets;
-      const count = queryParams.sampleRecords === 'all'
-        ? res?.aggregations?.['top5']?.sum_other_doc_count
-        : res?.aggregations?.sample?.sample_count?.value;
+      const buckets =
+        queryParams.sampleRecords === 'all'
+          ? res?.aggregations?.['top5']?.buckets
+          : res?.aggregations?.sample?.['top5']?.buckets;
+      const count =
+        queryParams.sampleRecords === 'all'
+          ? res?.aggregations?.['top5']?.sum_other_doc_count
+          : res?.aggregations?.sample?.sample_count?.value;
       afterFuc(buckets || [], count || 0, res?.error);
     }
-  }
+  };
 
   const onTimeFieldChange = async (timeField: string) => {
-    subscriptions.unsubscribe();
     indexPattern.timeFieldName = timeField;
-    setIndexPattern(indexPattern)
-    const newSort = [[timeField, 'desc']]
+    setIndexPattern(indexPattern);
+    const newSort = timeField ? [[timeField, 'desc']] : [];
     setState({
       ...state,
-      columns: ["_source"],
-      sort: newSort,
+      columns: ['_source'],
+      sort: newSort
     });
     updateQuery({ sort: newSort });
   };
@@ -642,9 +771,18 @@ const Discover = (props: {
 
   const exportUsePit = Boolean(onOpenPit && onClosePit);
 
-  const onDownloadQuery = async (from: number, size: number, callback?: (hits: any[], columns: string[], timeField?: string) => void, shouldCancel?: () => boolean) => {
+  const onDownloadQuery = async (
+    from: number,
+    size: number,
+    callback?: (hits: any[], columns: string[], timeField?: string) => void,
+    shouldCancel?: () => boolean
+  ) => {
     if (!onSearch) return;
-    setResultState('downloading')
+    const owner = requestOwner.current;
+    const patternId = indexPattern.id || indexPattern.title;
+    if (!lifetime.current.active || owner.selectedIndex !== patternId) return;
+    const isCurrent = () => lifetime.current.active && owner === requestOwner.current;
+    setResultState('downloading');
     const params = getSearchParams(
       indexPattern,
       state.interval,
@@ -657,8 +795,8 @@ const Discover = (props: {
       timeZone
     );
 
-    const { index, body } = params
-    const timeField = indexPattern.timeFieldName
+    const { index, body } = params;
+    const timeField = indexPattern.timeFieldName;
 
     // Single-request fallback when the host does not provide PIT support
     let pitId: string | null = null;
@@ -670,14 +808,23 @@ const Discover = (props: {
       }
     }
 
+    if (!isCurrent()) {
+      if (pitId) await onClosePit?.(pitId);
+      return;
+    }
     if (!pitId) {
       const singleBody = { ...body, from, size };
       const res = await onSearch(index, singleBody);
-      const hits = Array.isArray(res?.hits?.hits) ? res?.hits?.hits : []
-      if (!shouldCancel?.()) {
-        callback?.(hits, columns, timeField)
+      if (!isCurrent()) return;
+      if (res?.error) {
+        setResultState('ready');
+        return;
       }
-      setResultState('ready')
+      const hits = Array.isArray(res?.hits?.hits) ? res?.hits?.hits : [];
+      if (isCurrent() && !shouldCancel?.()) {
+        callback?.(hits, columns, timeField);
+      }
+      setResultState('ready');
       return;
     }
 
@@ -685,20 +832,21 @@ const Discover = (props: {
     try {
       // Only the first page request counts toward max_result_window, so apply
       // the from offset server-side when it fits; otherwise skip pages client-side.
-      const useFrom = from + Math.min(size, EXPORT_PAGE_SIZE) <= maxResultWindow;
+      const useFrom =
+        from + Math.min(size, EXPORT_PAGE_SIZE) <= maxResultWindow;
       let toSkip = useFrom ? 0 : from;
       let remaining = size;
       let searchAfter: any = undefined;
       let isFirstPage = true;
 
-      while (remaining > 0 && !shouldCancel?.()) {
+      while (remaining > 0 && isCurrent() && !shouldCancel?.()) {
         const pageSize = Math.min(toSkip + remaining, EXPORT_PAGE_SIZE);
         const pageBody: any = {
           query: body.query,
           size: pageSize,
           sort: [{ _doc: 'asc' }],
           track_total_hits: false,
-          pit: { id: pitId, keep_alive: PIT_KEEP_ALIVE },
+          pit: { id: pitId, keep_alive: PIT_KEEP_ALIVE }
         };
         if (isFirstPage && useFrom && from > 0) {
           pageBody.from = from;
@@ -707,6 +855,11 @@ const Discover = (props: {
         }
 
         const res = await onSearch('', pageBody);
+        if (!isCurrent()) return;
+        if (res?.error) {
+          setResultState('ready');
+          return;
+        }
         const rawHits = Array.isArray(res?.hits?.hits) ? res?.hits?.hits : [];
         if (rawHits.length === 0 || res?.error) break;
 
@@ -731,15 +884,18 @@ const Discover = (props: {
       }
     }
 
-    if (!shouldCancel?.()) {
-      callback?.(hits, columns, timeField)
+    if (isCurrent() && !shouldCancel?.()) {
+      callback?.(hits, columns, timeField);
     }
 
-    setResultState('ready')
-  }
+    if (isCurrent()) setResultState('ready');
+  };
 
   return (
-    <Card className={`h-full`} classNames={{ body: '!p-0 h-full flex flex-col' }}>
+    <Card
+      className={`h-full`}
+      classNames={{ body: '!p-0 h-full flex flex-col' }}
+    >
       <SearchBar
         {...{
           showSearchBar: false,
@@ -748,7 +904,7 @@ const Discover = (props: {
           showDatePicker: showDatePicker,
           showFilterBar: true,
           useDefaultBehaviors: true,
-          screenTitle: "",
+          screenTitle: '',
           // filters: filters,
           onFiltersUpdated: (filters) => {
             filterManager.setFilters(filters);
@@ -756,8 +912,8 @@ const Discover = (props: {
           indexPatterns: [indexPattern],
           filterManager,
           query: {
-            language: "kuery",
-            query: queryParams.query || "",
+            language: 'kuery',
+            query: queryParams.query || ''
           },
           queryStringManager,
           queryString: queryStringManager,
@@ -769,11 +925,13 @@ const Discover = (props: {
           dateRangeTo: queryParams.range && queryParams.range[1],
           selectedIndexPattern: indexPattern,
           setIndexPattern: (index: string) => {
-            subscriptions.unsubscribe()
-            onIndexPatternChange(index)
+                    // Replace the request token without ending the mount. Reselecting
+            // the displayed index must still allow the next search.
+            requestOwner.current = { ...requestOwner.current, selectedIndex: index, read: 0 };
+            onIndexPatternChange(index);
           },
           indices: props.indices,
-          histogramData,
+          histogramData: props.errorContent ? null : histogramData,
           timefilterUpdateHandler,
           histogramOpts: opts,
           timeSetting: {
@@ -781,16 +939,21 @@ const Discover = (props: {
             showTimeSetting: true,
             showTimeField: true,
             timeField: indexPattern.timeFieldName,
-            timeFields: indexPattern.fields.filter((field) => field.spec.type === "date").map((field) => field.displayName),
+            timeFields: indexPattern.fields
+              .filter((field) => field.spec.type === 'date')
+              .map((field) => field.displayName),
             showTimeInterval: false,
             timeInterval: timeChartProps?.stateInterval,
-            timeIntervals: intervalOptions?.map(({ display, val }) => ({ label: display, value: val })),
+            timeIntervals: intervalOptions?.map(({ display, val }) => ({
+              label: display,
+              value: val
+            })),
             onTimeSettingChange: ({ timeField, timeInterval }) => {
               if (indexPattern.timeFieldName !== timeField) {
-                onTimeFieldChange(timeField)
+                onTimeFieldChange(timeField);
               }
               if (timeChartProps?.stateInterval !== timeInterval) {
-                onIntervalChange(timeInterval)
+                onIntervalChange(timeInterval);
               }
             },
             timeZone,
@@ -803,55 +966,49 @@ const Discover = (props: {
       />
       <div className="flex-1 min-h-0 relative">
         <div className="absolute inset-0 flex border-t border-t-solid border-[var(--ant-color-border)]">
-          {resultState === "none" && queryFrom === 0 ? (
+          {
             <>
-              <DiscoverNoResults
-                timeFieldName={opts.timefield}
-                queryLanguage={state.query?.language || ""}
-                range={queryParams.range}
-              />
-            </>
-          ) : (
-            <>
-              {
-                !collapseState.sideBar && (
-                  <div className="h-full w-300px p-8px border-r border-r-solid border-[var(--ant-color-border)] overflow-y-auto infini-discover-side">
-                    <SidebarMemoized
-                      config={{}}
-                      columns={columns}
-                      fieldCounts={fieldCounts}
-                      hits={records}
-                      indexPatterns={[indexPattern]}
-                      onAddField={onAddColumn}
-                      onAddFilter={onAddFilter}
-                      onRemoveField={onRemoveColumn}
-                      selectedIndexPattern={indexPattern}
-                      setIndexPattern={() => { }}
-                      setAppState={setState}
-                      state={state}
-                      //unmappedFieldsConfig={unmappedFieldsConfig}
-                      //useNewFieldsApi={useNewFieldsApi}
-                      distinctParams={distinctParams}
-                      onDistinctParamsChange={onDistinctParamsChange}
-                      total={total}
-                      onFieldAgg={onFieldAgg}
-                      whetherToSample={queryParams.whetherToSample}
-                      sampleSize={queryParams.sampleSize}
-                      topNumber={queryParams.topNumber}
-                      onCollapseToggle={() => {
-                        setCollapseState((prev) => ({
-                          ...prev,
-                          sideBar: !prev.sideBar
-                        }))
-                      }}
-                    />
-                  </div>
-                )
-              }
+              {!collapseState.sideBar && (
+                <div className="h-full w-300px p-8px border-r border-r-solid border-[var(--ant-color-border)] overflow-y-auto infini-discover-side">
+                  <SidebarMemoized
+                    config={{}}
+                    columns={columns}
+                    fieldCounts={props.errorContent ? {} : fieldCounts}
+                    hits={props.errorContent ? [] : records}
+                    indexPatterns={[indexPattern]}
+                    onAddField={onAddColumn}
+                    onAddFilter={onAddFilter}
+                    onRemoveField={onRemoveColumn}
+                    selectedIndexPattern={indexPattern}
+                    setIndexPattern={() => {}}
+                    setAppState={setState}
+                    state={state}
+                    //unmappedFieldsConfig={unmappedFieldsConfig}
+                    //useNewFieldsApi={useNewFieldsApi}
+                    distinctParams={distinctParams}
+                    onDistinctParamsChange={onDistinctParamsChange}
+                    total={props.errorContent ? undefined : total}
+                    resultsAvailable={!props.errorContent}
+                    onFieldAgg={onFieldAgg}
+                    whetherToSample={queryParams.whetherToSample}
+                    sampleSize={queryParams.sampleSize}
+                    topNumber={queryParams.topNumber}
+                    onCollapseToggle={() => {
+                      setCollapseState((prev) => ({
+                        ...prev,
+                        sideBar: !prev.sideBar
+                      }));
+                    }}
+                  />
+                </div>
+              )}
               <div className="flex-1 flex flex-col h-full overflow-hidden relative">
                 <div
                   style={{
-                    display: resultState !== "loading" && resultState !== "downloading" ? "none" : "",
+                    display:
+                      resultState !== 'loading' && resultState !== 'downloading'
+                        ? 'none'
+                        : ''
                   }}
                 >
                   <div className="dscOverlay">
@@ -862,22 +1019,28 @@ const Discover = (props: {
                   <ResultHeader
                     showCollapse={{
                       sideBar: true,
-                      histogram: !!histogramData,
+                      histogram: !props.errorContent && !!histogramData
                     }}
                     collapseState={collapseState}
                     setCollapseState={setCollapseState}
-                    took={searchResult.took || 1}
-                    total={total}
-                    timeChartProps={timeChartProps}
+                    took={
+                      props.errorContent ? undefined : searchResult.took || 1
+                    }
+                    total={props.errorContent ? undefined : total}
+                    resultsAvailable={!props.errorContent}
+                    timeChartProps={props.errorContent ? null : timeChartProps}
                     onDownloadQuery={onDownloadQuery}
-                    downloading={resultState === "downloading"}
+                    downloading={resultState === 'downloading'}
                     exportMaxSize={exportUsePit ? total : maxResultWindow}
                     exportUsePit={exportUsePit}
                     onRefreshExportLimit={refreshExportLimit}
                   />
                 }
-                {
-                  !collapseState.histogram && opts.chartAggConfigs && histogramData && records.length !== 0 && (
+                {!props.errorContent &&
+                  !collapseState.histogram &&
+                  opts.chartAggConfigs &&
+                  histogramData &&
+                  records.length !== 0 && (
                     <div className="dscTimechart">
                       <div className="h-100px dscHistogramGrid">
                         <DiscoverHistogram
@@ -888,9 +1051,18 @@ const Discover = (props: {
                         />
                       </div>
                     </div>
-                  )
-                }
-                {records && records.length > 0 ? (
+                  )}
+                {props.errorContent ? (
+                  props.errorContent
+                ) : resultState === 'none' && queryFrom === 0 ? (
+                  <div className="flex-1 min-h-0 flex flex-col">
+                    <DiscoverNoResults
+                      timeFieldName={opts.timefield}
+                      queryLanguage={state.query?.language || ''}
+                      range={queryParams.range}
+                    />
+                  </div>
+                ) : records && records.length > 0 ? (
                   <Table
                     columns={columns}
                     sortOrder={state.sort || []}
@@ -905,28 +1077,33 @@ const Discover = (props: {
                     hitsTotal={total}
                     queryFrom={queryFrom}
                     setQueryFrom={(from) => {
-                      setResultState('next')
-                      setQueryFrom(from)
+                      setResultState('next');
+                      setQueryFrom(from);
                     }}
                     theme={theme}
                   />
                 ) : null}
               </div>
             </>
-          )}
+          }
         </div>
       </div>
     </Card>
-  )
+  );
 };
 
 const Container = ({ children }: { children: any }) => {
   return (
-    <Card className={`min-h-full h-auto flex flex-col`} classNames={{ body: '!p-0 flex-1 items-center justify-center flex w-full' }}>
+    <Card
+      className={`min-h-full h-auto flex flex-col`}
+      classNames={{
+        body: '!p-0 flex-1 items-center justify-center flex w-full'
+      }}
+    >
       {children}
     </Card>
-  )
-}
+  );
+};
 
 export interface IIndexProps {
   type: string;
@@ -1019,8 +1196,8 @@ export interface II18nProps {
     top_values?: string;
     top_remote?: string;
     top_local?: string;
-    top_result_prefix?: string
-    top_result_suffix?: string
+    top_result_prefix?: string;
+    top_result_suffix?: string;
   };
   empty?: {
     title?: string;
@@ -1034,29 +1211,43 @@ export interface II18nProps {
   };
   download?: {
     title?: string;
-  }
+  };
 }
 
 export interface IDiscoverProps {
   loading?: boolean;
+  /** Render a host-owned failure inside the result panel. */
+  errorContent?: React.ReactNode;
+  onIndexChange?: (index: string) => void;
   indices: IIndexProps[];
   getIndexPattern?: (index: string) => Promise<any> | undefined;
   onSuggestions?: (index: string, body: any) => Promise<string[]> | undefined;
   onSearch?: (index: string, body: any) => Promise<string[]> | undefined;
   queryParams: any;
-  setQueryParams: (queryParams: any) => void,
+  setQueryParams: (queryParams: any) => void;
   locale?: string;
   theme?: string;
   i18n?: II18nProps;
   exportMaxSize?: number;
   onGetIndexSetting?: (index: string) => Promise<any> | undefined;
-  onOpenPit?: (index: string, keepAlive: string) => Promise<string | null> | undefined;
+  onOpenPit?: (
+    index: string,
+    keepAlive: string
+  ) => Promise<string | null> | undefined;
   onClosePit?: (pitId: string) => Promise<void> | undefined;
 }
 
 export const GlobalConfigContext = React.createContext<any>({});
 
-export default (props: IDiscoverProps) => {
+const DiscoverHost = (props: IDiscoverProps) => {
+  const [context] = useState(() => createContext());
+  const {
+    services,
+    filterManager,
+    queryStringManager,
+    timefilter,
+    setIndexPatterns
+  } = context;
 
   const {
     loading = false,
@@ -1075,63 +1266,80 @@ export default (props: IDiscoverProps) => {
     exportMaxSize = 10000
   } = props;
 
-  const [indexPattern, setIndexPattern] = useState<IndexPattern>()
+  const [indexPattern, setIndexPattern] = useState<IndexPattern>();
   const requestRef = useRef<{
     pendingIndex: string | null;
     loadedIndex: string | null;
   }>({
     pendingIndex: null,
-    loadedIndex: null,
+    loadedIndex: null
   });
 
+  const callbacks = useRef({ getIndexPattern, onSuggestions });
+  callbacks.current = { getIndexPattern, onSuggestions };
+  const selection = useRef(0);
   const fetchIndexPattern = async (index: string, timeField?: string) => {
     if (!index) return;
     if (requestRef.current.pendingIndex === index) {
       return;
     }
 
+    if (
+      requestRef.current.loadedIndex === index &&
+      !requestRef.current.pendingIndex
+    )
+      return;
+    const selected = ++selection.current;
+    props.onIndexChange?.(index);
     if (requestRef.current.loadedIndex === index) {
+      requestRef.current.pendingIndex = null;
       return;
     }
 
     requestRef.current.pendingIndex = index;
 
+    const generation = services.indexPatternService.generation;
     const newIndexPattern = await services.indexPatternService.get(
       index,
-      "index",
+      'index'
     );
-    if (!newIndexPattern) return;
+    if (
+      !newIndexPattern ||
+      selected !== selection.current ||
+      generation !== services.indexPatternService.generation
+    ) {
+      if (selected === selection.current)
+        requestRef.current.pendingIndex = null;
+      return;
+    }
     const timeFields: string[] = [];
     newIndexPattern.fields.forEach((field) => {
-      if (field.spec.type === "date") {
+      if (field.spec.type === 'date') {
         timeFields.push(field.spec.name);
       }
     });
-    if (
-      timeFields &&
-      timeFields.length >= 1
-    ) {
+    if (timeFields && timeFields.length >= 1) {
       if (timeField && timeFields.includes(timeField)) {
-        newIndexPattern.timeFieldName = timeField
-      } else if (newIndexPattern.timeFieldName === "") {
+        newIndexPattern.timeFieldName = timeField;
+      } else if (newIndexPattern.timeFieldName === '') {
         newIndexPattern.timeFieldName = timeFields[0];
       }
     }
     if (newIndexPattern.id !== queryParams?.index) {
       setQueryParams({
         index: newIndexPattern.id,
-        columns: ["_source"],
-        sort: [],
+        columns: ['_source'],
+        sort: []
       });
       queryStringManager.setQuery({
-        query: "",
-        language: "kuery",
+        query: '',
+        language: 'kuery'
       });
       filterManager.removeAll();
-      timefilter.setTime({ from: '', to: '' })
-      timefilter.setRefreshInterval({ pause: true })
+      timefilter.setTime({ from: '', to: '' });
+      timefilter.setRefreshInterval({ pause: true });
     }
-    setIndexPattern(newIndexPattern)
+    setIndexPattern(newIndexPattern);
     const indexPatterns = [newIndexPattern];
     indexPatterns.get = (id) => {
       return Promise.resolve(indexPatterns.find((ip) => ip.id == id));
@@ -1140,52 +1348,76 @@ export default (props: IDiscoverProps) => {
 
     requestRef.current.loadedIndex = index;
     requestRef.current.pendingIndex = null;
-  }
+  };
 
   useEffect(() => {
+    // A mount owns these services. Initialize only this workspace's inputs.
+    {
+      queryStringManager.setQuery({
+        query: queryParams?.query || '',
+        language: 'kuery'
+      });
+      filterManager.removeAll();
+      timefilter.setTime({ from: '', to: '' });
+      timefilter.setRefreshInterval({ pause: true });
+    }
     if (onSuggestions) {
-      services.data.autocomplete.setup(
-        {
-          autocomplete: services.data.autocomplete,
-          onSuggestions
-        },
-      );
+      services.data.autocomplete.setup({
+        autocomplete: services.data.autocomplete,
+        onSuggestions: (index: string, body: any) => callbacks.current.onSuggestions?.(index, body)
+      });
     }
-    if (getIndexPattern) {
-      services.indexPatternService.setup({ getIndexPattern })
-    }
-  }, [])
+    const dispose = getIndexPattern
+      ? services.indexPatternService.setup({
+          getIndexPattern: (index: string) => callbacks.current.getIndexPattern?.(index)
+        })
+      : undefined;
+    return () => {
+      selection.current += 1;
+      dispose?.();
+      services.data.autocomplete.setup({
+        autocomplete: services.data.autocomplete
+      });
+      timefilter.setRefreshInterval({ pause: true });
+    };
+  }, []);
 
   useEffect(() => {
     if (!Array.isArray(indices) || indices.length === 0) return;
-    let index = indices.find((item) => item.name === queryParams?.index)
+    let index = indices.find((item) => item.name === queryParams?.index);
     if (!index || index.disabled) {
-      index = indices.find((item) => !item.disabled)
+      index = indices.find((item) => !item.disabled);
     }
     if (index) {
-      fetchIndexPattern(index.name, queryParams?.timeField)
+      fetchIndexPattern(index.name, queryParams?.timeField);
     }
-  }, [indices, queryParams?.index, queryParams?.timeField])
+  }, [indices, queryParams?.index, queryParams?.timeField]);
 
   useEffect(() => {
     requestRef.current = { pendingIndex: null, loadedIndex: null };
   }, [indices]);
 
-  if (loading) return (
-    <Container>
-      <Spin spinning={loading} />
-    </Container>
-  )
+  if (loading)
+    return (
+      <Container>
+        <Spin spinning={loading} />
+      </Container>
+    );
 
-  if (!indices || indices.length === 0 || !indexPattern) return (
-    <Container>
-      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-    </Container>
-  )
+  if (!indices || indices.length === 0 || !indexPattern)
+    return (
+      <Container>
+        {props.errorContent || <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+      </Container>
+    );
 
   return (
-    <GlobalConfigContext.Provider value={{ i18n }}>
+    <GlobalConfigContext.Provider
+      value={{ i18n, getIndexPatterns: context.getIndexPatterns }}
+    >
       <Discover
+        context={context}
+        errorContent={props.errorContent}
         indices={indices}
         indexPattern={indexPattern}
         setIndexPattern={setIndexPattern}
@@ -1201,5 +1433,6 @@ export default (props: IDiscoverProps) => {
         exportMaxSize={exportMaxSize}
       />
     </GlobalConfigContext.Provider>
-  )
+  );
 };
+export default DiscoverHost;
