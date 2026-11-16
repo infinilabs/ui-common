@@ -53,6 +53,14 @@ This observation does not cover repositories that are unavailable locally.
 
 ## Verification and release
 
+Before release, run `CI=true pnpm install --frozen-lockfile --ignore-scripts`
+from the repository root in a clean checkout. Installation covers the whole
+workspace, even when a release targets one component. A standalone package
+install does not prove that the release can install its dependencies.
+When workspace manifests or peer dependencies change, regenerate the root
+lockfile with the pnpm version in `packageManager`. Keep its generated peer
+resolutions together and repeat the frozen installation before release.
+
 Run `npm test` and `npm run build` from `packages/Discover`.
 Set `NODE_OPTIONS=--max-old-space-size=8192` for the production build.
 Tests live in `packages/Discover/test`. Test original source and real state
