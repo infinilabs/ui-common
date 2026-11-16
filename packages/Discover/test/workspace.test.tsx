@@ -235,6 +235,12 @@ vi.mock('../src/components/ResultHeader', () => ({
       >
         Export
       </button>
+      <button
+        disabled={!props.resultsAvailable}
+        onClick={() => props.onDownloadQuery(0, 2, fixture.downloads)}
+      >
+        Export two records
+      </button>
       <output data-testid="summary">
         {JSON.stringify({
           took: props.took,
@@ -890,6 +896,81 @@ it('handles an absent search response without crashing or replacing the last res
     fieldInput
   );
   expect(props.setQueryParams).not.toHaveBeenCalled();
+});
+
+// A host error is not an empty search: keep accepted data and do not publish a new saved query.
+it('keeps the last accepted result when the current search returns an error', async () => {
+  const props = host({
+    onSearch: vi
+      .fn()
+      .mockResolvedValueOnce(response(1))
+      .mockResolvedValue({ error: { status: 403 } })
+  });
+  render(<Discover {...props} />);
+  await screen.findByText('Documents: 1');
+  props.setQueryParams.mockClear();
+  fireEvent.click(screen.getByRole('button', { name: 'Search again' }));
+  await act(async () => {});
+  expect(props.onSearch).toHaveBeenCalledTimes(2);
+  expect(screen.getByText('Documents: 1')).toBeInTheDocument();
+  expect(screen.queryByText('No documents')).not.toBeInTheDocument();
+  expect(props.setQueryParams).not.toHaveBeenCalled();
+});
+
+// The fallback export must not turn a denied search into a successful empty file.
+it('does not download a failed export without PIT support', async () => {
+  const props = host({
+    onSearch: vi
+      .fn()
+      .mockResolvedValueOnce(response(1))
+      .mockResolvedValue({ error: { status: 403 } })
+  });
+  render(<Discover {...props} />);
+  await screen.findByText('Documents: 1');
+  fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+  await act(async () => {});
+  expect(props.onSearch).toHaveBeenCalledTimes(2);
+  expect(fixture.downloads).not.toHaveBeenCalled();
+});
+
+// A later PIT failure invalidates every collected page, but the opened handle still needs cleanup.
+it('discards partial export results and closes PIT after a later page fails', async () => {
+  const firstPage = response(1);
+  firstPage.hits.hits[0] = { ...firstPage.hits.hits[0], sort: [1] } as any;
+  const props = host({
+    onSearch: vi
+      .fn()
+      .mockResolvedValueOnce(response(1))
+      .mockResolvedValueOnce(firstPage)
+      .mockResolvedValue({ error: { status: 403 } }),
+    onOpenPit: vi.fn(async () => 'export-pit'),
+    onClosePit: vi.fn(async () => {})
+  });
+  render(<Discover {...props} />);
+  await screen.findByText('Documents: 1');
+  fireEvent.click(screen.getByRole('button', { name: 'Export two records' }));
+  await waitFor(() => expect(props.onClosePit).toHaveBeenCalledWith('export-pit'));
+  expect(props.onSearch).toHaveBeenCalledTimes(3);
+  expect(props.onSearch.mock.lastCall![1]).toMatchObject({
+    pit: { id: 'export-pit' },
+    search_after: [1]
+  });
+  expect(fixture.downloads).not.toHaveBeenCalled();
+});
+
+// A valid zero-hit response remains a successful export; only errors suppress the callback.
+it('downloads a successful empty export', async () => {
+  const props = host({
+    onSearch: vi
+      .fn()
+      .mockResolvedValueOnce(response(1))
+      .mockResolvedValue(response())
+  });
+  render(<Discover {...props} />);
+  await screen.findByText('Documents: 1');
+  fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+  await waitFor(() => expect(fixture.downloads).toHaveBeenCalledOnce());
+  expect(fixture.downloads).toHaveBeenCalledWith([], ['_source'], '');
 });
 
 // A private refresh subscription survives time-field and index edits, then ends with its mounted workspace.
